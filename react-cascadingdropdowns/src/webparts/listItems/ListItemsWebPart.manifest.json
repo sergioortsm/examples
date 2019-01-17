@@ -1,0 +1,22 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "7e6833ad-17cc-430c-863d-d036165a3105",
+  "alias": "ListItemsWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportsFullBleed": true,
+
+  "preconfiguredEntries": [{
+    "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+    "group": { "default": "Other" },
+    "title": { "default": "ListItems" },
+    "description": { "default": "ListItems description" },
+    "officeFabricIconFontName": "Page",
+    "properties": {
+      "description": "List info",
+      "listName": ""
+    }
+  }]
+}

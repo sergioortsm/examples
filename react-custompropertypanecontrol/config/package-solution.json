@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "react-custompropertypanecontrol-client-side-solution",
+    "id": "001dfa23-e8e9-41d9-9c86-9ed3cc19b941",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true
+  },
+  "paths": {
+    "zippedPackage": "solution/react-custompropertypanecontrol.sppkg"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "isCreatingSolution": true,
+    "environment": "spo",
+    "version": "1.7.1",
+    "libraryName": "react-cascadingdropdowns",
+    "libraryId": "4d3dd49b-866f-4635-8c7b-b2e35889ef72",
+    "packageManager": "npm",
+    "componentType": "webpart"
+  }
+}

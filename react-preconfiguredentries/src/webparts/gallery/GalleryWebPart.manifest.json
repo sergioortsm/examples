@@ -1,0 +1,22 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "1492e5d0-b6d9-4d69-ac1a-dce20a4dc09b",
+  "alias": "GalleryWebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "preconfiguredEntries": [{
+    "groupId": "5c03119e-3074-46fd-976b-c60198311f70", 
+    "group": { "default": "Other" },
+    "title": { "default": "Gallery" },
+    "description": { "default": "Gallery description" },
+    "officeFabricIconFontName": "Page",
+    "properties": {
+      "listName": "",
+      "order": "",
+      "numberOfItems": 10,
+      "style": ""
+    }
+  }]
+}

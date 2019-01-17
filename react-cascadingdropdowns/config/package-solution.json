@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "react-cascadingdropdowns-client-side-solution",
+    "id": "4d3dd49b-866f-4635-8c7b-b2e35889ef72",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true
+  },
+  "paths": {
+    "zippedPackage": "solution/react-cascadingdropdowns.sppkg"
+  }
+}
