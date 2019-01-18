@@ -22,7 +22,7 @@
     "@types/webpack-env": "1.13.1",
     "@types/es6-promise": "0.0.33"
   },
-  "resolutions": {
+  "resolutions": {    
     "@types/react": "16.4.2"
   },
   "devDependencies": {
