@@ -1,0 +1,21 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
+  "id": "5421b075-3c86-4948-b8d7-a66e70569d8a",
+  "alias": "Demo1WebPart",
+  "componentType": "WebPart",
+  "version": "*",
+  "manifestVersion": 2,
+  "requiresCustomScript": false,
+  "supportedHosts": ["SharePointWebPart"],
+
+  "preconfiguredEntries": [{
+    "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+    "group": { "default": "Other" },
+    "title": { "default": "demo1" },
+    "description": { "default": "Using DateTime in PropertyFieldCollectionData property pane control" },
+    "officeFabricIconFontName": "GiftboxOpen",
+    "properties": {
+      "description": "demo1"
+    }
+  }]
+}
