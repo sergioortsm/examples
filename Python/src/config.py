@@ -55,4 +55,4 @@ USUARIO = data.get("USUARIO")
 CONTRASENA = data.get("CONTRASENA")
 URL_FICHAJE = data.get("URL_FICHAJE")
 modo_prueba = data.get('modo_prueba', False)  # Por defecto False si no está
-
+modo_interactivo = data.get('modo_interactivo', True)

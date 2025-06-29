@@ -14,21 +14,17 @@ Asegúrate de usar la carpeta win64 o win32 según tu sistema operativo.
 2. 📁 Prepara tu carpeta de trabajo
 Supongamos que tienes tu carpeta de trabajo así:
 
-makefile
-Copiar
-Editar
+
 C:\FichajePython\
 │
 ├── servicio.py
 ├── jornada.json
 ├── iniciar_servicio.bat
 ├── instalar_librerias.bat
+
 3. 🛠️ Crea el servicio con NSSM
 Abre una consola como Administrador (cmd.exe → clic derecho → "Ejecutar como administrador") y ejecuta:
 
-bash
-Copiar
-Editar
 C:\Herramientas\nssm\win64\nssm.exe install ServicioFichaje
 Se abrirá una ventana de configuración de NSSM.
 
@@ -36,25 +32,13 @@ Completa estos campos:
 Application:
 
 Path:
-
-plaintext
-Copiar
-Editar
 C:\Python311\python.exe
 (O tu ruta real del ejecutable de Python)
 
 Startup directory:
-
-plaintext
-Copiar
-Editar
 C:\FichajePython
-Arguments:
 
-plaintext
-Copiar
-Editar
-servicio.py
+Arguments: servicio.py
 Opcional: pestaña "Details"
 Display name: Servicio de Fichaje
 
@@ -64,25 +48,15 @@ Haz clic en Install Service.
 
 4. ▶️ Inicia el servicio
 Desde consola:
-
-bash
-Copiar
-Editar
 sc start ServicioFichaje
 O desde la consola de servicios de Windows (services.msc), busca ServicioFichaje, clic derecho → Iniciar.
 
 🛑 ¿Cómo detener o desinstalar el servicio?
+
 Desde consola:
-
-bash
-Copiar
-Editar
 sc stop ServicioFichaje
-Y para quitarlo:
 
-bash
-Copiar
-Editar
+Y para quitarlo:
 nssm remove ServicioFichaje confirm
 ✅ Ventajas de usar NSSM
 Ventaja	Detalle

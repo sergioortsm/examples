@@ -1,9 +1,25 @@
-2025-06-29 12:12:12,577 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 12:02.
-2025-06-29 12:12:12,578 - INFO - Ejecutando tarea diaria de fichaje...
-2025-06-29 12:12:12,579 - INFO - Tarea diaria finalizada.
-2025-06-29 12:12:48,822 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 12:02.
-2025-06-29 12:12:48,823 - INFO - Ejecutando tarea diaria de fichaje...
-2025-06-29 12:12:48,823 - INFO - Tarea diaria finalizada.
-2025-06-29 21:00:13,968 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 18:30.
-2025-06-29 21:00:13,970 - INFO - Ejecutando tarea diaria de fichaje...
-2025-06-29 21:00:43,594 - INFO - Tarea diaria finalizada.
+2025-06-29 22:23:36,238 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 22:30.
+2025-06-29 22:23:36,239 - INFO - Ejecutando tarea diaria de fichaje...
+2025-06-29 22:23:36,264 - INFO - Fichajes programados para hoy:
+2025-06-29 22:23:36,264 - INFO -  - CLOCKIN → 08:35 (2025-06-29T08:35:00+02:00)
+2025-06-29 22:23:36,264 - INFO -  - CLOCKOUT → 14:26 (2025-06-29T14:26:00+02:00)
+2025-06-29 22:23:36,265 - INFO -  - CLOCKIN → 15:24 (2025-06-29T15:24:00+02:00)
+2025-06-29 22:23:36,265 - INFO -  - CLOCKOUT → 18:28 (2025-06-29T18:28:00+02:00)
+2025-06-29 22:23:58,892 - INFO - ⛔ Fichaje cancelado por el usuario desde consola.
+2025-06-29 22:47:38,423 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 22:30.
+2025-06-29 22:47:38,424 - INFO - Ejecutando tarea diaria de fichaje...
+2025-06-29 22:47:38,427 - INFO - Fichajes programados para hoy:
+2025-06-29 22:47:38,428 - INFO -  - CLOCKIN → 08:34 (2025-06-29T08:34:00+02:00)
+2025-06-29 22:47:38,429 - INFO -  - CLOCKOUT → 14:38 (2025-06-29T14:38:00+02:00)
+2025-06-29 22:47:38,429 - INFO -  - CLOCKIN → 15:30 (2025-06-29T15:30:00+02:00)
+2025-06-29 22:47:38,430 - INFO -  - CLOCKOUT → 18:27 (2025-06-29T18:27:00+02:00)
+2025-06-29 22:47:43,088 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-06-29 22:47:43,089 - INFO - ClockIn -> 08:38 (2025-06-29T08:38:00+02:00)
+2025-06-29 22:47:43,089 - INFO - [Modo prueba] Se simula POST a https://telefichajes.zimaltec.es/ClockIn con body: {'clockDateTime': '2025-06-29T08:38:00+02:00', 'absenceReasonId': '', 'lat': None, 'lon': None}
+2025-06-29 22:47:43,089 - INFO - ClockOut -> 14:40 (2025-06-29T14:40:00+02:00)
+2025-06-29 22:47:43,089 - INFO - [Modo prueba] Se simula POST a https://telefichajes.zimaltec.es/ClockOut con body: {'clockDateTime': '2025-06-29T14:40:00+02:00', 'absenceReasonId': '', 'lat': None, 'lon': None}
+2025-06-29 22:47:43,089 - INFO - ClockIn -> 15:26 (2025-06-29T15:26:00+02:00)
+2025-06-29 22:47:43,089 - INFO - [Modo prueba] Se simula POST a https://telefichajes.zimaltec.es/ClockIn con body: {'clockDateTime': '2025-06-29T15:26:00+02:00', 'absenceReasonId': '', 'lat': None, 'lon': None}
+2025-06-29 22:47:43,089 - INFO - ClockOut -> 18:19 (2025-06-29T18:19:00+02:00)
+2025-06-29 22:47:43,089 - INFO - [Modo prueba] Se simula POST a https://telefichajes.zimaltec.es/ClockOut con body: {'clockDateTime': '2025-06-29T18:19:00+02:00', 'absenceReasonId': '', 'lat': None, 'lon': None}
+2025-06-29 22:47:43,089 - INFO - Tarea diaria finalizada.

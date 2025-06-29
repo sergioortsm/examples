@@ -13,7 +13,8 @@ import time
 import requests
 import random
 from datetime import date, timedelta
-from config import modo_prueba, AUSENCIAS, FESTIVOS, HORARIO_NORMAL, HORARIO_REDUCIDO, URL_FICHAJE, USUARIO, VIGILIAS_NACIONALES, VARIACION_MIN, VARIACION_MAX, HORA_EJECUCION
+from config import modo_prueba, modo_interactivo, AUSENCIAS, FESTIVOS, HORARIO_NORMAL, HORARIO_REDUCIDO, URL_FICHAJE, USUARIO, VIGILIAS_NACIONALES, VARIACION_MIN, VARIACION_MAX, HORA_EJECUCION
+from confirmacion import mostrar_resumen_y_confirmar
 
 
 # Configuración básica del logger
@@ -143,7 +144,17 @@ def realizar_fichajes():
     else:
         horario = HORARIO_NORMAL
 
-    for hora_str, tipo in horario:
+
+    # ✅ Mostrar resumen y confirmar (modo interactivo desde configuración)
+    fichajes_previstos = mostrar_resumen_y_confirmar(
+        horario,
+        modo_interactivo,
+        logger,
+        obtener_hora_variada,
+        construir_body
+    )
+    
+    for hora_str, tipo, body in fichajes_previstos:
         hora_real = obtener_hora_variada(hora_str)
         body = construir_body(hora_real)        
         logger.info(f"{tipo} -> {hora_real} ({body['clockDateTime']})")        

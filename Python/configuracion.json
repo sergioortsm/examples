@@ -59,5 +59,6 @@
     ],
     "USUARIO": "sorts@grupoactive.es",    
     "URL_FICHAJE": "https://telefichajes.zimaltec.es",
-    "modo_prueba": true
+    "modo_prueba": true,
+    "modo_interactivo": true
 }
