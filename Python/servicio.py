@@ -1,6 +1,8 @@
 import logging
 from logging.handlers import RotatingFileHandler
+import os
 import pickle
+from dotenv import load_dotenv
 import schedule
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -11,7 +13,7 @@ import time
 import requests
 import random
 from datetime import date, timedelta
-from config import modo_prueba, AUSENCIAS, CONTRASENA, FESTIVOS, HORARIO_NORMAL, HORARIO_REDUCIDO, URL_FICHAJE, USUARIO, VIGILIAS_NACIONALES, VARIACION_MIN, VARIACION_MAX, HORA_EJECUCION
+from config import modo_prueba, AUSENCIAS, FESTIVOS, HORARIO_NORMAL, HORARIO_REDUCIDO, URL_FICHAJE, USUARIO, VIGILIAS_NACIONALES, VARIACION_MIN, VARIACION_MAX, HORA_EJECUCION
 
 
 # Configuración básica del logger
@@ -28,7 +30,7 @@ def login_y_guardar():
     logger.info("Inicio de login con Selenium")
     
     if not modo_prueba:
-        
+        load_dotenv()
         options = Options()
         driver = webdriver.Chrome(options=options)
         driver.get(URL_FICHAJE)
@@ -38,46 +40,59 @@ def login_y_guardar():
         input_password = driver.find_element(By.ID, "Input_Password")
 
         input_usuario.send_keys(USUARIO)
+        CONTRASENA = os.getenv("CONTRASENA") #guardada en el .env (NO SUBIR A GITHUB !!)
         input_password.send_keys(CONTRASENA)
 
         boton_login = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "button.btn.btn-primary.send-button"))
         )
+        
         boton_login.click()
         time.sleep(10)
 
         cookies = driver.get_cookies()
+        
         with open("cookies.pkl", "wb") as f:
             pickle.dump(cookies, f)
 
         token_element = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.NAME, "__RequestVerificationToken"))
         )
+        
         token = token_element.get_attribute("value")
+        
         with open("token_csrf.txt", "w") as f:
             f.write(token)
+            
         logger.info("Login completado. Cookies y token guardados.")
         driver.quit()
+        
     else:
         logger.info("[Modo prueba] Selenium simulado: no se abre navegador ni se hacen acciones")
 
 def cargar_cookies_token():
     with open("cookies.pkl", "rb") as f:
         cookies_list = pickle.load(f)
+        
     cookies = {c['name']: c['value'] for c in cookies_list}
+    
     with open("token_csrf.txt", "r") as f:
         token = f.read().strip()
+        
     return cookies, token
 
 def obtener_hora_variada(hora_str):
     h, m = map(int, hora_str.split(":"))
+    
     delta = random.randint(VARIACION_MIN, VARIACION_MAX)
     total_min = h * 60 + m + delta
     h_final, m_final = divmod(total_min, 60)
+    
     return f"{h_final:02}:{m_final:02}"
 
 def construir_body(hora):
     hoy = date.today()
+    
     return {
         "clockDateTime": f"{hoy.isoformat()}T{hora}:00+02:00",
         "absenceReasonId": "",
@@ -87,6 +102,7 @@ def construir_body(hora):
 
 def realizar_fichajes():
     # Comprobar si existen cookies y token
+    
     try:
         cookies, token = cargar_cookies_token()
     except FileNotFoundError:
@@ -106,8 +122,8 @@ def realizar_fichajes():
     
     es_laborable = hoy.weekday() < 5
     
-    # if not es_laborable:
-    #     return
+    if not es_laborable:
+         return
     
     if hoy in FESTIVOS or hoy in AUSENCIAS:
         logger.info(f"{hoy} es festivo o ausencia. No se ficha.")
@@ -137,8 +153,8 @@ def realizar_fichajes():
                     f"{URL_FICHAJE}/{tipo}",        
                     headers=headers,
                     cookies=cookies,
-                    json=body
-                )
+                    json=body)
+                
                 logger.info(f"Status: {r.status_code} | Respuesta: {r.text}")
             else:
                  logger.info(f"[Modo prueba] Se simula POST a {URL_FICHAJE}/{tipo} con body: {body}")

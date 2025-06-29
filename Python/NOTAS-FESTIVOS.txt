@@ -1,0 +1,39 @@
+// Festivos 2025
+// Fecha	Festivo	Tipo
+// 2025-01-01	Año Nuevo	Nacional
+// 2025-01-06	Epifanía del Señor (Reyes)	Nacional
+// 2025-03-19	San José	Autonómico (ej. Madrid, Comunidad Valenciana, Murcia)
+// 2025-03-20	Jueves Santo	Autonómico (Madrid, otras)
+// 2025-03-21	Viernes Santo	Nacional (trasladado según comunidad)
+// 2025-05-01	Día del Trabajo	Nacional
+// 2025-05-02	Fiesta de la Comunidad de Madrid	Autonómico (Madrid)
+// 2025-08-15	Asunción de la Virgen	Nacional
+// 2025-10-12	Fiesta Nacional de España	Nacional (trasladado al lunes si cae en domingo)
+// 2025-11-01	Todos los Santos	Nacional
+// 2025-11-10	Lunes posterior al 9 de noviembre (festivo trasladado)	Posible traslado local en Madrid por La Almudena
+// 2025-12-06	Día de la Constitución Española	Nacional
+// 2025-12-08	Inmaculada Concepción	Nacional
+// 2025-12-25	Navidad	Nacional
+
+// Notas adicionales:
+// 2025-03-20 (Jueves Santo) y 2025-03-21 (Viernes Santo): varían por comunidad autónoma. En Madrid son festivos ambos días.
+// 2025-03-19 (San José): no es festivo nacional, pero sí lo es en Madrid, Murcia, Comunidad Valenciana, Navarra, País Vasco, La Rioja.
+// 2025-05-02: festivo solo en la Comunidad de Madrid.
+// 2025-11-10: es lunes posterior al día de La Almudena (9 de noviembre). Aunque el festivo no es nacional, en Madrid capital es festivo local y suele trasladarse si cae en domingo.
+
+// "VIGILIAS_NACIONALES"
+// Fecha	Víspera de...	Motivo / Observaciones
+// 2024-12-31	Año Nuevo (2025-01-01)	Víspera de festivo nacional (Año Nuevo)
+// 2025-01-05	Reyes (2025-01-06)	Víspera de festivo nacional (Epifanía)
+// 2025-03-19	Jueves Santo (2025-03-20)	En algunas comunidades como Madrid, Murcia, etc.
+// 2025-03-20	Viernes Santo (2025-03-21)	Víspera de festivo nacional (o autonómico según región)
+// 2025-04-30	Día del Trabajo (2025-05-01)	Víspera de festivo nacional (Día del Trabajo)
+// 2025-08-14	Asunción de la Virgen (2025-08-15)	Víspera de festivo nacional
+// 2025-12-05	Día de la Constitución (2025-12-06)	Víspera de festivo nacional (sábado) → posible puente
+// 2025-12-24	Navidad (2025-12-25)	Víspera de festivo nacional
+// Comentarios importantes:
+// 2025-03-19 (San José) aparece como vigilia, pero realmente es un festivo en sí en comunidades como Madrid. Tal vez en tu lógica quieres considerarlo también víspera del festivo siguiente (Jueves Santo).
+
+// 2025-12-05 cae en viernes, siendo víspera de sábado festivo (Constitución). Aunque no siempre se da jornada reducida en vísperas de sábado, muchas empresas sí la aplican si hay puente (por ejemplo, cuando el 8 de diciembre cae el lunes).
+
+// 2025-12-24 y 2024-12-31 son típicos días de jornada reducida en muchas empresas aunque no sean festivos legales.
