@@ -1,0 +1,11 @@
+2025-06-29 11:32:02,030 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 11:32.
+2025-06-29 11:32:02,030 - INFO - Ejecutando tarea diaria de fichaje...
+2025-06-29 11:32:02,031 - INFO - ClockIn -> 08:24 (2025-06-29T08:24:00+02:00)
+2025-06-29 11:32:02,031 - INFO - [Modo prueba] Se simula POST a https://telefichajes.zimaltec.es/ClockIn con body: {'clockDateTime': '2025-06-29T08:24:00+02:00', 'absenceReasonId': '', 'lat': None, 'lon': None}
+2025-06-29 11:32:02,031 - INFO - ClockOut -> 14:27 (2025-06-29T14:27:00+02:00)
+2025-06-29 11:32:02,031 - INFO - [Modo prueba] Se simula POST a https://telefichajes.zimaltec.es/ClockOut con body: {'clockDateTime': '2025-06-29T14:27:00+02:00', 'absenceReasonId': '', 'lat': None, 'lon': None}
+2025-06-29 11:32:02,032 - INFO - ClockIn -> 15:38 (2025-06-29T15:38:00+02:00)
+2025-06-29 11:32:02,032 - INFO - [Modo prueba] Se simula POST a https://telefichajes.zimaltec.es/ClockIn con body: {'clockDateTime': '2025-06-29T15:38:00+02:00', 'absenceReasonId': '', 'lat': None, 'lon': None}
+2025-06-29 11:32:02,032 - INFO - ClockOut -> 18:31 (2025-06-29T18:31:00+02:00)
+2025-06-29 11:32:02,032 - INFO - [Modo prueba] Se simula POST a https://telefichajes.zimaltec.es/ClockOut con body: {'clockDateTime': '2025-06-29T18:31:00+02:00', 'absenceReasonId': '', 'lat': None, 'lon': None}
+2025-06-29 11:32:02,032 - INFO - Tarea diaria finalizada.

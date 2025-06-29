@@ -1,0 +1,91 @@
+🧰 ¿Qué es NSSM?
+NSSM es una utilidad gratuita que permite ejecutar cualquier aplicación o script como un servicio de Windows. Es más sencilla que programar un servicio en C# o usar pywin32.
+
+✅ Pasos para instalar tu script Python como servicio con NSSM
+1. 🔽 Descarga NSSM
+Ve a: https://nssm.cc/download
+
+Descarga la versión estable (ZIP).
+
+Extrae el ZIP, por ejemplo en C:\Herramientas\nssm.
+
+Asegúrate de usar la carpeta win64 o win32 según tu sistema operativo.
+
+2. 📁 Prepara tu carpeta de trabajo
+Supongamos que tienes tu carpeta de trabajo así:
+
+makefile
+Copiar
+Editar
+C:\FichajePython\
+│
+├── servicio.py
+├── jornada.json
+├── iniciar_servicio.bat
+├── instalar_librerias.bat
+3. 🛠️ Crea el servicio con NSSM
+Abre una consola como Administrador (cmd.exe → clic derecho → "Ejecutar como administrador") y ejecuta:
+
+bash
+Copiar
+Editar
+C:\Herramientas\nssm\win64\nssm.exe install ServicioFichaje
+Se abrirá una ventana de configuración de NSSM.
+
+Completa estos campos:
+Application:
+
+Path:
+
+plaintext
+Copiar
+Editar
+C:\Python311\python.exe
+(O tu ruta real del ejecutable de Python)
+
+Startup directory:
+
+plaintext
+Copiar
+Editar
+C:\FichajePython
+Arguments:
+
+plaintext
+Copiar
+Editar
+servicio.py
+Opcional: pestaña "Details"
+Display name: Servicio de Fichaje
+
+Description: Envía fichajes automáticos según el horario laboral definido en jornada.json
+
+Haz clic en Install Service.
+
+4. ▶️ Inicia el servicio
+Desde consola:
+
+bash
+Copiar
+Editar
+sc start ServicioFichaje
+O desde la consola de servicios de Windows (services.msc), busca ServicioFichaje, clic derecho → Iniciar.
+
+🛑 ¿Cómo detener o desinstalar el servicio?
+Desde consola:
+
+bash
+Copiar
+Editar
+sc stop ServicioFichaje
+Y para quitarlo:
+
+bash
+Copiar
+Editar
+nssm remove ServicioFichaje confirm
+✅ Ventajas de usar NSSM
+Ventaja	Detalle
+✅ No necesitas modificar tu script	NSSM gestiona todo lo que hace falta para correr en segundo plano
+✅ Autoinicio	Se ejecuta al arrancar Windows automáticamente
+✅ Fácil de quitar o modificar	No toca el Registro directamente
