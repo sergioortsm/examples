@@ -13,7 +13,7 @@ import time
 import requests
 import random
 from datetime import date, timedelta
-from config import modo_prueba, modo_interactivo, AUSENCIAS, FESTIVOS, HORARIO_NORMAL, HORARIO_REDUCIDO, URL_FICHAJE, USUARIO, VIGILIAS_NACIONALES, VARIACION_MIN, VARIACION_MAX, HORA_EJECUCION
+from config import modo_prueba, modo_interactivo, AUSENCIAS, VACACIONES, FESTIVOS, HORARIO_NORMAL, HORARIO_REDUCIDO, URL_FICHAJE, USUARIO, VIGILIAS_NACIONALES, VARIACION_MIN, VARIACION_MAX, HORA_EJECUCION
 from confirmacion import mostrar_resumen_y_confirmar
 
 
@@ -103,7 +103,7 @@ def construir_body(hora):
 
 def realizar_fichajes():
     # Comprobar si existen cookies y token
-    
+	
     try:
         cookies, token = cargar_cookies_token()
     except FileNotFoundError:
@@ -122,24 +122,31 @@ def realizar_fichajes():
     hoy = date.today()
     
     es_laborable = hoy.weekday() < 5
-    
+	
     if not es_laborable:
-         return
-    
-    if hoy in FESTIVOS or hoy in AUSENCIAS:
-        logger.info(f"{hoy} es festivo o ausencia. No se ficha.")
         return
 
-    es_viernes = hoy.weekday() == 4
-    
+    if hoy in FESTIVOS:
+        logger.info(f"{hoy} es festivo. No se ficha.")
+        return
+
+    if hoy in AUSENCIAS:
+        logger.info(f"{hoy} es día de ausencia. No se ficha.")
+        return
+
+    if hoy in VACACIONES:
+        logger.info(f"{hoy} es día de vacaciones. No se ficha.")
+        return
+
+    es_viernes = hoy.weekday() == 4	
     es_vigilia = hoy in VIGILIAS_NACIONALES
-    es_vigilia_anticipada = (hoy + timedelta(days=1)) in VIGILIAS_NACIONALES #mira si el día de mañana es festivo nacional.
+    es_vigilia_anticipada = (hoy + timedelta(days=1)) in VIGILIAS_NACIONALES
 
     if es_viernes or es_vigilia_anticipada:
         horario = HORARIO_REDUCIDO
         logger.info(f"{hoy} es viernes o vigilia anticipada. Jornada reducida.")
     elif es_vigilia:        
-        logger.info(f"{hoy} es festivo nacional.")
+        logger.info(f"{hoy} es festivo nacional. No se ficha.")
         return
     else:
         horario = HORARIO_NORMAL
@@ -156,7 +163,7 @@ def realizar_fichajes():
     
     for hora_str, tipo, body in fichajes_previstos:
         hora_real = obtener_hora_variada(hora_str)
-        body = construir_body(hora_real)        
+        body = construir_body(hora_real)
         logger.info(f"{tipo} -> {hora_real} ({body['clockDateTime']})")        
         try:
             if not modo_prueba: 
@@ -165,14 +172,15 @@ def realizar_fichajes():
                     headers=headers,
                     cookies=cookies,
                     json=body)
-                
+				
                 logger.info(f"Status: {r.status_code} | Respuesta: {r.text}")
             else:
-                 logger.info(f"[Modo prueba] Se simula POST a {URL_FICHAJE}/{tipo} con body: {body}")
-                 
+                logger.info(f"[Modo prueba] Se simula POST a {URL_FICHAJE}/{tipo} con body: {body}")
+				 
         except Exception as e:
             logger.error(f"Error al enviar fichaje {tipo} a las {hora_real}: {e}")
             time.sleep(random.randint(2, 5))
+
 
 def tarea_diaria():
     logger.info("Ejecutando tarea diaria de fichaje...")

@@ -1,4 +1,17 @@
 {
+    "HORA_EJECUCION": "18:30",
+    "USUARIO": "sorts@grupoactive.es",
+    "URL_FICHAJE": "https://telefichajes.zimaltec.es",
+    "modo_prueba": true,
+    "modo_interactivo": true,
+    "VARIACION_MIN": -8,
+    "VARIACION_MAX": 8,
+    "AUSENCIAS": [        
+    ],    
+    "VACACIONES" : [
+        "2024-12-31",
+        "2025-01-05"
+    ],
     "VIGILIAS_NACIONALES": [
         "2024-12-31",
         "2025-01-05",
@@ -25,40 +38,26 @@
         "2025-05-02",
         "2025-11-10"
     ],
-    "AUSENCIAS": [],
-    "VARIACION_MIN": -8,
-    "VARIACION_MAX": 8,
-    "HORA_EJECUCION": "18:30",
     "HORARIO_NORMAL": [
         [
-            "08:30",
-            "ClockIn"
+            "08:30", "ClockIn"
         ],
         [
-            "14:30",
-            "ClockOut"
+            "14:30", "ClockOut"
         ],
         [
-            "15:30",
-            "ClockIn"
+            "15:30", "ClockIn"
         ],
         [
-            "18:30",
-            "ClockOut"
+            "18:30", "ClockOut"
         ]
     ],
     "HORARIO_REDUCIDO": [
         [
-            "08:30",
-            "ClockIn"
+            "08:30", "ClockIn"
         ],
         [
-            "14:30",
-            "ClockOut"
+            "14:30", "ClockOut"
         ]
-    ],
-    "USUARIO": "sorts@grupoactive.es",    
-    "URL_FICHAJE": "https://telefichajes.zimaltec.es",
-    "modo_prueba": true,
-    "modo_interactivo": true
+    ]
 }

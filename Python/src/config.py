@@ -38,10 +38,10 @@ def validar_horarios(horario, nombre):
 with open("configuracion.json", "r", encoding="utf-8") as f:
     data = json.load(f)
 
-# Convertir fechas a objetos `date`
 FESTIVOS = set(date.fromisoformat(d) for d in data["FESTIVOS"])
 VIGILIAS_NACIONALES = set(date.fromisoformat(d) for d in data["VIGILIAS_NACIONALES"])
 AUSENCIAS = set(date.fromisoformat(d) for d in data.get("AUSENCIAS", []))
+VACACIONES = set(date.fromisoformat(d) for d in data.get("VACACIONES", []))
 HORARIO_NORMAL = [(h, tipo) for h, tipo in data["HORARIO_NORMAL"]]
 HORARIO_REDUCIDO = [(h, tipo) for h, tipo in data["HORARIO_REDUCIDO"]]
 
