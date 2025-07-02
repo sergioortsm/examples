@@ -1,0 +1,47 @@
+2025-07-02 19:04:43,132 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 18:30.
+2025-07-02 19:04:43,133 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-02 19:05:12,144 - INFO - Fichajes programados para hoy:
+2025-07-02 19:05:12,145 - INFO -  - CLOCKIN → 08:22 (2025-07-02T08:22:00+02:00)
+2025-07-02 19:05:12,147 - INFO -  - CLOCKOUT → 14:32 (2025-07-02T14:32:00+02:00)
+2025-07-02 19:05:12,148 - INFO -  - CLOCKIN → 15:29 (2025-07-02T15:29:00+02:00)
+2025-07-02 19:05:12,149 - INFO -  - CLOCKOUT → 18:33 (2025-07-02T18:33:00+02:00)
+2025-07-02 19:05:15,703 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-07-02 19:05:15,704 - INFO - ClockIn -> 08:30 (2025-07-02T08:30:00+02:00)
+2025-07-02 19:05:15,707 - INFO - ClockOut -> 14:35 (2025-07-02T14:35:00+02:00)
+2025-07-02 19:05:15,708 - INFO - ClockIn -> 15:33 (2025-07-02T15:33:00+02:00)
+2025-07-02 19:05:15,708 - INFO - ClockOut -> 18:30 (2025-07-02T18:30:00+02:00)
+2025-07-02 19:05:15,709 - INFO - Tarea diaria finalizada.
+2025-07-02 19:05:59,386 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 18:30.
+2025-07-02 19:05:59,387 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-02 19:06:26,286 - INFO - Fichajes programados para hoy:
+2025-07-02 19:06:26,287 - INFO -  - CLOCKIN → 08:25 (2025-07-02T08:25:00+02:00)
+2025-07-02 19:06:26,287 - INFO -  - CLOCKOUT → 14:34 (2025-07-02T14:34:00+02:00)
+2025-07-02 19:06:26,288 - INFO -  - CLOCKIN → 15:36 (2025-07-02T15:36:00+02:00)
+2025-07-02 19:06:26,288 - INFO -  - CLOCKOUT → 18:35 (2025-07-02T18:35:00+02:00)
+2025-07-02 19:06:30,577 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-07-02 19:06:30,578 - INFO - ClockIn -> 08:30 (2025-07-02T08:30:00+02:00)
+2025-07-02 19:06:30,579 - INFO - ClockOut -> 14:37 (2025-07-02T14:37:00+02:00)
+2025-07-02 19:06:30,579 - INFO - ClockIn -> 15:38 (2025-07-02T15:38:00+02:00)
+2025-07-02 19:06:30,580 - INFO - ClockOut -> 18:30 (2025-07-02T18:30:00+02:00)
+2025-07-02 19:06:30,581 - INFO - Tarea diaria finalizada.
+2025-07-02 19:07:22,960 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 18:30.
+2025-07-02 19:07:22,961 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-02 19:07:50,422 - WARNING - Ya existen fichajes de hoy.
+2025-07-02 19:07:50,423 - INFO - Tarea diaria finalizada.
+2025-07-02 19:10:16,778 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 18:30.
+2025-07-02 19:10:16,779 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-02 19:10:43,949 - INFO - Fichajes programados para hoy:
+2025-07-02 19:10:43,951 - INFO -  - CLOCKIN → 08:24 (2025-07-02T08:24:00+02:00)
+2025-07-02 19:10:43,951 - INFO -  - CLOCKOUT → 14:37 (2025-07-02T14:37:00+02:00)
+2025-07-02 19:10:43,952 - INFO -  - CLOCKIN → 15:22 (2025-07-02T15:22:00+02:00)
+2025-07-02 19:10:43,953 - INFO -  - CLOCKOUT → 18:32 (2025-07-02T18:32:00+02:00)
+2025-07-02 19:10:48,847 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-07-02 19:10:48,848 - INFO - ClockIn -> 08:37 (2025-07-02T08:37:00+02:00)
+2025-07-02 19:10:48,848 - INFO - ClockOut -> 14:23 (2025-07-02T14:23:00+02:00)
+2025-07-02 19:10:48,849 - INFO - ClockIn -> 15:34 (2025-07-02T15:34:00+02:00)
+2025-07-02 19:10:48,850 - INFO - ClockOut -> 18:30 (2025-07-02T18:30:00+02:00)
+2025-07-02 19:10:48,850 - INFO - Tarea diaria finalizada.
+2025-07-02 19:11:35,834 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 18:30.
+2025-07-02 19:11:35,835 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-02 19:12:03,109 - WARNING - Ya existen fichajes de hoy.
+2025-07-02 19:12:03,110 - INFO - Tarea diaria finalizada.

@@ -2,6 +2,8 @@ import logging
 from logging.handlers import RotatingFileHandler
 import os
 
+from config import RUTA_LOG
+
 def get_logger(nombre_logger="fichajes", archivo_log="fichajes.log"):
     logger = logging.getLogger(nombre_logger)
     logger.setLevel(logging.INFO)
@@ -17,9 +19,8 @@ def get_logger(nombre_logger="fichajes", archivo_log="fichajes.log"):
         logger.addHandler(consola_handler)
 
         # Handler para archivo (mismo directorio del script principal)
-        ruta_log = os.path.join(os.path.dirname(os.path.abspath(__file__)), archivo_log)
-        archivo_handler = RotatingFileHandler(ruta_log, maxBytes=1_000_000, backupCount=5, encoding='utf-8')        
-        #archivo_handler = logging.FileHandler(ruta_log, encoding="utf-8")
+        ruta_log = os.path.join(RUTA_LOG, archivo_log)
+        archivo_handler = RotatingFileHandler(ruta_log, maxBytes=1_000_000, backupCount=5, encoding='utf-8')
         archivo_handler.setLevel(logging.INFO)
         archivo_handler.setFormatter(formatter)
         logger.addHandler(archivo_handler)

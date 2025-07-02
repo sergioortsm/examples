@@ -1,5 +1,7 @@
+import msvcrt
 import os
 import pickle
+import sys
 from dotenv import load_dotenv
 import schedule
 from selenium import webdriver
@@ -15,6 +17,7 @@ from config import modo_prueba, modo_interactivo, AUSENCIAS, VACACIONES, FESTIVO
 from confirmacion import pedir_confirmacion_usuario
 from filtrar_fichajes import obtener_fichajes_realizados
 from logger_config import get_logger
+from selenium.webdriver.chrome.service import Service
 
 logger = get_logger()
 
@@ -24,6 +27,12 @@ def login_y_guardar():
     if not modo_prueba:
         load_dotenv()
         options = Options()
+        options.add_argument("--headless")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--window-size=1920,1080")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+  
         driver = webdriver.Chrome(options=options)
         driver.get(URL_FICHAJE)
 
@@ -155,15 +164,11 @@ def realizar_fichajes():
     
     fichajes = obtener_fichajes_realizados()
     
-    es_laborable = hoy.weekday() < 5
-	 
-    if existe_fichaje_hoy(fichajes) and not modo_prueba:
-        logger.warning("Ya existen fichajes de hoy.")
-        return
-    
+    es_laborable = hoy.weekday() < 5 #Lunes -s Viernes
+
     if not es_laborable:
         return
-
+    
     if hoy in FESTIVOS:
         logger.warning(f"{hoy} es festivo. No se ficha.")
         return
@@ -176,6 +181,10 @@ def realizar_fichajes():
         logger.warning(f"{hoy} es día de vacaciones. No se ficha.")
         return
 
+    if existe_fichaje_hoy(fichajes) and not modo_prueba:
+        logger.warning("Ya existen fichajes de hoy.")
+        return
+    
     es_viernes = hoy.weekday() == 4	
     es_vigilia = hoy in VIGILIAS_NACIONALES
     es_vigilia_anticipada = (hoy + timedelta(days=1)) in VIGILIAS_NACIONALES
@@ -191,8 +200,7 @@ def realizar_fichajes():
  
     fichajes_previstos = preparar_fichajes(horario, obtener_hora_variada, construir_body, logger)
           
-    if not pedir_confirmacion_usuario(modo_interactivo, logger):
-        
+    if not pedir_confirmacion_usuario(modo_interactivo, logger):        
         return  # o sys.exit(0), según tu lógica
 
     for i, (hora_str, tipo, body) in enumerate(fichajes_previstos):
@@ -224,14 +232,25 @@ def tarea_diaria():
 
 
 if __name__ == "__main__":    
-    logger.info(f"Servicio iniciado. Se ejecutará la tarea diaria a las {HORA_EJECUCION}.")
-    tarea_diaria()  # Ejecuta la primera vez al arrancar para test rápido
     
-    # if modo_prueba:
-    #     tarea_diaria()
-    # else:
-    #     schedule.every().day.at(HORA_EJECUCION).do(tarea_diaria)
-    
-    while True:
-        schedule.run_pending()
-        time.sleep(30)
+    try:
+        logger.info(f"Servicio iniciado. Se ejecutará la tarea diaria a las {HORA_EJECUCION}.")
+       
+        # if modo_prueba:
+        #     tarea_diaria()
+        # else:
+        #     schedule.every().day.at(HORA_EJECUCION).do(tarea_diaria)
+        
+        tarea_diaria()
+        
+    except Exception as e:
+        logger.exception(f"⛔ ERROR al enviar fichajes diarios: {e} \n")
+        print(f"⛔ ERROR al enviar fichajes diarios: {e} \n")
+   # finally:
+        # if sys.stdin.isatty():
+        #     input("Pulse una tecla para cerrar...")
+        #     os.system("pause")
+            
+   # while True:
+        #schedule.run_pending()
+       # time.sleep(30)

@@ -3,6 +3,7 @@ import json
 from datetime import date
 import os
 import re
+import sys
 
 # Qué validaciones hace
 # Validación	Ejemplo que falla
@@ -36,11 +37,28 @@ def validar_horarios(horario, nombre):
     if anterior_tipo != "ClockOut":
         raise ValueError(f"[{nombre}] La jornada debe terminar en 'ClockOut'")
 
+def obtener_ruta_config():
+    if getattr(sys, 'frozen', False):
+        # .exe generado con PyInstaller
+        carpeta_base = os.path.dirname(sys.executable)
+    else:
+        # script ejecutado desde fuente .py
+        carpeta_base = os.path.dirname(os.path.abspath(__file__))
 
+    ruta_config = os.path.join(carpeta_base, "configuracion.json")
+
+    if not os.path.exists(ruta_config):
+        raise RuntimeError("⚠️ No se encontró configuracion.json")
+
+    return ruta_config
+
+# Y luego úsalo así:
+with open(obtener_ruta_config(), "r", encoding="utf-8") as f:
+    config = json.load(f)
 
 try:
     RUTA_BASE = os.path.dirname(os.path.abspath(__file__))
-    RUTA_CONFIG = os.path.join(RUTA_BASE, "configuracion.json")
+    RUTA_CONFIG = obtener_ruta_config()
     
     with open(RUTA_CONFIG, "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -61,6 +79,8 @@ try:
         USUARIO = data.get("USUARIO")
         CONTRASENA = data.get("CONTRASENA")
         URL_FICHAJE = data.get("URL_FICHAJE")
+        RUTA_LOG = data.get("RUTA_LOG")
+                
         modo_prueba = data.get('modo_prueba', False)  # Por defecto False si no está
         modo_interactivo = data.get('modo_interactivo', True)
 except FileNotFoundError:

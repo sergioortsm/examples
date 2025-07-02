@@ -1,0 +1,19 @@
+✅ Opción más común y recomendada: pyinstaller
+
+1. Instálalo desde el entorno virtual
+    pip install pyinstaller
+
+2. Genera el .exe
+
+- Desde la terminal, ve a la carpeta donde tienes tu script (por ejemplo servicio.py) y ejecuta:
+
+pyinstaller --onefile --add-data "configuracion.json;." servicio.py
+
+Esto generará:
+- Una carpeta dist/ con el archivo servicio.exe
+- Una carpeta build/ y un archivo servicio.spec (puedes ignorarlos al principio)
+
+3. Ejecuta el .exe
+
+El ejecutable estará en:
+dist/servicio.exe

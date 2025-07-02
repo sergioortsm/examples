@@ -4,17 +4,23 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 from datetime import date
 import time
 import os
-
 from config import URL_FICHAJE, USUARIO
-#from servicio import cargar_cookies_token
+
 
 def obtener_fichajes_realizados():
     
     load_dotenv()
     options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--window-size=1920,1080")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+
     driver = webdriver.Chrome(options=options)
     driver.get(URL_FICHAJE)
 
