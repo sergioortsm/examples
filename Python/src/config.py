@@ -1,6 +1,7 @@
 # config.py
 import json
 from datetime import date
+import os
 import re
 
 # Qué validaciones hace
@@ -10,6 +11,7 @@ import re
 # Hora duplicada	Dos "08:30"
 # Dos seguidos de mismo tipo	("08:30", "ClockIn"), ("09:00", "ClockIn")
 # Último no es ClockOut	termina con ClockIn
+
 def validar_horarios(horario, nombre):
     formato_hora = re.compile(r"^\d{2}:\d{2}$")
     tipos_validos = {"ClockIn", "ClockOut"}
@@ -35,24 +37,34 @@ def validar_horarios(horario, nombre):
         raise ValueError(f"[{nombre}] La jornada debe terminar en 'ClockOut'")
 
 
-with open("configuracion.json", "r", encoding="utf-8") as f:
-    data = json.load(f)
 
-FESTIVOS = set(date.fromisoformat(d) for d in data["FESTIVOS"])
-VIGILIAS_NACIONALES = set(date.fromisoformat(d) for d in data["VIGILIAS_NACIONALES"])
-AUSENCIAS = set(date.fromisoformat(d) for d in data.get("AUSENCIAS", []))
-VACACIONES = set(date.fromisoformat(d) for d in data.get("VACACIONES", []))
-HORARIO_NORMAL = [(h, tipo) for h, tipo in data["HORARIO_NORMAL"]]
-HORARIO_REDUCIDO = [(h, tipo) for h, tipo in data["HORARIO_REDUCIDO"]]
+try:
+    RUTA_BASE = os.path.dirname(os.path.abspath(__file__))
+    RUTA_CONFIG = os.path.join(RUTA_BASE, "configuracion.json")
+    
+    with open(RUTA_CONFIG, "r", encoding="utf-8") as f:
+        data = json.load(f)
+           
+        FESTIVOS = set(date.fromisoformat(d) for d in data["FESTIVOS"])
+        VIGILIAS_NACIONALES = set(date.fromisoformat(d) for d in data["VIGILIAS_NACIONALES"])
+        AUSENCIAS = set(date.fromisoformat(d) for d in data.get("AUSENCIAS", []))
+        VACACIONES = set(date.fromisoformat(d) for d in data.get("VACACIONES", []))
+        HORARIO_NORMAL = [(h, tipo) for h, tipo in data["HORARIO_NORMAL"]]
+        HORARIO_REDUCIDO = [(h, tipo) for h, tipo in data["HORARIO_REDUCIDO"]]
 
-validar_horarios(HORARIO_NORMAL, "HORARIO_NORMAL")
-validar_horarios(HORARIO_REDUCIDO, "HORARIO_REDUCIDO")
+        validar_horarios(HORARIO_NORMAL, "HORARIO_NORMAL")
+        validar_horarios(HORARIO_REDUCIDO, "HORARIO_REDUCIDO")
 
-VARIACION_MIN = data["VARIACION_MIN"]
-VARIACION_MAX = data["VARIACION_MAX"]
-HORA_EJECUCION = data["HORA_EJECUCION"]
-USUARIO = data.get("USUARIO")
-CONTRASENA = data.get("CONTRASENA")
-URL_FICHAJE = data.get("URL_FICHAJE")
-modo_prueba = data.get('modo_prueba', False)  # Por defecto False si no está
-modo_interactivo = data.get('modo_interactivo', True)
+        VARIACION_MIN = data["VARIACION_MIN"]
+        VARIACION_MAX = data["VARIACION_MAX"]
+        HORA_EJECUCION = data["HORA_EJECUCION"]
+        USUARIO = data.get("USUARIO")
+        CONTRASENA = data.get("CONTRASENA")
+        URL_FICHAJE = data.get("URL_FICHAJE")
+        modo_prueba = data.get('modo_prueba', False)  # Por defecto False si no está
+        modo_interactivo = data.get('modo_interactivo', True)
+except FileNotFoundError:
+    raise RuntimeError("⚠️ No se encontró configuracion.json")
+
+    
+     

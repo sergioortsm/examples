@@ -1,5 +1,3 @@
-import logging
-from logging.handlers import RotatingFileHandler
 import os
 import pickle
 from dotenv import load_dotenv
@@ -12,20 +10,13 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 import requests
 import random
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from config import modo_prueba, modo_interactivo, AUSENCIAS, VACACIONES, FESTIVOS, HORARIO_NORMAL, HORARIO_REDUCIDO, URL_FICHAJE, USUARIO, VIGILIAS_NACIONALES, VARIACION_MIN, VARIACION_MAX, HORA_EJECUCION
-from confirmacion import mostrar_resumen_y_confirmar
+from confirmacion import pedir_confirmacion_usuario
+from filtrar_fichajes import obtener_fichajes_realizados
+from logger_config import get_logger
 
-
-# Configuración básica del logger
-logger = logging.getLogger("fichajes_logger")
-logger.setLevel(logging.DEBUG)
-
-# Handler que escribe en archivo con rotación (máximo 5 archivos de 1MB)
-handler = RotatingFileHandler("fichajes.log", maxBytes=1_000_000, backupCount=5, encoding='utf-8')
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
+logger = get_logger()
 
 def login_y_guardar():
     logger.info("Inicio de login con Selenium")
@@ -69,7 +60,7 @@ def login_y_guardar():
         driver.quit()
         
     else:
-        logger.info("[Modo prueba] Selenium simulado: no se abre navegador ni se hacen acciones")
+        logger.debug("[Modo prueba] Selenium simulado: no se abre navegador ni se hacen acciones")
 
 def cargar_cookies_token():
     with open("cookies.pkl", "rb") as f:
@@ -82,14 +73,26 @@ def cargar_cookies_token():
         
     return cookies, token
 
-def obtener_hora_variada(hora_str):
+def obtener_hora_variada(hora_str, tipo=None, es_ultimo=False):
+    """
+    Devuelve una hora con variación aleatoria.
+    
+    - hora_str: hora base tipo "HH:MM"
+    - tipo: "ClockIn" o "ClockOut"
+    - es_ultimo: True si es el último fichaje del día
+    """
     h, m = map(int, hora_str.split(":"))
-    
-    delta = random.randint(VARIACION_MIN, VARIACION_MAX)
-    total_min = h * 60 + m + delta
-    h_final, m_final = divmod(total_min, 60)
-    
-    return f"{h_final:02}:{m_final:02}"
+    base = datetime.combine(date.today(), datetime.min.time()).replace(hour=h, minute=m)
+
+    # Variación en minutos
+    delta_minutos = random.randint(VARIACION_MIN, VARIACION_MAX)
+    hora_variada = base + timedelta(minutes=delta_minutos)
+
+    # Si es el último ClockOut → nunca antes de la hora base
+    if es_ultimo and tipo == "ClockOut" and hora_variada < base:
+        hora_variada = base
+
+    return hora_variada.strftime("%H:%M")
 
 def construir_body(hora):
     hoy = date.today()
@@ -101,13 +104,42 @@ def construir_body(hora):
         "lon": None
     }
 
+def existe_fichaje_hoy(fichajes: list[str]) -> bool:
+    hoy = date.today()
+    for linea in fichajes:
+        partes = linea.split('|')
+        if len(partes) >= 1:
+            fecha_str = partes[0].strip()
+            try:
+                fecha_datetime = datetime.strptime(fecha_str, "%d/%m/%Y %H:%M:%S")
+                if fecha_datetime.date() == hoy:
+                    return True
+            except ValueError:
+                continue
+    return False
+
+def preparar_fichajes(horario, obtener_hora_variada, construir_body, logger):
+    logger.info("Fichajes programados para hoy:")
+    fichajes_previstos = []
+
+    for i, (hora_str, tipo) in enumerate(horario):
+        es_ultimo = (i == len(horario) - 1)
+        hora_real = obtener_hora_variada(hora_str, tipo, es_ultimo)
+        body = construir_body(hora_real)
+        linea = f" - {tipo.upper()} → {hora_real} ({body['clockDateTime']})"
+        print(linea)
+        logger.info(linea)
+        fichajes_previstos.append((hora_str, tipo, body))  # usamos hora_str para recalcular si hace falta
+
+    return fichajes_previstos
+
 def realizar_fichajes():
     # Comprobar si existen cookies y token
 	
     try:
         cookies, token = cargar_cookies_token()
     except FileNotFoundError:
-        logger.warning("No se encontraron cookies o token. Realizando login...")        
+        logger.error("No se encontraron cookies o token. Realizando login...")        
         login_y_guardar()
         cookies, token = cargar_cookies_token()
 
@@ -121,21 +153,27 @@ def realizar_fichajes():
 
     hoy = date.today()
     
+    fichajes = obtener_fichajes_realizados()
+    
     es_laborable = hoy.weekday() < 5
-	
+	 
+    if existe_fichaje_hoy(fichajes) and not modo_prueba:
+        logger.warning("Ya existen fichajes de hoy.")
+        return
+    
     if not es_laborable:
         return
 
     if hoy in FESTIVOS:
-        logger.info(f"{hoy} es festivo. No se ficha.")
+        logger.warning(f"{hoy} es festivo. No se ficha.")
         return
 
     if hoy in AUSENCIAS:
-        logger.info(f"{hoy} es día de ausencia. No se ficha.")
+        logger.warning(f"{hoy} es día de ausencia. No se ficha.")
         return
 
     if hoy in VACACIONES:
-        logger.info(f"{hoy} es día de vacaciones. No se ficha.")
+        logger.warning(f"{hoy} es día de vacaciones. No se ficha.")
         return
 
     es_viernes = hoy.weekday() == 4	
@@ -144,25 +182,22 @@ def realizar_fichajes():
 
     if es_viernes or es_vigilia_anticipada:
         horario = HORARIO_REDUCIDO
-        logger.info(f"{hoy} es viernes o vigilia anticipada. Jornada reducida.")
+        logger.warning(f"{hoy} es viernes o vigilia anticipada. Jornada reducida.")
     elif es_vigilia:        
-        logger.info(f"{hoy} es festivo nacional. No se ficha.")
+        logger.warning(f"{hoy} es festivo nacional. No se ficha.")
         return
     else:
         horario = HORARIO_NORMAL
+ 
+    fichajes_previstos = preparar_fichajes(horario, obtener_hora_variada, construir_body, logger)
+          
+    if not pedir_confirmacion_usuario(modo_interactivo, logger):
+        
+        return  # o sys.exit(0), según tu lógica
 
-
-    # ✅ Mostrar resumen y confirmar (modo interactivo desde configuración)
-    fichajes_previstos = mostrar_resumen_y_confirmar(
-        horario,
-        modo_interactivo,
-        logger,
-        obtener_hora_variada,
-        construir_body
-    )
-    
-    for hora_str, tipo, body in fichajes_previstos:
-        hora_real = obtener_hora_variada(hora_str)
+    for i, (hora_str, tipo, body) in enumerate(fichajes_previstos):
+        es_ultimo = (i == len(fichajes_previstos) - 1)
+        hora_real = obtener_hora_variada(hora_str, tipo, es_ultimo)
         body = construir_body(hora_real)
         logger.info(f"{tipo} -> {hora_real} ({body['clockDateTime']})")        
         try:
@@ -175,22 +210,28 @@ def realizar_fichajes():
 				
                 logger.info(f"Status: {r.status_code} | Respuesta: {r.text}")
             else:
-                logger.info(f"[Modo prueba] Se simula POST a {URL_FICHAJE}/{tipo} con body: {body}")
+                logger.debug(f"[Modo prueba] Se simula POST a {URL_FICHAJE}/{tipo} con body: {body}")
 				 
         except Exception as e:
-            logger.error(f"Error al enviar fichaje {tipo} a las {hora_real}: {e}")
+            logger.error(f"ERROR al enviar fichaje {tipo} a las {hora_real}: {e}")
+            print(f"⛔ ERROR al enviar fichaje {tipo} a las {hora_real}: {e} \n")
             time.sleep(random.randint(2, 5))
-
 
 def tarea_diaria():
     logger.info("Ejecutando tarea diaria de fichaje...")
     realizar_fichajes()
     logger.info("Tarea diaria finalizada.")
 
+
 if __name__ == "__main__":    
     logger.info(f"Servicio iniciado. Se ejecutará la tarea diaria a las {HORA_EJECUCION}.")
     tarea_diaria()  # Ejecuta la primera vez al arrancar para test rápido
-    schedule.every().day.at(HORA_EJECUCION).do(tarea_diaria)
+    
+    # if modo_prueba:
+    #     tarea_diaria()
+    # else:
+    #     schedule.every().day.at(HORA_EJECUCION).do(tarea_diaria)
+    
     while True:
         schedule.run_pending()
         time.sleep(30)
