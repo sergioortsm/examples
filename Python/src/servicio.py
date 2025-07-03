@@ -14,14 +14,14 @@ import requests
 import random
 from datetime import date, datetime, timedelta
 from config import modo_prueba, modo_interactivo, AUSENCIAS, VACACIONES, FESTIVOS, HORARIO_NORMAL, HORARIO_REDUCIDO, URL_FICHAJE, USUARIO, VIGILIAS_NACIONALES, VARIACION_MIN, VARIACION_MAX, HORA_EJECUCION
-from confirmacion import pedir_confirmacion_usuario
-from filtrar_fichajes import obtener_fichajes_realizados
-from logger_config import get_logger
+from confirmacion import pedirConfirmacionUsuario
+from filtrar_fichajes import obtenerFichajesRealizados
+from logger_config import getLogger
 from selenium.webdriver.chrome.service import Service
 
-logger = get_logger()
+logger = getLogger()
 
-def login_y_guardar():
+def loginGuardar():
     logger.info("Inicio de login con Selenium")
     
     if not modo_prueba:
@@ -71,7 +71,7 @@ def login_y_guardar():
     else:
         logger.debug("[Modo prueba] Selenium simulado: no se abre navegador ni se hacen acciones")
 
-def cargar_cookies_token():
+def cargarCookiesToken():
     with open("cookies.pkl", "rb") as f:
         cookies_list = pickle.load(f)
         
@@ -82,7 +82,7 @@ def cargar_cookies_token():
         
     return cookies, token
 
-def obtener_hora_variada(hora_str, tipo=None, es_ultimo=False):
+def obtenerHoraVariada(hora_str, tipo=None, es_ultimo=False):
     """
     Devuelve una hora con variación aleatoria.
     
@@ -103,7 +103,7 @@ def obtener_hora_variada(hora_str, tipo=None, es_ultimo=False):
 
     return hora_variada.strftime("%H:%M")
 
-def construir_body(hora):
+def construirBody(hora):
     hoy = date.today()
     
     return {
@@ -113,7 +113,7 @@ def construir_body(hora):
         "lon": None
     }
 
-def existe_fichaje_hoy(fichajes: list[str]) -> bool:
+def existeFichajeHoy(fichajes: list[str]) -> bool:
     hoy = date.today()
     for linea in fichajes:
         partes = linea.split('|')
@@ -127,7 +127,7 @@ def existe_fichaje_hoy(fichajes: list[str]) -> bool:
                 continue
     return False
 
-def preparar_fichajes(horario, obtener_hora_variada, construir_body, logger):
+def prepararFichajes(horario, obtener_hora_variada, construir_body, logger):
     logger.info("Fichajes programados para hoy:")
     fichajes_previstos = []
 
@@ -142,15 +142,15 @@ def preparar_fichajes(horario, obtener_hora_variada, construir_body, logger):
 
     return fichajes_previstos
 
-def realizar_fichajes():
+def realizarFichajes():
     # Comprobar si existen cookies y token
 	
     try:
-        cookies, token = cargar_cookies_token()
+        cookies, token = cargarCookiesToken()
     except FileNotFoundError:
         logger.error("No se encontraron cookies o token. Realizando login...")        
-        login_y_guardar()
-        cookies, token = cargar_cookies_token()
+        loginGuardar()
+        cookies, token = cargarCookiesToken()
 
     headers = {
         "accept": "application/json, text/javascript, */*; q=0.01",
@@ -162,7 +162,7 @@ def realizar_fichajes():
 
     hoy = date.today()
     
-    fichajes = obtener_fichajes_realizados()
+    fichajes = obtenerFichajesRealizados()
     
     es_laborable = hoy.weekday() < 5 #Lunes -s Viernes
 
@@ -181,7 +181,7 @@ def realizar_fichajes():
         logger.warning(f"{hoy} es día de vacaciones. No se ficha.")
         return
 
-    if existe_fichaje_hoy(fichajes) and not modo_prueba:
+    if existeFichajeHoy(fichajes) and not modo_prueba:
         logger.warning("Ya existen fichajes de hoy.")
         return
     
@@ -198,15 +198,15 @@ def realizar_fichajes():
     else:
         horario = HORARIO_NORMAL
  
-    fichajes_previstos = preparar_fichajes(horario, obtener_hora_variada, construir_body, logger)
+    fichajes_previstos = prepararFichajes(horario, obtenerHoraVariada, construirBody, logger)
           
-    if not pedir_confirmacion_usuario(modo_interactivo, logger):        
+    if not pedirConfirmacionUsuario(modo_interactivo, logger):        
         return  # o sys.exit(0), según tu lógica
 
     for i, (hora_str, tipo, body) in enumerate(fichajes_previstos):
         es_ultimo = (i == len(fichajes_previstos) - 1)
-        hora_real = obtener_hora_variada(hora_str, tipo, es_ultimo)
-        body = construir_body(hora_real)
+        hora_real = obtenerHoraVariada(hora_str, tipo, es_ultimo)
+        body = construirBody(hora_real)
         logger.info(f"{tipo} -> {hora_real} ({body['clockDateTime']})")        
         try:
             if not modo_prueba: 
@@ -225,23 +225,23 @@ def realizar_fichajes():
             print(f"⛔ ERROR al enviar fichaje {tipo} a las {hora_real}: {e} \n")
             time.sleep(random.randint(2, 5))
 
-def tarea_diaria():
+def tareaDiaria():
     logger.info("Ejecutando tarea diaria de fichaje...")
-    realizar_fichajes()
+    realizarFichajes()
     logger.info("Tarea diaria finalizada.")
 
 
 if __name__ == "__main__":    
     
     try:
-        logger.info(f"Servicio iniciado. Se ejecutará la tarea diaria a las {HORA_EJECUCION}.")
+        logger.info(f"Servicio iniciado. Se ejecutará la tarea diaria a las {date.today()}.")
        
         # if modo_prueba:
         #     tarea_diaria()
         # else:
         #     schedule.every().day.at(HORA_EJECUCION).do(tarea_diaria)
         
-        tarea_diaria()
+        tareaDiaria()
         
     except Exception as e:
         logger.exception(f"⛔ ERROR al enviar fichajes diarios: {e} \n")

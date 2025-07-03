@@ -11,7 +11,7 @@ import os
 from config import URL_FICHAJE, USUARIO
 
 
-def obtener_fichajes_realizados():
+def obtenerFichajesRealizados():
     
     load_dotenv()
     options = Options()

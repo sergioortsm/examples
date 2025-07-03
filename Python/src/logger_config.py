@@ -4,7 +4,7 @@ import os
 
 from config import RUTA_LOG
 
-def get_logger(nombre_logger="fichajes", archivo_log="fichajes.log"):
+def getLogger(nombre_logger="fichajes", archivo_log="fichajes.log"):
     logger = logging.getLogger(nombre_logger)
     logger.setLevel(logging.INFO)
 

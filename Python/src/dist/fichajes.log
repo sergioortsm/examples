@@ -45,3 +45,12 @@
 2025-07-02 19:11:35,835 - INFO - Ejecutando tarea diaria de fichaje...
 2025-07-02 19:12:03,109 - WARNING - Ya existen fichajes de hoy.
 2025-07-02 19:12:03,110 - INFO - Tarea diaria finalizada.
+2025-07-03 10:43:20,610 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 2025-07-03.
+2025-07-03 10:43:20,611 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-03 10:43:54,588 - INFO - Fichajes programados para hoy:
+2025-07-03 10:43:54,589 - INFO -  - CLOCKIN → 08:26 (2025-07-03T08:26:00+02:00)
+2025-07-03 10:43:54,590 - INFO -  - CLOCKOUT → 14:29 (2025-07-03T14:29:00+02:00)
+2025-07-03 10:43:54,590 - INFO -  - CLOCKIN → 15:30 (2025-07-03T15:30:00+02:00)
+2025-07-03 10:43:54,591 - INFO -  - CLOCKOUT → 18:38 (2025-07-03T18:38:00+02:00)
+2025-07-03 10:44:22,583 - INFO - ⛔ Fichaje cancelado por el usuario desde consola.
+2025-07-03 10:44:22,584 - INFO - Tarea diaria finalizada.
