@@ -13,7 +13,7 @@ import time
 import requests
 import random
 from datetime import date, datetime, timedelta
-from config import modo_prueba, modo_interactivo, AUSENCIAS, VACACIONES, FESTIVOS, HORARIO_NORMAL, HORARIO_REDUCIDO, URL_FICHAJE, USUARIO, VIGILIAS_NACIONALES, VARIACION_MIN, VARIACION_MAX, HORA_EJECUCION
+from config import JORNADA_INTENSIVA, modo_prueba, modo_interactivo, AUSENCIAS, VACACIONES, FESTIVOS, HORARIO_NORMAL, HORARIO_REDUCIDO, URL_FICHAJE, USUARIO, VIGILIAS_NACIONALES, VARIACION_MIN, VARIACION_MAX, HORA_EJECUCION
 from confirmacion import pedirConfirmacionUsuario
 from filtrar_fichajes import obtenerFichajesRealizados
 from logger_config import getLogger
@@ -142,6 +142,10 @@ def prepararFichajes(horario, obtener_hora_variada, construir_body, logger):
 
     return fichajes_previstos
 
+def esJornadaIntensiva(fecha: date) -> bool:
+    return fecha in JORNADA_INTENSIVA
+
+
 def realizarFichajes():
     # Comprobar si existen cookies y token
 	
@@ -188,8 +192,9 @@ def realizarFichajes():
     es_viernes = hoy.weekday() == 4	
     es_vigilia = hoy in VIGILIAS_NACIONALES
     es_vigilia_anticipada = (hoy + timedelta(days=1)) in VIGILIAS_NACIONALES
-
-    if es_viernes or es_vigilia_anticipada:
+    en_jornada_intensiva = esJornadaIntensiva(hoy)
+    
+    if en_jornada_intensiva or es_viernes or es_vigilia_anticipada:
         horario = HORARIO_REDUCIDO
         logger.warning(f"{hoy} es viernes o vigilia anticipada. Jornada reducida.")
     elif es_vigilia:        
@@ -201,7 +206,7 @@ def realizarFichajes():
     fichajes_previstos = prepararFichajes(horario, obtenerHoraVariada, construirBody, logger)
           
     if not pedirConfirmacionUsuario(modo_interactivo, logger):        
-        return  # o sys.exit(0), según tu lógica
+        return  # o sys.exit(0)
 
     for i, (hora_str, tipo, body) in enumerate(fichajes_previstos):
         es_ultimo = (i == len(fichajes_previstos) - 1)

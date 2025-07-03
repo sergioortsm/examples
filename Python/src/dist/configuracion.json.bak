@@ -7,10 +7,15 @@
     "modo_interactivo": true,
     "VARIACION_MIN": -8,
     "VARIACION_MAX": 8,
-    "AUSENCIAS": [        
-    ],    
-    "VACACIONES" : [
-        "2024-12-31",
+    "AUSENCIAS": [],
+    "JORNADA_INTENSIVA": [
+        {
+            "inicio": "2025-08-05",
+            "fin": "2025-08-31"
+        }
+    ],
+    "VACACIONES": [
+        "2024-12-30",
         "2025-01-05"
     ],
     "VIGILIAS_NACIONALES": [
@@ -41,24 +46,30 @@
     ],
     "HORARIO_NORMAL": [
         [
-            "08:30", "ClockIn"
+            "08:30",
+            "ClockIn"
         ],
         [
-            "14:30", "ClockOut"
+            "14:30",
+            "ClockOut"
         ],
         [
-            "15:30", "ClockIn"
+            "15:30",
+            "ClockIn"
         ],
         [
-            "18:30", "ClockOut"
+            "18:00",
+            "ClockOut"
         ]
     ],
     "HORARIO_REDUCIDO": [
         [
-            "08:30", "ClockIn"
+            "08:30",
+            "ClockIn"
         ],
         [
-            "14:30", "ClockOut"
+            "14:30",
+            "ClockOut"
         ]
     ]
 }

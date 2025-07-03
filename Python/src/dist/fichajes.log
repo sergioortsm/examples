@@ -54,3 +54,59 @@
 2025-07-03 10:43:54,591 - INFO -  - CLOCKOUT → 18:38 (2025-07-03T18:38:00+02:00)
 2025-07-03 10:44:22,583 - INFO - ⛔ Fichaje cancelado por el usuario desde consola.
 2025-07-03 10:44:22,584 - INFO - Tarea diaria finalizada.
+2025-07-03 12:45:41,078 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 2025-07-03.
+2025-07-03 12:45:41,080 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-03 12:47:28,639 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 2025-07-03.
+2025-07-03 12:47:28,641 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-03 12:48:09,680 - ERROR - ⛔ ERROR al enviar fichajes diarios: 'datetime.date' object is not subscriptable 
+Traceback (most recent call last):
+  File "C:\repositorio\examples\Python\src\servicio.py", line 254, in <module>
+    tareaDiaria()
+    ~~~~~~~~~~~^^
+  File "C:\repositorio\examples\Python\src\servicio.py", line 240, in tareaDiaria
+    realizarFichajes()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\repositorio\examples\Python\src\servicio.py", line 200, in realizarFichajes
+    en_jornada_intensiva = esJornadaIntensiva(hoy)
+  File "C:\repositorio\examples\Python\src\servicio.py", line 147, in esJornadaIntensiva
+    inicio = datetime.strptime(rango["inicio"], "%Y-%m-%d").date()
+                               ~~~~~^^^^^^^^^^
+TypeError: 'datetime.date' object is not subscriptable
+2025-07-03 14:22:17,754 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 2025-07-03.
+2025-07-03 14:22:17,758 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-03 14:26:09,198 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 2025-07-03.
+2025-07-03 14:26:09,200 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-03 15:11:34,621 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 2025-07-03.
+2025-07-03 15:11:34,623 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-03 15:22:23,614 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 2025-07-03.
+2025-07-03 15:22:23,620 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-03 15:23:10,372 - INFO - Fichajes programados para hoy:
+2025-07-03 15:23:10,375 - INFO -  - CLOCKIN → 08:36 (2025-07-03T08:36:00+02:00)
+2025-07-03 15:23:10,376 - INFO -  - CLOCKOUT → 14:37 (2025-07-03T14:37:00+02:00)
+2025-07-03 15:23:10,377 - INFO -  - CLOCKIN → 15:33 (2025-07-03T15:33:00+02:00)
+2025-07-03 15:23:10,379 - INFO -  - CLOCKOUT → 18:00 (2025-07-03T18:00:00+02:00)
+2025-07-03 15:24:14,477 - INFO - ⛔ Fichaje cancelado por el usuario desde consola.
+2025-07-03 15:24:17,362 - INFO - Tarea diaria finalizada.
+2025-07-03 15:31:50,432 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 2025-07-03.
+2025-07-03 15:31:50,435 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-03 15:33:02,372 - WARNING - 2025-07-03 es viernes o vigilia anticipada. Jornada reducida.
+2025-07-03 15:33:03,564 - INFO - Fichajes programados para hoy:
+2025-07-03 15:33:03,566 - INFO -  - CLOCKIN → 08:31 (2025-07-03T08:31:00+02:00)
+2025-07-03 15:33:03,568 - INFO -  - CLOCKOUT → 14:37 (2025-07-03T14:37:00+02:00)
+2025-07-03 15:35:42,753 - INFO - ⛔ Fichaje cancelado por el usuario desde consola.
+2025-07-03 15:35:46,525 - INFO - Tarea diaria finalizada.
+2025-07-03 15:36:50,793 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 2025-07-03.
+2025-07-03 15:36:50,794 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-03 15:37:17,856 - WARNING - 2025-07-03 es viernes o vigilia anticipada. Jornada reducida.
+2025-07-03 15:37:17,857 - INFO - Fichajes programados para hoy:
+2025-07-03 15:37:17,858 - INFO -  - CLOCKIN → 08:37 (2025-07-03T08:37:00+02:00)
+2025-07-03 15:37:17,859 - INFO -  - CLOCKOUT → 14:31 (2025-07-03T14:31:00+02:00)
+2025-07-03 15:48:05,319 - INFO - ⛔ Fichaje cancelado por el usuario desde consola.
+2025-07-03 15:48:05,320 - INFO - Tarea diaria finalizada.
+2025-07-03 18:30:04,099 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 2025-07-03.
+2025-07-03 18:30:04,100 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-03 18:30:34,604 - INFO - Fichajes programados para hoy:
+2025-07-03 18:30:34,605 - INFO -  - CLOCKIN → 08:30 (2025-07-03T08:30:00+02:00)
+2025-07-03 18:30:34,606 - INFO -  - CLOCKOUT → 14:38 (2025-07-03T14:38:00+02:00)
+2025-07-03 18:30:34,606 - INFO -  - CLOCKIN → 15:23 (2025-07-03T15:23:00+02:00)
+2025-07-03 18:30:34,607 - INFO -  - CLOCKOUT → 18:08 (2025-07-03T18:08:00+02:00)

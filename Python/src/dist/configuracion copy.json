@@ -3,19 +3,17 @@
     "USUARIO": "sorts@grupoactive.es",
     "URL_FICHAJE": "https://telefichajes.zimaltec.es",
     "RUTA_LOG": "C:\\repositorio\\examples\\Python\\src\\dist",
-    "modo_prueba": true,
+    "modo_prueba": false,
     "modo_interactivo": true,
     "VARIACION_MIN": -8,
     "VARIACION_MAX": 8,
-    "AUSENCIAS": [],
-    "JORNADA_INTENSIVA": [
-        {
-            "inicio": "2025-08-01",
-            "fin": "2025-08-31"
-        }
+    "AUSENCIAS": [        
     ],
-    "VACACIONES": [
-        "2024-12-30",
+    "JORNADA_INTENSIVA" : [
+    {"inicio": "2025-08-01", "fin": "2025-08-31"}
+    ],
+    "VACACIONES" : [
+        "2024-12-31",
         "2025-01-05"
     ],
     "VIGILIAS_NACIONALES": [
@@ -46,30 +44,24 @@
     ],
     "HORARIO_NORMAL": [
         [
-            "08:30",
-            "ClockIn"
+            "08:30", "ClockIn"
         ],
         [
-            "14:30",
-            "ClockOut"
+            "14:30", "ClockOut"
         ],
         [
-            "15:30",
-            "ClockIn"
+            "15:30", "ClockIn"
         ],
         [
-            "18:00",
-            "ClockOut"
+            "18:00", "ClockOut"
         ]
     ],
     "HORARIO_REDUCIDO": [
         [
-            "08:30",
-            "ClockIn"
+            "08:30", "ClockIn"
         ],
         [
-            "14:30",
-            "ClockOut"
+            "14:30", "ClockOut"
         ]
     ]
 }

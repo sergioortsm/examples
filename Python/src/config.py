@@ -1,6 +1,6 @@
 # config.py
 import json
-from datetime import date
+from datetime import date, timedelta
 import os
 import re
 import sys
@@ -38,13 +38,14 @@ def validar_horarios(horario, nombre):
         raise ValueError(f"[{nombre}] La jornada debe terminar en 'ClockOut'")
 
 def obtener_ruta_config():
-    if getattr(sys, 'frozen', False):
-        # .exe generado con PyInstaller
-        carpeta_base = os.path.dirname(sys.executable)
-    else:
-        # script ejecutado desde fuente .py
-        carpeta_base = os.path.dirname(os.path.abspath(__file__))
+    # if getattr(sys, 'frozen', False):
+    #     # .exe generado con PyInstaller
+    #     carpeta_base = os.path.dirname(sys.executable)
+    # else:
+    #     # script ejecutado desde fuente .py
+    #     carpeta_base = os.path.dirname(os.path.abspath(__file__))
 
+    carpeta_base = os.getenv("RUTA_CONFIG")
     ruta_config = os.path.join(carpeta_base, "configuracion.json")
 
     if not os.path.exists(ruta_config):
@@ -70,6 +71,16 @@ try:
         HORARIO_NORMAL = [(h, tipo) for h, tipo in data["HORARIO_NORMAL"]]
         HORARIO_REDUCIDO = [(h, tipo) for h, tipo in data["HORARIO_REDUCIDO"]]
 
+    # Cargar como set de fechas individuales:
+    JORNADA_INTENSIVA = set()
+
+    for rango in data.get("JORNADA_INTENSIVA", []):
+        inicio = date.fromisoformat(rango["inicio"])
+        fin = date.fromisoformat(rango["fin"])
+        delta = (fin - inicio).days + 1  # +1 para incluir la fecha de fin        
+        for i in range(delta):
+            JORNADA_INTENSIVA.add(inicio + timedelta(days=i))
+        
         validar_horarios(HORARIO_NORMAL, "HORARIO_NORMAL")
         validar_horarios(HORARIO_REDUCIDO, "HORARIO_REDUCIDO")
 
