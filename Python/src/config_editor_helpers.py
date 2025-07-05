@@ -1,9 +1,13 @@
 
 import json
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import PhotoImage, ttk, messagebox
 import shutil
 import os
+from PIL import Image, ImageTk
+from tool_tip import ToolTip
+from utils import obtenerImagen
+from constantes import BTN_WIDTH, BTN_HEIGHT, ICON_SIZE, BTN_PADDING
 
 class ConfigManager:
     def __init__(self, path):
@@ -49,24 +53,27 @@ class GeneralTab:
             "RUTA_LOG": tk.StringVar(),
             "VARIACION_MIN": tk.IntVar(),
             "VARIACION_MAX": tk.IntVar(),
-            "modo_prueba": tk.BooleanVar(),
-            "modo_interactivo": tk.BooleanVar()
+            "MODO_PRUEBA": tk.BooleanVar(),
+            "MODO_INTERACTIVO": tk.BooleanVar()
         }
 
         self.build()
 
     def build(self):
         for i, (key, var) in enumerate(self.fields.items()):
-            ttk.Label(self.frame, text=key + ":").grid(row=i, column=0, sticky="w")
+            etiqueta = key.replace("_", " ").capitalize() + ":"
+            ttk.Label(self.frame, text=etiqueta).grid(row=i, column=0, sticky="w", padx=5, pady=5)
             if isinstance(var, tk.BooleanVar):
-                ttk.Checkbutton(self.frame, variable=var).grid(row=i, column=1, sticky="w")
+                ttk.Checkbutton(self.frame, variable=var).grid(row=i, column=1, sticky="w", padx=5, pady=5)
             else:
-                ttk.Entry(self.frame, textvariable=var, width=50).grid(row=i, column=1, sticky="ew")
+                ttk.Entry(self.frame, textvariable=var, width=50).grid(row=i, column=1, sticky="ew", padx=5, pady=5)
 
         for key in self.fields:
             value = self.manager.data.get(key, "" if isinstance(self.fields[key], tk.StringVar) else False)
             self.fields[key].set(value)
-
+        
+        self.frame.columnconfigure(1, weight=1)
+        
     def guardar(self):
         for key, var in self.fields.items():
             self.manager.data[key] = var.get()
@@ -79,57 +86,228 @@ class FechasTab:
         self.fechas_keys = ["VACACIONES", "FESTIVOS", "VIGILIAS_NACIONALES", "AUSENCIAS"]
         self.listas = {}
         self.selected_index = {}
-
+                
+        # ← Aquí inicializamos todos los diccionarios
+        self.listas         = {}
+        self.entrada        = {}
+        self.btn_agregar    = {}
+        self.btn_eliminar   = {}
+        self.btn_actualizar = {}
+        self.cancelar_btns  = {}
+        
         self.build()
 
     def build(self):
         
+        imgAgregar = obtenerImagen(os.path.join("icons", "boton-agregar.png"))
+        imgAgregar = imgAgregar.resize(ICON_SIZE, Image.Resampling.LANCZOS)
+        self.agregar_img = ImageTk.PhotoImage(imgAgregar)    
+        
+        imgEliminar = obtenerImagen(os.path.join("icons", "boton-eliminar.png"))
+        imgEliminar = imgEliminar.resize(ICON_SIZE, Image.Resampling.LANCZOS)
+        self.eliminar_img = ImageTk.PhotoImage(imgEliminar)
+        
+        imgGuardar = obtenerImagen(os.path.join("icons", "boton-guardar.png"))
+        imgGuardar = imgGuardar.resize(ICON_SIZE, Image.Resampling.LANCZOS)
+        self.guardar_img = ImageTk.PhotoImage(imgGuardar)
+        
+        imgCancelar = obtenerImagen(os.path.join("icons", "boton-cancelar.png"))
+        imgCancelar = imgCancelar.resize(ICON_SIZE, Image.Resampling.LANCZOS)
+        self.cancelar_img = ImageTk.PhotoImage(imgCancelar)
+
         for i, key in enumerate(self.fechas_keys):
-            ttk.Label(self.frame, text=key).grid(row=i, column=0, sticky="w")
+            fila0 = i * 2
+            fila1 = fila0 + 1
 
-            # Listbox sin rowspan
+            # ── Sub‑fila 1: Label + Listbox ─────────────────────
+            etiqueta = key.replace("_", " ").capitalize() + ":"
+            ttk.Label(self.frame, text=etiqueta).grid(
+                row=fila0, column=0, sticky="w", pady=(0, 5)
+            )
+
             lista = tk.Listbox(self.frame, height=5, selectmode=tk.SINGLE, width=25)
-            lista.grid(row=i, column=1, padx=(10, 0), pady=10, sticky="nsew")
+            lista.grid(
+                row=fila0, column=1, columnspan=6,
+                sticky="ew", padx=(10,5), pady=(0,10)
+            )
 
-            # Scrollbar vertical en columna adyacente
-            scrollbar = tk.Scrollbar(self.frame, orient=tk.VERTICAL, command=lista.yview)
-            scrollbar.grid(row=i, column=2, sticky="ns", pady=10)
+            # Cargo datos iniciales
+            for item in self.manager.data.get(key, []):
+                lista.insert(tk.END, item)
 
-            # Conecta scrollbar y listbox
-            lista.config(yscrollcommand=scrollbar.set)
+            # Sub‑fila 2: Entry + Botones (dentro de un sub-frame horizontal)
+            fila_botones = ttk.Frame(self.frame)
+            fila_botones.grid(row=fila1, column=1, columnspan=6, sticky="w", padx=(10, 0), pady=(0, 15))
 
+            entry = tk.Entry(fila_botones, width=12)
+            entry.grid(row=0, column=0, padx=(0, 5))
+            self.entrada[key] = entry
+
+            lista.bind("<Double-1>", lambda event, k=key, e=entry: self.editar(k, e))
             self.listas[key] = lista
 
-            for fecha in self.manager.data.get(key, []):
-                lista.insert(tk.END, fecha)
+            # Botón Agregar
+            btn = ttk.Button(fila_botones, image=self.agregar_img, command=lambda k=key, e=entry: self.agregar(k, e))
+            btn.grid(row=0, column=1, padx=(0, 5))
+            ToolTip(btn, "Agregar elemento")
+            self.btn_agregar[key] = btn
 
-            entrada = tk.Entry(self.frame, width=12)
-            entrada.grid(row=i, column=3)
+            # Botón Eliminar
+            btn = ttk.Button(fila_botones, image=self.eliminar_img, command=lambda k=key: self.eliminar(k))
+            btn.grid(row=0, column=2, padx=(0, 5))
+            ToolTip(btn, "Eliminar elemento")
+            self.btn_eliminar[key] = btn
 
-            actualizar_btn = ttk.Button(self.frame, w=3, text="✏️", command=lambda k=key, e=entrada: self.actualizar(k, e))
-            actualizar_btn.grid(row=i, column=6)
+            # Botón Actualizar
+            btn = ttk.Button(fila_botones, image=self.guardar_img, command=lambda k=key, e=entry: self.actualizar(k, e))
+            btn.grid(row=0, column=3, padx=(0, 5))
+            ToolTip(btn, "Actualizar elemento")
+            self.btn_actualizar[key] = btn
 
-            lista.bind("<Double-1>", lambda event, k=key, e=entrada: self.editar(k, e))
+            # Botón Cancelar
+            btn = ttk.Button(fila_botones, image=self.cancelar_img, command=lambda k=key, e=entry: self.cancelar(k, e))
+            btn.grid(row=0, column=4, padx=(0, 5))
+            btn.state(["disabled"])
+            ToolTip(btn, "Cancelar edición")
+            self.cancelar_btns[key] = btn
+            # # ── Sub‑fila 2: Entrada + Botones ────────────────────
+            # # Caja de texto
+            # entry = tk.Entry(self.frame, width=12)
+            # entry.grid(
+            #     row=fila1, column=0, sticky="w",
+            #     padx=(5,5), pady=(0,15)
+            # )
+            # self.entrada[key] = entry
+            
+            # lista.bind("<Double-1>", lambda event, k=key, e=entry: self.editar(k,e))
+            # ToolTip(lista, "Haz doble clic para editar el elemento")
+            # self.listas[key] = lista
+            
+            # # Botón Agregar
+            # btn = ttk.Button(
+            #     self.frame, image=self.agregar_img,
+            #     command=lambda k=key, e=entry: self.agregar(k, e)
+            # )
+            # btn.grid(row=fila1, column=1, padx=2, pady=(0,15))
+            # ToolTip(btn, "Agregar elemento")
+            # self.btn_agregar[key] = btn
 
-            ttk.Button(self.frame, text="+", w=3, command=lambda k=key, e=entrada: self.agregar(k, e)).grid(row=i, column=4)
-            ttk.Button(self.frame, text="-", w=3, command=lambda k=key: self.eliminar(k)).grid(row=i, column=5)
+            # # Botón Eliminar
+            # btn = ttk.Button(
+            #     self.frame, image=self.eliminar_img,
+            #     command=lambda k=key: self.eliminar(k)
+            # )
+            # btn.grid(row=fila1, column=2, padx=2, pady=(0,15))
+            # ToolTip(btn, "Eliminar elemento")
+            # self.btn_eliminar[key] = btn
 
+            # # Botón Actualizar
+            # btn = ttk.Button(
+            #     self.frame, image=self.guardar_img,
+            #     command=lambda k=key, e=entry: self.actualizar(k, e)
+            # )
+            # btn.grid(row=fila1, column=3, padx=2, pady=(0,15))
+            # ToolTip(btn, "Actualizar elemento")
+            # self.btn_actualizar[key] = btn
+
+            # # Botón Cancelar
+            # btn = ttk.Button(
+            #     self.frame, image=self.cancelar_img,
+            #     command=lambda k=key, e=entry: self.cancelar(k, e)
+            # )
+            # btn.grid(row=fila1, column=4, padx=2, pady=(0,15))
+            # btn.state(["disabled"])
+            # ToolTip(btn, "Cancelar edición")
+            # self.cancelar_btns[key] = btn
+
+        # Solo la columna de la lista (columna 1) se estira
+        self.frame.columnconfigure(1, weight=1)
+                        
+        # for i, key in enumerate(self.fechas_keys):
+        #     etiqueta = key.replace("_", " ").capitalize() + ":"
+        #     ttk.Label(self.frame, text=etiqueta).grid(row=i, column=0, sticky="w")
+
+        #     # Listbox sin rowspan
+        #     lista = tk.Listbox(self.frame, height=5, selectmode=tk.SINGLE, width=10)
+        #     lista.grid(row=i, column=1, padx=(10, 0), pady=10, sticky="nsew")
+        #     ToolTip(lista, "Haz doble clic para editar el elemento seleccionado")
+                    
+        #     # Scrollbar vertical en columna adyacente
+        #     scrollbar = tk.Scrollbar(self.frame, orient=tk.VERTICAL, command=lista.yview)
+        #     scrollbar.grid(row=i, column=2, sticky="ns", pady=10)
+
+        #     # Conecta scrollbar y listbox
+        #     lista.config(yscrollcommand=scrollbar.set)
+
+        #     self.listas[key] = lista
+
+        #     for fecha in self.manager.data.get(key, []):
+        #         lista.insert(tk.END, fecha)
+                   
+        #     # 2) Creamos un sub‑frame para row=i*2+1
+        #     fila_widgets = ttk.Frame(self.frame)
+        #     fila_widgets.grid(row=i*2+1, column=1, columnspan=6, sticky="w", padx=(10,0), pady=(0,10))
+            
+        #     entrada = tk.Entry(fila_widgets, width=12)
+        #     entrada.grid(row=0, column=0, sticky="w")
+
+        #     lista.bind("<Double-1>", lambda event, k=key, e=entrada: self.editar(k, e))
+
+        #     btnAgregar = ttk.Button(fila_widgets, image=self.agregar_img, w=BTN_WIDTH, command=lambda k=key, e=entrada: self.agregar(k, e))
+        #     btnAgregar.grid(row=0, column=1)
+        #     ToolTip(btnAgregar, "Agregar elemento")
+           
+        #     btnEliminar = ttk.Button(fila_widgets, image=self.eliminar_img, w=BTN_WIDTH, command=lambda k=key: self.eliminar(k))
+        #     btnEliminar.grid(row=0, column=2)
+        #     ToolTip(btnEliminar, "Eliminar elemento")
+            
+        #     actualizar_btn = ttk.Button(fila_widgets, w=BTN_WIDTH, image=self.guardar_img, command=lambda k=key, e=entrada: self.actualizar(k, e))
+        #     actualizar_btn.grid(row=0, column=3)
+        #     ToolTip(actualizar_btn, "Actualizar elemento")
+            
+        #     cancelar_btn = ttk.Button(fila_widgets, w=BTN_WIDTH, image=self.cancelar_img, command=lambda k=key, e=entrada: self.cancelar(k, e))
+        #     cancelar_btn.grid(row=0, column=4)
+        #     cancelar_btn.state(["disabled"])
+        #     ToolTip(cancelar_btn, "Cancelar edición")
+        #     self.cancelar_btns[key] = cancelar_btn
+            
+        #     self.frame.columnconfigure(1, weight=1)
+            
     def editar(self, key, entrada):
         lista = self.listas[key]
         if lista.curselection():
             index = lista.curselection()[0]
             entrada.delete(0, tk.END)
             entrada.insert(0, lista.get(index))
-            self.selected_index[key] = index
+            self.listas[key].selected_index = index
+            
+            # Habilita el botón “Cancelar” de esta lista
+            btn = self.cancelar_btns[key]
+            btn.state(["!disabled"]) # ✅ Habilita botón
+            
 
     def actualizar(self, key, entrada):
         val = entrada.get()
-        if val and key in self.selected_index:
-            index = self.selected_index[key]
-            self.listas[key].delete(index)
-            self.listas[key].insert(index, val)
+        lista = self.listas[key]
+        
+        if val:
+            index = lista.selected_index
+            lista.delete(index)
+            lista.insert(index, val)
             entrada.delete(0, tk.END)
-
+            
+            # Habilita el botón “Cancelar” de esta lista
+            btn = self.cancelar_btns[key]
+            btn.state(["disabled"]) # ✅ Habilita botón
+            
+    def cancelar(self, key, entrada):
+        lista = self.listas[key]
+        lista.selection_clear(0, tk.END)
+        entrada.delete(0, tk.END)
+                
+        # Habilita el botón “Cancelar” de esta lista
+        btn = self.cancelar_btns[key]
+        btn.state(["disabled"]) # ✅ Habilita botón
 
     def agregar(self, key, entrada):
         val = entrada.get()
@@ -152,29 +330,58 @@ class JornadasIntensivasTab:
         self.frame = ttk.Frame(parent, padding=10)        
         self.selected_index = None
         
-        self.lista = tk.Listbox(self.frame, height=10, selectmode=tk.SINGLE, width=30)
-        self.lista.grid(row=0, column=0, rowspan=3, padx=(10, 5), pady=10)
+        ttk.Label(self.frame, text="Jornadas intensivas:").grid(row=0, column=0, sticky="w")
+        
+        self.lista = tk.Listbox(self.frame, height=5, selectmode=tk.SINGLE, width=25)
+        self.lista.grid(row=0, column=1, sticky="ew", padx=(10, 5), pady=10, columnspan=6)
+        ToolTip(self.lista, "Haz doble clic para editar el elemento seleccionado")
         self.lista.bind("<Double-1>", self.editar)
 
-        self.entrada_inicio = tk.Entry(self.frame, width=12)
-        self.entrada_inicio.grid(row=0, column=1, padx=(5, 5))
+        # ✅ Fila 1 se encapsula en un frame propio
+        self.fila1 = ttk.Frame(self.frame)
+        self.fila1.grid(row=1, column=1, columnspan=6, sticky="w", padx=(10, 0), pady=(5, 0))
+        
+        self.entrada_inicio = tk.Entry(self.fila1, width=12)
+        self.entrada_inicio.grid(row=0, column=1, sticky="w", padx=(10, 5), pady=5)
 
-        self.entrada_fin = tk.Entry(self.frame, width=12)
-        self.entrada_fin.grid(row=0, column=2, padx=(5, 5))
-
-        self.agregar_btn = ttk.Button(self.frame, text="+", w=3, command=self.agregar)
-        self.agregar_btn.grid(row=0, column=3)
-
-        self.eliminar_btn = ttk.Button(self.frame, text="-",  w=3, command=self.eliminar)
-        self.eliminar_btn.grid(row=0, column=4)
-
-        self.actualizar_btn = ttk.Button(self.frame, text="✏️",  w=3, command=self.actualizar)
-        self.actualizar_btn.grid(row=0, column=5)
-
+        self.entrada_fin = tk.Entry(self.fila1, width=12)
+        self.entrada_fin.grid(row=0, column=2, sticky="w", padx=(10, 5), pady=5)
+       
+        imgAgregar = obtenerImagen(os.path.join("icons", "boton-agregar.png"))
+        imgAgregar = imgAgregar.resize(ICON_SIZE, Image.Resampling.LANCZOS)
+        self.agregar_img = ImageTk.PhotoImage(imgAgregar)
+        self.agregar_btn = ttk.Button(self.fila1, w=BTN_WIDTH, command=self.agregar, image=self.agregar_img)
+        self.agregar_btn.grid(row=0, column=3, sticky="e")
+        ToolTip(self.agregar_btn, "Agregar elemento")
+        
+        imgEliminar = obtenerImagen(os.path.join("icons", "boton-eliminar.png"))
+        imgEliminar = imgEliminar.resize(ICON_SIZE, Image.Resampling.LANCZOS)
+        self.eliminar_img = ImageTk.PhotoImage(imgEliminar)
+        self.eliminar_btn = ttk.Button(self.fila1, w=BTN_WIDTH, command=self.eliminar, image=self.eliminar_img)
+        self.eliminar_btn.grid(row=0, column=4, sticky="w")
+        ToolTip(self.eliminar_btn, "Eliminar elemento")
+        
+        imgGuardar = obtenerImagen(os.path.join("icons", "boton-guardar.png"))
+        imgGuardar = imgGuardar.resize(ICON_SIZE, Image.Resampling.LANCZOS)
+        self.guardar_img = ImageTk.PhotoImage(imgGuardar)
+        self.actualizar_btn = ttk.Button(self.fila1, w=BTN_WIDTH, command=self.actualizar, image=self.guardar_img)
+        self.actualizar_btn.grid(row=0, column=5, sticky="w")
+        ToolTip(self.actualizar_btn, "Actualizar elemento")
+        
+        imgCancelar = obtenerImagen(os.path.join("icons", "boton-cancelar.png"))
+        imgCancelar = imgCancelar.resize(ICON_SIZE, Image.Resampling.LANCZOS)
+        self.cancelar_img = ImageTk.PhotoImage(imgCancelar)
+        self.cancelar_btn = ttk.Button(self.fila1, w=BTN_WIDTH, command=self.cancelar, image=self.cancelar_img)
+        self.cancelar_btn.grid(row=0, column=6, sticky="w")
+        self.cancelar_btn.state(["disabled"])
+        ToolTip(self.cancelar_btn, "Cancelar edición")
+                    
         for rango in self.manager.data.get("JORNADA_INTENSIVA", []):
             self.lista.insert(tk.END, f"{rango['inicio']} → {rango['fin']}")
 
+        self.frame.columnconfigure(1, weight=1)  # columna de la lista
 
+        
     def agregar(self):
         inicio = self.entrada_inicio.get()
         fin = self.entrada_fin.get()
@@ -197,18 +404,28 @@ class JornadasIntensivasTab:
                 self.entrada_inicio.insert(0, partes[0].strip())
                 self.entrada_fin.delete(0, tk.END)
                 self.entrada_fin.insert(0, partes[1].strip())
-                self.selected_index = index
-
+                self.lista.selected_index = index
+                self.cancelar_btn.state(["!disabled"])  # ✅ Habilita botón
+                          
+    def cancelar(self):        
+        self.lista.selection_clear(0, tk.END)
+        self.entrada_inicio.delete(0, tk.END)
+        self.entrada_fin.delete(0, tk.END)
+        self.lista.selected_index = 0
+        self.cancelar_btn.state(["disabled"])  # 🔒 Vuelve a desactivar
+        
+                
     def actualizar(self):
         inicio = self.entrada_inicio.get()
         fin = self.entrada_fin.get()
-        if inicio and fin and self.selected_index is not None:
+        if inicio and fin and  self.lista.selected_index is not None:
             nuevo_valor = f"{inicio} → {fin}"
-            self.lista.delete(self.selected_index)
-            self.lista.insert(self.selected_index, nuevo_valor)
+            self.lista.delete(self.lista.selected_index)
+            self.lista.insert(self.lista.selected_index, nuevo_valor)
             self.entrada_inicio.delete(0, tk.END)
             self.entrada_fin.delete(0, tk.END)
             self.selected_index = None
+            self.cancelar_btn.state(["disabled"])  # 🔒 Desactivar tras guardar
             
     def guardar(self):
         rangos = []
@@ -231,12 +448,31 @@ class HorariosTab:
         self.entries_h = {}
         self.entries_t = {}
         self.selected_index = {}
+        self.cancelar_btns = {}
 
+        imgAgregar = obtenerImagen(os.path.join("icons", "boton-agregar.png"))
+        imgAgregar = imgAgregar.resize(ICON_SIZE, Image.Resampling.LANCZOS)
+        self.agregar_img = ImageTk.PhotoImage(imgAgregar)    
+        
+        imgEliminar = obtenerImagen(os.path.join("icons", "boton-eliminar.png"))
+        imgEliminar = imgEliminar.resize(ICON_SIZE, Image.Resampling.LANCZOS)
+        self.eliminar_img = ImageTk.PhotoImage(imgEliminar)
+        
+        imgGuardar = obtenerImagen(os.path.join("icons", "boton-guardar.png"))
+        imgGuardar = imgGuardar.resize(ICON_SIZE, Image.Resampling.LANCZOS)
+        self.guardar_img = ImageTk.PhotoImage(imgGuardar)
+        
+        imgCancelar = obtenerImagen(os.path.join("icons", "boton-cancelar.png"))
+        imgCancelar = imgCancelar.resize(ICON_SIZE, Image.Resampling.LANCZOS)
+        self.cancelar_img = ImageTk.PhotoImage(imgCancelar)
+            
         for i, key in enumerate(self.horario_keys):
-            ttk.Label(self.frame, text=key).grid(row=i*2, column=0, sticky="w")
+            etiqueta = key.replace("_", " ").capitalize() + ":"
+            ttk.Label(self.frame, text=etiqueta).grid(row=i*2, column=0, sticky="w")
             
             lista = tk.Listbox(self.frame, height=5, width=40)
-            lista.grid(row=i*2, column=1, columnspan=3, sticky="w")
+            lista.grid(row=i*2, column=1, columnspan=3, sticky="w", padx=(10, 5), pady=5)
+            ToolTip(lista, "Haz doble clic para editar el elemento seleccionado")
             self.listas[key] = lista
 
             # Cargar datos iniciales
@@ -246,20 +482,36 @@ class HorariosTab:
             # Entradas para hora y tipo
             h = tk.Entry(self.frame, width=8)
             t = tk.Entry(self.frame, width=10)
-            h.grid(row=i*2+1, column=1, padx=2, pady=5)
-            t.grid(row=i*2+1, column=2, padx=2, pady=5, sticky="w")
+            h.grid(row=i*2+1, column=1, sticky="w", padx=10)
+            t.grid(row=i*2+1, column=2, sticky="w")
 
             self.entries_h[key] = h
             self.entries_t[key] = t
-
+        
             # Botones
-            ttk.Button(self.frame, w=3, text="+", command=lambda k=key: self.agregar(k)).grid(row=i*2+1, column=3, padx=2)
-            ttk.Button(self.frame, w=3, text="-", command=lambda k=key: self.eliminar(k)).grid(row=i*2+1, column=4, padx=2)
-            ttk.Button(self.frame, w=3, text="✏️", command=lambda k=key: self.actualizar(k)).grid(row=i*2+1, column=5, padx=2)
-
+            btnAgregar = ttk.Button(self.frame, w=5, image=self.agregar_img, command=lambda k=key: self.agregar(k))
+            btnAgregar.grid(row=i*2+1, column=3, padx=2, sticky="e")
+            ToolTip(btnAgregar, "Agregar elemento") 
+            
+            btnEliminar = ttk.Button(self.frame, w=5, image=self.eliminar_img, command=lambda k=key: self.eliminar(k))
+            btnEliminar.grid(row=i*2+1, column=4, padx=2, sticky="w")
+            ToolTip(btnEliminar, "Eliminar elemento")
+                        
+            actualizar_btn = ttk.Button(self.frame, w=5,  image=self.guardar_img, command=lambda k=key: self.actualizar(k))
+            actualizar_btn.grid(row=i*2+1, column=5, padx=2, sticky="w")
+            ToolTip(actualizar_btn, "Actualizar elemento")            
+            
+            cancelar_btn = ttk.Button(self.frame, w=5, image=self.cancelar_img, command=lambda k=key, e=entrada: self.cancelar(k))
+            cancelar_btn.grid(row=i*2+1, column=6, padx=2, sticky="w")
+            cancelar_btn.state(["disabled"])
+            ToolTip(cancelar_btn, "Cancelar edición")	
+            self.cancelar_btns[key] = cancelar_btn
+            
             # Bind doble clic para editar
             lista.bind("<Double-1>", lambda event, k=key: self.editar(k))
 
+           # self.frame.columnconfigure(1, weight=1)
+            
     def agregar(self, key):
         h = self.entries_h[key].get()
         t = self.entries_t[key].get()
@@ -267,6 +519,10 @@ class HorariosTab:
             self.listas[key].insert(tk.END, f"{h} | {t}")
             self.entries_h[key].delete(0, tk.END)
             self.entries_t[key].delete(0, tk.END)
+            
+            # Habilita el botón “Cancelar” de esta lista
+            btn = self.cancelar_btns[key]
+            btn.state(["!disabled"]) # ✅ Habilita botón            
 
     def eliminar(self, key):
         lista = self.listas[key]
@@ -285,7 +541,26 @@ class HorariosTab:
                 self.entries_t[key].delete(0, tk.END)
                 self.entries_t[key].insert(0, partes[1].strip())
                 self.selected_index[key] = index
+                # Habilita el botón “Cancelar” de esta lista
+                btn = self.cancelar_btns[key]
+                btn.state(["!disabled"]) # ✅ Habilita botón                  
+        
+            
+    def cancelar(self, key):
+        h = self.entries_h[key].get()
+        t = self.entries_t[key].get()
+        
+        if h and t:            
+            self.entries_h[key].delete(0, tk.END)
+            self.entries_t[key].delete(0, tk.END)
+                    
+        lista = self.listas[key]
+        lista.selection_clear(0, tk.END)
 
+        # Habilita el botón “Cancelar” de esta lista
+        btn = self.cancelar_btns[key]
+        btn.state(["disabled"]) # ✅ Habilita botón  
+                
     def actualizar(self, key):
         h = self.entries_h[key].get()
         t = self.entries_t[key].get()
@@ -296,6 +571,10 @@ class HorariosTab:
             self.entries_h[key].delete(0, tk.END)
             self.entries_t[key].delete(0, tk.END)
             del self.selected_index[key]
+            
+            # Habilita el botón “Cancelar” de esta lista
+            btn = self.cancelar_btns[key]
+            btn.state(["disabled"]) # ✅ Habilita botón
 
     def guardar(self):
         for key in self.horario_keys:

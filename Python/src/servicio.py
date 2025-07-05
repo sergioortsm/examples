@@ -13,7 +13,7 @@ import time
 import requests
 import random
 from datetime import date, datetime, timedelta
-from config import JORNADA_INTENSIVA, modo_prueba, modo_interactivo, AUSENCIAS, VACACIONES, FESTIVOS, HORARIO_NORMAL, HORARIO_REDUCIDO, URL_FICHAJE, USUARIO, VIGILIAS_NACIONALES, VARIACION_MIN, VARIACION_MAX, HORA_EJECUCION
+from config import JORNADA_INTENSIVA, MODO_PRUEBA, MODO_INTERACTIVO, AUSENCIAS, VACACIONES, FESTIVOS, HORARIO_NORMAL, HORARIO_REDUCIDO, URL_FICHAJE, USUARIO, VIGILIAS_NACIONALES, VARIACION_MIN, VARIACION_MAX, HORA_EJECUCION
 from confirmacion import pedirConfirmacionUsuario
 from filtrar_fichajes import obtenerFichajesRealizados
 from logger_config import getLogger
@@ -24,7 +24,7 @@ logger = getLogger()
 def loginGuardar():
     logger.info("Inicio de login con Selenium")
     
-    if not modo_prueba:
+    if not MODO_PRUEBA:
         load_dotenv()
         options = Options()
         options.add_argument("--headless")
@@ -185,7 +185,7 @@ def realizarFichajes():
         logger.warning(f"{hoy} es día de vacaciones. No se ficha.")
         return
 
-    if existeFichajeHoy(fichajes) and not modo_prueba:
+    if existeFichajeHoy(fichajes) and not MODO_PRUEBA:
         logger.warning("Ya existen fichajes de hoy.")
         return
     
@@ -205,7 +205,7 @@ def realizarFichajes():
  
     fichajes_previstos = prepararFichajes(horario, obtenerHoraVariada, construirBody, logger)
           
-    if not pedirConfirmacionUsuario(modo_interactivo, logger):        
+    if not pedirConfirmacionUsuario(MODO_INTERACTIVO, logger):        
         return  # o sys.exit(0)
 
     for i, (hora_str, tipo, body) in enumerate(fichajes_previstos):
@@ -214,7 +214,7 @@ def realizarFichajes():
         body = construirBody(hora_real)
         logger.info(f"{tipo} -> {hora_real} ({body['clockDateTime']})")        
         try:
-            if not modo_prueba: 
+            if not MODO_PRUEBA: 
                 r = requests.post(
                     f"{URL_FICHAJE}/{tipo}",        
                     headers=headers,
@@ -241,7 +241,7 @@ if __name__ == "__main__":
     try:
         logger.info(f"Servicio iniciado. Se ejecutará la tarea diaria a las {date.today()}.")
        
-        # if modo_prueba:
+        # if MODO_PRUEBA:
         #     tarea_diaria()
         # else:
         #     schedule.every().day.at(HORA_EJECUCION).do(tarea_diaria)

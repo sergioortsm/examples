@@ -3,20 +3,20 @@
     "USUARIO": "sorts@grupoactive.es",
     "URL_FICHAJE": "https://telefichajes.zimaltec.es",
     "RUTA_LOG": "C:\\repositorio\\examples\\Python\\src\\dist",
-    "modo_prueba": true,
-    "modo_interactivo": true,
+    "MODO_PRUEBA": false,
+    "MODO_INTERACTIVO": true,
     "VARIACION_MIN": -8,
     "VARIACION_MAX": 8,
     "AUSENCIAS": [],
     "JORNADA_INTENSIVA": [
         {
-            "inicio": "2025-08-05",
-            "fin": "2025-08-31"
+            "inicio": "2025-07-01",
+            "fin": "2025-07-31"
         }
     ],
     "VACACIONES": [
         "2024-12-30",
-        "2025-01-05"
+        "2024-01-01"
     ],
     "VIGILIAS_NACIONALES": [
         "2024-12-31",

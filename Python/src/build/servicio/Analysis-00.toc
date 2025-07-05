@@ -667,13 +667,13 @@
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\_colorize.py',
    'PYMODULE'),
-  ('_py_abc',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\_py_abc.py',
-   'PYMODULE'),
   ('stringprep',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\stringprep.py',
+   'PYMODULE'),
+  ('_py_abc',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\_py_abc.py',
    'PYMODULE'),
   ('tracemalloc',
    'C:\\Program '
@@ -1617,49 +1617,29 @@
    'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
    'Toolkit\\api-ms-win-core-synch-l1-2-0.dll',
    'BINARY'),
-  ('VCRUNTIME140.dll',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\VCRUNTIME140.dll',
-   'BINARY'),
-  ('api-ms-win-crt-environment-l1-1-0.dll',
+  ('api-ms-win-crt-convert-l1-1-0.dll',
    'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-crt-environment-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-crt-locale-l1-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-crt-locale-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-crt-heap-l1-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-crt-heap-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-crt-stdio-l1-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-crt-stdio-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-crt-filesystem-l1-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-crt-filesystem-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-crt-process-l1-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-crt-process-l1-1-0.dll',
+   'Toolkit\\api-ms-win-crt-convert-l1-1-0.dll',
    'BINARY'),
   ('api-ms-win-crt-runtime-l1-1-0.dll',
    'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
    'Toolkit\\api-ms-win-crt-runtime-l1-1-0.dll',
    'BINARY'),
-  ('api-ms-win-crt-convert-l1-1-0.dll',
+  ('api-ms-win-crt-locale-l1-1-0.dll',
    'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-crt-convert-l1-1-0.dll',
+   'Toolkit\\api-ms-win-crt-locale-l1-1-0.dll',
    'BINARY'),
-  ('api-ms-win-crt-string-l1-1-0.dll',
+  ('api-ms-win-crt-process-l1-1-0.dll',
    'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-crt-string-l1-1-0.dll',
+   'Toolkit\\api-ms-win-crt-process-l1-1-0.dll',
    'BINARY'),
-  ('api-ms-win-crt-time-l1-1-0.dll',
+  ('api-ms-win-crt-heap-l1-1-0.dll',
    'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-crt-time-l1-1-0.dll',
+   'Toolkit\\api-ms-win-crt-heap-l1-1-0.dll',
+   'BINARY'),
+  ('VCRUNTIME140.dll',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\VCRUNTIME140.dll',
    'BINARY'),
   ('api-ms-win-crt-math-l1-1-0.dll',
    'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
@@ -1668,6 +1648,26 @@
   ('api-ms-win-crt-conio-l1-1-0.dll',
    'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
    'Toolkit\\api-ms-win-crt-conio-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-crt-environment-l1-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-crt-environment-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-crt-time-l1-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-crt-time-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-crt-string-l1-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-crt-string-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-crt-filesystem-l1-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-crt-filesystem-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-crt-stdio-l1-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-crt-stdio-l1-1-0.dll',
    'BINARY'),
   ('api-ms-win-crt-utility-l1-1-0.dll',
    'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
@@ -1693,105 +1693,105 @@
    'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
    'Toolkit\\ucrtbase.dll',
    'BINARY'),
-  ('api-ms-win-core-processthreads-l1-1-0.dll',
+  ('api-ms-win-core-util-l1-1-0.dll',
    'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-processthreads-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-fibers-l1-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-fibers-l1-1-0.dll',
+   'Toolkit\\api-ms-win-core-util-l1-1-0.dll',
    'BINARY'),
   ('api-ms-win-core-namedpipe-l1-1-0.dll',
    'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
    'Toolkit\\api-ms-win-core-namedpipe-l1-1-0.dll',
    'BINARY'),
-  ('api-ms-win-core-errorhandling-l1-1-0.dll',
+  ('api-ms-win-core-debug-l1-1-0.dll',
    'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-errorhandling-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-processthreads-l1-1-1.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-processthreads-l1-1-1.dll',
-   'BINARY'),
-  ('api-ms-win-core-processenvironment-l1-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-processenvironment-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-libraryloader-l1-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-libraryloader-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-sysinfo-l1-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-sysinfo-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-timezone-l1-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-timezone-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-file-l1-2-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-file-l1-2-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-heap-l1-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-heap-l1-1-0.dll',
+   'Toolkit\\api-ms-win-core-debug-l1-1-0.dll',
    'BINARY'),
   ('api-ms-win-core-file-l1-1-0.dll',
    'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
    'Toolkit\\api-ms-win-core-file-l1-1-0.dll',
    'BINARY'),
-  ('api-ms-win-core-debug-l1-1-0.dll',
+  ('api-ms-win-core-handle-l1-1-0.dll',
    'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-debug-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-datetime-l1-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-datetime-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-string-l1-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-string-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-interlocked-l1-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-interlocked-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-synch-l1-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-synch-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-console-l1-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-console-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-file-l2-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-file-l2-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-rtlsupport-l1-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-rtlsupport-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-localization-l1-2-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-localization-l1-2-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-profile-l1-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-profile-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-util-l1-1-0.dll',
-   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-util-l1-1-0.dll',
+   'Toolkit\\api-ms-win-core-handle-l1-1-0.dll',
    'BINARY'),
   ('api-ms-win-core-memory-l1-1-0.dll',
    'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
    'Toolkit\\api-ms-win-core-memory-l1-1-0.dll',
    'BINARY'),
-  ('api-ms-win-core-handle-l1-1-0.dll',
+  ('api-ms-win-core-processthreads-l1-1-0.dll',
    'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
-   'Toolkit\\api-ms-win-core-handle-l1-1-0.dll',
+   'Toolkit\\api-ms-win-core-processthreads-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-rtlsupport-l1-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-core-rtlsupport-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-interlocked-l1-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-core-interlocked-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-processthreads-l1-1-1.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-core-processthreads-l1-1-1.dll',
+   'BINARY'),
+  ('api-ms-win-core-profile-l1-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-core-profile-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-fibers-l1-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-core-fibers-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-file-l1-2-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-core-file-l1-2-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-file-l2-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-core-file-l2-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-string-l1-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-core-string-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-timezone-l1-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-core-timezone-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-datetime-l1-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-core-datetime-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-heap-l1-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-core-heap-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-synch-l1-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-core-synch-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-libraryloader-l1-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-core-libraryloader-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-errorhandling-l1-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-core-errorhandling-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-console-l1-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-core-console-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-localization-l1-2-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-core-localization-l1-2-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-sysinfo-l1-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-core-sysinfo-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-processenvironment-l1-1-0.dll',
+   'C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance '
+   'Toolkit\\api-ms-win-core-processenvironment-l1-1-0.dll',
    'BINARY')],
  [],
  [],
@@ -1801,29 +1801,26 @@
   ('certifi\\cacert.pem',
    'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\certifi\\cacert.pem',
    'DATA'),
-  ('selenium\\webdriver\\common\\mutation-listener.js',
-   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\selenium\\webdriver\\common\\mutation-listener.js',
-   'DATA'),
-  ('selenium\\webdriver\\common\\devtools\\v137\\py.typed',
-   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\selenium\\webdriver\\common\\devtools\\v137\\py.typed',
-   'DATA'),
   ('selenium\\webdriver\\common\\devtools\\v138\\py.typed',
    'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\selenium\\webdriver\\common\\devtools\\v138\\py.typed',
-   'DATA'),
-  ('selenium\\webdriver\\common\\macos\\selenium-manager',
-   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\selenium\\webdriver\\common\\macos\\selenium-manager',
    'DATA'),
   ('selenium\\webdriver\\remote\\getAttribute.js',
    'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\selenium\\webdriver\\remote\\getAttribute.js',
    'DATA'),
-  ('selenium\\webdriver\\firefox\\webdriver_prefs.json',
-   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\selenium\\webdriver\\firefox\\webdriver_prefs.json',
-   'DATA'),
   ('selenium\\webdriver\\common\\linux\\selenium-manager',
    'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\selenium\\webdriver\\common\\linux\\selenium-manager',
    'DATA'),
+  ('selenium\\webdriver\\firefox\\webdriver_prefs.json',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\selenium\\webdriver\\firefox\\webdriver_prefs.json',
+   'DATA'),
+  ('selenium\\webdriver\\remote\\isDisplayed.js',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\selenium\\webdriver\\remote\\isDisplayed.js',
+   'DATA'),
   ('selenium\\webdriver\\remote\\findElements.js',
    'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\selenium\\webdriver\\remote\\findElements.js',
+   'DATA'),
+  ('selenium\\webdriver\\common\\macos\\selenium-manager',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\selenium\\webdriver\\common\\macos\\selenium-manager',
    'DATA'),
   ('selenium\\webdriver\\common\\devtools\\v136\\py.typed',
    'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\selenium\\webdriver\\common\\devtools\\v136\\py.typed',
@@ -1831,87 +1828,34 @@
   ('selenium\\py.typed',
    'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\selenium\\py.typed',
    'DATA'),
-  ('selenium\\webdriver\\remote\\isDisplayed.js',
-   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\selenium\\webdriver\\remote\\isDisplayed.js',
+  ('selenium\\webdriver\\common\\mutation-listener.js',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\selenium\\webdriver\\common\\mutation-listener.js',
+   'DATA'),
+  ('selenium\\webdriver\\common\\devtools\\v137\\py.typed',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\selenium\\webdriver\\common\\devtools\\v137\\py.typed',
    'DATA'),
   ('base_library.zip',
    'C:\\repositorio\\examples\\Python\\src\\build\\servicio\\base_library.zip',
    'DATA')],
- [('sre_constants',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\sre_constants.py',
-   'PYMODULE'),
-  ('operator',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\operator.py',
-   'PYMODULE'),
-  ('codecs',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\codecs.py',
-   'PYMODULE'),
-  ('enum',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\enum.py',
-   'PYMODULE'),
-  ('traceback',
+ [('traceback',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\traceback.py',
-   'PYMODULE'),
-  ('abc',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\abc.py',
-   'PYMODULE'),
-  ('collections',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\collections\\__init__.py',
-   'PYMODULE'),
-  ('re._parser',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\re\\_parser.py',
-   'PYMODULE'),
-  ('re._constants',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\re\\_constants.py',
-   'PYMODULE'),
-  ('re._compiler',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\re\\_compiler.py',
-   'PYMODULE'),
-  ('re._casefix',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\re\\_casefix.py',
-   'PYMODULE'),
-  ('re',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\re\\__init__.py',
    'PYMODULE'),
   ('stat',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\stat.py',
    'PYMODULE'),
-  ('ntpath',
+  ('sre_compile',
    'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\ntpath.py',
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\sre_compile.py',
    'PYMODULE'),
-  ('_weakrefset',
+  ('sre_parse',
    'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\_weakrefset.py',
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\sre_parse.py',
    'PYMODULE'),
-  ('genericpath',
+  ('locale',
    'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\genericpath.py',
-   'PYMODULE'),
-  ('weakref',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\weakref.py',
-   'PYMODULE'),
-  ('linecache',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\linecache.py',
-   'PYMODULE'),
-  ('keyword',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\keyword.py',
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\locale.py',
    'PYMODULE'),
   ('encodings.zlib_codec',
    'C:\\Program '
@@ -2401,53 +2345,109 @@
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\encodings\\__init__.py',
    'PYMODULE'),
-  ('io',
+  ('abc',
    'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\io.py',
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\abc.py',
    'PYMODULE'),
-  ('types',
+  ('ntpath',
    'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\types.py',
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\ntpath.py',
    'PYMODULE'),
-  ('sre_parse',
+  ('re._parser',
    'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\sre_parse.py',
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\re\\_parser.py',
    'PYMODULE'),
-  ('posixpath',
+  ('re._constants',
    'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\posixpath.py',
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\re\\_constants.py',
    'PYMODULE'),
-  ('reprlib',
+  ('re._compiler',
    'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\reprlib.py',
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\re\\_compiler.py',
    'PYMODULE'),
-  ('copyreg',
+  ('re._casefix',
    'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\copyreg.py',
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\re\\_casefix.py',
    'PYMODULE'),
-  ('warnings',
+  ('re',
    'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\warnings.py',
-   'PYMODULE'),
-  ('sre_compile',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\sre_compile.py',
-   'PYMODULE'),
-  ('locale',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\locale.py',
-   'PYMODULE'),
-  ('_collections_abc',
-   'C:\\Program '
-   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\_collections_abc.py',
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\re\\__init__.py',
    'PYMODULE'),
   ('functools',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\functools.py',
    'PYMODULE'),
+  ('sre_constants',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\sre_constants.py',
+   'PYMODULE'),
+  ('_weakrefset',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\_weakrefset.py',
+   'PYMODULE'),
+  ('reprlib',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\reprlib.py',
+   'PYMODULE'),
+  ('collections',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\collections\\__init__.py',
+   'PYMODULE'),
   ('heapq',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\heapq.py',
+   'PYMODULE'),
+  ('_collections_abc',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\_collections_abc.py',
+   'PYMODULE'),
+  ('copyreg',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\copyreg.py',
+   'PYMODULE'),
+  ('codecs',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\codecs.py',
+   'PYMODULE'),
+  ('keyword',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\keyword.py',
+   'PYMODULE'),
+  ('types',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\types.py',
+   'PYMODULE'),
+  ('genericpath',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\genericpath.py',
+   'PYMODULE'),
+  ('operator',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\operator.py',
+   'PYMODULE'),
+  ('enum',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\enum.py',
+   'PYMODULE'),
+  ('posixpath',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\posixpath.py',
+   'PYMODULE'),
+  ('io',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\io.py',
+   'PYMODULE'),
+  ('warnings',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\warnings.py',
+   'PYMODULE'),
+  ('weakref',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\weakref.py',
+   'PYMODULE'),
+  ('linecache',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\linecache.py',
    'PYMODULE'),
   ('os',
    'C:\\Program '

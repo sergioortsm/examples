@@ -1,9 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
 from config_editor_helpers import ConfigManager, GeneralTab, FechasTab, JornadasIntensivasTab, HorariosTab
-from config import JORNADA_INTENSIVA, modo_prueba, modo_interactivo, AUSENCIAS, VACACIONES, FESTIVOS, HORARIO_NORMAL, HORARIO_REDUCIDO, URL_FICHAJE, USUARIO, VIGILIAS_NACIONALES, VARIACION_MIN, VARIACION_MAX, HORA_EJECUCION, obtener_ruta_config
+from config import JORNADA_INTENSIVA, MODO_PRUEBA, MODO_INTERACTIVO, AUSENCIAS, VACACIONES, FESTIVOS, HORARIO_NORMAL, HORARIO_REDUCIDO, URL_FICHAJE, USUARIO, VIGILIAS_NACIONALES, VARIACION_MIN, VARIACION_MAX, HORA_EJECUCION, obtener_ruta_config
 
 class ConfigEditorApp:
+        
     def __init__(self, root):
         self.root = root
         self.root.title("Editor de configuración de fichajes")
@@ -30,6 +31,9 @@ class ConfigEditorApp:
 
         ttk.Button(btn_frame, text="Guardar", command=self.guardar).pack(side="left", padx=5)
         ttk.Button(btn_frame, text="Salir", command=self.root.quit).pack(side="left", padx=5)
+        
+        self.centrar_ventana(600, 600)  # Puedes ajustar el tamaño deseado
+
 
     def guardar(self):
         self.general_tab.guardar()
@@ -38,6 +42,15 @@ class ConfigEditorApp:
         self.horarios_tab.guardar()
         self.manager.save()
 
+
+    def centrar_ventana(self, ancho, alto):
+        pantalla_ancho = self.root.winfo_screenwidth()
+        pantalla_alto = self.root.winfo_screenheight()
+        x = (pantalla_ancho // 2) - (ancho // 2)
+        y = (pantalla_alto // 2) - (alto // 2)
+        self.root.geometry(f"{ancho}x{alto}+{x}+{y}")
+        
+        
 if __name__ == "__main__":
     root = tk.Tk()
     app = ConfigEditorApp(root)

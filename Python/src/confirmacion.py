@@ -1,8 +1,8 @@
 # confirmacion.py
 import sys
 
-def pedirConfirmacionUsuario(modo_interactivo, logger):
-    if modo_interactivo:
+def pedirConfirmacionUsuario(MODO_INTERACTIVO, logger):
+    if MODO_INTERACTIVO:
         print("\n¿Deseas continuar con estos fichajes? (s/N): ", end="")
         respuesta = input().strip().lower()
         if respuesta != 's':

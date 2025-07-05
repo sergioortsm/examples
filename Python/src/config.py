@@ -37,21 +37,40 @@ def validar_horarios(horario, nombre):
     if anterior_tipo != "ClockOut":
         raise ValueError(f"[{nombre}] La jornada debe terminar en 'ClockOut'")
 
-def obtener_ruta_config():
-    # if getattr(sys, 'frozen', False):
-    #     # .exe generado con PyInstaller
-    #     carpeta_base = os.path.dirname(sys.executable)
-    # else:
-    #     # script ejecutado desde fuente .py
-    #     carpeta_base = os.path.dirname(os.path.abspath(__file__))
-
+def obtener_ruta_config(nombre_archivo="configuracion.json"):
+    # 1. ¿Hay una variable de entorno?
     carpeta_base = os.getenv("RUTA_CONFIG")
-    ruta_config = os.path.join(carpeta_base, "configuracion.json")
+
+    if carpeta_base is None:
+        # 2. Si no hay, detectar si ejecuta como exe
+        if getattr(sys, 'frozen', False):
+            # Ejecutable (.exe) generado por PyInstaller
+            carpeta_base = os.path.dirname(sys.executable)
+        else:
+            # Script Python (.py) normal
+            carpeta_base = os.path.dirname(os.path.abspath(__file__))
+
+    ruta_config = os.path.join(carpeta_base, nombre_archivo)
 
     if not os.path.exists(ruta_config):
-        raise RuntimeError("⚠️ No se encontró configuracion.json")
+        raise RuntimeError(f"⚠️ No se encontró '{nombre_archivo}' en:\n{ruta_config}")
 
     return ruta_config
+# def obtener_ruta_config():
+#     # if getattr(sys, 'frozen', False):
+#     #     # .exe generado con PyInstaller
+#     #     carpeta_base = os.path.dirname(sys.executable)
+#     # else:
+#     #     # script ejecutado desde fuente .py
+#     #     carpeta_base = os.path.dirname(os.path.abspath(__file__))
+
+#     carpeta_base = os.getenv("RUTA_CONFIG")
+#     ruta_config = os.path.join(carpeta_base, "configuracion.json")
+
+#     if not os.path.exists(ruta_config):
+#         raise RuntimeError("⚠️ No se encontró configuracion.json")
+
+#     return ruta_config
 
 # Y luego úsalo así:
 with open(obtener_ruta_config(), "r", encoding="utf-8") as f:
@@ -92,8 +111,8 @@ try:
         URL_FICHAJE = data.get("URL_FICHAJE")
         RUTA_LOG = data.get("RUTA_LOG")
                 
-        modo_prueba = data.get('modo_prueba', False)  # Por defecto False si no está
-        modo_interactivo = data.get('modo_interactivo', True)
+        MODO_PRUEBA = data.get('MODO_PRUEBA', False)  # Por defecto False si no está
+        MODO_INTERACTIVO = data.get('MODO_INTERACTIVO', True)
 except FileNotFoundError:
     raise RuntimeError("⚠️ No se encontró configuracion.json")
 

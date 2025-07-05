@@ -3,8 +3,8 @@
     "USUARIO": "sorts@grupoactive.es",
     "URL_FICHAJE": "https://telefichajes.zimaltec.es",
     "RUTA_LOG": "C:\\repositorio\\examples\\Python\\src\\dist",
-    "modo_prueba": false,
-    "modo_interactivo": true,
+    "MODO_PRUEBA": false,
+    "MODO_INTERACTIVO": true,
     "VARIACION_MIN": -8,
     "VARIACION_MAX": 8,
     "AUSENCIAS": [        

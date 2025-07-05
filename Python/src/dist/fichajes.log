@@ -110,3 +110,11 @@ TypeError: 'datetime.date' object is not subscriptable
 2025-07-03 18:30:34,606 - INFO -  - CLOCKOUT → 14:38 (2025-07-03T14:38:00+02:00)
 2025-07-03 18:30:34,606 - INFO -  - CLOCKIN → 15:23 (2025-07-03T15:23:00+02:00)
 2025-07-03 18:30:34,607 - INFO -  - CLOCKOUT → 18:08 (2025-07-03T18:08:00+02:00)
+2025-07-04 18:30:09,113 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 2025-07-04.
+2025-07-04 18:30:09,114 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-04 18:30:45,558 - WARNING - 2025-07-04 es viernes o vigilia anticipada. Jornada reducida.
+2025-07-04 18:30:45,558 - INFO - Fichajes programados para hoy:
+2025-07-04 18:30:45,559 - INFO -  - CLOCKIN → 08:35 (2025-07-04T08:35:00+02:00)
+2025-07-04 18:30:45,560 - INFO -  - CLOCKOUT → 14:30 (2025-07-04T14:30:00+02:00)
+2025-07-04 18:36:02,135 - INFO - ⛔ Fichaje cancelado por el usuario desde consola.
+2025-07-04 18:36:02,136 - INFO - Tarea diaria finalizada.
