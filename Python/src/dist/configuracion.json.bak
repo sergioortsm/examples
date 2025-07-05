@@ -10,13 +10,12 @@
     "AUSENCIAS": [],
     "JORNADA_INTENSIVA": [
         {
-            "inicio": "2025-07-01",
-            "fin": "2025-07-31"
+            "inicio": "2025-08-01",
+            "fin": "2025-08-31"
         }
     ],
     "VACACIONES": [
-        "2024-12-30",
-        "2024-01-01"
+        "2024-12-30"
     ],
     "VIGILIAS_NACIONALES": [
         "2024-12-31",

@@ -4,15 +4,25 @@ from config_editor_helpers import ConfigManager, GeneralTab, FechasTab, Jornadas
 from config import JORNADA_INTENSIVA, MODO_PRUEBA, MODO_INTERACTIVO, AUSENCIAS, VACACIONES, FESTIVOS, HORARIO_NORMAL, HORARIO_REDUCIDO, URL_FICHAJE, USUARIO, VIGILIAS_NACIONALES, VARIACION_MIN, VARIACION_MAX, HORA_EJECUCION, obtener_ruta_config
 
 class ConfigEditorApp:
-        
+
     def __init__(self, root):
         self.root = root
         self.root.title("Editor de configuración de fichajes")
+
+        # Tamaño mínimo y centrado
+        self.root.minsize(600, 600)
+        self.centrar_ventana(600, 600)
+
+        # Configurar layout con grid
+        self.root.rowconfigure(0, weight=1)  # Expande el notebook
+        self.root.columnconfigure(0, weight=1)
+
         RUTA_CONFIG = obtener_ruta_config()
         self.manager = ConfigManager(RUTA_CONFIG)
 
+        # Crear el notebook
         self.notebook = ttk.Notebook(self.root)
-        self.notebook.pack(fill="both", expand=True)
+        self.notebook.grid(row=0, column=0, sticky="nsew")  # Se expande
 
         # Pestañas
         self.general_tab = GeneralTab(self.notebook, self.manager)
@@ -27,14 +37,14 @@ class ConfigEditorApp:
 
         # Botones de guardar y salir
         btn_frame = ttk.Frame(self.root)
-        btn_frame.pack(pady=10)
+        btn_frame.grid(row=1, column=0, pady=10)  # Abajo, fuera del notebook
 
         ttk.Button(btn_frame, text="Guardar", command=self.guardar).pack(side="left", padx=5)
         ttk.Button(btn_frame, text="Salir", command=self.root.quit).pack(side="left", padx=5)
         
         self.centrar_ventana(600, 600)  # Puedes ajustar el tamaño deseado
-
-
+        
+         
     def guardar(self):
         self.general_tab.guardar()
         self.fechas_tab.guardar()
