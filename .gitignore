@@ -1,3 +1,4 @@
 Python/.env
 /Python/src/build
 /Python/src/build/servicio
+/Python/src/__pycache__
