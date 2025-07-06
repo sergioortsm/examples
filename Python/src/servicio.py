@@ -22,56 +22,66 @@ from selenium.webdriver.chrome.service import Service
 logger = getLogger()
 
 def loginGuardar():
-    logger.info("Inicio de login con Selenium")
     
-    if not MODO_PRUEBA:
-        load_dotenv()
-        options = Options()
-        options.add_argument("--headless")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--window-size=1920,1080")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-  
-        driver = webdriver.Chrome(options=options)
-        driver.get(URL_FICHAJE)
-
-        time.sleep(5)
-        input_usuario = driver.find_element(By.ID, "Input_Username")
-        input_password = driver.find_element(By.ID, "Input_Password")
-
-        input_usuario.send_keys(USUARIO)
-        CONTRASENA = os.getenv("CONTRASENA") #guardada en el .env (NO SUBIR A GITHUB !!)
-        input_password.send_keys(CONTRASENA)
-
-        boton_login = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "button.btn.btn-primary.send-button"))
-        )
+    try:
+            logger.info("Inicio de login con Selenium")
+    
+            if not MODO_PRUEBA:
+                load_dotenv()
+                
+                options = Options()
+                options.add_argument("--headless")
+                options.add_argument("--disable-gpu")
+                options.add_argument("--window-size=1920,1080")
+                options.add_argument("--no-sandbox")
+                options.add_argument("--disable-dev-shm-usage")
         
-        boton_login.click()
-        time.sleep(10)
+                driver = webdriver.Chrome(options=options)
+                driver.get(URL_FICHAJE)
 
-        cookies = driver.get_cookies()
-        
-        with open("cookies.pkl", "wb") as f:
-            pickle.dump(cookies, f)
+                time.sleep(5)
+                input_usuario = driver.find_element(By.ID, "Input_Username")
+                input_password = driver.find_element(By.ID, "Input_Password")
 
-        token_element = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.NAME, "__RequestVerificationToken"))
-        )
-        
-        token = token_element.get_attribute("value")
-        
-        with open("token_csrf.txt", "w") as f:
-            f.write(token)
-            
-        logger.info("Login completado. Cookies y token guardados.")
-        driver.quit()
-        
-    else:
-        logger.debug("[Modo prueba] Selenium simulado: no se abre navegador ni se hacen acciones")
+                input_usuario.send_keys(USUARIO)
+                CONTRASENA = os.getenv("CONTRASENA") #guardada en el .env (NO SUBIR A GITHUB !!)
+                input_password.send_keys(CONTRASENA)
+
+                boton_login = WebDriverWait(driver, 10).until(
+                    EC.element_to_be_clickable((By.CSS_SELECTOR, "button.btn.btn-primary.send-button"))
+                )
+                
+                boton_login.click()
+                time.sleep(10)
+
+                cookies = driver.get_cookies()
+                
+                with open("cookies.pkl", "wb") as f:
+                    pickle.dump(cookies, f)
+
+                token_element = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.NAME, "__RequestVerificationToken"))
+                )
+                
+                token = token_element.get_attribute("value")
+                
+                with open("token_csrf.txt", "w") as f:
+                    f.write(token)
+                    
+                logger.info("Login completado. Cookies y token guardados.")
+                driver.quit()
+                
+            else:
+                logger.debug("[Modo prueba] Selenium simulado: no se abre navegador ni se hacen acciones")
+                
+    except Exception as e:
+        if driver:
+            driver.quit()
+            logger.error(f"ERROR al obtener token: {e}")
+
 
 def cargarCookiesToken():
+    
     with open("cookies.pkl", "rb") as f:
         cookies_list = pickle.load(f)
         
@@ -145,11 +155,11 @@ def prepararFichajes(horario, obtener_hora_variada, construir_body, logger):
 def esJornadaIntensiva(fecha: date) -> bool:
     return fecha in JORNADA_INTENSIVA
 
-
 def realizarFichajes():
     # Comprobar si existen cookies y token
 	
     try:
+        loginGuardar()
         cookies, token = cargarCookiesToken()
     except FileNotFoundError:
         logger.error("No se encontraron cookies o token. Realizando login...")        
@@ -213,15 +223,23 @@ def realizarFichajes():
         hora_real = obtenerHoraVariada(hora_str, tipo, es_ultimo)
         body = construirBody(hora_real)
         logger.info(f"{tipo} -> {hora_real} ({body['clockDateTime']})")        
+        
         try:
-            if not MODO_PRUEBA: 
+            if not MODO_PRUEBA:
+                
                 r = requests.post(
                     f"{URL_FICHAJE}/{tipo}",        
                     headers=headers,
                     cookies=cookies,
                     json=body)
-				
-                logger.info(f"Status: {r.status_code} | Respuesta: {r.text}")
+                
+                if r.ok:
+                    logger.info(f"Status: {r.status_code} | Respuesta: {r.text}")                    
+                else:
+                    logger.error(f"ERROR al enviar fichaje {tipo} a las {hora_real}: {e}")
+                    print(f"⛔ ERROR al enviar fichaje {tipo} a las {hora_real}: {e} \n")
+                    return
+                    
             else:
                 logger.debug(f"[Modo prueba] Se simula POST a {URL_FICHAJE}/{tipo} con body: {body}")
 				 

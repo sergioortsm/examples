@@ -231,6 +231,10 @@
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\__future__.py',
    'PYMODULE'),
+  ('_aix_support',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\_aix_support.py',
+   'PYMODULE'),
   ('_colorize',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\_colorize.py',
@@ -402,6 +406,39 @@
   ('asyncio.windows_utils',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\asyncio\\windows_utils.py',
+   'PYMODULE'),
+  ('babel',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\babel\\__init__.py',
+   'PYMODULE'),
+  ('babel.core',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\babel\\core.py',
+   'PYMODULE'),
+  ('babel.dates',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\babel\\dates.py',
+   'PYMODULE'),
+  ('babel.localedata',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\babel\\localedata.py',
+   'PYMODULE'),
+  ('babel.localtime',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\babel\\localtime\\__init__.py',
+   'PYMODULE'),
+  ('babel.localtime._fallback',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\babel\\localtime\\_fallback.py',
+   'PYMODULE'),
+  ('babel.localtime._helpers',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\babel\\localtime\\_helpers.py',
+   'PYMODULE'),
+  ('babel.localtime._unix',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\babel\\localtime\\_unix.py',
+   'PYMODULE'),
+  ('babel.localtime._win32',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\babel\\localtime\\_win32.py',
+   'PYMODULE'),
+  ('babel.numbers',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\babel\\numbers.py',
+   'PYMODULE'),
+  ('babel.plural',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\babel\\plural.py',
    'PYMODULE'),
   ('base64',
    'C:\\Program '
@@ -942,6 +979,10 @@
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\subprocess.py',
    'PYMODULE'),
+  ('sysconfig',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\sysconfig\\__init__.py',
+   'PYMODULE'),
   ('tarfile',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\tarfile.py',
@@ -958,6 +999,18 @@
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\threading.py',
    'PYMODULE'),
+  ('tkcalendar',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\tkcalendar\\__init__.py',
+   'PYMODULE'),
+  ('tkcalendar.calendar_',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\tkcalendar\\calendar_.py',
+   'PYMODULE'),
+  ('tkcalendar.dateentry',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\tkcalendar\\dateentry.py',
+   'PYMODULE'),
+  ('tkcalendar.tooltip',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\tkcalendar\\tooltip.py',
+   'PYMODULE'),
   ('tkinter',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\tkinter\\__init__.py',
@@ -969,6 +1022,10 @@
   ('tkinter.constants',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\tkinter\\constants.py',
+   'PYMODULE'),
+  ('tkinter.font',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\tkinter\\font.py',
    'PYMODULE'),
   ('tkinter.messagebox',
    'C:\\Program '
@@ -1100,4 +1157,20 @@
   ('zipimport',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\zipimport.py',
+   'PYMODULE'),
+  ('zoneinfo',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\zoneinfo\\__init__.py',
+   'PYMODULE'),
+  ('zoneinfo._common',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\zoneinfo\\_common.py',
+   'PYMODULE'),
+  ('zoneinfo._tzpath',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\zoneinfo\\_tzpath.py',
+   'PYMODULE'),
+  ('zoneinfo._zoneinfo',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\zoneinfo\\_zoneinfo.py',
    'PYMODULE')])
