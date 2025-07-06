@@ -10,8 +10,8 @@ class ConfigEditorApp:
         self.root.title("Editor de configuración de fichajes")
 
         # Tamaño mínimo y centrado
-        self.root.minsize(600, 600)
-        self.centrar_ventana(600, 600)
+        self.root.minsize(600, 700)
+        self.centrar_ventana(600, 700)
 
         # Configurar layout con grid
         self.root.rowconfigure(0, weight=1)  # Expande el notebook
@@ -41,9 +41,7 @@ class ConfigEditorApp:
 
         ttk.Button(btn_frame, text="Guardar", command=self.guardar).pack(side="left", padx=5)
         ttk.Button(btn_frame, text="Salir", command=self.root.quit).pack(side="left", padx=5)
-        
-        self.centrar_ventana(600, 600)  # Puedes ajustar el tamaño deseado
-        
+                        
          
     def guardar(self):
         self.general_tab.guardar()
