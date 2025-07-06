@@ -2,3 +2,4 @@ Python/.env
 /Python/src/build
 /Python/src/build/servicio
 /Python/src/__pycache__
+/Python/src/build/editor_config
