@@ -351,3 +351,33 @@ Stacktrace:
 2025-07-04 16:45:37,325 - INFO - ClockOut -> 14:30 (2025-07-04T14:30:00+02:00)
 2025-07-04 16:45:37,749 - INFO - Status: 200 | Respuesta: true
 2025-07-04 16:45:37,750 - INFO - Tarea diaria finalizada.
+2025-07-07 15:15:54,797 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 2025-07-07.
+2025-07-07 15:15:54,799 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-07 15:15:54,800 - INFO - Inicio de login con Selenium
+2025-07-07 15:16:17,118 - INFO - Login completado. Cookies y token guardados.
+2025-07-07 15:18:13,500 - INFO - Fichajes programados para hoy:
+2025-07-07 15:18:13,501 - INFO -  - CLOCKIN → 08:29 (2025-07-07T08:29:00+02:00)
+2025-07-07 15:18:13,502 - INFO -  - CLOCKOUT → 14:29 (2025-07-07T14:29:00+02:00)
+2025-07-07 15:18:13,503 - INFO -  - CLOCKIN → 15:32 (2025-07-07T15:32:00+02:00)
+2025-07-07 15:18:13,504 - INFO -  - CLOCKOUT → 18:00 (2025-07-07T18:00:00+02:00)
+2025-07-07 15:18:13,507 - INFO - ⛔ Fichaje cancelado por el usuario desde consola.
+2025-07-07 15:18:13,507 - INFO - Tarea diaria finalizada.
+2025-07-07 15:18:37,860 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 2025-07-07.
+2025-07-07 15:18:37,861 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-07 15:18:37,861 - INFO - Inicio de login con Selenium
+2025-07-07 15:18:56,562 - INFO - Login completado. Cookies y token guardados.
+2025-07-07 15:19:25,580 - INFO - Fichajes programados para hoy:
+2025-07-07 15:19:25,581 - INFO -  - CLOCKIN → 08:38 (2025-07-07T08:38:00+02:00)
+2025-07-07 15:19:25,581 - INFO -  - CLOCKOUT → 14:34 (2025-07-07T14:34:00+02:00)
+2025-07-07 15:19:25,582 - INFO -  - CLOCKIN → 15:25 (2025-07-07T15:25:00+02:00)
+2025-07-07 15:19:25,582 - INFO -  - CLOCKOUT → 18:08 (2025-07-07T18:08:00+02:00)
+2025-07-07 15:19:35,866 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-07-07 15:19:35,867 - INFO - ClockIn -> 08:29 (2025-07-07T08:29:00+02:00)
+2025-07-07 15:19:36,329 - INFO - Status: 200 | Respuesta: true
+2025-07-07 15:19:36,330 - INFO - ClockOut -> 14:22 (2025-07-07T14:22:00+02:00)
+2025-07-07 15:19:36,740 - INFO - Status: 200 | Respuesta: true
+2025-07-07 15:19:36,741 - INFO - ClockIn -> 15:29 (2025-07-07T15:29:00+02:00)
+2025-07-07 15:19:37,149 - INFO - Status: 200 | Respuesta: true
+2025-07-07 15:19:37,150 - INFO - ClockOut -> 18:03 (2025-07-07T18:03:00+02:00)
+2025-07-07 15:19:37,560 - INFO - Status: 200 | Respuesta: true
+2025-07-07 15:19:37,561 - INFO - Tarea diaria finalizada.

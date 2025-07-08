@@ -39,8 +39,7 @@ class ConfigManager:
             messagebox.showerror("Error", f"No se pudo guardar: {e}")
             json.dump(self.data, f, indent=4, ensure_ascii=False)
             messagebox.showinfo("Guardado", "Configuración guardada correctamente.")
-        except Exception as e:
-            messagebox.showerror("Error", f"No se pudo guardar: {e}")
+
 
 class GeneralTab:
     def __init__(self, parent, manager):
@@ -190,10 +189,10 @@ class FechasTab:
         # Solo la columna de la lista (columna 1) se estira
         self.frame.columnconfigure(1, weight=1)
 
-    def bind_edicion(self_ref, entry_widget, lista_widget, clave):
+    def bind_edicion(self, entry_widget, lista_widget, clave):
         
         def on_double_click(event):
-            self_ref.editar(clave, entry_widget)
+            self.editar(clave, entry_widget)
             
         lista_widget.bind("<Double-1>", on_double_click)
             
@@ -291,21 +290,21 @@ class JornadasIntensivasTab:
         imgAgregar = obtenerImagen(os.path.join("icons", "boton-agregar.png"))
         imgAgregar = imgAgregar.resize(ICON_SIZE, Image.Resampling.LANCZOS)
         self.agregar_img = ImageTk.PhotoImage(imgAgregar)
-        self.agregar_btn = ttk.Button(self.fila1, w=BTN_WIDTH, command=self.agregar, image=self.agregar_img)
+        self.agregar_btn = ttk.Button(self.fila1, width=BTN_WIDTH, command=self.agregar, image=self.agregar_img)
         self.agregar_btn.grid(row=0, column=3, sticky="e")
         ToolTip(self.agregar_btn, "Agregar elemento")
         
         imgEliminar = obtenerImagen(os.path.join("icons", "boton-eliminar.png"))
         imgEliminar = imgEliminar.resize(ICON_SIZE, Image.Resampling.LANCZOS)
         self.eliminar_img = ImageTk.PhotoImage(imgEliminar)
-        self.eliminar_btn = ttk.Button(self.fila1, w=BTN_WIDTH, command=self.eliminar, image=self.eliminar_img)
+        self.eliminar_btn = ttk.Button(self.fila1, width=BTN_WIDTH, command=self.eliminar, image=self.eliminar_img)
         self.eliminar_btn.grid(row=0, column=4, sticky="w")
         ToolTip(self.eliminar_btn, "Eliminar elemento")
         
         imgGuardar = obtenerImagen(os.path.join("icons", "boton-guardar.png"))
         imgGuardar = imgGuardar.resize(ICON_SIZE, Image.Resampling.LANCZOS)
         self.guardar_img = ImageTk.PhotoImage(imgGuardar)
-        self.actualizar_btn = ttk.Button(self.fila1, w=BTN_WIDTH, command=self.actualizar, image=self.guardar_img)
+        self.actualizar_btn = ttk.Button(self.fila1, width=BTN_WIDTH, command=self.actualizar, image=self.guardar_img)
         self.actualizar_btn.grid(row=0, column=5, sticky="w")
         self.actualizar_btn.state(["disabled"])
         ToolTip(self.actualizar_btn, "Actualizar elemento")
@@ -314,7 +313,7 @@ class JornadasIntensivasTab:
         imgCancelar = obtenerImagen(os.path.join("icons", "boton-cancelar.png"))
         imgCancelar = imgCancelar.resize(ICON_SIZE, Image.Resampling.LANCZOS)
         self.cancelar_img = ImageTk.PhotoImage(imgCancelar)
-        self.cancelar_btn = ttk.Button(self.fila1, w=BTN_WIDTH, command=self.cancelar, image=self.cancelar_img)
+        self.cancelar_btn = ttk.Button(self.fila1, width=BTN_WIDTH, command=self.cancelar, image=self.cancelar_img)
         self.cancelar_btn.grid(row=0, column=6, sticky="w")
         self.cancelar_btn.state(["disabled"])
         ToolTip(self.cancelar_btn, "Cancelar edición")
@@ -325,7 +324,7 @@ class JornadasIntensivasTab:
 
         self.frame.columnconfigure(1, weight=1)  # columna de la lista
     
-    def validar_fecha(texto):
+    def validar_fecha(self, texto):
         if len(texto) > 10:
             return False
         allowed = "0123456789-"
@@ -364,7 +363,8 @@ class JornadasIntensivasTab:
                 self.entrada_inicio.insert(0, partes[0].strip())
                 self.entrada_fin.delete(0, tk.END)
                 self.entrada_fin.insert(0, partes[1].strip())
-                self.lista.selected_index = index       
+                self.lista.selection_set(index)
+                
                 # 👉 Guarda los valores originales para detectar cambios
                 self.original_inicio = partes[0].strip()
                 self.original_fin = partes[1].strip()
@@ -377,8 +377,9 @@ class JornadasIntensivasTab:
         self.lista.selection_clear(0, tk.END)
         self.entrada_inicio.delete(0, tk.END)
         self.entrada_fin.delete(0, tk.END)
-        self.lista.selected_index = 0
-        
+        seleccion = self.lista.curselection()
+        self.lista.selection_set(0)
+                
         btn = self.cancelar_btns[self.key]
         btn.state(["disabled"])
         btn = self.actualizar_btns[self.key]
@@ -387,10 +388,12 @@ class JornadasIntensivasTab:
     def actualizar(self):
         inicio = self.entrada_inicio.get()
         fin = self.entrada_fin.get()
-        if inicio and fin and  self.lista.selected_index is not None:
+        seleccion = self.lista.curselection()
+        
+        if inicio and fin and seleccion is not None:
             nuevo_valor = f"{inicio} → {fin}"
-            self.lista.delete(self.lista.selected_index)
-            self.lista.insert(self.lista.selected_index, nuevo_valor)
+            self.lista.delete(seleccion)
+            self.lista.insert(seleccion, nuevo_valor)
             self.entrada_inicio.delete(0, tk.END)
             self.entrada_fin.delete(0, tk.END)
             self.selected_index = None
