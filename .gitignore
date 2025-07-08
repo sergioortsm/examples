@@ -3,3 +3,4 @@ Python/.env
 /Python/src/build/servicio
 /Python/src/__pycache__
 /Python/src/build/editor_config
+/Python/src/__pycache__
