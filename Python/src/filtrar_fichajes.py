@@ -1,3 +1,4 @@
+import subprocess
 from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -21,15 +22,19 @@ def obtenerFichajesRealizados():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
-    driver = webdriver.Chrome(options=options)
-    driver.get(URL_FICHAJE)
+    service = Service()
+    service.creation_flags = subprocess.CREATE_NO_WINDOW  # Oculta ventana en Windows
+    service.log_output = open(os.devnull, "w")
 
+    driver = webdriver.Chrome(options=options, service=service)
+    driver.get(URL_FICHAJE)
+   
     time.sleep(5)
     input_usuario = driver.find_element(By.ID, "Input_Username")
     input_password = driver.find_element(By.ID, "Input_Password")
 
     input_usuario.send_keys(USUARIO)
-    CONTRASENA = os.getenv("CONTRASENA") #guardada en el .env (NO SUBIR A GITHUB !!)
+    CONTRASENA = os.getenv("CONTRASENA","") #guardada en el .env (NO SUBIR A GITHUB !!)
     input_password.send_keys(CONTRASENA)
 
     boton_login = WebDriverWait(driver, 10).until(

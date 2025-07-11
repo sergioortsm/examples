@@ -381,3 +381,90 @@ Stacktrace:
 2025-07-07 15:19:37,150 - INFO - ClockOut -> 18:03 (2025-07-07T18:03:00+02:00)
 2025-07-07 15:19:37,560 - INFO - Status: 200 | Respuesta: true
 2025-07-07 15:19:37,561 - INFO - Tarea diaria finalizada.
+2025-07-08 17:50:07,637 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 2025-07-08.
+2025-07-08 17:50:07,637 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-08 17:50:07,638 - INFO - Inicio de login con Selenium
+2025-07-08 17:50:33,177 - INFO - Login completado. Cookies y token guardados.
+2025-07-08 17:51:02,153 - INFO - Fichajes programados para hoy:
+2025-07-08 17:51:02,154 - INFO -  - CLOCKIN → 08:32 (2025-07-08T08:32:00+02:00)
+2025-07-08 17:51:02,155 - INFO -  - CLOCKOUT → 14:26 (2025-07-08T14:26:00+02:00)
+2025-07-08 17:51:02,155 - INFO -  - CLOCKIN → 15:29 (2025-07-08T15:29:00+02:00)
+2025-07-08 17:51:02,156 - INFO -  - CLOCKOUT → 18:04 (2025-07-08T18:04:00+02:00)
+2025-07-08 17:51:43,456 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-07-08 17:51:43,456 - INFO - ClockIn -> 08:33 (2025-07-08T08:33:00+02:00)
+2025-07-08 17:51:43,914 - INFO - Status: 200 | Respuesta: true
+2025-07-08 17:51:43,915 - INFO - ClockOut -> 14:24 (2025-07-08T14:24:00+02:00)
+2025-07-08 17:51:44,324 - INFO - Status: 200 | Respuesta: true
+2025-07-08 17:51:44,325 - INFO - ClockIn -> 15:33 (2025-07-08T15:33:00+02:00)
+2025-07-08 17:51:44,713 - INFO - Status: 200 | Respuesta: true
+2025-07-08 17:51:44,714 - INFO - ClockOut -> 18:00 (2025-07-08T18:00:00+02:00)
+2025-07-08 17:51:45,160 - INFO - Status: 200 | Respuesta: true
+2025-07-08 17:51:45,160 - INFO - Tarea diaria finalizada.
+2025-07-09 17:50:06,602 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 2025-07-09.
+2025-07-09 17:50:06,603 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-09 17:50:06,605 - INFO - Inicio de login con Selenium
+2025-07-09 17:50:42,055 - INFO - Login completado. Cookies y token guardados.
+2025-07-09 17:51:11,049 - INFO - Fichajes programados para hoy:
+2025-07-09 17:51:11,050 - INFO -  - CLOCKIN → 08:23 (2025-07-09T08:23:00+02:00)
+2025-07-09 17:51:11,050 - INFO -  - CLOCKOUT → 14:38 (2025-07-09T14:38:00+02:00)
+2025-07-09 17:51:11,051 - INFO -  - CLOCKIN → 15:33 (2025-07-09T15:33:00+02:00)
+2025-07-09 17:51:11,052 - INFO -  - CLOCKOUT → 18:04 (2025-07-09T18:04:00+02:00)
+2025-07-09 18:00:08,692 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-07-09 18:00:08,694 - INFO - ClockIn -> 08:31 (2025-07-09T08:31:00+02:00)
+2025-07-09 18:00:09,310 - INFO - Status: 200 | Respuesta: true
+2025-07-09 18:00:09,312 - INFO - ClockOut -> 14:23 (2025-07-09T14:23:00+02:00)
+2025-07-09 18:00:09,791 - INFO - Status: 200 | Respuesta: true
+2025-07-09 18:00:09,792 - INFO - ClockIn -> 15:33 (2025-07-09T15:33:00+02:00)
+2025-07-09 18:00:10,325 - INFO - Status: 200 | Respuesta: true
+2025-07-09 18:00:10,326 - INFO - ClockOut -> 18:00 (2025-07-09T18:00:00+02:00)
+2025-07-09 18:00:10,837 - INFO - Status: 200 | Respuesta: true
+2025-07-09 18:00:10,840 - INFO - Tarea diaria finalizada.
+2025-07-10 17:50:09,699 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 2025-07-10.
+2025-07-10 17:50:09,741 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-10 17:50:09,742 - INFO - Inicio de login con Selenium
+2025-07-10 17:50:42,993 - INFO - Login completado. Cookies y token guardados.
+2025-07-10 17:51:12,573 - INFO - Fichajes programados para hoy:
+2025-07-10 17:51:12,574 - INFO -  - CLOCKIN → 08:34 (2025-07-10T08:34:00+02:00)
+2025-07-10 17:51:12,575 - INFO -  - CLOCKOUT → 14:37 (2025-07-10T14:37:00+02:00)
+2025-07-10 17:51:12,576 - INFO -  - CLOCKIN → 15:30 (2025-07-10T15:30:00+02:00)
+2025-07-10 17:51:12,577 - INFO -  - CLOCKOUT → 18:06 (2025-07-10T18:06:00+02:00)
+2025-07-10 17:51:33,631 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-07-10 17:51:33,632 - INFO - ClockIn -> 08:34 (2025-07-10T08:34:00+02:00)
+2025-07-10 17:51:34,336 - INFO - Status: 200 | Respuesta: true
+2025-07-10 17:51:34,337 - INFO - ClockOut -> 14:30 (2025-07-10T14:30:00+02:00)
+2025-07-10 17:51:34,745 - INFO - Status: 200 | Respuesta: true
+2025-07-10 17:51:34,746 - INFO - ClockIn -> 15:26 (2025-07-10T15:26:00+02:00)
+2025-07-10 17:51:35,258 - INFO - Status: 200 | Respuesta: true
+2025-07-10 17:51:35,259 - INFO - ClockOut -> 18:01 (2025-07-10T18:01:00+02:00)
+2025-07-10 17:51:35,658 - INFO - Status: 200 | Respuesta: true
+2025-07-10 17:51:35,660 - INFO - Tarea diaria finalizada.
+2025-07-11 12:24:22,107 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 2025-07-11.
+2025-07-11 12:24:22,108 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-11 12:24:22,108 - INFO - Inicio de login con Selenium
+2025-07-11 12:24:42,186 - INFO - Login completado. Cookies y token guardados.
+2025-07-11 12:25:09,774 - WARNING - 2025-07-11 es viernes o vigilia anticipada. Jornada reducida.
+2025-07-11 12:25:09,775 - INFO - Fichajes programados para hoy:
+2025-07-11 12:25:09,775 - INFO -  - CLOCKIN → 08:27 (2025-07-11T08:27:00+02:00)
+2025-07-11 12:25:09,775 - INFO -  - CLOCKOUT → 14:30 (2025-07-11T14:30:00+02:00)
+2025-07-11 12:25:26,690 - INFO - ⛔ Fichaje cancelado por el usuario desde consola.
+2025-07-11 12:25:26,691 - INFO - Tarea diaria finalizada.
+2025-07-11 12:25:35,996 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 2025-07-11.
+2025-07-11 12:25:35,997 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-11 12:25:35,997 - INFO - Inicio de login con Selenium
+2025-07-11 12:25:53,245 - INFO - Login completado. Cookies y token guardados.
+2025-07-11 12:26:20,646 - WARNING - 2025-07-11 es viernes o vigilia anticipada. Jornada reducida.
+2025-07-11 12:26:20,647 - INFO - Fichajes programados para hoy:
+2025-07-11 12:26:20,648 - INFO -  - CLOCKIN → 08:27 (2025-07-11T08:27:00+02:00)
+2025-07-11 12:26:20,648 - INFO -  - CLOCKOUT → 14:30 (2025-07-11T14:30:00+02:00)
+2025-07-11 12:26:25,137 - INFO - ⛔ Fichaje cancelado por el usuario desde consola.
+2025-07-11 12:26:25,138 - INFO - Tarea diaria finalizada.
+2025-07-11 12:27:37,084 - INFO - Servicio iniciado. Se ejecutará la tarea diaria a las 2025-07-11.
+2025-07-11 12:27:37,084 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-11 12:27:37,085 - INFO - Inicio de login con Selenium
+2025-07-11 12:27:54,468 - INFO - Login completado. Cookies y token guardados.
+2025-07-11 12:28:21,745 - WARNING - 2025-07-11 es viernes o vigilia anticipada. Jornada reducida.
+2025-07-11 12:28:21,746 - INFO - Fichajes programados para hoy:
+2025-07-11 12:28:21,746 - INFO -  - CLOCKIN → 08:37 (2025-07-11T08:37:00+02:00)
+2025-07-11 12:28:21,747 - INFO -  - CLOCKOUT → 14:32 (2025-07-11T14:32:00+02:00)
+2025-07-11 12:28:32,377 - INFO - ⛔ Fichaje cancelado por el usuario desde consola.
+2025-07-11 12:28:32,378 - INFO - Tarea diaria finalizada.
