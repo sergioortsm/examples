@@ -1,4 +1,5 @@
 import subprocess
+import sys
 from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -6,7 +7,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-from datetime import date
 import time
 import os
 from config import URL_FICHAJE, USUARIO
@@ -14,7 +14,16 @@ from config import URL_FICHAJE, USUARIO
 
 def obtenerFichajesRealizados():
     
-    load_dotenv()
+    if getattr(sys, 'frozen', False):
+        # En .exe generado con PyInstaller
+        base_path = os.path.dirname(sys.executable)
+    else:
+        base_path = os.path.abspath(os.path.dirname(__file__))
+    
+    driver_path = os.path.join(base_path, "chromedriver.exe")    
+    dotenv_path = os.path.join(base_path, ".env")
+    
+    load_dotenv(dotenv_path)
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
@@ -22,7 +31,7 @@ def obtenerFichajesRealizados():
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
-    service = Service()
+    service = Service(executable_path=driver_path)
     service.creation_flags = subprocess.CREATE_NO_WINDOW  # Oculta ventana en Windows
     service.log_output = open(os.devnull, "w")
 

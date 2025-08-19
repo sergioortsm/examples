@@ -1,7 +1,7 @@
 
 import json
 import tkinter as tk
-from tkinter import PhotoImage, ttk, messagebox
+from tkinter import ttk, messagebox
 import shutil
 import os
 from PIL import Image, ImageTk
@@ -40,7 +40,6 @@ class ConfigManager:
             json.dump(self.data, f, indent=4, ensure_ascii=False)
             messagebox.showinfo("Guardado", "Configuración guardada correctamente.")
 
-
 class GeneralTab:
     def __init__(self, parent, manager):
         self.manager = manager
@@ -48,9 +47,9 @@ class GeneralTab:
 
         self.fields = {
             "USUARIO": tk.StringVar(),
-            "HORA_EJECUCION": tk.StringVar(),
+           # "HORA_EJECUCION": tk.StringVar(),
             "URL_FICHAJE": tk.StringVar(),
-            "RUTA_LOG": tk.StringVar(),
+           # "RUTA_LOG": tk.StringVar(),
             "VARIACION_MIN": tk.IntVar(),
             "VARIACION_MAX": tk.IntVar(),
             "MODO_PRUEBA": tk.BooleanVar(),

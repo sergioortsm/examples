@@ -1,10 +1,11 @@
-import msvcrt
+#import msvcrt
 import os
 import pickle
 import subprocess
 import sys
+#import sys
 from dotenv import load_dotenv
-import schedule
+#import schedule
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -19,6 +20,9 @@ from confirmacion import pedirConfirmacionUsuario
 from filtrar_fichajes import obtenerFichajesRealizados
 from logger_config import getLogger
 from selenium.webdriver.chrome.service import Service
+import chromedriver_autoinstaller
+
+
 
 logger = getLogger()
 
@@ -28,16 +32,26 @@ def loginGuardar():
             logger.info("Inicio de login con Selenium")
     
             if not MODO_PRUEBA:
-                load_dotenv()
+                if getattr(sys, 'frozen', False):
+                    # En .exe generado con PyInstaller
+                    base_path = os.path.dirname(sys.executable)
+                else:
+                    base_path = os.path.abspath(os.path.dirname(__file__))
+
+                dotenv_path = os.path.join(base_path, ".env")
+                driver_path = os.path.join(base_path, "chromedriver.exe")
+                
+                load_dotenv(dotenv_path)
                 
                 options = Options()
                 options.add_argument("--headless")
                 options.add_argument("--disable-gpu")
                 options.add_argument("--window-size=1920,1080")
                 options.add_argument("--no-sandbox")
-                options.add_argument("--disable-dev-shm-usage")
-        
-                service = Service()
+                options.add_argument("--disable-dev-shm-usage")        
+                
+                service = Service(executable_path=driver_path)
+                    
                 service.creation_flags = subprocess.CREATE_NO_WINDOW  # Oculta ventana en Windows
                 service.log_output = open(os.devnull, "w")
 
@@ -151,7 +165,7 @@ def prepararFichajes(horario, obtener_hora_variada, construir_body, logger):
         hora_real = obtener_hora_variada(hora_str, tipo, es_ultimo)
         body = construir_body(hora_real)
         linea = f" - {tipo.upper()} → {hora_real} ({body['clockDateTime']})"
-        print(linea)
+        #print(linea)
         logger.info(linea)
         fichajes_previstos.append((hora_str, tipo, body))  # usamos hora_str para recalcular si hace falta
 
@@ -262,13 +276,13 @@ def tareaDiaria():
 if __name__ == "__main__":    
     
     try:
-        logger.info(f"Servicio iniciado. Se ejecutará la tarea diaria a las {date.today()}.")
+        logger.info(f"Servicio iniciado. Se ejecutará la tarea diaria del {date.today()}.")
        
         # if MODO_PRUEBA:
         #     tarea_diaria()
         # else:
         #     schedule.every().day.at(HORA_EJECUCION).do(tarea_diaria)
-        
+        chromedriver_autoinstaller.install()  # Instala el chromedriver correcto si no está
         tareaDiaria()
         
     except Exception as e:

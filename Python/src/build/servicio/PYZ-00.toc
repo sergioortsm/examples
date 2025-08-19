@@ -229,6 +229,12 @@
   ('charset_normalizer.version',
    'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\charset_normalizer\\version.py',
    'PYMODULE'),
+  ('chromedriver_autoinstaller',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\chromedriver_autoinstaller\\__init__.py',
+   'PYMODULE'),
+  ('chromedriver_autoinstaller.utils',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\chromedriver_autoinstaller\\utils.py',
+   'PYMODULE'),
   ('concurrent',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\concurrent\\__init__.py',
@@ -728,6 +734,15 @@
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\opcode.py',
    'PYMODULE'),
+  ('packaging',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\packaging\\__init__.py',
+   'PYMODULE'),
+  ('packaging._structures',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\packaging\\_structures.py',
+   'PYMODULE'),
+  ('packaging.version',
+   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\packaging\\version.py',
+   'PYMODULE'),
   ('pathlib',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\pathlib\\__init__.py',
@@ -826,9 +841,6 @@
   ('runpy',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\runpy.py',
-   'PYMODULE'),
-  ('schedule',
-   'C:\\repositorio\\examples\\Python\\.venv\\Lib\\site-packages\\schedule\\__init__.py',
    'PYMODULE'),
   ('secrets',
    'C:\\Program '
@@ -1447,6 +1459,26 @@
   ('xml.dom.xmlbuilder',
    'C:\\Program '
    'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\xml\\dom\\xmlbuilder.py',
+   'PYMODULE'),
+  ('xml.etree',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\xml\\etree\\__init__.py',
+   'PYMODULE'),
+  ('xml.etree.ElementInclude',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\xml\\etree\\ElementInclude.py',
+   'PYMODULE'),
+  ('xml.etree.ElementPath',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\xml\\etree\\ElementPath.py',
+   'PYMODULE'),
+  ('xml.etree.ElementTree',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\xml\\etree\\ElementTree.py',
+   'PYMODULE'),
+  ('xml.etree.cElementTree',
+   'C:\\Program '
+   'Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.1520.0_x64__qbz5n2kfra8p0\\Lib\\xml\\etree\\cElementTree.py',
    'PYMODULE'),
   ('xml.parsers',
    'C:\\Program '

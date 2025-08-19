@@ -468,3 +468,692 @@ Stacktrace:
 2025-07-11 12:28:21,747 - INFO -  - CLOCKOUT → 14:32 (2025-07-11T14:32:00+02:00)
 2025-07-11 12:28:32,377 - INFO - ⛔ Fichaje cancelado por el usuario desde consola.
 2025-07-11 12:28:32,378 - INFO - Tarea diaria finalizada.
+2025-07-29 17:50:06,585 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-07-29.
+2025-07-29 17:50:06,586 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-29 17:50:06,587 - INFO - Inicio de login con Selenium
+2025-07-29 17:50:27,444 - INFO - Login completado. Cookies y token guardados.
+2025-07-29 17:50:57,155 - ERROR - ⛔ ERROR al enviar fichajes diarios: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0x7ff6e982e935+77845]
+	GetHandleVerifier [0x0x7ff6e982e990+77936]
+	(No symbol) [0x0x7ff6e95e9cda]
+	(No symbol) [0x0x7ff6e96406aa]
+	(No symbol) [0x0x7ff6e964095c]
+	(No symbol) [0x0x7ff6e9693d07]
+	(No symbol) [0x0x7ff6e966890f]
+	(No symbol) [0x0x7ff6e9690b07]
+	(No symbol) [0x0x7ff6e96686a3]
+	(No symbol) [0x0x7ff6e9631791]
+	(No symbol) [0x0x7ff6e9632523]
+	GetHandleVerifier [0x0x7ff6e9b0684d+3059501]
+	GetHandleVerifier [0x0x7ff6e9b00c0d+3035885]
+	GetHandleVerifier [0x0x7ff6e9b20400+3164896]
+	GetHandleVerifier [0x0x7ff6e9848c3e+185118]
+	GetHandleVerifier [0x0x7ff6e985054f+216111]
+	GetHandleVerifier [0x0x7ff6e98372e4+113092]
+	GetHandleVerifier [0x0x7ff6e9837499+113529]
+	GetHandleVerifier [0x0x7ff6e981e298+10616]
+	BaseThreadInitThunk [0x0x7ff8cd2be8d7+23]
+	RtlUserThreadStart [0x0x7ff8ce23c34c+44]
+ 
+Traceback (most recent call last):
+  File "servicio.py", line 280, in <module>
+  File "servicio.py", line 266, in tareaDiaria
+  File "servicio.py", line 192, in realizarFichajes
+  File "filtrar_fichajes.py", line 54, in obtenerFichajesRealizados
+  File "selenium\webdriver\support\wait.py", line 138, in until
+selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0x7ff6e982e935+77845]
+	GetHandleVerifier [0x0x7ff6e982e990+77936]
+	(No symbol) [0x0x7ff6e95e9cda]
+	(No symbol) [0x0x7ff6e96406aa]
+	(No symbol) [0x0x7ff6e964095c]
+	(No symbol) [0x0x7ff6e9693d07]
+	(No symbol) [0x0x7ff6e966890f]
+	(No symbol) [0x0x7ff6e9690b07]
+	(No symbol) [0x0x7ff6e96686a3]
+	(No symbol) [0x0x7ff6e9631791]
+	(No symbol) [0x0x7ff6e9632523]
+	GetHandleVerifier [0x0x7ff6e9b0684d+3059501]
+	GetHandleVerifier [0x0x7ff6e9b00c0d+3035885]
+	GetHandleVerifier [0x0x7ff6e9b20400+3164896]
+	GetHandleVerifier [0x0x7ff6e9848c3e+185118]
+	GetHandleVerifier [0x0x7ff6e985054f+216111]
+	GetHandleVerifier [0x0x7ff6e98372e4+113092]
+	GetHandleVerifier [0x0x7ff6e9837499+113529]
+	GetHandleVerifier [0x0x7ff6e981e298+10616]
+	BaseThreadInitThunk [0x0x7ff8cd2be8d7+23]
+	RtlUserThreadStart [0x0x7ff8ce23c34c+44]
+
+2025-07-29 18:02:44,543 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-07-29.
+2025-07-29 18:02:44,543 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-29 18:02:44,543 - INFO - Inicio de login con Selenium
+2025-07-29 18:03:02,017 - INFO - Login completado. Cookies y token guardados.
+2025-07-29 18:03:31,729 - ERROR - ⛔ ERROR al enviar fichajes diarios: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0x7ff6e982e935+77845]
+	GetHandleVerifier [0x0x7ff6e982e990+77936]
+	(No symbol) [0x0x7ff6e95e9cda]
+	(No symbol) [0x0x7ff6e96406aa]
+	(No symbol) [0x0x7ff6e964095c]
+	(No symbol) [0x0x7ff6e9693d07]
+	(No symbol) [0x0x7ff6e966890f]
+	(No symbol) [0x0x7ff6e9690b07]
+	(No symbol) [0x0x7ff6e96686a3]
+	(No symbol) [0x0x7ff6e9631791]
+	(No symbol) [0x0x7ff6e9632523]
+	GetHandleVerifier [0x0x7ff6e9b0684d+3059501]
+	GetHandleVerifier [0x0x7ff6e9b00c0d+3035885]
+	GetHandleVerifier [0x0x7ff6e9b20400+3164896]
+	GetHandleVerifier [0x0x7ff6e9848c3e+185118]
+	GetHandleVerifier [0x0x7ff6e985054f+216111]
+	GetHandleVerifier [0x0x7ff6e98372e4+113092]
+	GetHandleVerifier [0x0x7ff6e9837499+113529]
+	GetHandleVerifier [0x0x7ff6e981e298+10616]
+	BaseThreadInitThunk [0x0x7ff8cd2be8d7+23]
+	RtlUserThreadStart [0x0x7ff8ce23c34c+44]
+ 
+Traceback (most recent call last):
+  File "servicio.py", line 280, in <module>
+  File "servicio.py", line 266, in tareaDiaria
+  File "servicio.py", line 192, in realizarFichajes
+  File "filtrar_fichajes.py", line 54, in obtenerFichajesRealizados
+  File "selenium\webdriver\support\wait.py", line 138, in until
+selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0x7ff6e982e935+77845]
+	GetHandleVerifier [0x0x7ff6e982e990+77936]
+	(No symbol) [0x0x7ff6e95e9cda]
+	(No symbol) [0x0x7ff6e96406aa]
+	(No symbol) [0x0x7ff6e964095c]
+	(No symbol) [0x0x7ff6e9693d07]
+	(No symbol) [0x0x7ff6e966890f]
+	(No symbol) [0x0x7ff6e9690b07]
+	(No symbol) [0x0x7ff6e96686a3]
+	(No symbol) [0x0x7ff6e9631791]
+	(No symbol) [0x0x7ff6e9632523]
+	GetHandleVerifier [0x0x7ff6e9b0684d+3059501]
+	GetHandleVerifier [0x0x7ff6e9b00c0d+3035885]
+	GetHandleVerifier [0x0x7ff6e9b20400+3164896]
+	GetHandleVerifier [0x0x7ff6e9848c3e+185118]
+	GetHandleVerifier [0x0x7ff6e985054f+216111]
+	GetHandleVerifier [0x0x7ff6e98372e4+113092]
+	GetHandleVerifier [0x0x7ff6e9837499+113529]
+	GetHandleVerifier [0x0x7ff6e981e298+10616]
+	BaseThreadInitThunk [0x0x7ff8cd2be8d7+23]
+	RtlUserThreadStart [0x0x7ff8ce23c34c+44]
+
+2025-07-29 18:11:30,501 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-07-29.
+2025-07-29 18:11:30,502 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-29 18:11:30,502 - INFO - Inicio de login con Selenium
+2025-07-29 18:11:49,666 - INFO - Login completado. Cookies y token guardados.
+2025-07-29 18:12:19,501 - ERROR - ⛔ ERROR al enviar fichajes diarios: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0x7ff6e982e935+77845]
+	GetHandleVerifier [0x0x7ff6e982e990+77936]
+	(No symbol) [0x0x7ff6e95e9cda]
+	(No symbol) [0x0x7ff6e96406aa]
+	(No symbol) [0x0x7ff6e964095c]
+	(No symbol) [0x0x7ff6e9693d07]
+	(No symbol) [0x0x7ff6e966890f]
+	(No symbol) [0x0x7ff6e9690b07]
+	(No symbol) [0x0x7ff6e96686a3]
+	(No symbol) [0x0x7ff6e9631791]
+	(No symbol) [0x0x7ff6e9632523]
+	GetHandleVerifier [0x0x7ff6e9b0684d+3059501]
+	GetHandleVerifier [0x0x7ff6e9b00c0d+3035885]
+	GetHandleVerifier [0x0x7ff6e9b20400+3164896]
+	GetHandleVerifier [0x0x7ff6e9848c3e+185118]
+	GetHandleVerifier [0x0x7ff6e985054f+216111]
+	GetHandleVerifier [0x0x7ff6e98372e4+113092]
+	GetHandleVerifier [0x0x7ff6e9837499+113529]
+	GetHandleVerifier [0x0x7ff6e981e298+10616]
+	BaseThreadInitThunk [0x0x7ff8cd2be8d7+23]
+	RtlUserThreadStart [0x0x7ff8ce23c34c+44]
+ 
+Traceback (most recent call last):
+  File "servicio.py", line 280, in <module>
+  File "servicio.py", line 266, in tareaDiaria
+  File "servicio.py", line 192, in realizarFichajes
+  File "filtrar_fichajes.py", line 54, in obtenerFichajesRealizados
+  File "selenium\webdriver\support\wait.py", line 138, in until
+selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0x7ff6e982e935+77845]
+	GetHandleVerifier [0x0x7ff6e982e990+77936]
+	(No symbol) [0x0x7ff6e95e9cda]
+	(No symbol) [0x0x7ff6e96406aa]
+	(No symbol) [0x0x7ff6e964095c]
+	(No symbol) [0x0x7ff6e9693d07]
+	(No symbol) [0x0x7ff6e966890f]
+	(No symbol) [0x0x7ff6e9690b07]
+	(No symbol) [0x0x7ff6e96686a3]
+	(No symbol) [0x0x7ff6e9631791]
+	(No symbol) [0x0x7ff6e9632523]
+	GetHandleVerifier [0x0x7ff6e9b0684d+3059501]
+	GetHandleVerifier [0x0x7ff6e9b00c0d+3035885]
+	GetHandleVerifier [0x0x7ff6e9b20400+3164896]
+	GetHandleVerifier [0x0x7ff6e9848c3e+185118]
+	GetHandleVerifier [0x0x7ff6e985054f+216111]
+	GetHandleVerifier [0x0x7ff6e98372e4+113092]
+	GetHandleVerifier [0x0x7ff6e9837499+113529]
+	GetHandleVerifier [0x0x7ff6e981e298+10616]
+	BaseThreadInitThunk [0x0x7ff8cd2be8d7+23]
+	RtlUserThreadStart [0x0x7ff8ce23c34c+44]
+
+2025-07-29 18:19:09,011 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-07-29.
+2025-07-29 18:19:09,012 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-29 18:19:09,012 - INFO - Inicio de login con Selenium
+2025-07-29 18:19:12,453 - ERROR - ⛔ ERROR al enviar fichajes diarios: cannot access local variable 'driver' where it is not associated with a value 
+Traceback (most recent call last):
+  File "servicio.py", line 55, in loginGuardar
+  File "selenium\webdriver\chrome\webdriver.py", line 47, in __init__
+  File "selenium\webdriver\chromium\webdriver.py", line 69, in __init__
+  File "selenium\webdriver\remote\webdriver.py", line 261, in __init__
+  File "selenium\webdriver\remote\webdriver.py", line 362, in start_session
+  File "selenium\webdriver\remote\webdriver.py", line 454, in execute
+  File "selenium\webdriver\remote\errorhandler.py", line 232, in check_response
+selenium.common.exceptions.SessionNotCreatedException: Message: session not created: This version of ChromeDriver only supports Chrome version 114
+Current browser version is 138.0.7204.169 with binary path C:\Program Files\Google\Chrome\Application\chrome.exe; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+Backtrace:
+	GetHandleVerifier [0x0118A813+48355]
+	(No symbol) [0x0111C4B1]
+	(No symbol) [0x01025358]
+	(No symbol) [0x010461AC]
+	(No symbol) [0x01041EF3]
+	(No symbol) [0x01040579]
+	(No symbol) [0x01070C55]
+	(No symbol) [0x0107093C]
+	(No symbol) [0x0106A536]
+	(No symbol) [0x010482DC]
+	(No symbol) [0x010493DD]
+	GetHandleVerifier [0x013EAABD+2539405]
+	GetHandleVerifier [0x0142A78F+2800735]
+	GetHandleVerifier [0x0142456C+2775612]
+	GetHandleVerifier [0x012151E0+616112]
+	(No symbol) [0x01125F8C]
+	(No symbol) [0x01122328]
+	(No symbol) [0x0112240B]
+	(No symbol) [0x01114FF7]
+	BaseThreadInitThunk [0x76A15D49+25]
+	RtlInitializeExceptionChain [0x7753D2FB+107]
+	RtlGetAppContainerNamedObjectPath [0x7753D281+561]
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "servicio.py", line 283, in <module>
+  File "servicio.py", line 269, in tareaDiaria
+  File "servicio.py", line 178, in realizarFichajes
+  File "servicio.py", line 95, in loginGuardar
+UnboundLocalError: cannot access local variable 'driver' where it is not associated with a value
+2025-07-29 18:24:45,523 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-07-29.
+2025-07-29 18:24:45,523 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-29 18:24:45,524 - INFO - Inicio de login con Selenium
+2025-07-29 18:25:03,260 - INFO - Login completado. Cookies y token guardados.
+2025-07-29 18:25:32,808 - ERROR - ⛔ ERROR al enviar fichajes diarios: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0x7ff6e1f2e935+77845]
+	GetHandleVerifier [0x0x7ff6e1f2e990+77936]
+	(No symbol) [0x0x7ff6e1ce9cda]
+	(No symbol) [0x0x7ff6e1d406aa]
+	(No symbol) [0x0x7ff6e1d4095c]
+	(No symbol) [0x0x7ff6e1d93d07]
+	(No symbol) [0x0x7ff6e1d6890f]
+	(No symbol) [0x0x7ff6e1d90b07]
+	(No symbol) [0x0x7ff6e1d686a3]
+	(No symbol) [0x0x7ff6e1d31791]
+	(No symbol) [0x0x7ff6e1d32523]
+	GetHandleVerifier [0x0x7ff6e220684d+3059501]
+	GetHandleVerifier [0x0x7ff6e2200c0d+3035885]
+	GetHandleVerifier [0x0x7ff6e2220400+3164896]
+	GetHandleVerifier [0x0x7ff6e1f48c3e+185118]
+	GetHandleVerifier [0x0x7ff6e1f5054f+216111]
+	GetHandleVerifier [0x0x7ff6e1f372e4+113092]
+	GetHandleVerifier [0x0x7ff6e1f37499+113529]
+	GetHandleVerifier [0x0x7ff6e1f1e298+10616]
+	BaseThreadInitThunk [0x0x7ff8cd2be8d7+23]
+	RtlUserThreadStart [0x0x7ff8ce23c34c+44]
+ 
+Traceback (most recent call last):
+  File "servicio.py", line 283, in <module>
+  File "servicio.py", line 269, in tareaDiaria
+  File "servicio.py", line 195, in realizarFichajes
+  File "filtrar_fichajes.py", line 56, in obtenerFichajesRealizados
+  File "selenium\webdriver\support\wait.py", line 138, in until
+selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0x7ff6e1f2e935+77845]
+	GetHandleVerifier [0x0x7ff6e1f2e990+77936]
+	(No symbol) [0x0x7ff6e1ce9cda]
+	(No symbol) [0x0x7ff6e1d406aa]
+	(No symbol) [0x0x7ff6e1d4095c]
+	(No symbol) [0x0x7ff6e1d93d07]
+	(No symbol) [0x0x7ff6e1d6890f]
+	(No symbol) [0x0x7ff6e1d90b07]
+	(No symbol) [0x0x7ff6e1d686a3]
+	(No symbol) [0x0x7ff6e1d31791]
+	(No symbol) [0x0x7ff6e1d32523]
+	GetHandleVerifier [0x0x7ff6e220684d+3059501]
+	GetHandleVerifier [0x0x7ff6e2200c0d+3035885]
+	GetHandleVerifier [0x0x7ff6e2220400+3164896]
+	GetHandleVerifier [0x0x7ff6e1f48c3e+185118]
+	GetHandleVerifier [0x0x7ff6e1f5054f+216111]
+	GetHandleVerifier [0x0x7ff6e1f372e4+113092]
+	GetHandleVerifier [0x0x7ff6e1f37499+113529]
+	GetHandleVerifier [0x0x7ff6e1f1e298+10616]
+	BaseThreadInitThunk [0x0x7ff8cd2be8d7+23]
+	RtlUserThreadStart [0x0x7ff8ce23c34c+44]
+
+2025-07-29 18:29:13,119 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-07-29.
+2025-07-29 18:29:13,120 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-29 18:29:13,120 - INFO - Inicio de login con Selenium
+2025-07-29 18:29:13,121 - ERROR - ⛔ ERROR al enviar fichajes diarios: cannot access local variable 'driver' where it is not associated with a value 
+Traceback (most recent call last):
+  File "selenium\webdriver\common\driver_finder.py", line 64, in _binary_paths
+ValueError: The path is not a valid file: C:\repositorio\examples\Python\src\dist\chromedriver.exe
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "servicio.py", line 55, in loginGuardar
+  File "selenium\webdriver\chrome\webdriver.py", line 47, in __init__
+  File "selenium\webdriver\chromium\webdriver.py", line 53, in __init__
+  File "selenium\webdriver\common\driver_finder.py", line 47, in get_browser_path
+  File "selenium\webdriver\common\driver_finder.py", line 78, in _binary_paths
+selenium.common.exceptions.NoSuchDriverException: Message: Unable to obtain driver for chrome; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors/driver_location
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "servicio.py", line 283, in <module>
+  File "servicio.py", line 269, in tareaDiaria
+  File "servicio.py", line 178, in realizarFichajes
+  File "servicio.py", line 95, in loginGuardar
+UnboundLocalError: cannot access local variable 'driver' where it is not associated with a value
+2025-07-29 18:30:09,211 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-07-29.
+2025-07-29 18:30:09,212 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-29 18:30:09,212 - INFO - Inicio de login con Selenium
+2025-07-29 18:30:26,491 - INFO - Login completado. Cookies y token guardados.
+2025-07-29 18:30:56,125 - ERROR - ⛔ ERROR al enviar fichajes diarios: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0x7ff77b47e935+77845]
+	GetHandleVerifier [0x0x7ff77b47e990+77936]
+	(No symbol) [0x0x7ff77b239cda]
+	(No symbol) [0x0x7ff77b2906aa]
+	(No symbol) [0x0x7ff77b29095c]
+	(No symbol) [0x0x7ff77b2e3d07]
+	(No symbol) [0x0x7ff77b2b890f]
+	(No symbol) [0x0x7ff77b2e0b07]
+	(No symbol) [0x0x7ff77b2b86a3]
+	(No symbol) [0x0x7ff77b281791]
+	(No symbol) [0x0x7ff77b282523]
+	GetHandleVerifier [0x0x7ff77b75684d+3059501]
+	GetHandleVerifier [0x0x7ff77b750c0d+3035885]
+	GetHandleVerifier [0x0x7ff77b770400+3164896]
+	GetHandleVerifier [0x0x7ff77b498c3e+185118]
+	GetHandleVerifier [0x0x7ff77b4a054f+216111]
+	GetHandleVerifier [0x0x7ff77b4872e4+113092]
+	GetHandleVerifier [0x0x7ff77b487499+113529]
+	GetHandleVerifier [0x0x7ff77b46e298+10616]
+	BaseThreadInitThunk [0x0x7ff8cd2be8d7+23]
+	RtlUserThreadStart [0x0x7ff8ce23c34c+44]
+ 
+Traceback (most recent call last):
+  File "servicio.py", line 283, in <module>
+  File "servicio.py", line 269, in tareaDiaria
+  File "servicio.py", line 195, in realizarFichajes
+  File "filtrar_fichajes.py", line 56, in obtenerFichajesRealizados
+  File "selenium\webdriver\support\wait.py", line 138, in until
+selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0x7ff77b47e935+77845]
+	GetHandleVerifier [0x0x7ff77b47e990+77936]
+	(No symbol) [0x0x7ff77b239cda]
+	(No symbol) [0x0x7ff77b2906aa]
+	(No symbol) [0x0x7ff77b29095c]
+	(No symbol) [0x0x7ff77b2e3d07]
+	(No symbol) [0x0x7ff77b2b890f]
+	(No symbol) [0x0x7ff77b2e0b07]
+	(No symbol) [0x0x7ff77b2b86a3]
+	(No symbol) [0x0x7ff77b281791]
+	(No symbol) [0x0x7ff77b282523]
+	GetHandleVerifier [0x0x7ff77b75684d+3059501]
+	GetHandleVerifier [0x0x7ff77b750c0d+3035885]
+	GetHandleVerifier [0x0x7ff77b770400+3164896]
+	GetHandleVerifier [0x0x7ff77b498c3e+185118]
+	GetHandleVerifier [0x0x7ff77b4a054f+216111]
+	GetHandleVerifier [0x0x7ff77b4872e4+113092]
+	GetHandleVerifier [0x0x7ff77b487499+113529]
+	GetHandleVerifier [0x0x7ff77b46e298+10616]
+	BaseThreadInitThunk [0x0x7ff8cd2be8d7+23]
+	RtlUserThreadStart [0x0x7ff8ce23c34c+44]
+
+2025-07-29 18:42:29,584 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-07-29.
+2025-07-29 18:42:30,172 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-29 18:42:30,173 - INFO - Inicio de login con Selenium
+2025-07-29 18:42:47,822 - INFO - Login completado. Cookies y token guardados.
+2025-07-29 18:43:17,486 - ERROR - ⛔ ERROR al enviar fichajes diarios: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0x7ff77b47e935+77845]
+	GetHandleVerifier [0x0x7ff77b47e990+77936]
+	(No symbol) [0x0x7ff77b239cda]
+	(No symbol) [0x0x7ff77b2906aa]
+	(No symbol) [0x0x7ff77b29095c]
+	(No symbol) [0x0x7ff77b2e3d07]
+	(No symbol) [0x0x7ff77b2b890f]
+	(No symbol) [0x0x7ff77b2e0b07]
+	(No symbol) [0x0x7ff77b2b86a3]
+	(No symbol) [0x0x7ff77b281791]
+	(No symbol) [0x0x7ff77b282523]
+	GetHandleVerifier [0x0x7ff77b75684d+3059501]
+	GetHandleVerifier [0x0x7ff77b750c0d+3035885]
+	GetHandleVerifier [0x0x7ff77b770400+3164896]
+	GetHandleVerifier [0x0x7ff77b498c3e+185118]
+	GetHandleVerifier [0x0x7ff77b4a054f+216111]
+	GetHandleVerifier [0x0x7ff77b4872e4+113092]
+	GetHandleVerifier [0x0x7ff77b487499+113529]
+	GetHandleVerifier [0x0x7ff77b46e298+10616]
+	BaseThreadInitThunk [0x0x7ff8cd2be8d7+23]
+	RtlUserThreadStart [0x0x7ff8ce23c34c+44]
+ 
+Traceback (most recent call last):
+  File "servicio.py", line 286, in <module>
+  File "servicio.py", line 272, in tareaDiaria
+  File "servicio.py", line 198, in realizarFichajes
+  File "filtrar_fichajes.py", line 56, in obtenerFichajesRealizados
+  File "selenium\webdriver\support\wait.py", line 138, in until
+selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+	GetHandleVerifier [0x0x7ff77b47e935+77845]
+	GetHandleVerifier [0x0x7ff77b47e990+77936]
+	(No symbol) [0x0x7ff77b239cda]
+	(No symbol) [0x0x7ff77b2906aa]
+	(No symbol) [0x0x7ff77b29095c]
+	(No symbol) [0x0x7ff77b2e3d07]
+	(No symbol) [0x0x7ff77b2b890f]
+	(No symbol) [0x0x7ff77b2e0b07]
+	(No symbol) [0x0x7ff77b2b86a3]
+	(No symbol) [0x0x7ff77b281791]
+	(No symbol) [0x0x7ff77b282523]
+	GetHandleVerifier [0x0x7ff77b75684d+3059501]
+	GetHandleVerifier [0x0x7ff77b750c0d+3035885]
+	GetHandleVerifier [0x0x7ff77b770400+3164896]
+	GetHandleVerifier [0x0x7ff77b498c3e+185118]
+	GetHandleVerifier [0x0x7ff77b4a054f+216111]
+	GetHandleVerifier [0x0x7ff77b4872e4+113092]
+	GetHandleVerifier [0x0x7ff77b487499+113529]
+	GetHandleVerifier [0x0x7ff77b46e298+10616]
+	BaseThreadInitThunk [0x0x7ff8cd2be8d7+23]
+	RtlUserThreadStart [0x0x7ff8ce23c34c+44]
+
+2025-07-29 18:46:59,263 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-07-29.
+2025-07-29 18:46:59,911 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-29 18:46:59,911 - INFO - Inicio de login con Selenium
+2025-07-29 18:47:17,613 - INFO - Login completado. Cookies y token guardados.
+2025-07-29 18:47:45,006 - WARNING - Ya existen fichajes de hoy.
+2025-07-29 18:47:45,007 - INFO - Tarea diaria finalizada.
+2025-07-30 08:53:23,150 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-07-30.
+2025-07-30 08:53:24,265 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-30 08:53:24,266 - INFO - Inicio de login con Selenium
+2025-07-30 08:53:43,091 - INFO - Login completado. Cookies y token guardados.
+2025-07-30 08:54:10,364 - INFO - Fichajes programados para hoy:
+2025-07-30 08:54:10,366 - INFO -  - CLOCKIN → 08:32 (2025-07-30T08:32:00+02:00)
+2025-07-30 08:54:10,367 - INFO -  - CLOCKOUT → 14:38 (2025-07-30T14:38:00+02:00)
+2025-07-30 08:54:10,368 - INFO -  - CLOCKIN → 15:38 (2025-07-30T15:38:00+02:00)
+2025-07-30 08:54:10,369 - INFO -  - CLOCKOUT → 18:01 (2025-07-30T18:01:00+02:00)
+2025-07-30 08:56:52,607 - INFO - ⛔ Fichaje cancelado por el usuario desde consola.
+2025-07-30 08:56:52,608 - INFO - Tarea diaria finalizada.
+2025-07-30 09:22:37,896 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-07-30.
+2025-07-30 09:22:38,494 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-30 09:22:38,494 - INFO - Inicio de login con Selenium
+2025-07-30 09:22:56,577 - INFO - Login completado. Cookies y token guardados.
+2025-07-30 09:23:24,912 - INFO - Fichajes programados para hoy:
+2025-07-30 09:23:24,913 - INFO -  - CLOCKIN → 08:35 (2025-07-30T08:35:00+02:00)
+2025-07-30 09:23:24,914 - INFO -  - CLOCKOUT → 14:27 (2025-07-30T14:27:00+02:00)
+2025-07-30 09:23:24,915 - INFO -  - CLOCKIN → 15:22 (2025-07-30T15:22:00+02:00)
+2025-07-30 09:23:24,916 - INFO -  - CLOCKOUT → 18:07 (2025-07-30T18:07:00+02:00)
+2025-07-30 09:23:35,495 - INFO - ⛔ Fichaje cancelado por el usuario desde consola.
+2025-07-30 09:23:35,496 - INFO - Tarea diaria finalizada.
+2025-07-30 14:09:20,450 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-07-30.
+2025-07-30 14:09:21,059 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-30 14:09:21,059 - INFO - Inicio de login con Selenium
+2025-07-30 14:09:39,229 - INFO - Login completado. Cookies y token guardados.
+2025-07-30 14:10:06,766 - INFO - Fichajes programados para hoy:
+2025-07-30 14:10:06,767 - INFO -  - CLOCKIN → 08:37 (2025-07-30T08:37:00+02:00)
+2025-07-30 14:10:06,768 - INFO -  - CLOCKOUT → 14:36 (2025-07-30T14:36:00+02:00)
+2025-07-30 14:10:06,769 - INFO -  - CLOCKIN → 15:38 (2025-07-30T15:38:00+02:00)
+2025-07-30 14:10:06,770 - INFO -  - CLOCKOUT → 18:00 (2025-07-30T18:00:00+02:00)
+2025-07-30 14:10:53,975 - INFO - ⛔ Fichaje cancelado por el usuario desde consola.
+2025-07-30 14:10:53,977 - INFO - Tarea diaria finalizada.
+2025-07-30 14:20:38,768 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-07-30.
+2025-07-30 14:20:39,330 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-30 14:20:39,330 - INFO - Inicio de login con Selenium
+2025-07-30 14:20:39,332 - ERROR - ⛔ ERROR al enviar fichajes diarios: cannot access local variable 'driver' where it is not associated with a value 
+Traceback (most recent call last):
+  File "selenium\webdriver\common\driver_finder.py", line 64, in _binary_paths
+ValueError: The path is not a valid file: C:\repositorio\examples\Python\src\dist\chromedriver.exe
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "servicio.py", line 58, in loginGuardar
+  File "selenium\webdriver\chrome\webdriver.py", line 47, in __init__
+  File "selenium\webdriver\chromium\webdriver.py", line 53, in __init__
+  File "selenium\webdriver\common\driver_finder.py", line 47, in get_browser_path
+  File "selenium\webdriver\common\driver_finder.py", line 78, in _binary_paths
+selenium.common.exceptions.NoSuchDriverException: Message: Unable to obtain driver for chrome; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors/driver_location
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "servicio.py", line 286, in <module>
+  File "servicio.py", line 272, in tareaDiaria
+  File "servicio.py", line 181, in realizarFichajes
+  File "servicio.py", line 98, in loginGuardar
+UnboundLocalError: cannot access local variable 'driver' where it is not associated with a value
+2025-07-30 17:50:08,952 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-07-30.
+2025-07-30 17:50:10,377 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-30 17:50:10,378 - INFO - Inicio de login con Selenium
+2025-07-30 17:50:32,525 - INFO - Login completado. Cookies y token guardados.
+2025-07-30 17:51:01,106 - INFO - Fichajes programados para hoy:
+2025-07-30 17:51:01,108 - INFO -  - CLOCKIN → 08:30 (2025-07-30T08:30:00+02:00)
+2025-07-30 17:51:01,109 - INFO -  - CLOCKOUT → 14:26 (2025-07-30T14:26:00+02:00)
+2025-07-30 17:51:01,109 - INFO -  - CLOCKIN → 15:36 (2025-07-30T15:36:00+02:00)
+2025-07-30 17:51:01,110 - INFO -  - CLOCKOUT → 18:04 (2025-07-30T18:04:00+02:00)
+2025-07-30 17:51:36,668 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-07-30 17:51:36,669 - INFO - ClockIn -> 08:37 (2025-07-30T08:37:00+02:00)
+2025-07-30 17:51:37,450 - INFO - Status: 200 | Respuesta: true
+2025-07-30 17:51:37,451 - INFO - ClockOut -> 14:36 (2025-07-30T14:36:00+02:00)
+2025-07-30 17:51:38,250 - INFO - Status: 200 | Respuesta: true
+2025-07-30 17:51:38,253 - INFO - ClockIn -> 15:22 (2025-07-30T15:22:00+02:00)
+2025-07-30 17:51:39,115 - INFO - Status: 200 | Respuesta: true
+2025-07-30 17:51:39,117 - INFO - ClockOut -> 18:00 (2025-07-30T18:00:00+02:00)
+2025-07-30 17:51:39,524 - INFO - Status: 200 | Respuesta: true
+2025-07-30 17:51:39,527 - INFO - Tarea diaria finalizada.
+2025-07-31 17:50:03,241 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-07-31.
+2025-07-31 17:50:04,438 - INFO - Ejecutando tarea diaria de fichaje...
+2025-07-31 17:50:04,439 - INFO - Inicio de login con Selenium
+2025-07-31 17:50:23,365 - INFO - Login completado. Cookies y token guardados.
+2025-07-31 17:50:50,332 - INFO - Fichajes programados para hoy:
+2025-07-31 17:50:50,333 - INFO -  - CLOCKIN → 08:34 (2025-07-31T08:34:00+02:00)
+2025-07-31 17:50:50,333 - INFO -  - CLOCKOUT → 14:38 (2025-07-31T14:38:00+02:00)
+2025-07-31 17:50:50,334 - INFO -  - CLOCKIN → 15:28 (2025-07-31T15:28:00+02:00)
+2025-07-31 17:50:50,335 - INFO -  - CLOCKOUT → 18:04 (2025-07-31T18:04:00+02:00)
+2025-07-31 17:57:52,083 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-07-31 17:57:52,084 - INFO - ClockIn -> 08:28 (2025-07-31T08:28:00+02:00)
+2025-07-31 17:57:52,575 - INFO - Status: 200 | Respuesta: true
+2025-07-31 17:57:52,577 - INFO - ClockOut -> 14:30 (2025-07-31T14:30:00+02:00)
+2025-07-31 17:57:52,765 - INFO - Status: 200 | Respuesta: true
+2025-07-31 17:57:52,767 - INFO - ClockIn -> 15:38 (2025-07-31T15:38:00+02:00)
+2025-07-31 17:57:52,952 - INFO - Status: 200 | Respuesta: true
+2025-07-31 17:57:52,954 - INFO - ClockOut -> 18:01 (2025-07-31T18:01:00+02:00)
+2025-07-31 17:57:53,142 - INFO - Status: 200 | Respuesta: true
+2025-07-31 17:57:53,145 - INFO - Tarea diaria finalizada.
+2025-08-01 14:20:17,566 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-08-01.
+2025-08-01 14:20:18,662 - INFO - Ejecutando tarea diaria de fichaje...
+2025-08-01 14:20:18,663 - INFO - Inicio de login con Selenium
+2025-08-01 14:20:37,375 - INFO - Login completado. Cookies y token guardados.
+2025-08-01 14:21:04,574 - WARNING - 2025-08-01 es viernes o vigilia anticipada. Jornada reducida.
+2025-08-01 14:21:04,576 - INFO - Fichajes programados para hoy:
+2025-08-01 14:21:04,577 - INFO -  - CLOCKIN → 08:23 (2025-08-01T08:23:00+02:00)
+2025-08-01 14:21:04,578 - INFO -  - CLOCKOUT → 14:33 (2025-08-01T14:33:00+02:00)
+2025-08-01 14:21:22,452 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-08-01 14:21:22,453 - INFO - ClockIn -> 08:28 (2025-08-01T08:28:00+02:00)
+2025-08-01 14:21:22,841 - INFO - Status: 200 | Respuesta: true
+2025-08-01 14:21:22,843 - INFO - ClockOut -> 14:30 (2025-08-01T14:30:00+02:00)
+2025-08-01 14:21:23,033 - INFO - Status: 200 | Respuesta: true
+2025-08-01 14:21:23,035 - INFO - Tarea diaria finalizada.
+2025-08-04 17:50:07,114 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-08-04.
+2025-08-04 17:50:08,436 - INFO - Ejecutando tarea diaria de fichaje...
+2025-08-04 17:50:08,437 - INFO - Inicio de login con Selenium
+2025-08-04 17:50:27,472 - INFO - Login completado. Cookies y token guardados.
+2025-08-04 17:50:54,971 - WARNING - 2025-08-04 es viernes o vigilia anticipada. Jornada reducida.
+2025-08-04 17:50:54,971 - INFO - Fichajes programados para hoy:
+2025-08-04 17:50:54,972 - INFO -  - CLOCKIN → 08:27 (2025-08-04T08:27:00+02:00)
+2025-08-04 17:50:54,973 - INFO -  - CLOCKOUT → 14:30 (2025-08-04T14:30:00+02:00)
+2025-08-04 17:54:03,756 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-08-04 17:54:03,759 - INFO - ClockIn -> 08:29 (2025-08-04T08:29:00+02:00)
+2025-08-04 17:54:04,131 - INFO - Status: 200 | Respuesta: true
+2025-08-04 17:54:04,133 - INFO - ClockOut -> 14:30 (2025-08-04T14:30:00+02:00)
+2025-08-04 17:54:04,324 - INFO - Status: 200 | Respuesta: true
+2025-08-04 17:54:04,325 - INFO - Tarea diaria finalizada.
+2025-08-05 14:20:04,435 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-08-05.
+2025-08-05 14:20:05,946 - INFO - Ejecutando tarea diaria de fichaje...
+2025-08-05 14:20:05,947 - INFO - Inicio de login con Selenium
+2025-08-05 14:20:24,216 - INFO - Login completado. Cookies y token guardados.
+2025-08-05 14:20:51,241 - WARNING - 2025-08-05 es viernes o vigilia anticipada. Jornada reducida.
+2025-08-05 14:20:51,243 - INFO - Fichajes programados para hoy:
+2025-08-05 14:20:51,244 - INFO -  - CLOCKIN → 08:32 (2025-08-05T08:32:00+02:00)
+2025-08-05 14:20:51,245 - INFO -  - CLOCKOUT → 14:30 (2025-08-05T14:30:00+02:00)
+2025-08-05 15:06:31,711 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-08-05 15:06:31,714 - INFO - ClockIn -> 08:30 (2025-08-05T08:30:00+02:00)
+2025-08-05 15:06:32,042 - INFO - Status: 200 | Respuesta: true
+2025-08-05 15:06:32,043 - INFO - ClockOut -> 14:35 (2025-08-05T14:35:00+02:00)
+2025-08-05 15:06:32,238 - INFO - Status: 200 | Respuesta: true
+2025-08-05 15:06:32,240 - INFO - Tarea diaria finalizada.
+2025-08-06 14:20:07,104 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-08-06.
+2025-08-06 14:20:08,403 - INFO - Ejecutando tarea diaria de fichaje...
+2025-08-06 14:20:08,404 - INFO - Inicio de login con Selenium
+2025-08-06 14:20:27,079 - INFO - Login completado. Cookies y token guardados.
+2025-08-06 14:20:54,243 - WARNING - 2025-08-06 es viernes o vigilia anticipada. Jornada reducida.
+2025-08-06 14:20:54,244 - INFO - Fichajes programados para hoy:
+2025-08-06 14:20:54,245 - INFO -  - CLOCKIN → 08:23 (2025-08-06T08:23:00+02:00)
+2025-08-06 14:20:54,246 - INFO -  - CLOCKOUT → 14:30 (2025-08-06T14:30:00+02:00)
+2025-08-06 14:21:25,542 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-08-06 14:21:25,543 - INFO - ClockIn -> 08:27 (2025-08-06T08:27:00+02:00)
+2025-08-06 14:21:25,765 - INFO - Status: 200 | Respuesta: true
+2025-08-06 14:21:25,766 - INFO - ClockOut -> 14:37 (2025-08-06T14:37:00+02:00)
+2025-08-06 14:21:25,951 - INFO - Status: 200 | Respuesta: true
+2025-08-06 14:21:25,953 - INFO - Tarea diaria finalizada.
+2025-08-07 14:20:04,348 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-08-07.
+2025-08-07 14:20:05,755 - INFO - Ejecutando tarea diaria de fichaje...
+2025-08-07 14:20:05,755 - INFO - Inicio de login con Selenium
+2025-08-07 14:20:24,070 - INFO - Login completado. Cookies y token guardados.
+2025-08-07 14:20:51,876 - WARNING - 2025-08-07 es viernes o vigilia anticipada. Jornada reducida.
+2025-08-07 14:20:51,877 - INFO - Fichajes programados para hoy:
+2025-08-07 14:20:51,878 - INFO -  - CLOCKIN → 08:33 (2025-08-07T08:33:00+02:00)
+2025-08-07 14:20:51,880 - INFO -  - CLOCKOUT → 14:37 (2025-08-07T14:37:00+02:00)
+2025-08-07 14:20:58,241 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-08-07 14:20:58,242 - INFO - ClockIn -> 08:24 (2025-08-07T08:24:00+02:00)
+2025-08-07 14:20:58,475 - INFO - Status: 200 | Respuesta: true
+2025-08-07 14:20:58,476 - INFO - ClockOut -> 14:30 (2025-08-07T14:30:00+02:00)
+2025-08-07 14:20:58,672 - INFO - Status: 200 | Respuesta: true
+2025-08-07 14:20:58,673 - INFO - Tarea diaria finalizada.
+2025-08-08 14:20:07,422 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-08-08.
+2025-08-08 14:20:08,308 - INFO - Ejecutando tarea diaria de fichaje...
+2025-08-08 14:20:08,309 - INFO - Inicio de login con Selenium
+2025-08-08 14:20:27,619 - INFO - Login completado. Cookies y token guardados.
+2025-08-08 14:20:55,611 - WARNING - 2025-08-08 es viernes o vigilia anticipada. Jornada reducida.
+2025-08-08 14:20:55,613 - INFO - Fichajes programados para hoy:
+2025-08-08 14:20:55,614 - INFO -  - CLOCKIN → 08:33 (2025-08-08T08:33:00+02:00)
+2025-08-08 14:20:55,615 - INFO -  - CLOCKOUT → 14:30 (2025-08-08T14:30:00+02:00)
+2025-08-08 14:29:45,901 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-08-08 14:29:45,902 - INFO - ClockIn -> 08:31 (2025-08-08T08:31:00+02:00)
+2025-08-08 14:29:46,170 - INFO - Status: 200 | Respuesta: true
+2025-08-08 14:29:46,171 - INFO - ClockOut -> 14:30 (2025-08-08T14:30:00+02:00)
+2025-08-08 14:29:46,359 - INFO - Status: 200 | Respuesta: true
+2025-08-08 14:29:46,361 - INFO - Tarea diaria finalizada.
+2025-08-11 14:20:05,369 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-08-11.
+2025-08-11 14:20:06,634 - INFO - Ejecutando tarea diaria de fichaje...
+2025-08-11 14:20:06,634 - INFO - Inicio de login con Selenium
+2025-08-11 14:20:24,878 - INFO - Login completado. Cookies y token guardados.
+2025-08-11 14:20:52,916 - WARNING - 2025-08-11 es viernes o vigilia anticipada. Jornada reducida.
+2025-08-11 14:20:52,918 - INFO - Fichajes programados para hoy:
+2025-08-11 14:20:52,918 - INFO -  - CLOCKIN → 08:35 (2025-08-11T08:35:00+02:00)
+2025-08-11 14:20:52,919 - INFO -  - CLOCKOUT → 14:32 (2025-08-11T14:32:00+02:00)
+2025-08-11 14:21:15,312 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-08-11 14:21:15,313 - INFO - ClockIn -> 08:24 (2025-08-11T08:24:00+02:00)
+2025-08-11 14:21:15,699 - INFO - Status: 200 | Respuesta: true
+2025-08-11 14:21:15,701 - INFO - ClockOut -> 14:37 (2025-08-11T14:37:00+02:00)
+2025-08-11 14:21:15,890 - INFO - Status: 200 | Respuesta: true
+2025-08-11 14:21:15,892 - INFO - Tarea diaria finalizada.
+2025-08-12 14:20:04,238 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-08-12.
+2025-08-12 14:20:05,746 - INFO - Ejecutando tarea diaria de fichaje...
+2025-08-12 14:20:05,747 - INFO - Inicio de login con Selenium
+2025-08-12 14:20:24,126 - INFO - Login completado. Cookies y token guardados.
+2025-08-12 14:20:51,320 - WARNING - 2025-08-12 es viernes o vigilia anticipada. Jornada reducida.
+2025-08-12 14:23:33,157 - INFO - Fichajes programados para hoy:
+2025-08-12 14:23:33,158 - INFO -  - CLOCKIN → 08:24 (2025-08-12T08:24:00+02:00)
+2025-08-12 14:23:33,162 - INFO -  - CLOCKOUT → 14:38 (2025-08-12T14:38:00+02:00)
+2025-08-12 14:23:41,111 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-08-12 14:23:41,112 - INFO - ClockIn -> 08:38 (2025-08-12T08:38:00+02:00)
+2025-08-12 14:23:41,351 - INFO - Status: 200 | Respuesta: true
+2025-08-12 14:23:41,353 - INFO - ClockOut -> 14:32 (2025-08-12T14:32:00+02:00)
+2025-08-12 14:23:41,539 - INFO - Status: 200 | Respuesta: true
+2025-08-12 14:23:41,541 - INFO - Tarea diaria finalizada.
+2025-08-13 14:20:08,822 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-08-13.
+2025-08-13 14:20:09,741 - INFO - Ejecutando tarea diaria de fichaje...
+2025-08-13 14:20:09,742 - INFO - Inicio de login con Selenium
+2025-08-13 14:20:28,092 - INFO - Login completado. Cookies y token guardados.
+2025-08-13 14:20:55,504 - WARNING - 2025-08-13 es viernes o vigilia anticipada. Jornada reducida.
+2025-08-13 14:20:55,505 - INFO - Fichajes programados para hoy:
+2025-08-13 14:20:55,505 - INFO -  - CLOCKIN → 08:31 (2025-08-13T08:31:00+02:00)
+2025-08-13 14:20:55,506 - INFO -  - CLOCKOUT → 14:30 (2025-08-13T14:30:00+02:00)
+2025-08-13 14:21:11,263 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-08-13 14:21:11,263 - INFO - ClockIn -> 08:22 (2025-08-13T08:22:00+02:00)
+2025-08-13 14:21:11,486 - INFO - Status: 200 | Respuesta: true
+2025-08-13 14:21:11,487 - INFO - ClockOut -> 14:35 (2025-08-13T14:35:00+02:00)
+2025-08-13 14:21:11,666 - INFO - Status: 200 | Respuesta: true
+2025-08-13 14:21:11,667 - INFO - Tarea diaria finalizada.
+2025-08-14 14:20:03,467 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-08-14.
+2025-08-14 14:20:05,650 - INFO - Ejecutando tarea diaria de fichaje...
+2025-08-14 14:20:05,651 - INFO - Inicio de login con Selenium
+2025-08-14 14:20:23,618 - INFO - Login completado. Cookies y token guardados.
+2025-08-14 14:20:50,682 - WARNING - 2025-08-14 es viernes o vigilia anticipada. Jornada reducida.
+2025-08-14 14:20:50,683 - INFO - Fichajes programados para hoy:
+2025-08-14 14:20:50,684 - INFO -  - CLOCKIN → 08:23 (2025-08-14T08:23:00+02:00)
+2025-08-14 14:20:50,685 - INFO -  - CLOCKOUT → 14:34 (2025-08-14T14:34:00+02:00)
+2025-08-14 14:21:12,392 - INFO - ✅ Usuario confirmó continuar con los fichajes.
+2025-08-14 14:21:12,393 - INFO - ClockIn -> 08:30 (2025-08-14T08:30:00+02:00)
+2025-08-14 14:21:12,716 - INFO - Status: 200 | Respuesta: true
+2025-08-14 14:21:12,717 - INFO - ClockOut -> 14:36 (2025-08-14T14:36:00+02:00)
+2025-08-14 14:21:12,911 - INFO - Status: 200 | Respuesta: true
+2025-08-14 14:21:12,913 - INFO - Tarea diaria finalizada.
+2025-08-15 14:20:07,221 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-08-15.
+2025-08-15 14:20:08,670 - INFO - Ejecutando tarea diaria de fichaje...
+2025-08-15 14:20:08,671 - INFO - Inicio de login con Selenium
+2025-08-15 14:20:31,306 - INFO - Login completado. Cookies y token guardados.
+2025-08-15 14:20:58,739 - WARNING - 2025-08-15 es festivo. No se ficha.
+2025-08-15 14:20:58,740 - INFO - Tarea diaria finalizada.
+2025-08-18 14:20:10,019 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-08-18.
+2025-08-18 14:20:12,155 - INFO - Ejecutando tarea diaria de fichaje...
+2025-08-18 14:20:12,157 - INFO - Inicio de login con Selenium
+2025-08-18 14:20:32,474 - INFO - Login completado. Cookies y token guardados.
+2025-08-18 14:21:00,852 - WARNING - 2025-08-18 es día de vacaciones. No se ficha.
+2025-08-18 14:21:00,855 - INFO - Tarea diaria finalizada.
+2025-08-19 14:20:06,307 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-08-19.
+2025-08-19 14:20:07,623 - INFO - Ejecutando tarea diaria de fichaje...
+2025-08-19 14:20:07,624 - INFO - Inicio de login con Selenium
+2025-08-19 14:20:25,829 - INFO - Login completado. Cookies y token guardados.
+2025-08-19 14:20:52,955 - WARNING - 2025-08-19 es viernes o vigilia anticipada. Jornada reducida.
+2025-08-19 14:20:52,956 - INFO - Fichajes programados para hoy:
+2025-08-19 14:20:52,957 - INFO -  - CLOCKIN → 08:31 (2025-08-19T08:31:00+02:00)
+2025-08-19 14:20:52,958 - INFO -  - CLOCKOUT → 14:30 (2025-08-19T14:30:00+02:00)
+2025-08-19 14:21:30,950 - INFO - ⛔ Fichaje cancelado por el usuario desde consola.
+2025-08-19 14:21:30,950 - INFO - Tarea diaria finalizada.

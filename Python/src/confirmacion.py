@@ -1,5 +1,4 @@
 # confirmacion.py
-import sys
 
 def pedirConfirmacionUsuario(MODO_INTERACTIVO, logger):
     if MODO_INTERACTIVO:

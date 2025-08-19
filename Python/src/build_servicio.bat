@@ -29,7 +29,7 @@ move /Y dist\%EXENAME% "%DESTINO%"
 echo ===============================
 echo Generando EXE: %EXENAME2%
 echo ===============================
-"%PY%" -m PyInstaller --clean --onefile --noconsole --add-data "icons;icons" %SCRIPT2%
+"%PY%" -m PyInstaller --clean --onefile --noconsole --add-data "icons;icons" --hidden-import=chromedriver_autoinstaller %SCRIPT2%
 if errorlevel 1 (
     echo Error al compilar %SCRIPT2%.
     pause
