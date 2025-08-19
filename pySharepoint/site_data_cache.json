@@ -1,0 +1,19 @@
+{
+  "mynet_Datos_https://sortsactivedev.sharepoint.com/sites/prueba": {
+    "data": [
+      {
+        "Title": "Prueba",
+        "Url": "https://sortsactivedev.sharepoint.com/sites/prueba",
+        "Admins": [],
+        "Users": [],
+        "Views": [],
+        "HasUniqueRoleAssignments": true
+      }
+    ],
+    "expires_on": 1755623959.4796662
+  },
+  "mynet_Datos_": {
+    "data": [],
+    "expires_on": 1755610292.4762392
+  }
+}
