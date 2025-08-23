@@ -4,16 +4,15 @@
       {
         "Title": "Prueba",
         "Url": "https://sortsactivedev.sharepoint.com/sites/prueba",
-        "Admins": [],
         "Users": [],
+        "Groups": [],
+        "Admins": [],
         "Views": [],
-        "HasUniqueRoleAssignments": true
+        "Lists": [],
+        "SubSites": null,
+        "HasRoleUniqueAssigment": true
       }
     ],
-    "expires_on": 1755623959.4796662
-  },
-  "mynet_Datos_": {
-    "data": [],
-    "expires_on": 1755610292.4762392
+    "expires_on": 1755773981.4729178
   }
 }

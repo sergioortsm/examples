@@ -1,53 +1,60 @@
-import shelve
-from typing import Optional
+from typing import List, Dict, Any, Optional
 import flet as ft
+from common.interfaces import ISiteCollection
+from controls.render_panels import render_lists_panels
 from services.SHPService import SHPService
 from common.SharePointHelper import SharePointHelper
 from controls.Text import TitleText
 from controls.user_card import render_card
-import requests
+from diskcache import Cache
 
+ 
+CACHE_DIR = "./site_cache"
+ 
 # -----------------------------
 # Estado centralizado de la app
 # -----------------------------
 class AppState:
     def __init__(self):
         self.sp_service = SHPService()
-        self.cache = shelve.open("sharepoint_cache.db")
+        self.cache = Cache(CACHE_DIR)
+        self.cache.clear()
         self.helper: SharePointHelper = SharePointHelper(self.sp_service.sp, cache=self.cache)
-        self.site_selected: Optional[dict[str, str]] = None
-        self.subsite_selected: Optional[dict[str, str]] = None
+        self.site_selected: Optional[ISiteCollection] = None
+        self.subsite_selected: Optional[ISiteCollection] = None
         self.sites_options = []
         self.subsites_options = []
-        self.site_collections = []
+        self.site_collections: List[ISiteCollection] = [] 
         self.auth_token = {"token": ""}
         
         # Declarar los controles UI para que Pylance los conozca
         self.lista_control: ft.Column = ft.Column(spacing=5, expand=3, scroll=ft.ScrollMode.AUTO)
         self.menu_control: ft.Column = ft.Column()
+        self.roles_definiciones: List[Dict[str, Any]] = []
+        
         
 # -----------------------------
 # Funciones de SharePoint
 # -----------------------------
-async def cargar_datos_sites(state: AppState):
-    site = state.site_selected = state.site_selected or {"key": "", "text": ""}
-    subsite = state.subsite_selected = state.subsite_selected or {"key": "", "text": ""}
-    datos_sites = []
+async def cargar_datos_sites(state: AppState) -> List[ISiteCollection]:
+    site: ISiteCollection = state.site_selected or ISiteCollection(Title="", Url="")
+    subsite: ISiteCollection = state.subsite_selected or ISiteCollection(Title="", Url="")
+    datos_sites:List[ISiteCollection] = []
         
-    if site.get("key") == "":
-        return
+    if site is None or site.Url == "":
+        return []
         
-    if site["key"] and not subsite.get("key"):
-        assert state.helper is not None
+    if site.Url and not subsite.Url:
         datos_sites_temp = await state.helper.obtener_datos_site(site, es_subsite=False)
         datos_sites = await state.helper.obtener_datos_subsites(datos_sites_temp)
-        datos_sites = await state.helper.rellenar_objetos_sites(datos_sites)
-    elif subsite.get("key"):
-        assert state.helper is not None
-        datos_sites = await state.helper.rellenar_objetos_sites(subsite) # type: ignore
-        # roles = await state.helper.obtener_definiciones_roles(subsite)
-
-    state.site_collections = datos_sites
+        datos_sites = await state.helper.rellenar_objetos_sites(datos_sites)        
+        state.roles_definiciones = await state.helper.map2dropdown_option_tooltips(site) or []
+    elif subsite.Url:
+        datos_sites = await state.helper.rellenar_objetos_sites([subsite]) 
+        state.roles_definiciones = await state.helper.map2dropdown_option_tooltips(subsite) or []
+    
+        
+    return datos_sites
 
 # -----------------------------
 # Menú lateral
@@ -82,20 +89,21 @@ def cargar_datos_opcion(opcion_id, state: AppState, page):
     lista_control.controls.clear()
 
     if opcion_id == "users":
-        usuarios = [
-            {"nombre": "Juan Pérez", "email": "juan@example.com"},
-            {"nombre": "Ana Gómez", "email": "ana@example.com"},
-        ]
-
-        for u in usuarios:
-            lista_control.controls.append(render_card(u, page))        
-        #lista_control.controls.append(ft.Text("Aquí iría la lista de usuarios..."))
+        for users in state.site_collections or []: 
+            for u in users.Users or []: 
+                lista_control.controls.append(render_card(u, page))
+        
     elif opcion_id == "admins":
-        lista_control.controls.append(ft.Text("Aquí iría la lista de administradores..."))
+        for users in state.site_collections or []: 
+            for u in users.Admins or []: 
+                lista_control.controls.append(render_card(u, page))
     elif opcion_id == "groups":
-        lista_control.controls.append(ft.Text("Aquí iría la lista de grupos..."))
+        for users in state.site_collections or []: 
+            for u in users.Groups or []: 
+                lista_control.controls.append(render_card(u, page))
     elif opcion_id == "libraries":
-        lista_control.controls.append(ft.Text("Aquí iría la lista de bibliotecas/listas..."))
+        panel_list = render_lists_panels(state, page)
+        lista_control.controls.append(panel_list)
     else:
         lista_control.controls.append(ft.Text("Opción no reconocida."))
 
@@ -112,7 +120,7 @@ async def main(page: ft.Page):
 
     # Estado
     state = AppState()
-    state.helper = SharePointHelper(state.sp_service.sp, cache=None)
+    state.helper = SharePointHelper(state.sp_service.sp, state.cache)
 
     # Controles principales
     state.menu_control = ft.Column()
@@ -183,18 +191,21 @@ async def main(page: ft.Page):
     async def show_main_page():
         page.clean()
 
-        # Cargar sites iniciales
-        site_info = {"key": "https://sortsactivedev.sharepoint.com/sites/prueba", "text": "Prueba"}
+        # Cargar site inicial
+        site_info = ISiteCollection(
+                        Title="Prueba",
+                        Url="https://sortsactivedev.sharepoint.com/sites/prueba")
+        
         sites = await state.helper.obtener_datos_site(site_info, es_subsite=False)
 
-        await cargar_datos_sites(state)
-
+        state.site_collections = await cargar_datos_sites(state)
+        
         # Dropdowns
         dd_sites = ft.Dropdown(
             label="Selecciona un site",
             width=450,
             options=[
-                ft.dropdown.Option(key=s["Url"], text=s["Title"]) for s in sites
+                ft.dropdown.Option(key=s.Url, text=s.Title) for s in sites # type: ignore
             ]
         )
 
@@ -208,25 +219,25 @@ async def main(page: ft.Page):
         async def on_site_change(e):
             selected_key = dd_sites.value
             state.site_selected = next(
-                ({"key": s["Url"], "text": s["Title"]} for s in sites if s["Url"] == selected_key),
-                None
+                (ISiteCollection(Title=s.Title, Url=s.Url) for s in sites if s.Url == selected_key),
+                ISiteCollection(Title="", Url="") 
             )
-            state.subsite_selected = {"key": "", "text": ""}
 
-            await cargar_datos_sites(state)
+            state.subsite_selected = ISiteCollection(Title="", Url="") 
 
             # Cargar subsites
-            items = state.site_collections
-            assert state.site_selected is not None
+            state.site_collections = await cargar_datos_sites(state)
+            
             subsite_filtrados = [
-                obj for obj in items if obj.get("SubSites") and obj.get("Title") == state.site_selected.get("text")
+                obj for obj in (state.site_collections or []) 
+                if obj.SubSites and obj.Title == state.site_selected.Title # type: ignore
             ]
             subsites_flat = []
             for site in subsite_filtrados:
-                subsites_flat.extend(site["SubSites"])
+                subsites_flat.extend(site.SubSites or [])
 
             state.subsites_options = [
-                ft.dropdown.Option(key=sub["Url"], text=sub["Title"])
+                ft.dropdown.Option(key=sub.Url, text=sub.Title)
                 for sub in subsites_flat
             ]
             dd_subsites.options = state.subsites_options
@@ -236,12 +247,21 @@ async def main(page: ft.Page):
         dd_sites.on_change = on_site_change
 
         # Evento cambio de subsite
-        def on_subsite_change(e):
+        async def on_subsite_change(e):
             selected_key = dd_subsites.value
             state.subsite_selected = next(
-                (s for s in state.subsites_options if s.key == selected_key), None
+                (
+                    ISiteCollection(Title=sub.Title, Url=sub.Url)
+                    for site in state.site_collections
+                    for sub in site.SubSites
+                    if sub.Url == selected_key
+                ),
+                ISiteCollection(Title="", Url="")
             )
-
+                        
+            if state.subsite_selected:
+                state.site_collections = await cargar_datos_sites(state)
+        
         dd_subsites.on_change = on_subsite_change
 
         t = ft.Text()
@@ -281,77 +301,12 @@ async def main(page: ft.Page):
             spacing=10,
             run_spacing=10
         )      
-        
-        # Fila 2: dos columnas invertidas: detalles a la izquierda (25%), lista a la derecha (75%)
-        menu_control = ft.Column([ft.Text("Detalles aquí")], 
-                                 expand=1, scroll=ft.ScrollMode.AUTO, 
-                                 width=None  # Para que el expand funcione bien
-        )
-
-        #lista_control = ft.ListView( spacing=5, padding=10, expand=3)
-        
+                
         state.lista_control = ft.Column(spacing=5, expand=3, scroll=ft.ScrollMode.AUTO)
         state.lista_control.controls.clear()
         
         page.update()
-        # ================================
-        # Nueva función para mostrar opciones fijas
-        # ================================
-        # def mostrarListaOpciones():
-        #     menu_control.controls.clear()
 
-        #     opciones = [
-        #         {"Title": "Site Users", "Id": "users"},
-        #         {"Title": "Site Admins", "Id": "admins"},
-        #         {"Title": "Site Groups", "Id": "groups"},
-        #         {"Title": "Libraries/Lists", "Id": "libraries"}
-        #     ]
-
-        #     for opt in opciones:
-        #         menu_control.controls.append(
-        #             ft.ListTile(
-        #                 title=ft.Text(opt["Title"]),
-        #                 on_click=lambda e, opt=opt: cargar_datos_opcion(opt["Id"])
-        #             )
-        #         )
-
-        #     page.update()
-                    
-        # ================================
-        # Función que carga datos en lista_control según opción
-        # ================================
-        # def cargar_datos_opcion(opcion_id):
-        #     lista_control = state.lista_control
-            
-        #     lista_control.controls.clear()
-
-        #     if opcion_id == "users":
-        #         #lista_control.controls.append(ft.Text("Aquí iría la lista de usuarios..."))
-        #         usuarios = [
-        #             {"nombre": "Juan Pérez", "email": "juan@example.com"},
-        #             {"nombre": "Ana Gómez", "email": "ana@example.com"},
-        #         ]
-
-        #         for u in usuarios:
-        #             lista_control.controls.append(render_card(u, page))
-
-        #     elif opcion_id == "admins":
-        #         lista_control.controls.append(ft.Text("Aquí iría la lista de administradores..."))
-        #     elif opcion_id == "groups":
-        #         lista_control.controls.append(ft.Text("Aquí iría la lista de grupos..."))
-        #     elif opcion_id == "libraries":
-        #         lista_control.controls.append(ft.Text("Aquí iría la lista de bibliotecas/listas..."))
-        #     else:
-        #         lista_control.controls.append(ft.Text("Opción no reconocida."))
-
-        #     page.update()
-        
-        # usuarios =  await helper.rellenar_objetos_sites(site_selected)
-        # for u in usuarios:
-        #     lista_control.controls.append(render_card(u, page))
-        
-       # page.update()
-                        
         contenido_row = ft.Row(
             [
                 ft.Container(
@@ -371,17 +326,14 @@ async def main(page: ft.Page):
             vertical_alignment=ft.CrossAxisAlignment.START
         )
         
-        # Layout
-        
-        
+        # Layout principal
         page.add(
             ft.Column([
                 filtros_row,
                 contenido_row
             ], expand=True, spacing=20)
         )
-
-        #mostrarListaOpciones()
+        
         mostrar_opciones_menu(state, state.menu_control, page)
 
     

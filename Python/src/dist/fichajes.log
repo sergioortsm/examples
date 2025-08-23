@@ -1157,3 +1157,31 @@ UnboundLocalError: cannot access local variable 'driver' where it is not associa
 2025-08-19 14:20:52,958 - INFO -  - CLOCKOUT → 14:30 (2025-08-19T14:30:00+02:00)
 2025-08-19 14:21:30,950 - INFO - ⛔ Fichaje cancelado por el usuario desde consola.
 2025-08-19 14:21:30,950 - INFO - Tarea diaria finalizada.
+2025-08-20 14:20:18,159 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-08-20.
+2025-08-20 14:20:19,366 - INFO - Ejecutando tarea diaria de fichaje...
+2025-08-20 14:20:19,367 - INFO - Inicio de login con Selenium
+2025-08-20 14:20:38,991 - INFO - Login completado. Cookies y token guardados.
+2025-08-20 14:21:06,624 - WARNING - 2025-08-20 es viernes o vigilia anticipada. Jornada reducida.
+2025-08-20 14:22:55,177 - INFO - Fichajes programados para hoy:
+2025-08-20 14:22:55,178 - INFO -  - CLOCKIN → 08:22 (2025-08-20T08:22:00+02:00)
+2025-08-20 14:22:55,180 - INFO -  - CLOCKOUT → 14:31 (2025-08-20T14:31:00+02:00)
+2025-08-20 14:23:08,399 - INFO - ⛔ Fichaje cancelado por el usuario desde consola.
+2025-08-20 14:23:08,399 - INFO - Tarea diaria finalizada.
+2025-08-21 14:20:04,525 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-08-21.
+2025-08-21 14:20:05,912 - INFO - Ejecutando tarea diaria de fichaje...
+2025-08-21 14:20:05,913 - INFO - Inicio de login con Selenium
+2025-08-21 14:20:24,111 - INFO - Login completado. Cookies y token guardados.
+2025-08-21 14:20:51,038 - WARNING - 2025-08-21 es viernes o vigilia anticipada. Jornada reducida.
+2025-08-21 14:20:51,039 - INFO - Fichajes programados para hoy:
+2025-08-21 14:20:51,040 - INFO -  - CLOCKIN → 08:24 (2025-08-21T08:24:00+02:00)
+2025-08-21 14:20:51,041 - INFO -  - CLOCKOUT → 14:31 (2025-08-21T14:31:00+02:00)
+2025-08-21 14:23:16,410 - INFO - ⛔ Fichaje cancelado por el usuario desde consola.
+2025-08-21 14:23:16,411 - INFO - Tarea diaria finalizada.
+2025-08-22 14:20:03,272 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-08-22.
+2025-08-22 14:20:04,743 - INFO - Ejecutando tarea diaria de fichaje...
+2025-08-22 14:20:04,744 - INFO - Inicio de login con Selenium
+2025-08-22 14:20:24,083 - INFO - Login completado. Cookies y token guardados.
+2025-08-22 14:20:51,288 - WARNING - 2025-08-22 es viernes o vigilia anticipada. Jornada reducida.
+2025-08-22 14:20:51,290 - INFO - Fichajes programados para hoy:
+2025-08-22 14:20:51,292 - INFO -  - CLOCKIN → 08:27 (2025-08-22T08:27:00+02:00)
+2025-08-22 14:20:51,293 - INFO -  - CLOCKOUT → 14:32 (2025-08-22T14:32:00+02:00)
