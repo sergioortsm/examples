@@ -107,10 +107,10 @@ class TrelloApp(AppLayout):
         if troute.match("/"):
             self.page.go("/boards")
         elif troute.match("/board/:id"):
-            if int(troute.id) > len(self.store.get_boards()):
+            if int(troute.id) > len(self.store.get_boards()): # type: ignore
                 self.page.go("/")
                 return
-            self.set_board_view(int(troute.id))
+            self.set_board_view(int(troute.id)) # type: ignore
         elif troute.match("/boards"):
             self.set_all_boards_view()
         elif troute.match("/members"):
@@ -177,7 +177,7 @@ def main(page: ft.Page):
     page.padding = 0
     page.theme = ft.Theme(font_family="Verdana")
     page.theme_mode = ft.ThemeMode.LIGHT
-    page.theme.page_transitions.windows = "cupertino"
+    page.theme.page_transitions.windows = "cupertino" # type: ignore
     page.fonts = {"Pacifico": "Pacifico-Regular.ttf"}
     page.bgcolor = ft.Colors.BLUE_GREY_200
     app = TrelloApp(page, InMemoryStore())
@@ -186,6 +186,6 @@ def main(page: ft.Page):
     app.initialize()
 
 
-print("flet version: ", ft.version.version)
+print("flet version: ", ft.version.version) # type: ignore
 print("flet path: ", ft.__file__)
 ft.app(target=main, assets_dir="../assets")
