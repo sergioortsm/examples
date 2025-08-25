@@ -9,7 +9,7 @@ from cryptography.hazmat.primitives.serialization.pkcs12 import load_key_and_cer
 # ----------------------
 TENANT_ID = "a272015e-e187-4c3c-95a6-93cfdba816b8"
 CLIENT_ID = "0ee25780-948d-4e07-bccf-5457e16d705f"
-CERT_PFX_PATH = r"C:\repositorio\examples\pySharepoint\MiAppSharePointPython.pfx"
+CERT_PFX_PATH = r"C:\repositorio\examples\pySharepoint\certificado\MiAppSharePointPython.pfx"
 CERT_PFX_PASSWORD = b"MiPasswordSegura123"  # como bytes
 CERT_THUMBPRINT = "A2C0322C559E3D70C69FB96A27C76479E7EF22C9"
 SPO_SITE_ROOT = "https://sortsactivedev.sharepoint.com"

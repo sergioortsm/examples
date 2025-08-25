@@ -1,11 +1,11 @@
 import json
 import os
 import time
-from sharepoint_client import SharePointOnlineClient
+from common.sharepoint_client import sharepoint_client
 
 TOKEN_PATH = "token_cache.json"
 
-class SHPService:
+class shp_service:
     _instance = None    
     USERNAME = ""       # login interactivo si CLIENT_SECRET está vacío
     CLIENT_ID = "0ee25780-948d-4e07-bccf-5457e16d705f"
@@ -15,7 +15,7 @@ class SHPService:
     SHAREPOINT_SITE = "https://sortsactivedev.sharepoint.com/sites/prueba" #"https://sortsactivedev.sharepoint.com/sites/prueba/_api/web/lists?$filter=Hidden eq false"
     SHAREPOINT_ROOT = "https://sortsactivedev.sharepoint.com"    
     CLIENT_SECRET = "xSw8Q~.3X0U8mu7qKBU9QV2zZwdopqeC9nq_CaCI"  # app-only si tiene valor
-    PFX_PATH = r"C:\repositorio\examples\pySharepoint\MiAppSharePointPython.pfx"
+    PFX_PATH = r"C:\repositorio\examples\pySharepoint\certificado\MiAppSharePointPython.pfx"
     PFX_PASSWORD = b"MiPasswordSegura123"  # como bytes
     PFX_THUMBPRINT = "A2C0322C559E3D70C69FB96A27C76479E7EF22C9"
     
@@ -41,7 +41,7 @@ class SHPService:
     def _init_client(self):
         print("🔄 Iniciando cliente SharePoint...")
 
-        self.sp = SharePointOnlineClient(
+        self.sp = sharepoint_client(
             tenant_id=self.TENANT_ID,
             client_id=self.CLIENT_ID,
             client_secret=self.CLIENT_SECRET,
@@ -52,15 +52,17 @@ class SHPService:
             pfx_thumbprint=self.PFX_THUMBPRINT
         )
 
-        # Obtener token
+        # Obtener token        
         access_token = self.sp._get_access_token()
         expires_in = int(self.sp.token.get("expires_in", 3600))
+        print("🔄 Obteniendo token...")
         token_info = {
             "access_token": access_token,
             "expires_on": int(time.time()) + expires_in,
             "refresh_token": self.sp.token.get("refresh_token")
         }
         
+        print("🔄 Grabando token...")
         self._save_token_cache(token_info)
 
     def get_client(self):

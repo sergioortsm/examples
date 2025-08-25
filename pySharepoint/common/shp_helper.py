@@ -3,25 +3,20 @@ from datetime import datetime, timedelta
 from typing import List, Dict, Any, Optional
 from common.interfaces import IGroup, IList, ISiteCollection, IUser, RoleDefinition
 from common.template_info import list_template
-from sharepoint_client import SharePointOnlineClient
+from common.sharepoint_client import sharepoint_client
 from dacite import from_dict, Config
 from dataclasses import asdict
 from diskcache import Cache
 
 
 
-class Utils:
-    @staticmethod
-    def comparar_por_title(item):
-        return item["Title"].lower()
-
-class SharePointHelper:
-    def __init__(self, sp_client: SharePointOnlineClient, cache: Cache):
+class shp_helper:
+    def __init__(self, sp_client: sharepoint_client, cache: Cache):
         self.sp = sp_client
         self.cache = cache
         self.config = {
             "titlesite": "DefaultSite",
-            "urlsite": "https://defaultsite.sharepoint.com"
+            "urlsite": "https://sortsactivedev.sharepoint.com"
         }
 
     # -------------------- Cache --------------------
@@ -32,6 +27,29 @@ class SharePointHelper:
         self.cache.set(key, value, expire=expire_seconds)
 
     # -------------------- SharePoint helpers --------------------
+    
+    def update_group(self, group: IGroup):
+        if not group or not group.Id:
+            raise ValueError("Group or Group ID is None")
+
+        api_url = f"{self.sp.site_url}/_api/web/sitegroups({group.Id})"
+        headers = {
+            "Accept": "application/json;odata=verbose",
+            "Content-Type": "application/json;odata=verbose",
+            "IF-MATCH": "*",
+            "X-HTTP-Method": "MERGE"
+        }
+        body = {
+            "Title": group.Title
+        }
+
+        response = self.sp.post(api_url)
+         
+        if response is None:
+            raise Exception(f"Failed to update group {group.Id}: No response")
+               
+        return response.get("value", False) if response else False
+       
     async def has_unique_role_assignments(self, site: ISiteCollection, lista: Optional[dict] = None) -> bool:
         if lista:
             url = f"{site.Url}/_api/web/getList('{lista['RootFolder']['ServerRelativeUrl']}')/HasUniqueRoleAssignments"
@@ -209,62 +227,6 @@ class SharePointHelper:
 
         return rows
     
-    # def obtener_datos_array(self, original_array: List[Dict[str, Any]]) -> Dict[str, List[Any]]:
-    #     """
-    #     Reproduce la lógica de ObterDatosArray de TypeScript.
-    #     Devuelve un diccionario con 'Users' y 'Groups' ya tipados con Roles.
-    #     """
-    #     result = {"Users": [], "Groups": []}
-
-    #     for item in original_array:
-    #         member = item.get("Member", {})
-    #         member_type = member.get("@odata.type", "")
-
-    #         # Grupo
-    #         if member_type == "#SP.Group" and not any(x.lower() in member.get("Title", "").lower() for x in ["limited", "sharinglinks", "limitado"]):
-    #             group = {
-    #                 "Id": member.get("Id"),
-    #                 "Title": member.get("Title"),
-    #                 "Users": [
-    #                     {
-    #                         "Id": u.get("Id"),
-    #                         "Title": u.get("Title"),
-    #                         "Email": u.get("Email")
-    #                     }
-    #                     for u in member.get("Users", [])
-    #                 ],
-    #                 "Roles": [
-    #                     {
-    #                         "Id": r.get("Id"),
-    #                         "Name": r.get("Name"),
-    #                         "Description": r.get("Description"),
-    #                         "@odata.id": r.get("@odata.id")
-    #                     }
-    #                     for r in item.get("RoleDefinitionBindings", [])
-    #                 ]
-    #             }
-    #             result["Groups"].append(group)
-
-    #         # Usuario individual
-    #         elif member_type == "#SP.User":
-    #             user = {
-    #                 "Id": member.get("Id"),
-    #                 "Title": member.get("Title"),
-    #                 "Email": member.get("UserPrincipalName", ""),
-    #                 "Roles": [
-    #                     {
-    #                         "Id": r.get("Id"),
-    #                         "Name": r.get("Name"),
-    #                         "Description": r.get("Description"),
-    #                         "@odata.id": r.get("@odata.id")
-    #                     }
-    #                     for r in item.get("RoleDefinitionBindings", [])
-    #                 ]
-    #             }
-    #             result["Users"].append(user)
-
-    #     return result
-        
     async def fetch_lists(self, site_url: str, site_collection: ISiteCollection) -> List[IList]:
         list_url = (
             f"{site_url}/_api/Web/Lists/"
@@ -308,44 +270,6 @@ class SharePointHelper:
         listas2 = await asyncio.gather(*tasks)
         
         return [l for l in listas2 if l]
-
-
-
-
-    # async def fetch_lists(self, site_url: str, site_collection: ISiteCollection) -> List[IList]:
-    #     list_url = (
-    #         f"{site_url}/_api/Web/Lists/"
-    #         "?$filter=Hidden eq false and (BaseTemplate eq 100 or BaseTemplate eq 101 or BaseTemplate eq 106 or BaseTemplate eq 119)"
-    #         "&$select=*,RootFolder/ServerRelativeUrl&$expand=RootFolder"
-    #     )
-    #     list_data = self.sp.get(list_url)
-    #     listas_temp = list_data.get("value", [])
-
-    #     async def process_lista(lista_dict):
-    #         try:
-    #             list_roles_url = f"{site_url}/_api/web/getList('{lista_dict['RootFolder']['ServerRelativeUrl']}')/roleassignments?$expand=Member/Users,RoleDefinitionBindings"
-    #             roles_data = self.sp.get(list_roles_url)
-    #             result = self.obtener_datos_array(roles_data.get("value", []))
-
-    #             users_lista = [user for user in sorted(result["Users"], key=lambda u: u.Title)
-    #                            if any(role.Name.lower() not in ["limited", "limitededit", "limitado"] for role in user.Roles)]
-    #             groups = sorted(result["Groups"], key=lambda g: g.Title)
-
-    #             lista_dict.update({
-    #                 "Users": users_lista,
-    #                 "Groups": groups,
-    #                 "Roles": [],
-    #                 "Template": list_template.get_template_info_by_id(lista_dict.get("BaseTemplate")),
-    #                 "HasRoleUniqueAssigment": await self.has_unique_role_assignments(site_collection, lista_dict),
-    #             })
-    #             return from_dict(IList, lista_dict, config=Config(strict=False))
-    #         except Exception as e:
-    #             print(f"Error procesando lista {lista_dict.get('Title')}: {e}")
-    #             return None
-
-    #     tasks = [process_lista(l) for l in listas_temp]
-    #     listas2 = await asyncio.gather(*tasks)
-    #     return [l for l in listas2 if l]
 
     def obtener_datos_array(self, original_array: List[dict]) -> dict:
         result = {"Groups": [], "Users": []}
