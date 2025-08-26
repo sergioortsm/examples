@@ -16,15 +16,15 @@ class InMemoryStore(DataStore):
         self.board_lists: dict[int, list["BoardList"]] = {}
         self.items: dict[int, list["Item"]] = {}
 
-    def add_board(self, board: "Board"):
-        self.boards[board.board_id] = board
+    def add_board(self, model: "Board"):
+        self.boards[model.board_id] = model
 
     def get_board(self, id: int):
         return self.boards[id]
 
-    def update_board(self, board: "Board", update: dict):
+    def update_board(self, model: "Board", update: dict):
         for k in update:
-            setattr(board, k, update[k])
+            setattr(model, k, update[k])
 
     def get_boards(self):
         return [self.boards[b] for b in self.boards]

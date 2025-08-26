@@ -1,5 +1,4 @@
 import asyncio
-from datetime import datetime, timedelta
 from typing import List, Dict, Any, Optional
 from common.interfaces import IGroup, IList, ISiteCollection, IUser, RoleDefinition
 from common.template_info import list_template
@@ -9,15 +8,64 @@ from dataclasses import asdict
 from diskcache import Cache
 
 
-
 class shp_helper:
-    def __init__(self, sp_client: sharepoint_client, cache: Cache):
+    def __init__(self, sp_client: sharepoint_client, store, cache: Cache): # type: ignore
         self.sp = sp_client
         self.cache = cache
         self.config = {
             "titlesite": "DefaultSite",
             "urlsite": "https://sortsactivedev.sharepoint.com"
         }
+        self.store = store
+
+
+    # -----------------------------
+    # Funciones de carga de sites
+    # -----------------------------
+    
+    def _replace_site_in_tree(self,
+        sites: list[ISiteCollection],
+        new_site: ISiteCollection
+    ) -> list[ISiteCollection]:
+        """
+        Busca recursivamente un ISiteCollection por URL y lo sustituye
+        con los datos de new_site.
+        """
+        replaced_sites: list[ISiteCollection] = []
+        for site in sites:
+            if site.Url == new_site.Url:
+                # Sustituimos el nodo entero
+                replaced_sites.append(new_site)
+            else:
+                # Recorremos los subsites recursivamente
+                if site.SubSites:
+                    site.SubSites = self._replace_site_in_tree(site.SubSites, new_site)
+                replaced_sites.append(site)
+        return replaced_sites
+    
+    async def cargar_datos_sites(self) -> List[ISiteCollection]:
+            site: ISiteCollection = self.store.site_selected or ISiteCollection(Title="", Url="")
+            subsite: ISiteCollection = self.store.subsite_selected or ISiteCollection(Title="", Url="")
+            datos_sites: List[ISiteCollection] = []
+                
+            if site is None or site.Url == "":
+                self.store.set_loading(False)
+                return []
+            
+            self.store.set_loading(True)
+            
+            if site.Url and not subsite.Url:
+                datos_sites_temp = await self.store.helper.obtener_datos_site(site, es_subsite=False)
+                datos_sites = await self.store.helper.obtener_datos_subsites(datos_sites_temp)
+                datos_sites = await self.store.helper.rellenar_objetos_sites(datos_sites)
+                self.store.set_roles_definiciones(await self.store.helper.map2dropdown_option_tooltips(site) or [])
+            elif subsite.Url:
+                datos_sites = await self.store.helper.rellenar_objetos_sites([subsite]) 
+                self.store.set_roles_definiciones(await self.store.helper.map2dropdown_option_tooltips(subsite) or [])
+            
+            self.store.set_loading(False)
+            
+            return datos_sites        
 
     # -------------------- Cache --------------------
     def _cache_get(self, key):
@@ -348,3 +396,5 @@ class shp_helper:
             return response.get("value", [])
         else:      
             raise Exception(f"Failed to fetch admin data for {site_url}: {response}")
+        
+       
