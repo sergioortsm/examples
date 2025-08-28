@@ -1193,3 +1193,19 @@ UnboundLocalError: cannot access local variable 'driver' where it is not associa
 2025-08-25 14:20:50,789 - INFO - Fichajes programados para hoy:
 2025-08-25 14:20:50,791 - INFO -  - CLOCKIN → 08:30 (2025-08-25T08:30:00+02:00)
 2025-08-25 14:20:50,793 - INFO -  - CLOCKOUT → 14:30 (2025-08-25T14:30:00+02:00)
+2025-08-26 14:20:03,084 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-08-26.
+2025-08-26 14:20:04,251 - INFO - Ejecutando tarea diaria de fichaje...
+2025-08-26 14:20:04,252 - INFO - Inicio de login con Selenium
+2025-08-26 14:20:23,795 - INFO - Login completado. Cookies y token guardados.
+2025-08-26 14:20:51,040 - WARNING - 2025-08-26 es viernes o vigilia anticipada. Jornada reducida.
+2025-08-26 14:20:51,042 - INFO - Fichajes programados para hoy:
+2025-08-26 14:20:51,042 - INFO -  - CLOCKIN → 08:25 (2025-08-26T08:25:00+02:00)
+2025-08-26 14:20:51,044 - INFO -  - CLOCKOUT → 14:30 (2025-08-26T14:30:00+02:00)
+2025-08-27 14:20:03,349 - INFO - Servicio iniciado. Se ejecutará la tarea diaria del 2025-08-27.
+2025-08-27 14:20:04,455 - INFO - Ejecutando tarea diaria de fichaje...
+2025-08-27 14:20:04,456 - INFO - Inicio de login con Selenium
+2025-08-27 14:20:23,656 - INFO - Login completado. Cookies y token guardados.
+2025-08-27 14:20:50,745 - WARNING - 2025-08-27 es viernes o vigilia anticipada. Jornada reducida.
+2025-08-27 14:20:50,746 - INFO - Fichajes programados para hoy:
+2025-08-27 14:20:50,747 - INFO -  - CLOCKIN → 08:23 (2025-08-27T08:23:00+02:00)
+2025-08-27 14:20:50,748 - INFO -  - CLOCKOUT → 14:31 (2025-08-27T14:31:00+02:00)

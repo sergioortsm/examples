@@ -9,6 +9,6 @@ def main(page: ft.Page):
     page.add(app)
 
 
-ft.app(target=main, port=8550, host="127.0.0.1", view=ft.AppView.WEB_BROWSER)
+ft.app(target=main, port=8550, host="127.0.0.1", assets_dir="../assets", view=ft.AppView.WEB_BROWSER)
 
 

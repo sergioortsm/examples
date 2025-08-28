@@ -32,6 +32,8 @@ class app_state:
             spacing=5, expand=3, scroll=ft.ScrollMode.AUTO
         )
         self._menu_control: ft.Column = ft.Column()
+        self._btnLinkSite: ft.IconButton = ft.IconButton()
+        self._btnLinkSubSite: ft.IconButton = ft.IconButton()
 
     # -------------------------
     # Métodos de acceso (getters/setters)
@@ -133,3 +135,9 @@ class app_state:
 
     def get_menu_control(self) -> ft.Column:
         return self._menu_control
+
+    def btnLinkSite(self) -> ft.IconButton:
+        return self._btnLinkSite
+    
+    def btnLinkSubSite(self) -> ft.IconButton:
+        return self._btnLinkSubSite

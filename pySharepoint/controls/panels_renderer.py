@@ -1,10 +1,12 @@
 # controls/render_panels.py
 from typing import Any, List, Optional
+import webbrowser
 import flet as ft
 from common.app_state import app_state
 from common.interfaces import ISiteCollection, RoleDefinition
+from common.utils import Utils
 
-class PanelsRenderer:
+class panels_renderer:
     def __init__(self, store: app_state, page: ft.Page):
         self.store = store
         self.page = page
@@ -78,15 +80,33 @@ class PanelsRenderer:
 
         cancel_edit()
 
-        return ft.ResponsiveRow(
-            controls=[
-                ft.Column([ft.Text(getattr(group, "Title", "Sin nombre"))],
-                          col={"xs": 12, "sm": 6, "md": 6}),
-                ft.Column([roles_col], col={"xs": 10, "sm": 5, "md": 5}),
-                ft.Column([actions_col], col={"xs": 2, "sm": 1, "md": 1}),
-            ],
-            spacing=10,
-            run_spacing=10,
+# ft.Container(
+#                 content=ft.ResponsiveRow(
+#                     controls=[
+#                         ft.Column([ft.Text("Group Name", weight=ft.FontWeight.BOLD)],
+#                                   col={"xs": 12, "sm": 6, "md": 6}),
+#                         ft.Column([ft.Text("Permissions Levels", weight=ft.FontWeight.BOLD)],
+#                                   col={"xs": 12, "sm": 6, "md": 6}),
+#                     ],
+#                     spacing=30,
+#                     run_spacing=10,
+                    
+#                 ),
+#                padding=ft.padding.symmetric(vertical=10, horizontal=20),
+#             )
+
+        return ft.Container(
+                ft.ResponsiveRow(
+                    controls=[
+                        ft.Column([ft.Text(getattr(group, "Title", "Sin nombre"))],
+                                col={"xs": 12, "sm": 6, "md": 6}),
+                        ft.Column([roles_col], col={"xs": 10, "sm": 5, "md": 5}),
+                        ft.Column([actions_col], col={"xs": 2, "sm": 1, "md": 1}),
+                    ],
+                    # spacing=10,
+                    # run_spacing=10,
+        ),
+          padding=ft.padding.symmetric(horizontal=20),
         )
 
     def render_groups_table_editable(self, groups):
@@ -103,8 +123,9 @@ class PanelsRenderer:
                     ],
                     spacing=30,
                     run_spacing=10,
+                    
                 ),
-                padding=ft.padding.symmetric(vertical=10, horizontal=20),
+               padding=ft.padding.symmetric(vertical=10, horizontal=20),
             )
         )
         for g in groups:
@@ -126,7 +147,7 @@ class PanelsRenderer:
             lista_title = selected_panel.data.get("title") # type: ignore
             self.store.set_list_selected({"Id": lista_id, "Title": lista_title}) # type: ignore
 
-        self.panel_list.update()
+        self.panel_list.update() # type: ignore
 
     def _on_tab_change(self, e: ft.ControlEvent, panel_idx: int):
         self.selected_tabs[panel_idx] = e.control.selected_index
@@ -145,10 +166,47 @@ class PanelsRenderer:
                     return found
         return None
 
+    def get_icon(self, template_id: int):
+        icon_map: dict[int, str] = {
+            100: ft.Icons.LIST_ALT,         # CustomList
+            101: ft.Icons.FOLDER,           # FolderHorizontal
+            102: ft.Icons.TABLE_BAR,        # Survey (aprox.)
+            103: ft.Icons.TABLE_ROWS,       # TableLink
+            104: ft.Icons.CAMPAIGN,         # Megaphone
+            105: ft.Icons.CONTACTS,         # ConnectContacts
+            106: ft.Icons.CALENDAR_MONTH,   # Calendar
+            107: ft.Icons.TASK,             # Task (puede variar)
+            109: ft.Icons.IMAGE,            # PictureLibrary
+            115: ft.Icons.DESCRIPTION,      # FormLibrary
+            119: ft.Icons.FOLDER,           # FolderHorizontal
+            120: ft.Icons.VIEW_LIST,        # GridViewSmall
+        }
 
+        # Icono por defecto si no existe
+        return icon_map.get(template_id, ft.Icons.LIBRARY_BOOKS)
+
+    def get_inheritance_icon(self, is_broken: bool) -> ft.IconButton:
+        
+
+        if is_broken:
+            return ft.IconButton(
+                    icon=ft.Icons.ACCOUNT_TREE_OUTLINED,
+                    tooltip="Break the inheritance: YES",
+                    icon_color=ft.Colors.RED,
+                    #on_click=lambda e, url=list_url: Utils.open_list_url(url, e) # type: ignore
+                )
+        else:
+            return ft.IconButton(
+                    icon=ft.Icons.ACCOUNT_TREE_ROUNDED,
+                    tooltip="Break the inheritance: NO",
+                    icon_color=ft.Colors.GREEN,
+                    #on_click=lambda e, url=list_url: Utils.open_list_url(url, e) # type: ignore
+                )
+        
     def render_lists_panels(self):
         all_lists = []
         
+            
         # Determinar qué URL usar (subsite tiene prioridad)
         selected_url = None
         if self.store.subsite_selected and self.store.subsite_selected.Url:
@@ -169,9 +227,11 @@ class PanelsRenderer:
         
         for i, lst in enumerate(all_lists):
             self.selected_tabs.setdefault(i, 0)
+            list_url = f"{self.store.helper.sp.site_url}{getattr(lst,"RootFolder")["ServerRelativeUrl"]}"
+            
             tabs = ft.Tabs(
                 selected_index=self.selected_tabs[i],
-                expand=1,
+                expand=1,           
                 on_change=lambda e, idx=i: self._on_tab_change(e, idx),
                 tabs=[
                     ft.Tab(
@@ -197,18 +257,47 @@ class PanelsRenderer:
             )
 
             body = ft.Container(content=tabs, padding=20, height=500)
+            
             panel = ft.ExpansionPanel(
-                header=ft.Text(getattr(lst, "Title", "Sin título"), weight=ft.FontWeight.BOLD),
+                #header=ft.Container(ft.Text(getattr(lst, "Title", "Sin título"), weight=ft.FontWeight.BOLD, size=20), padding=10),
+                header=ft.Container(
+                    content=ft.Row(
+                        [
+                            ft.Icon(self.get_icon(getattr(lst.Template, "templateID", 0)), size=24),
+                            ft.Text(
+                                getattr(lst, "Title", "Sin título"),
+                                weight=ft.FontWeight.NORMAL,
+                                size=20
+                            ),
+                            self.get_inheritance_icon(getattr(lst, "HasRoleUniqueAssigment", False)),
+                            ft.IconButton(
+                                icon=ft.Icons.OPEN_IN_NEW,
+                                tooltip="Open in Sharepoint",
+                                on_click=lambda e, url=list_url: Utils.open_list_url(url, e)
+                            )
+                        ],
+                        spacing=10,  # separación entre icono y texto
+                        vertical_alignment=ft.CrossAxisAlignment.CENTER
+                    ),
+                    padding=10,
+                ),
                 content=body,
                 adaptive=True,
-                data={"id": getattr(lst, "Id", None), "title": getattr(lst, "Title", None)}
+                data={"id": getattr(lst, "Id", None), "title": getattr(lst, "Title", None)},
+                bgcolor="#f3f2f1",
+                splash_color=ft.Colors.LIGHT_BLUE_50,
+                highlight_color=ft.Colors.GREY_200
             )
-            self.panels.append(panel)
+            
+            self.panels.append(panel) # type: ignore
 
         self.panel_list = ft.ExpansionPanelList(
             controls=self.panels,
-            on_change=self._handle_change,
+            spacing=20,
+            elevation=5,
+            on_change=self._handle_change
         )
+
 
         return ft.Column(
             [ft.Text("Libraries/Lists", size=18, weight=ft.FontWeight.BOLD), self.panel_list],

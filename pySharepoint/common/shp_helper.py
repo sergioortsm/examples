@@ -1,6 +1,7 @@
 import asyncio
 from typing import List, Dict, Any, Optional
 from common.interfaces import IGroup, IList, ISiteCollection, IUser, RoleDefinition
+from common.mapper import Mapper
 from common.template_info import list_template
 from common.sharepoint_client import sharepoint_client
 from dacite import from_dict, Config
@@ -211,7 +212,8 @@ class shp_helper:
                 print(f"Error en {site.Url}: {e}")
 
         return [s for s in updated_sites if s.SubSites] or sites
-
+    
+    
     async def fetch_administrators(self, site_url: str):
         admin_url = f"{site_url}/_api/web/siteusers?filter=IsSiteAdmin eq true"
         response = self.sp.get(admin_url)
@@ -222,7 +224,7 @@ class shp_helper:
                 if user.get("IsSiteAdmin") and user.get("UserPrincipalName")
             ]
             admins_sorted = sorted(admins, key=lambda u: u.get("Title", ""))
-            return admins_sorted
+            return Mapper.to_users(admins_sorted)
         else:
             raise Exception(f"Failed to fetch administrators data for {site_url}: {response}")
 
@@ -354,12 +356,60 @@ class shp_helper:
             try:
                     
                 admin_data = await self.fetch_admin_data(site.Url)
+                # u = [u for item in admin_data for u in item.get("Member", {})]
+                # u2 = [u for item in admin_data for u in item.get("Member", {}).get("Users") or []]
+                users: List[IUser] = []
+                groups: List[IGroup] = []
 
-                users = [u for item in admin_data for u in (item.get("Member", {}).get("Users") or []) if str(u.get("PrincipalType")) == "1"]
-                users = sorted(users, key=lambda u: u.get("Title", ""))
+                for item in admin_data:
+                    member = item.get("Member", {})
+                    pt = member.get("PrincipalType", 0)
 
-                groups = [u for item in admin_data for u in (item.get("Member", {}).get("Users") or []) if str(u.get("PrincipalType")) == "4"]
-                groups = sorted(groups, key=lambda u: u.get("Title", ""))
+                    # --- Roles ---
+                    roles_raw = item.get("RoleDefinitionBindings", [])
+                    roles = [
+                        RoleDefinition(
+                            Id=r.get("Id"),
+                            Name=r.get("Name"),
+                            Description=r.get("Description"),
+                            odata_id=r.get("@odata.id")
+                        )
+                        for r in roles_raw
+                    ]
+
+                    # --- Usuario individual ---
+                    if pt & 1:
+                        user = IUser(
+                            Id=member.get("Id"),
+                            Title=member.get("Title"),
+                            Email=member.get("Email"),
+                            Roles=roles
+                        )
+                        users.append(user)
+
+                    # --- Grupo ---
+                    elif pt & 8:
+                        # Mapear los usuarios dentro del grupo
+                        users_in_group = [
+                            IUser(
+                                Id=u.get("Id"),
+                                Title=u.get("Title"),
+                                Email=u.get("Email"),
+                                Roles=[]  # normalmente los usuarios del grupo no traen roles individuales
+                            )
+                            for u in member.get("Users", [])
+                        ]
+
+                        group = IGroup(
+                            Id=member.get("Id"),
+                            Title=member.get("Title"),
+                            Users=users_in_group,
+                            Roles=roles
+                        )
+                        groups.append(group)        
+
+                users = sorted(users, key=lambda u: u.Title or "") 
+                groups = sorted(groups, key=lambda u: u.Title or "")
 
                 administrators = await self.fetch_administrators(site.Url or "")
                 lists = await self.fetch_lists(site.Url or "", site)

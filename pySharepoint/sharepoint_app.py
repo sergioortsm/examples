@@ -2,8 +2,9 @@ from typing import List, Optional, Union
 import flet as ft
 from common.app_state import app_state
 from common.interfaces import IGroup, IList, ISiteCollection, IUser, RoleDefinition
+from common.utils import Utils
 from controls.render_loading import render_loading
-from controls.render_panels import PanelsRenderer
+from controls.panels_renderer import panels_renderer
 from services.shp_service import shp_service
 from common.shp_helper import shp_helper
 from controls.Text import TitleText
@@ -18,9 +19,16 @@ class SharePointApp(ft.Column):
         self.page.vertical_alignment = ft.MainAxisAlignment.START
         self.page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
         self.page.title = "App SharePoint Flet"
-        self.page.theme_mode = ft.ThemeMode.LIGHT
+        page.theme = ft.Theme(font_family="Verdana")
+        page.theme_mode = ft.ThemeMode.LIGHT
+        page.theme.page_transitions.windows = "cupertino" # type: ignore
+        page.fonts = {"Pacifico": "Pacifico-Regular.ttf"}
         self.page.padding = 20
-
+        self.page.fonts = {
+            "Roboto": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+        }
+        page.theme = ft.Theme(font_family="Roboto")
+        
         # Inicializar sp_service & helper si aún no están
         if not self.store.helper:
             self.store._sp_service = shp_service()
@@ -115,7 +123,10 @@ class SharePointApp(ft.Column):
             self.store._menu_control.controls.append(
                 ft.ListTile(
                     title=ft.Text(opt["Title"]),
-                    on_click=lambda e, opt=opt: self.cargar_datos_opcion(opt["Id"])
+                    on_click=lambda e, opt=opt: self.cargar_datos_opcion(opt["Id"]),
+                    bgcolor="#f3f2f1",
+                    horizontal_spacing=10,
+                    shape=ft.RoundedRectangleBorder(radius=5),
                 )
         )
             
@@ -230,7 +241,7 @@ class SharePointApp(ft.Column):
 
             # (Opcional) limpiar el área derecha
             self.store._lista_control.controls.clear()
-            panel_list = PanelsRenderer(self.store, self.page) # type: ignore
+            panel_list = panels_renderer(self.store, self.page) # type: ignore
             self.store._lista_control.controls.append(panel_list.render_lists_panels())
             #self.store.lista_control.controls.append(ft.Text("Selecciona una opción del menú de la izquierda"))
             self.page.update() # type: ignore
@@ -250,7 +261,7 @@ class SharePointApp(ft.Column):
 
             # Mostrar loader sobre el dropdown mientras procesa
             dd_subsites.disabled = True
-            subsites_loader_overlay.visible = True
+            #subsites_loader_overlay.visible = True
 
             # (Opcional) loading en el área derecha
             self.store._lista_control.controls.clear()
@@ -273,12 +284,12 @@ class SharePointApp(ft.Column):
                 self.store.set_site_collections(updated_collections)
 
             # Ocultar loader y habilitar dropdown
-            subsites_loader_overlay.visible = False
+           # subsites_loader_overlay.visible = False
             dd_subsites.disabled = False
 
             # (Ejemplo) pintar algo en el área derecha una vez cargado
             self.store._lista_control.controls.clear()
-            panel_list = PanelsRenderer(self.store, self.page) # type: ignore
+            panel_list = panels_renderer(self.store, self.page) # type: ignore
             #panel_list = render_lists_panels(self.store, self.page) # type: ignore
             self.store._lista_control.controls.append(panel_list.render_lists_panels())
             self.page.update() # type: ignore
@@ -291,15 +302,35 @@ class SharePointApp(ft.Column):
             t.value = f"Dropdown value is: {dd_sites.value}"
             t.update()
 
-        b = ft.ElevatedButton(text="Submit", on_click=button_clicked)
+        #b = ft.ElevatedButton(text="Submit", on_click=button_clicked)
 
+        if self.store.site_selected:
+            list_url = f"{getattr(self.store.site_selected, "Url")}"
+        else:
+            list_url = f"{getattr(self.store.helper.sp, "site_url")}"
+ 
+        btnLinkSite = ft.IconButton(
+            icon=ft.Icons.OPEN_IN_NEW,
+            tooltip="Open in Sharepoint",
+            on_click=lambda e, url=list_url: Utils.open_list_url(url, e) # type: ignore
+        )
+        
         t2 = ft.Text()
 
         def button_sub_clicked(e):
             t2.value = f"Dropdown value is: {dd_subsites.value}"
             t2.update()
 
-        b2 = ft.ElevatedButton(text="Submit", on_click=button_sub_clicked)
+        if not self.store.subsite_selected:
+            list_url = f"{getattr(self.store.helper.sp, "site_url")}"
+        
+        btnLinkSubSite = ft.IconButton(
+            icon=ft.Icons.OPEN_IN_NEW,
+            tooltip="Open in Sharepoint",
+            on_click=lambda e, url=list_url: Utils.open_list_url(url, e) # type: ignore
+        )
+        
+        #b2 = ft.ElevatedButton(text="Submit", on_click=button_sub_clicked)
                 
          #Cómo funciona este layout
         # ResponsiveRow divide la fila en una rejilla de 12 columnas.
@@ -313,10 +344,10 @@ class SharePointApp(ft.Column):
         filtros_row = ft.ResponsiveRow(
             controls=[
                 ft.Column(col={"xs": 12, "sm": 6, "md": 3}, controls=[dd_sites]),
-                ft.Column(col={"xs": 12, "sm": 6, "md": 1}, controls=[b]),
+                ft.Column(col={"xs": 12, "sm": 6, "md": 1}, controls=[btnLinkSite]),
                 ft.Column(col={"xs": 12, "sm": 6, "md": 1}, controls=[t]),
                 ft.Column(col={"xs": 12, "sm": 6, "md": 3}, controls=[subsites_stack]),
-                ft.Column(col={"xs": 12, "sm": 6, "md": 1}, controls=[b2]),
+                ft.Column(col={"xs": 12, "sm": 6, "md": 1}, controls=[btnLinkSubSite]),
                 ft.Column(col={"xs": 12, "sm": 6, "md": 1}, controls=[t2]),
             ],
             spacing=10,
@@ -361,36 +392,7 @@ class SharePointApp(ft.Column):
         )
     
         self.mostrar_opciones_menu()
-    
-# # -----------------------------
-# # Funciones de SharePoint
-# # -----------------------------
-# async def cargar_datos_sites(state: app_state) -> List[ISiteCollection]:
-#     site: ISiteCollection = state.site_selected or ISiteCollection(Title="", Url="")
-#     subsite: ISiteCollection = state.subsite_selected or ISiteCollection(Title="", Url="")
-#     datos_sites:List[ISiteCollection] = []
-        
-#     if site is None or site.Url == "":
-#         state.set_loading(False)
-#         return []
-        
-    
-#     state.set_loading(True)
-    
-#     if site.Url and not subsite.Url:
-#         datos_sites_temp = await state.helper.obtener_datos_site(site, es_subsite=False)
-#         datos_sites = await state.helper.obtener_datos_subsites(datos_sites_temp)
-#         datos_sites = await state.helper.rellenar_objetos_sites(datos_sites)
-#         state.set_roles_definiciones(await state.helper.map2dropdown_option_tooltips(site) or [])
-#     elif subsite.Url:
-#         datos_sites = await state.helper.rellenar_objetos_sites([subsite]) 
-#         state.set_roles_definiciones(await state.helper.map2dropdown_option_tooltips(subsite) or [])
-    
-#     state.set_loading(False)
-    
-#     return datos_sites
-
- 
+     
     # -----------------------
     # Evento cambio de site
     # -----------------------
@@ -424,18 +426,18 @@ class SharePointApp(ft.Column):
         if opcion_id == "users":
             for users in self.store.get_site_collections() or []: 
                 for u in users.Users or []: 
-                    self.store._lista_control.controls.append(render_card(u, self.page))
+                    self.store._lista_control.controls.append(render_card(u, self.page, self.store.get_roles_definiciones()))
         
         elif opcion_id == "admins":
             for users in self.store.get_site_collections() or []: 
                 for u in users.Admins or []: 
-                    self.store._lista_control.controls.append(render_card(u, self.page))
+                    self.store._lista_control.controls.append(render_card(u, self.page,self.store.get_roles_definiciones()))
         elif opcion_id == "groups":
             for users in self.store.get_site_collections() or []: 
                 for u in users.Groups or []: 
-                    self.store._lista_control.controls.append(render_card(u, self.page))
+                    self.store._lista_control.controls.append(render_card(u, self.page,self.store.get_roles_definiciones()))
         elif opcion_id == "libraries":
-            panel_list = PanelsRenderer(self.store, self.page) # type: ignore
+            panel_list = panels_renderer(self.store, self.page) # type: ignore
             self.store._lista_control.controls.append(panel_list.render_lists_panels())
         else:
             self.store._lista_control.controls.append(ft.Text("Opción no reconocida."))

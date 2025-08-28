@@ -1,9 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Any, List, Optional, Dict
 
-
-
-
 @dataclass
 class RoleDefinition:
     Id: Optional[int] = None
@@ -11,12 +8,14 @@ class RoleDefinition:
     Description: Optional[str] = None
     odata_id: Optional[str] = None  # '@odata.id'
 
+
 @dataclass
 class IUser:
     Id: Optional[int] = None
     Title: Optional[str] = None
     Email: Optional[str] = None
     Roles: List[RoleDefinition] = field(default_factory=list)
+    IsSiteAdmin: Optional[bool] = False
 
 @dataclass
 class IGroup:
