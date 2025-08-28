@@ -5,6 +5,7 @@ import flet as ft
 from common.app_state import app_state
 from common.interfaces import ISiteCollection, RoleDefinition
 from common.utils import Utils
+from controls.confirm_dialog import confirm_dialog
 
 class panels_renderer:
     def __init__(self, store: app_state, page: ft.Page):
@@ -13,7 +14,7 @@ class panels_renderer:
         self.expanded_index: Optional[int] = None
         self.selected_tabs: dict[int, int] = {}
         self.panels: list[ft.ExpansionPanel] = []
-
+   
     # --- Helpers -----------------------------------------------------------
 
     def _normalize_roles(self, items):
@@ -48,16 +49,18 @@ class panels_renderer:
 
         def _chips_from(roles):
             return ft.Row([ft.Chip(label=ft.Text(r["Name"])) for r in roles], wrap=True)
-
+            
         def cancel_edit(_=None):
             current = self._normalize_roles(getattr(group, "Roles", []))
             roles_col.controls = [_chips_from(current)]
             actions_col.controls = [
-                ft.IconButton(icon=ft.Icons.EDIT, tooltip="Editar", on_click=start_edit)
+                ft.IconButton(icon=ft.Icons.EDIT, tooltip="Edit", on_click=start_edit)
             ]
+            
+            dialog.open = False
             self.page.update()
 
-        def start_edit(_):
+        def start_edit(e):
             selected_ids = {r["Id"] for r in current_roles if r["Id"] is not None}
             cbs = [
                 ft.Checkbox(label=r["Name"], value=(r["Id"] in selected_ids))
@@ -65,7 +68,7 @@ class panels_renderer:
             ]
             roles_col.controls = cbs
             actions_col.controls = [
-                ft.IconButton(icon=ft.Icons.SAVE, tooltip="Guardar", on_click=save_edit),
+                ft.IconButton(icon=ft.Icons.SAVE, tooltip="Guardar", on_click=confirm_save_edit),
                 ft.IconButton(icon=ft.Icons.CANCEL, tooltip="Cancelar", on_click=cancel_edit),
             ]
             self.page.update()
@@ -76,24 +79,29 @@ class panels_renderer:
                 if isinstance(cb, ft.Checkbox) and cb.value:
                     selected_simple.append({"Id": role["Id"], "Name": role["Name"]})
             group.Roles = self._to_role_definitions(selected_simple)
-            cancel_edit()
+            dialog.open = False
+            cancel_edit(_)
+            _.control.page.update()
 
+        def close_dialog(_):
+            dialog.open = False
+            _.control.page.update()
+            
+        dialog = confirm_dialog(
+            message="Are you sure to perform the operation?",
+            on_confirm=save_edit,
+            on_cancel=close_dialog,
+            title="Confirm Save",
+            # yes_text="Yes",
+            # no_text="No"
+        )
+        
+        def confirm_save_edit(e):
+            e.control.page.overlay.append(dialog) # type: ignore     
+            dialog.open = True # type: ignore
+            e.control.page.update()
+                
         cancel_edit()
-
-# ft.Container(
-#                 content=ft.ResponsiveRow(
-#                     controls=[
-#                         ft.Column([ft.Text("Group Name", weight=ft.FontWeight.BOLD)],
-#                                   col={"xs": 12, "sm": 6, "md": 6}),
-#                         ft.Column([ft.Text("Permissions Levels", weight=ft.FontWeight.BOLD)],
-#                                   col={"xs": 12, "sm": 6, "md": 6}),
-#                     ],
-#                     spacing=30,
-#                     run_spacing=10,
-                    
-#                 ),
-#                padding=ft.padding.symmetric(vertical=10, horizontal=20),
-#             )
 
         return ft.Container(
                 ft.ResponsiveRow(
@@ -120,6 +128,9 @@ class panels_renderer:
                                   col={"xs": 12, "sm": 6, "md": 6}),
                         ft.Column([ft.Text("Permissions Levels", weight=ft.FontWeight.BOLD)],
                                   col={"xs": 12, "sm": 6, "md": 6}),
+                        ft.Row([
+                            ft.Container(expand=True, height=1, bgcolor=ft.Colors.GREY_300)
+                        ])
                     ],
                     spacing=30,
                     run_spacing=10,
@@ -284,9 +295,9 @@ class panels_renderer:
                 content=body,
                 adaptive=True,
                 data={"id": getattr(lst, "Id", None), "title": getattr(lst, "Title", None)},
-                bgcolor="#f3f2f1",
+                bgcolor=ft.Colors.GREY_100,
                 splash_color=ft.Colors.LIGHT_BLUE_50,
-                highlight_color=ft.Colors.GREY_200
+                highlight_color=ft.Colors.GREY_400
             )
             
             self.panels.append(panel) # type: ignore

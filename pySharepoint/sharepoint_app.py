@@ -124,7 +124,7 @@ class SharePointApp(ft.Column):
                 ft.ListTile(
                     title=ft.Text(opt["Title"]),
                     on_click=lambda e, opt=opt: self.cargar_datos_opcion(opt["Id"]),
-                    bgcolor="#f3f2f1",
+                    bgcolor=ft.Colors.GREY_100,
                     horizontal_spacing=10,
                     shape=ft.RoundedRectangleBorder(radius=5),
                 )
@@ -233,6 +233,7 @@ class SharePointApp(ft.Column):
                 ft.dropdown.Option(key=sub.Url, text=sub.Title)
                 for sub in subsites_flat
             ]
+            
             dd_subsites.value = None
 
             # Ocultar loader y habilitar dropdown
@@ -331,7 +332,60 @@ class SharePointApp(ft.Column):
         )
         
         #b2 = ft.ElevatedButton(text="Submit", on_click=button_sub_clicked)
+
+                            
+        async def on_upsite(e):
+            
+            def on_upsite_click(e):
+                dd_subsites.value = None   # <-- quitar selección
+                for opt in dd_subsites.options:  # type: ignore # <-- asegurarse que ninguna quedó marcada
+                    opt.selected = False # type: ignore
+                dd_subsites.update()
+            
+            # 1. Resetear subsite
+            self.store.set_subsite_selected(ISiteCollection(Title="", Url=""))
+            # dd_subsites.options = []
+            on_upsite_click(e)
+
+            # 2. Mostrar loading mientras se recarga
+            self.store._lista_control.controls.clear()
+            self.store._lista_control.controls.append(render_loading())
+            self.page.update()  # type: ignore
+
+            # 3. Recargar datos del site raíz
+            if self.store.site_selected and self.store.site_selected.Url:
+                site = await self.store.helper.cargar_datos_sites()
+                # Reemplazo en el árbol
+                updated_collections = self.store.helper._replace_site_in_tree(
+                    self.store.get_site_collections(),
+                    site[0]
+                )
+                self.store.set_site_collections(updated_collections)
+
+            # 4. Repintar panel derecho
+            self.store._lista_control.controls.clear()
+            panel_list = panels_renderer(self.store, self.page)  # type: ignore
+            self.store._lista_control.controls.append(panel_list.render_lists_panels())
+
+            # 5. Ocultar botón si ya no hay subsite
+            btn_upsite.visible = False
+            self.page.update()  # type: ignore
+
+
+        # Botón “subir nivel”
+        btn_upsite = ft.IconButton(
+            icon=ft.Icons.ARROW_UPWARD,
+            icon_size=19,
+            tooltip="Up level",
+            #on_click=on_upsite,
+            on_click=lambda e: self.page.run_task(on_upsite, e),  # 🔹 así se llama async # type: ignore
+            style=ft.ButtonStyle(
+                bgcolor={ft.ControlState.HOVERED: "transparent"}
+            ),    
+           # visible=bool(self.store.subsite_selected and self.store.subsite_selected.Url)
+        )
                 
+        
          #Cómo funciona este layout
         # ResponsiveRow divide la fila en una rejilla de 12 columnas.
         # col={"xs": 12} → ocupa todo el ancho en móviles.
@@ -339,21 +393,26 @@ class SharePointApp(ft.Column):
         # col={"md": 4} → ocupa 4 columnas de 12 en escritorio.
         # Si no cabe, el control automáticamente baja a la siguiente fila.
         # run_spacing añade espacio vertical entre las filas cuando hacen wrap.
-        
-        # ResponsiveRow para filtros        
-        filtros_row = ft.ResponsiveRow(
-            controls=[
-                ft.Column(col={"xs": 12, "sm": 6, "md": 3}, controls=[dd_sites]),
-                ft.Column(col={"xs": 12, "sm": 6, "md": 1}, controls=[btnLinkSite]),
-                ft.Column(col={"xs": 12, "sm": 6, "md": 1}, controls=[t]),
-                ft.Column(col={"xs": 12, "sm": 6, "md": 3}, controls=[subsites_stack]),
-                ft.Column(col={"xs": 12, "sm": 6, "md": 1}, controls=[btnLinkSubSite]),
-                ft.Column(col={"xs": 12, "sm": 6, "md": 1}, controls=[t2]),
-            ],
-            spacing=10,
-            run_spacing=10
-        )      
-                
+
+        # Contenedor con estilo para los filtros
+        filtros_row =  ft.Container(
+            content=ft.ResponsiveRow(
+                controls=[
+                    ft.Column(col={"xs": 12, "sm": 6, "md": 3}, controls=[dd_sites]),
+                    ft.Column(col={"xs": 12, "sm": 6, "md": 1}, controls=[btnLinkSite]),
+                    ft.Column(col={"xs": 12, "sm": 6, "md": 1}, controls=[t]),
+                    ft.Column(col={"xs": 12, "sm": 6, "md": 3}, controls=[subsites_stack]),
+                    ft.Column(col={"xs": 12, "sm": 6, "md": 1}, controls=[btnLinkSubSite]),
+                    ft.Column(col={"xs": 12, "sm": 6, "md": 1}, controls=[btn_upsite]),
+                ],
+                spacing=10,
+                run_spacing=10
+            ),
+            bgcolor=ft.Colors.GREY_100,
+            border_radius=8,
+            padding=10,
+            margin=ft.margin.only(left=5, right=5, top=5, bottom=10),
+        )
         self.store._lista_control = ft.Column(spacing=5, expand=3, scroll=ft.ScrollMode.AUTO)
         
         if self.store.is_loading():

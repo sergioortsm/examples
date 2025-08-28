@@ -1,6 +1,5 @@
 from typing import Union
 import flet as ft
-
 from common.interfaces import IGroup, IUser
 
 
@@ -49,11 +48,7 @@ def editar_card(e, usuario:Union[IUser, IGroup], page, all_roles):
 
     # checkboxes con roles
     selected_ids = {r.Id for r in usuario.Roles or [] if r.Id is not None}
-    
-    print("selected_ids =", selected_ids, [type(x) for x in selected_ids])
-    for r in all_roles:
-        print("Comparando:", r["key"], type(r["key"]), "->", int(r["key"]) in selected_ids)
-        
+
     cbs = [
         ft.Checkbox(label=r["text"], value=(int(r["key"]) in selected_ids))
         for r in all_roles
