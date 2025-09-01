@@ -57,7 +57,7 @@ class panels_renderer:
                 ft.IconButton(icon=ft.Icons.EDIT, tooltip="Edit", on_click=start_edit)
             ]
             
-            dialog.open = False
+            # dialog.open = False
             self.page.update()
 
         def start_edit(e):
@@ -79,13 +79,14 @@ class panels_renderer:
                 if isinstance(cb, ft.Checkbox) and cb.value:
                     selected_simple.append({"Id": role["Id"], "Name": role["Name"]})
             group.Roles = self._to_role_definitions(selected_simple)
-            dialog.open = False
             cancel_edit(_)
-            _.control.page.update()
+            
+            self.page.update()
 
         def close_dialog(_):
-            dialog.open = False
-            _.control.page.update()
+            self.page.update()
+            # dialog.open = False
+            # _.control.page.update()
             
         dialog = confirm_dialog(
             message="Are you sure to perform the operation?",
@@ -97,10 +98,11 @@ class panels_renderer:
         )
         
         def confirm_save_edit(e):
-            e.control.page.overlay.append(dialog) # type: ignore     
-            dialog.open = True # type: ignore
-            e.control.page.update()
-                
+            if dialog not in e.page.overlay:
+                    e.page.overlay.append(dialog)
+            dialog.open = True
+            e.page.update()
+
         cancel_edit()
 
         return ft.Container(

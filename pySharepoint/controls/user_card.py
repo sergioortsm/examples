@@ -1,6 +1,6 @@
 from typing import Union
 import flet as ft
-from common.interfaces import IGroup, IUser
+from common.interfaces import IGroup, IUser, RoleDefinition
 
 
 def render_card(usuario: Union[IUser, IGroup], page, all_roles):
@@ -55,10 +55,10 @@ def editar_card(e, usuario:Union[IUser, IGroup], page, all_roles):
     ]
 
     def guardar(_):
-        selected_simple = []
+        selected_simple: list[RoleDefinition] = []
         for cb, role in zip(cbs, all_roles):
             if isinstance(cb, ft.Checkbox) and cb.value:
-                selected_simple.append({"Id": role["Id"], "Name": role["Name"]})
+                selected_simple.append(RoleDefinition(Id=role["key"], Name=role["text"]))
         usuario.Roles = selected_simple
         card.content = render_card(usuario, page, all_roles).content
         page.update()

@@ -5,6 +5,7 @@ from common.interfaces import IGroup, IList, ISiteCollection, IUser, RoleDefinit
 from common.utils import Utils
 from controls.render_loading import render_loading
 from controls.panels_renderer import panels_renderer
+from controls.side_bar import side_bar
 from services.shp_service import shp_service
 from common.shp_helper import shp_helper
 from controls.Text import TitleText
@@ -21,11 +22,11 @@ class SharePointApp(ft.Column):
         self.page.title = "App SharePoint Flet"
         page.theme = ft.Theme(font_family="Verdana")
         page.theme_mode = ft.ThemeMode.LIGHT
-        page.theme.page_transitions.windows = "cupertino" # type: ignore
-        page.fonts = {"Pacifico": "Pacifico-Regular.ttf"}
+        page.theme.page_transitions.windows = "cupertino" # type: ignore      
         self.page.padding = 20
         self.page.fonts = {
-            "Roboto": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+            "Pacifico": "Pacifico-Regular.ttf",
+           # "Roboto": "https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
         }
         page.theme = ft.Theme(font_family="Roboto")
         
@@ -35,9 +36,7 @@ class SharePointApp(ft.Column):
             self.store._helper = shp_helper(self.store._sp_service.sp, self.store, cache=self.store._cache)
 
         # Controles persistentes
-        # self.menu_control = ft.Column()
-        # self.lista_control = ft.Column(spacing=5, expand=3, scroll=ft.ScrollMode.AUTO)
-
+        self.sidebar = side_bar(self, self.store, self.page, on_nav_change=self.handle_sidebar_selection)
         # Pantalla inicial
         self.show_login()
 
@@ -120,18 +119,18 @@ class SharePointApp(ft.Column):
         ]
         
         for opt in opciones:
-            self.store._menu_control.controls.append(
-                ft.ListTile(
+            lista_menu =   ft.ListTile(
                     title=ft.Text(opt["Title"]),
                     on_click=lambda e, opt=opt: self.cargar_datos_opcion(opt["Id"]),
                     bgcolor=ft.Colors.GREY_100,
                     horizontal_spacing=10,
                     shape=ft.RoundedRectangleBorder(radius=5),
-                )
-        )
+            )
+            sidebar = self.sidebar
+            self.store._menu_control.controls = [sidebar]
             
         self.page.update() # type: ignore
-            
+
     # -----------------------
     # Pantalla principal
     # -----------------------
@@ -149,331 +148,6 @@ class SharePointApp(ft.Column):
                     return found
         return None
     
-    async def show_main_page(self):
-        self.page.clean()    # type: ignore
-         
-        # Cargar site inicial
-        site_info = ISiteCollection(
-                        Title="Prueba",
-                        Url="https://sortsactivedev.sharepoint.com/sites/prueba")
-        
-        sites = await self.store.helper.obtener_datos_site(site_info, es_subsite=False)
-
-        self.store.set_site_collections(await self.store.helper.cargar_datos_sites())
-        
-        # Dropdowns
-        dd_sites = ft.Dropdown(
-            label="Selecciona un site",
-            width=450,
-            options=[
-                ft.dropdown.Option(key=s.Url, text=s.Title) for s in sites # type: ignore
-            ]
-        )
-
-        # Definimos el loader pero oculto al inicio
-        subsites_loader = ft.ProgressRing(visible=False, width=20, height=20)
-
-
-        dd_subsites = ft.Dropdown(
-            label="Selecciona un subsite",
-            width=400,
-            disabled=True,
-            options=[]
-        )
-
-        # Loader que se superpone encima del dropdown
-        subsites_loader_overlay = ft.Container(
-            content=ft.ProgressRing(width=24, height=24),
-            alignment=ft.alignment.center,
-            visible=False,      # visible solo mientras se cargan subsites
-        )
-
-        # Stack: primero el dropdown, arriba el loader superpuesto
-        subsites_stack = ft.Stack(
-            controls=[dd_subsites, subsites_loader_overlay],
-            width=400,
-            height=56,  # alto aproximado del campo para centrar el loader
-        )
-        
-        # Evento cambio de site
-        async def on_site_change(e):
-            selected_key = dd_sites.value
-            self.store.set_site_selected(next(
-                (ISiteCollection(Title=s.Title, Url=s.Url) for s in sites if s.Url == selected_key),
-                ISiteCollection(Title="", Url="")
-            ))
-            self.store.set_subsite_selected(ISiteCollection(Title="", Url=""))
-
-            # Mostrar loader sobre el dropdown y deshabilitarlo
-            dd_subsites.disabled = True
-            subsites_loader_overlay.visible = True
-            self.page.update() # type: ignore
-
-            # (Opcional) muestra loading también en el área derecha
-            self.store._lista_control.controls.clear()
-            self.store._lista_control.controls.append(
-                ft.Row([ft.ProgressRing(), ft.Text("Cargando datos del site...")],
-                    alignment=ft.MainAxisAlignment.CENTER)
-            )
-            self.page.update() # type: ignore
-
-            # Cargar datos (tu función existente)
-            self.store.set_site_collections(await self.store.helper.cargar_datos_sites())
-
-            # Construir opciones de subsites
-            subsite_filtrados = [
-                obj for obj in (self.store.get_site_collections() or [])
-                if getattr(obj, "SubSites", None) and obj.Title == self.store._site_selected.Title # type: ignore
-            ]
-            subsites_flat = []
-            for site_obj in subsite_filtrados:
-                subsites_flat.extend(site_obj.SubSites or [])
-
-            dd_subsites.options = [
-                ft.dropdown.Option(key=sub.Url, text=sub.Title)
-                for sub in subsites_flat
-            ]
-            
-            dd_subsites.value = None
-
-            # Ocultar loader y habilitar dropdown
-            subsites_loader_overlay.visible = False
-            dd_subsites.disabled = False
-
-            # (Opcional) limpiar el área derecha
-            self.store._lista_control.controls.clear()
-            panel_list = panels_renderer(self.store, self.page) # type: ignore
-            self.store._lista_control.controls.append(panel_list.render_lists_panels())
-            #self.store.lista_control.controls.append(ft.Text("Selecciona una opción del menú de la izquierda"))
-            self.page.update() # type: ignore
-            
-        # 🟢 mostrar dropdown con datos y ocultar loader
-        subsites_loader.visible = False
-        dd_subsites.visible = True
-        dd_subsites.disabled = False
-        self.page.update() # type: ignore
-
-        dd_sites.on_change = on_site_change
-
-        # Evento cambio de subsite
-        async def on_subsite_change(e):
-            selected_key = dd_sites.value
-            selected_key_sub = dd_subsites.value
-
-            # Mostrar loader sobre el dropdown mientras procesa
-            dd_subsites.disabled = True
-            #subsites_loader_overlay.visible = True
-
-            # (Opcional) loading en el área derecha
-            self.store._lista_control.controls.clear()
-            self.store._lista_control.controls.append(render_loading())
-            self.page.update() # type: ignore
-
-            site = self.find_site_by_url(self.store.get_site_collections() or [], selected_key_sub)
-            # Establecer subsite seleccionado a partir de site_collections
-            self.store.set_subsite_selected(
-                site if site else ISiteCollection(Title="", Url="")
-            )
-            
-            if self.store.subsite_selected and self.store.subsite_selected.Url:
-                subsite = await self.store.helper.cargar_datos_sites()                
-                # Obtienes el árbol actual
-                site_collections = self.store.get_site_collections()
-                # Reemplazas el subsite en el árbol
-                updated_collections = self.store.helper._replace_site_in_tree(site_collections, subsite[0])
-                # Guardas el nuevo árbol en store
-                self.store.set_site_collections(updated_collections)
-
-            # Ocultar loader y habilitar dropdown
-           # subsites_loader_overlay.visible = False
-            dd_subsites.disabled = False
-
-            # (Ejemplo) pintar algo en el área derecha una vez cargado
-            self.store._lista_control.controls.clear()
-            panel_list = panels_renderer(self.store, self.page) # type: ignore
-            #panel_list = render_lists_panels(self.store, self.page) # type: ignore
-            self.store._lista_control.controls.append(panel_list.render_lists_panels())
-            self.page.update() # type: ignore
-        
-        dd_subsites.on_change = on_subsite_change
-
-        t = ft.Text()
-
-        def button_clicked(e):
-            t.value = f"Dropdown value is: {dd_sites.value}"
-            t.update()
-
-        #b = ft.ElevatedButton(text="Submit", on_click=button_clicked)
-
-        if self.store.site_selected:
-            list_url = f"{getattr(self.store.site_selected, "Url")}"
-        else:
-            list_url = f"{getattr(self.store.helper.sp, "site_url")}"
- 
-        btnLinkSite = ft.IconButton(
-            icon=ft.Icons.OPEN_IN_NEW,
-            tooltip="Open in Sharepoint",
-            on_click=lambda e, url=list_url: Utils.open_list_url(url, e) # type: ignore
-        )
-        
-        t2 = ft.Text()
-
-        def button_sub_clicked(e):
-            t2.value = f"Dropdown value is: {dd_subsites.value}"
-            t2.update()
-
-        if not self.store.subsite_selected:
-            list_url = f"{getattr(self.store.helper.sp, "site_url")}"
-        
-        btnLinkSubSite = ft.IconButton(
-            icon=ft.Icons.OPEN_IN_NEW,
-            tooltip="Open in Sharepoint",
-            on_click=lambda e, url=list_url: Utils.open_list_url(url, e) # type: ignore
-        )
-        
-        #b2 = ft.ElevatedButton(text="Submit", on_click=button_sub_clicked)
-
-                            
-        async def on_upsite(e):
-            
-            def on_upsite_click(e):
-                dd_subsites.value = None   # <-- quitar selección
-                for opt in dd_subsites.options:  # type: ignore # <-- asegurarse que ninguna quedó marcada
-                    opt.selected = False # type: ignore
-                dd_subsites.update()
-            
-            # 1. Resetear subsite
-            self.store.set_subsite_selected(ISiteCollection(Title="", Url=""))
-            # dd_subsites.options = []
-            on_upsite_click(e)
-
-            # 2. Mostrar loading mientras se recarga
-            self.store._lista_control.controls.clear()
-            self.store._lista_control.controls.append(render_loading())
-            self.page.update()  # type: ignore
-
-            # 3. Recargar datos del site raíz
-            if self.store.site_selected and self.store.site_selected.Url:
-                site = await self.store.helper.cargar_datos_sites()
-                # Reemplazo en el árbol
-                updated_collections = self.store.helper._replace_site_in_tree(
-                    self.store.get_site_collections(),
-                    site[0]
-                )
-                self.store.set_site_collections(updated_collections)
-
-            # 4. Repintar panel derecho
-            self.store._lista_control.controls.clear()
-            panel_list = panels_renderer(self.store, self.page)  # type: ignore
-            self.store._lista_control.controls.append(panel_list.render_lists_panels())
-
-            # 5. Ocultar botón si ya no hay subsite
-            btn_upsite.visible = False
-            self.page.update()  # type: ignore
-
-
-        # Botón “subir nivel”
-        btn_upsite = ft.IconButton(
-            icon=ft.Icons.ARROW_UPWARD,
-            icon_size=19,
-            tooltip="Up level",
-            #on_click=on_upsite,
-            on_click=lambda e: self.page.run_task(on_upsite, e),  # 🔹 así se llama async # type: ignore
-            style=ft.ButtonStyle(
-                bgcolor={ft.ControlState.HOVERED: "transparent"}
-            ),    
-           # visible=bool(self.store.subsite_selected and self.store.subsite_selected.Url)
-        )
-                
-        
-         #Cómo funciona este layout
-        # ResponsiveRow divide la fila en una rejilla de 12 columnas.
-        # col={"xs": 12} → ocupa todo el ancho en móviles.
-        # col={"sm": 6} → ocupa media fila en tablet.
-        # col={"md": 4} → ocupa 4 columnas de 12 en escritorio.
-        # Si no cabe, el control automáticamente baja a la siguiente fila.
-        # run_spacing añade espacio vertical entre las filas cuando hacen wrap.
-
-        # Contenedor con estilo para los filtros
-        filtros_row =  ft.Container(
-            content=ft.ResponsiveRow(
-                controls=[
-                    ft.Column(col={"xs": 12, "sm": 6, "md": 3}, controls=[dd_sites]),
-                    ft.Column(col={"xs": 12, "sm": 6, "md": 1}, controls=[btnLinkSite]),
-                    ft.Column(col={"xs": 12, "sm": 6, "md": 1}, controls=[t]),
-                    ft.Column(col={"xs": 12, "sm": 6, "md": 3}, controls=[subsites_stack]),
-                    ft.Column(col={"xs": 12, "sm": 6, "md": 1}, controls=[btnLinkSubSite]),
-                    ft.Column(col={"xs": 12, "sm": 6, "md": 1}, controls=[btn_upsite]),
-                ],
-                spacing=10,
-                run_spacing=10
-            ),
-            bgcolor=ft.Colors.GREY_100,
-            border_radius=8,
-            padding=10,
-            margin=ft.margin.only(left=5, right=5, top=5, bottom=10),
-        )
-        self.store._lista_control = ft.Column(spacing=5, expand=3, scroll=ft.ScrollMode.AUTO)
-        
-        if self.store.is_loading():
-            self.store._lista_control.controls.clear()
-            self.store._lista_control.controls.append(render_loading())
-        else:       
-            self.store._lista_control.controls.clear()
-        
-        self.page.update() # type: ignore
-
-        contenido_row = ft.Row(
-            [
-                ft.Container(
-                    content=self.store._menu_control,
-                    expand=1,
-                    padding=10
-                ),
-                ft.VerticalDivider(thickness=1, width=20),
-                ft.Container(
-                    content=self.store._lista_control,
-                    expand=3,
-                    padding=10
-                )
-            ],
-            spacing=0,
-            expand=True,
-            vertical_alignment=ft.CrossAxisAlignment.START
-        )
-        
-        # Layout principal
-        self.page.add( # type: ignore
-            ft.Column([
-                filtros_row,
-                contenido_row
-            ], expand=True, spacing=20)
-        )
-    
-        self.mostrar_opciones_menu()
-     
-    # -----------------------
-    # Evento cambio de site
-    # -----------------------
-    async def on_site_change(self, e: ft.ControlEvent):
-        site_url = e.control.value
-        site = next((s for s in self.store.get_site_collections() if s.Url == site_url), None)
-        if not site:
-            return
-        self.store.set_site_selected(site)
-        self.mostrar_opciones_menu()
-        self.page.update() # type: ignore
-        
-    # -----------------------
-    # Evento click subsite
-    # -----------------------
-    def on_subsite_click(self, subsite: ISiteCollection):
-        self.store.set_subsite_selected(subsite)
-        # Vuelvo a mostrar menú, pero del subsite
-        #self.page.add(render_loading("Cargando subsite...")) # type: ignore
-        self.page.update() # type: ignore
-        self.page.run_task(self.mostrar_opciones_menu, subsite) # type: ignore
-
     # -----------------------------
     # Cargar datos en lista principal
     # -----------------------------
@@ -482,26 +156,211 @@ class SharePointApp(ft.Column):
        
         self.store._lista_control.controls.clear()
 
-        if opcion_id == "users":
+        if opcion_id == "Site Users":
             for users in self.store.get_site_collections() or []: 
                 for u in users.Users or []: 
-                    self.store._lista_control.controls.append(render_card(u, self.page, self.store.get_roles_definiciones()))
-        
-        elif opcion_id == "admins":
+                    self.store._lista_control.controls.append(render_card(u, self.page, self.store.get_roles_definiciones()))        
+        elif opcion_id == "Site Administrators":
             for users in self.store.get_site_collections() or []: 
                 for u in users.Admins or []: 
                     self.store._lista_control.controls.append(render_card(u, self.page,self.store.get_roles_definiciones()))
-        elif opcion_id == "groups":
+        elif opcion_id == "Site Groups":
             for users in self.store.get_site_collections() or []: 
                 for u in users.Groups or []: 
                     self.store._lista_control.controls.append(render_card(u, self.page,self.store.get_roles_definiciones()))
-        elif opcion_id == "libraries":
+        elif opcion_id == "Lists/Libraries":
             panel_list = panels_renderer(self.store, self.page) # type: ignore
             self.store._lista_control.controls.append(panel_list.render_lists_panels())
         else:
             self.store._lista_control.controls.append(ft.Text("Opción no reconocida."))
 
         self.page.update() # type: ignore
+
+    def handle_sidebar_selection(self, opcion_Id):
+        self.cargar_datos_opcion(opcion_Id)
+
+    async def show_main_page(self):
+        self.page.clean()    # type: ignore
+        
+        # Site inicial
+        site_info = ISiteCollection(
+                        Title="Prueba",
+                        Url="https://sortsactivedev.sharepoint.com/sites/prueba")
+        
+        self.store.set_site_selected(site_info)
+
+        # Dropdowns
+        dd_sites = ft.Dropdown(label="Selecciona un site", width=450, options=[])
+        dd_subsites = ft.Dropdown(label="Selecciona un subsite", width=400, disabled=True, options=[])
+
+        # Loader superpuesto al dropdown de subsites
+        subsites_loader_overlay = ft.Container(
+            content=ft.ProgressRing(width=24, height=24),
+            alignment=ft.alignment.center,
+            visible=False,
+        )
+        subsites_stack = ft.Stack([dd_subsites, subsites_loader_overlay], width=400, height=56)
+
+        # Área derecha: empieza con loader
+        self.store._lista_control = ft.Column(spacing=5, expand=3, scroll=ft.ScrollMode.AUTO)
+        self.store._lista_control.controls.clear()
+        self.store._lista_control.controls.append(render_loading())
+
+        # Botones de acción
+        btnLinkSite = ft.IconButton(icon=ft.Icons.OPEN_IN_NEW, tooltip="Abrir en SharePoint")
+        btnLinkSubSite = ft.IconButton(icon=ft.Icons.OPEN_IN_NEW, tooltip="Abrir subsite en SharePoint")
+        btn_upsite = ft.IconButton(icon=ft.Icons.ARROW_UPWARD, tooltip="Subir nivel")
+
+        # --- Eventos async ---
+
+        async def on_site_change(e):
+            selected_key = dd_sites.value
+            self.store.set_site_selected(
+                next((ISiteCollection(Title=s.Title, Url=s.Url) for s in sites if s.Url == selected_key), # type: ignore
+                    ISiteCollection(Title="", Url=""))
+            )
+            self.store.set_subsite_selected(ISiteCollection(Title="", Url=""))
+
+            # Mostrar loader
+            dd_subsites.disabled = True
+            subsites_loader_overlay.visible = True
+            self.store._lista_control.controls.clear()
+            self.store._lista_control.controls.append(render_loading())
+            self.page.update() # type: ignore
+
+            # Cargar colecciones
+            self.store.set_site_collections(await self.store.helper.cargar_datos_sites())
+
+            # Subsites
+            subsite_filtrados = [
+                obj for obj in (self.store.get_site_collections() or [])
+                if getattr(obj, "SubSites", None) and obj.Title == self.store._site_selected.Title # type: ignore
+            ]
+            subsites_flat = []
+            for site_obj in subsite_filtrados:
+                subsites_flat.extend(site_obj.SubSites or [])
+
+            dd_subsites.options = [ft.dropdown.Option(key=sub.Url, text=sub.Title) for sub in subsites_flat]
+            dd_subsites.value = None
+
+            # Quitar loader
+            subsites_loader_overlay.visible = False
+            dd_subsites.disabled = False
+
+            # Pintar panel derecho
+            self.store._lista_control.controls.clear()
+            panel_list = panels_renderer(self.store, self.page)  # type: ignore
+            self.store._lista_control.controls.append(panel_list.render_lists_panels())
+            self.page.update() # type: ignore
+
+        async def on_subsite_change(e):
+            selected_key_sub = dd_subsites.value
+
+            # Mostrar loader
+            dd_subsites.disabled = True
+            self.store._lista_control.controls.clear()
+            self.store._lista_control.controls.append(render_loading())
+            self.page.update() # type: ignore
+
+            site = self.find_site_by_url(self.store.get_site_collections() or [], selected_key_sub)
+            self.store.set_subsite_selected(site if site else ISiteCollection(Title="", Url=""))
+
+            if self.store.subsite_selected and self.store.subsite_selected.Url:
+                subsite = await self.store.helper.cargar_datos_sites()
+                updated_collections = self.store.helper._replace_site_in_tree(
+                    self.store.get_site_collections(), subsite[0]
+                )
+                self.store.set_site_collections(updated_collections)
+
+            # Quitar loader
+            dd_subsites.disabled = False
+
+            # Pintar panel derecho
+            self.store._lista_control.controls.clear()
+            panel_list = panels_renderer(self.store, self.page)  # type: ignore
+            self.store._lista_control.controls.append(panel_list.render_lists_panels())
+            
+            self.sidebar.select_item(1)
+            
+            self.page.update() # type: ignore
+
+        async def load_data_site(e):
+            # Mostrar loader en subsites
+            dd_subsites.disabled = True
+            subsites_loader_overlay.visible = True
+            self.page.update() # type: ignore
+
+            # Cargar colecciones
+            self.store.set_site_collections(await self.store.helper.cargar_datos_sites())
+            nonlocal_sites = await self.store.helper.obtener_datos_site(site_info, es_subsite=False)
+
+            # Sites en dropdown
+            dd_sites.options = [ft.dropdown.Option(key=s.Url, text=s.Title) for s in nonlocal_sites]
+            dd_sites.value = self.store.site_selected.Url if self.store.site_selected else None
+
+            # Subsites
+            subsite_filtrados = [
+                obj for obj in (self.store.get_site_collections() or [])
+                if getattr(obj, "SubSites", None) and obj.Title == self.store._site_selected.Title # type: ignore
+            ]
+            subsites_flat = []
+            for site_obj in subsite_filtrados:
+                subsites_flat.extend(site_obj.SubSites or [])
+
+            dd_subsites.options = [ft.dropdown.Option(key=sub.Url, text=sub.Title) for sub in subsites_flat]
+            dd_subsites.value = None
+
+            # Quitar loader
+            subsites_loader_overlay.visible = False
+            dd_subsites.disabled = False
+
+            # Pintar panel derecho
+            self.store._lista_control.controls.clear()
+            panel_list = panels_renderer(self.store, self.page)  # type: ignore
+            self.store._lista_control.controls.append(panel_list.render_lists_panels())
+            self.page.update() # type: ignore
+
+        # --- Asignar eventos ---
+        dd_sites.on_change = on_site_change
+        dd_subsites.on_change = on_subsite_change
+
+        # --- Layout de filtros ---
+        filtros_row = ft.Container(
+            content=ft.ResponsiveRow(
+                controls=[
+                    ft.Column(col={"xs": 12, "sm": 6, "md": 3}, controls=[dd_sites]),
+                    ft.Column(col={"xs": 12, "sm": 6, "md": 1}, controls=[btnLinkSite]),
+                    ft.Column(col={"xs": 12, "sm": 6, "md": 3}, controls=[subsites_stack]),
+                    ft.Column(
+                        col={"xs": 12, "sm": 6, "md": 2},
+                        controls=[ft.Row([btnLinkSubSite, btn_upsite], spacing=5)]
+                    ),
+                ],
+                spacing=0,
+            ),
+            bgcolor=ft.Colors.GREY_100,
+            border_radius=8,
+            padding=10,
+            margin=ft.margin.only(left=5, right=5, top=5, bottom=10),
+        )
+
+        # --- Layout principal ---
+        contenido_row = ft.Row(
+            [
+                ft.Container(content=self.store._menu_control, expand=1, padding=10),
+                ft.VerticalDivider(thickness=1, width=20),
+                ft.Container(content=self.store._lista_control, expand=6, padding=10),
+            ],
+            spacing=0,
+            expand=True,
+            vertical_alignment=ft.CrossAxisAlignment.START,
+        )
+        self.mostrar_opciones_menu()
+        self.page.add(ft.Column([filtros_row, contenido_row], expand=True)) # type: ignore
+        self.page.update()  # type: ignore # 👈 usuario ve loader inmediatamente
+
+        # 🔹 lanzar carga inicial en background
+        self.page.run_task(load_data_site, None) # type: ignore
 
 
 def on_actualizar_multi_edit(
