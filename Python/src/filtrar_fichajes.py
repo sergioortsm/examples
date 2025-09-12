@@ -7,6 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 import time
 import os
 from config import URL_FICHAJE, USUARIO
@@ -25,13 +26,14 @@ def obtenerFichajesRealizados():
     
     load_dotenv(dotenv_path)
     options = Options()
-    options.add_argument("--headless")
+    options.add_argument("--headless=new")
     options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920,1080")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
-    service = Service(executable_path=driver_path)
+    #service = Service(executable_path=driver_path)
+    service = Service(ChromeDriverManager().install())
     service.creation_flags = subprocess.CREATE_NO_WINDOW  # Oculta ventana en Windows
     service.log_output = open(os.devnull, "w")
 

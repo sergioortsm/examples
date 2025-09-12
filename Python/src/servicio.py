@@ -17,7 +17,7 @@ import random
 from datetime import date, datetime, timedelta
 from config import JORNADA_INTENSIVA, MODO_PRUEBA, MODO_INTERACTIVO, AUSENCIAS, VACACIONES, FESTIVOS, HORARIO_NORMAL, HORARIO_REDUCIDO, URL_FICHAJE, USUARIO, VIGILIAS_NACIONALES, VARIACION_MIN, VARIACION_MAX, HORA_EJECUCION
 from confirmacion import pedirConfirmacionUsuario
-from filtrar_fichajes import obtenerFichajesRealizados
+from filtrar_fichajes import ChromeDriverManager, obtenerFichajesRealizados
 from logger_config import getLogger
 from selenium.webdriver.chrome.service import Service
 import chromedriver_autoinstaller
@@ -44,13 +44,14 @@ def loginGuardar():
                 load_dotenv(dotenv_path)
                 
                 options = Options()
-                options.add_argument("--headless")
+                options.add_argument("--headless=new") 
                 options.add_argument("--disable-gpu")
                 options.add_argument("--window-size=1920,1080")
                 options.add_argument("--no-sandbox")
                 options.add_argument("--disable-dev-shm-usage")        
                 
-                service = Service(executable_path=driver_path)
+                #service = Service(executable_path=driver_path)
+                service = Service(ChromeDriverManager().install())
                     
                 service.creation_flags = subprocess.CREATE_NO_WINDOW  # Oculta ventana en Windows
                 service.log_output = open(os.devnull, "w")
