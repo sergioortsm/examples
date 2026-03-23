@@ -760,3 +760,226 @@ Stacktrace:
 2026-03-23 02:00:51 | INFO | Inicio de procesamiento: 1 filas candidatas
 2026-03-23 02:00:51 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
 2026-03-23 02:00:51 | INFO | Saltando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22: ya tiene horas registradas (estado_aprobado)
+2026-03-23 18:30:49 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 18:30:51 | INFO | Realizando login SSO en Personio...
+2026-03-23 18:30:57 | INFO | Conectado a Chrome existente en puerto 9222.
+2026-03-23 18:31:30 | INFO | Chrome ya logueado, extrayendo cookies directamente.
+2026-03-23 18:34:31 | ERROR | Error en servicio Personio: Error durante login SSO: Timeout esperando login SSO/MFA. Revisa credenciales o completa MFA en ventana del navegador.
+Traceback (most recent call last):
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\auth.py", line 257, in _login_sso_con_selenium
+    self._esperar_login_exitoso(driver)
+    │    │                      └ <selenium.webdriver.chrome.webdriver.WebDriver (session="240db3e105dce620f689ed751296020a")>
+    │    └ <function AuthManager._esperar_login_exitoso at 0x000002C350B0A200>
+    └ <src.auth.AuthManager object at 0x000002C350C56510>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\auth.py", line 287, in _esperar_login_exitoso
+    raise AuthError(
+          └ <class 'src.auth.AuthError'>
+
+src.auth.AuthError: Timeout esperando login SSO/MFA. Revisa credenciales o completa MFA en ventana del navegador.
+
+
+The above exception was the direct cause of the following exception:
+
+
+Traceback (most recent call last):
+
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 88, in <module>
+    main()
+    └ <function main at 0x000002C3506FD8A0>
+
+> File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 80, in main
+    ejecutar_fichaje_diario()
+    └ <function ejecutar_fichaje_diario at 0x000002C34FCBD4E0>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 56, in ejecutar_fichaje_diario
+    auth.ensure_authenticated(session)
+    │    │                    └ <requests.sessions.Session object at 0x000002C350C56120>
+    │    └ <function AuthManager.ensure_authenticated at 0x000002C3507F8B80>
+    └ <src.auth.AuthManager object at 0x000002C350C56510>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\auth.py", line 44, in ensure_authenticated
+    self._login_sso_con_selenium(session)
+    │    │                       └ <requests.sessions.Session object at 0x000002C350C56120>
+    │    └ <function AuthManager._login_sso_con_selenium at 0x000002C350B0A160>
+    └ <src.auth.AuthManager object at 0x000002C350C56510>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\auth.py", line 273, in _login_sso_con_selenium
+    raise AuthError(f"Error durante login SSO: {exc}") from exc
+          └ <class 'src.auth.AuthError'>
+
+src.auth.AuthError: Error durante login SSO: Timeout esperando login SSO/MFA. Revisa credenciales o completa MFA en ventana del navegador.
+2026-03-23 19:17:57 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 19:17:58 | INFO | Realizando login SSO en Personio...
+2026-03-23 19:18:00 | INFO | Conectado a Chrome existente en puerto 9222.
+2026-03-23 19:18:30 | INFO | Chrome ya logueado, extrayendo cookies directamente.
+2026-03-23 19:21:31 | ERROR | Error en servicio Personio: Error durante login SSO: Timeout esperando login SSO/MFA. Revisa credenciales o completa MFA en ventana del navegador.
+Traceback (most recent call last):
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\auth.py", line 257, in _login_sso_con_selenium
+    self._esperar_login_exitoso(driver)
+    │    │                      └ <selenium.webdriver.chrome.webdriver.WebDriver (session="2de1b86ced79ec830530e0852f5202f9")>
+    │    └ <function AuthManager._esperar_login_exitoso at 0x0000023D8161A200>
+    └ <src.auth.AuthManager object at 0x0000023D81756510>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\auth.py", line 287, in _esperar_login_exitoso
+    raise AuthError(
+          └ <class 'src.auth.AuthError'>
+
+src.auth.AuthError: Timeout esperando login SSO/MFA. Revisa credenciales o completa MFA en ventana del navegador.
+
+
+The above exception was the direct cause of the following exception:
+
+
+Traceback (most recent call last):
+
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 88, in <module>
+    main()
+    └ <function main at 0x0000023D8123D8A0>
+
+> File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 80, in main
+    ejecutar_fichaje_diario()
+    └ <function ejecutar_fichaje_diario at 0x0000023D7F71D4E0>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 56, in ejecutar_fichaje_diario
+    auth.ensure_authenticated(session)
+    │    │                    └ <requests.sessions.Session object at 0x0000023D81756120>
+    │    └ <function AuthManager.ensure_authenticated at 0x0000023D8132CB80>
+    └ <src.auth.AuthManager object at 0x0000023D81756510>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\auth.py", line 44, in ensure_authenticated
+    self._login_sso_con_selenium(session)
+    │    │                       └ <requests.sessions.Session object at 0x0000023D81756120>
+    │    └ <function AuthManager._login_sso_con_selenium at 0x0000023D8161A160>
+    └ <src.auth.AuthManager object at 0x0000023D81756510>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\auth.py", line 273, in _login_sso_con_selenium
+    raise AuthError(f"Error durante login SSO: {exc}") from exc
+          └ <class 'src.auth.AuthError'>
+
+src.auth.AuthError: Error durante login SSO: Timeout esperando login SSO/MFA. Revisa credenciales o completa MFA en ventana del navegador.
+2026-03-23 20:41:42 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 20:41:42 | INFO | Realizando login SSO en Personio...
+2026-03-23 20:41:58 | INFO | Conectado a Chrome existente en puerto 9222.
+2026-03-23 20:42:30 | INFO | Chrome ya logueado, extrayendo cookies directamente.
+2026-03-23 20:42:30 | INFO | Autenticacion completada y cookies guardadas.
+2026-03-23 20:42:30 | INFO | Sesion autenticada y lista.
+2026-03-23 20:42:30 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 20:42:39 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 20:42:39 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 20:42:39 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 20:42:42 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 20:42:42 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 20:42:42 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 20:42:42 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 20:42:42 | INFO | Intentando rellenar label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 20:42:43 | INFO | Abriendo dia 23 mar (lun)
+2026-03-23 20:42:55 | INFO | Guardado completado para 23 mar
+2026-03-23 20:42:55 | INFO | Fin de intento para label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 20:44:16 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 20:44:17 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 20:44:17 | INFO | Sesion autenticada y lista.
+2026-03-23 20:44:17 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 20:44:23 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 20:44:23 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 20:44:23 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 20:44:27 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 20:44:27 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 20:44:27 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 20:44:27 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 20:44:27 | INFO | Saltando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22: ya tiene horas registradas (estado_aprobado)
+2026-03-23 20:50:17 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 20:50:18 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 20:50:18 | INFO | Sesion autenticada y lista.
+2026-03-23 20:50:18 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 20:50:24 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 20:50:24 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 20:50:24 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 20:50:27 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 20:50:27 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 20:50:27 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 20:50:27 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=
+2026-03-23 20:50:27 | INFO | Saltando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22: ya tiene horas registradas (estado_aprobado)
+2026-03-23 20:56:55 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 20:56:56 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 20:56:56 | INFO | Sesion autenticada y lista.
+2026-03-23 20:56:56 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 20:57:00 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 20:57:00 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 20:57:00 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 20:57:03 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 20:57:03 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 20:57:03 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 20:57:03 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 20:57:03 | INFO | Saltando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22: ya tiene horas registradas (estado_aprobado)
+2026-03-23 21:01:56 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 21:01:57 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 21:01:57 | INFO | Sesion autenticada y lista.
+2026-03-23 21:01:57 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 21:02:03 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 21:02:03 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 21:02:03 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 21:02:05 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 21:02:05 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 21:02:05 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 21:02:05 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 21:02:05 | INFO | Intentando rellenar label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 21:02:06 | INFO | Abriendo dia 23 mar (lun)
+2026-03-23 21:02:18 | INFO | Guardado completado para 23 mar
+2026-03-23 21:02:18 | INFO | Fin de intento para label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 21:02:46 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 21:02:47 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 21:02:47 | INFO | Sesion autenticada y lista.
+2026-03-23 21:02:47 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 21:02:51 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 21:02:51 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 21:02:51 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 21:02:54 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 21:02:54 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 21:02:54 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 21:02:54 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 21:02:54 | INFO | Saltando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22: ya tiene horas registradas (estado_aprobado)
+2026-03-23 21:10:49 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 21:10:50 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 21:10:50 | INFO | Sesion autenticada y lista.
+2026-03-23 21:10:50 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 21:10:55 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 21:10:55 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 21:10:55 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 21:10:58 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 21:10:58 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 21:10:58 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 21:10:58 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=
+2026-03-23 21:10:58 | INFO | Saltando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22: ya tiene horas registradas (estado_aprobado)
+2026-03-23 21:15:41 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 21:15:42 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 21:15:42 | INFO | Sesion autenticada y lista.
+2026-03-23 21:15:42 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 21:15:48 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 21:15:48 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 21:15:48 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 21:15:52 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 21:15:52 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 21:15:52 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 21:15:52 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 21:15:52 | INFO | Saltando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22: ya tiene horas registradas (estado_aprobado)
+2026-03-23 21:18:37 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 21:18:38 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 21:18:38 | INFO | Sesion autenticada y lista.
+2026-03-23 21:18:38 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 21:18:43 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 21:18:43 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 21:18:43 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 21:18:46 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 21:18:46 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 21:18:46 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 21:18:46 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 21:18:46 | INFO | Saltando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22: ya tiene horas registradas (estado_aprobado)

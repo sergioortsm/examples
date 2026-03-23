@@ -88,7 +88,7 @@ Flujo diario recomendado:
 
 Comportamiento:
 - Si Chrome Personio ya esta abierto, el bot se conecta al puerto `9222` y abre una pestaña nueva.
-- Si Chrome Personio esta cerrado, `lanzar_tarea_programada.bat` lo arranca automaticamente.
+- Si Chrome Personio esta cerrado, `lanzar_tarea_programada.bat` lo arranca automaticamente y lo cierra al terminar si lo habia levantado esa misma ejecucion.
 - Si la sesion SSO/MFA esta caducada, se requerira validacion manual.
 
 ## Ejecutar editor de configuracion

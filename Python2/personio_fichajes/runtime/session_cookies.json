@@ -8,22 +8,29 @@
   },
   {
     "name": "ATHENA-XSRF-TOKEN",
-    "value": "e8a948ce-4e3b-4c54-aff6-4c18237c7783.SBIj6D7vjqldOFxSskOSMQANKXnA8MYi7p7q73Yb7SI",
+    "value": "c32ce1c7-cb3d-454b-9572-921dc8315679.uYmadfnKkmiGfCvynOoB5z6PufKHeLweC8iSXYu7XBI",
     "domain": "unikaltech.app.personio.com",
     "path": "/",
     "secure": true
   },
   {
     "name": "_dd_s",
-    "value": "aid=51d8a2b8-4715-4073-8853-25dd283bfb30&rum=2&id=c0d11ebe-3f0a-42c1-a5d0-04ed327781a6&created=1774205987164&expire=1774206887164",
+    "value": "aid=51d8a2b8-4715-4073-8853-25dd283bfb30&rum=2&id=d6c38999-d796-43a6-8587-f0adcbeac3fb&created=1774294947884&expire=1774295847884",
     "domain": "unikaltech.app.personio.com",
     "path": "/",
     "secure": false
   },
   {
     "name": "ATHENA_SESSION",
-    "value": "52c7e71f-cfd7-4fda-a3a3-e5c7fd4ba1e4",
+    "value": "1c8f30b0-449b-4d68-b93e-038f0f3535b9",
     "domain": "unikaltech.app.personio.com",
+    "path": "/",
+    "secure": false
+  },
+  {
+    "name": "personio_session",
+    "value": "eyJpdiI6InJ0QUhQam4vZlZQcGpiOVpGMHZzbmc9PSIsInZhbHVlIjoiTDd1YllRZTluazI3SFNlSXJvVVBadVNsckdqYUprSVc0TUtybWNpbStTVTJmWGVYSElUb0ZJNlVkQms1OEV1RmszdWdMK3duVnROT3NaWlhUREFyYk9NL1RFYnF3VnJBSVJBME9Ua0FPTVhmYytBT0JmUUtnUTl4MUl2UC9hSmkiLCJtYWMiOiJkNjU0MTA2YzgxMGJjM2RlZmRjMTlkYzU5Zjg0NDI2YTNlNDliZWQ0NWY3ZTI1ZDI0MmEyY2I3ZmY0Nzc5ZDUyIiwidGFnIjoiIn0%3D",
+    "domain": ".app.personio.com",
     "path": "/",
     "secure": false
   }

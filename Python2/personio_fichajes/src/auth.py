@@ -237,8 +237,8 @@ class AuthManager:
                 f"{self.cfg.base_url}/attendance/employee/{self.cfg.employee_id}"
                 "?viewMode=weekly"
             )
-            if not conectado_a_existente or "personio.com" not in driver.current_url.lower():
-                driver.get(login_url)
+            # Incluso con Chrome existente, forzamos abrir attendance para validar sesion real.
+            driver.get(login_url)
 
             username = os.getenv("PERSONIO_SSO_USERNAME", "").strip()
             password = os.getenv("PERSONIO_SSO_PASSWORD", "").strip()
@@ -253,7 +253,9 @@ class AuthManager:
                 self._click_si_existe(driver, (By.ID, "idSIButton9"))
 
             if conectado_a_existente:
-                self.logger.info("Chrome ya logueado, extrayendo cookies directamente.")
+                self.logger.info(
+                    "Revisando estado de sesion en Chrome existente y avanzando login SSO si aparece."
+                )
                 self._esperar_login_exitoso(driver)
             else:
                 self.logger.info(
@@ -278,15 +280,127 @@ class AuthManager:
 
     def _esperar_login_exitoso(self, driver):
         deadline = time.time() + self.cfg.login_timeout_sec
+        ultimo_click_login = 0.0
+        ultimo_click_ms = 0.0
         while time.time() < deadline:
             url = driver.current_url.lower()
             if "personio.com/attendance/employee" in url and "login.microsoftonline.com" not in url:
                 return
+
+            # Si Personio muestra una pantalla intermedia de login (boton central),
+            # intentamos pulsarlo para continuar al flujo SSO.
+            if (time.time() - ultimo_click_login) >= 5 and self._intentar_click_login_personio(driver, url):
+                ultimo_click_login = time.time()
+                time.sleep(1)
+                continue
+
+            # En pantallas de Microsoft, intentamos avanzar prompts comunes
+            # (Siguiente, Iniciar sesion, Mantener la sesion iniciada, etc.).
+            if (time.time() - ultimo_click_ms) >= 3 and self._intentar_avanzar_login_microsoft(driver, url):
+                ultimo_click_ms = time.time()
+                time.sleep(1)
+                continue
+
             time.sleep(2)
 
         raise AuthError(
             "Timeout esperando login SSO/MFA. Revisa credenciales o completa MFA en ventana del navegador."
         )
+
+    def _intentar_click_login_personio(self, driver, current_url: str) -> bool:
+        if "login.personio.com" not in current_url and "personio.com/login" not in current_url:
+            return False
+
+        candidatos = driver.find_elements(By.CSS_SELECTOR, "button, a[role='button'], a")
+        textos_login = (
+            "inicia sesion",
+            "iniciar sesion",
+            "iniciar sesión",
+            "login",
+            "log in",
+            "sign in",
+            "continuar",
+            "continue",
+            "microsoft",
+        )
+
+        for elem in candidatos:
+            try:
+                if not elem.is_displayed() or not elem.is_enabled():
+                    continue
+
+                texto = (elem.text or "").strip().lower()
+                aria = (elem.get_attribute("aria-label") or "").strip().lower()
+                title = (elem.get_attribute("title") or "").strip().lower()
+                valor = (elem.get_attribute("value") or "").strip().lower()
+                combinado = " ".join([texto, aria, title, valor])
+
+                if any(token in combinado for token in textos_login):
+                    elem.click()
+                    self.logger.info("Boton de login detectado en Personio y pulsado automaticamente.")
+                    return True
+            except Exception:
+                continue
+
+        return False
+
+    def _intentar_avanzar_login_microsoft(self, driver, current_url: str) -> bool:
+        if "login.microsoftonline.com" not in current_url:
+            return False
+
+        username = os.getenv("PERSONIO_SSO_USERNAME", "").strip()
+        password = os.getenv("PERSONIO_SSO_PASSWORD", "").strip()
+
+        # Intento de autocompletado por si aparece de nuevo durante redirecciones.
+        if username:
+            self._rellenar_si_existe(driver, (By.ID, "i0116"), username)
+        if password:
+            self._rellenar_si_existe(driver, (By.ID, "i0118"), password)
+
+        # Botones habituales del flujo Microsoft.
+        botones_id = ["idSIButton9", "idSubmit_SAOTCC_Continue", "acceptButton", "btnSignin"]
+        for button_id in botones_id:
+            try:
+                element = WebDriverWait(driver, 1).until(
+                    EC.element_to_be_clickable((By.ID, button_id))
+                )
+                if element.is_displayed() and element.is_enabled():
+                    element.click()
+                    self.logger.info(f"Prompt Microsoft detectado y pulsado automaticamente: {button_id}")
+                    return True
+            except Exception:
+                continue
+
+        # Fallback por texto visible en botones/enlaces.
+        textos = (
+            "iniciar sesion",
+            "iniciar sesión",
+            "sign in",
+            "siguiente",
+            "next",
+            "si",
+            "yes",
+            "continuar",
+            "continue",
+        )
+        for elem in driver.find_elements(By.CSS_SELECTOR, "button, input[type='submit'], a[role='button'], a"):
+            try:
+                if not elem.is_displayed() or not elem.is_enabled():
+                    continue
+
+                texto = (elem.text or "").strip().lower()
+                aria = (elem.get_attribute("aria-label") or "").strip().lower()
+                value = (elem.get_attribute("value") or "").strip().lower()
+                combinado = " ".join([texto, aria, value])
+
+                if any(token in combinado for token in textos):
+                    elem.click()
+                    self.logger.info("Boton Microsoft detectado por texto y pulsado automaticamente.")
+                    return True
+            except Exception:
+                continue
+
+        return False
 
     def _rellenar_si_existe(self, driver, locator: tuple[str, str], value: str):
         try:

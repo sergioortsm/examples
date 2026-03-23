@@ -11,6 +11,7 @@
   "headless": false,
   "modo_prueba": false,
   "modo_interactivo": true,
+  "login_timeout_sec": 360,
   "remote_debug_port": 9222,
   "chrome_user_data_dir": "C:\\chromeDebug-personio",
   "chrome_profile_directory": "Profile 1"

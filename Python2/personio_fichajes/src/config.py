@@ -29,7 +29,7 @@ class Configuracion(BaseModel):
     fecha_forzada: str | None = None
 
     request_timeout_sec: int = 30
-    login_timeout_sec: int = 180
+    login_timeout_sec: int = 360
     max_retries: int = 3
 
     ruta_log: str | None = None
