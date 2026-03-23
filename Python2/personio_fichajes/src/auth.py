@@ -8,9 +8,9 @@ from pathlib import Path
 from typing import Any
 
 import requests
-from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.webdriver import WebDriver as ChromeWebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -154,7 +154,7 @@ class AuthManager:
                 self.logger.info("Abriendo nueva instancia de Chrome sin perfil especifico.")
 
         service = Service(ChromeDriverManager().install())
-        return webdriver.Chrome(service=service, options=options)
+        return ChromeWebDriver(service=service, options=options)
 
     def navegar_con_sesion(self, session: requests.Session, url: str) -> tuple[Any, bool]:
         """Abre/conecta Chrome con sesion autenticada y navega a la URL indicada.
@@ -212,7 +212,7 @@ class AuthManager:
                 port = self.cfg.remote_debug_port
                 options.add_experimental_option("debuggerAddress", f"127.0.0.1:{port}")
                 service = Service(ChromeDriverManager().install())
-                driver = webdriver.Chrome(service=service, options=options)
+                driver = ChromeWebDriver(service=service, options=options)
                 conectado_a_existente = True
                 self.logger.info(f"Conectado a Chrome existente en puerto {port}.")
             else:
@@ -231,7 +231,7 @@ class AuthManager:
                         f"desde {self.cfg.chrome_user_data_dir}."
                     )
                 service = Service(ChromeDriverManager().install())
-                driver = webdriver.Chrome(service=service, options=options)
+                driver = ChromeWebDriver(service=service, options=options)
 
             login_url = (
                 f"{self.cfg.base_url}/attendance/employee/{self.cfg.employee_id}"
