@@ -1,0 +1,30 @@
+[
+  {
+    "name": "product_language",
+    "value": "es|34815582",
+    "domain": "unikaltech.app.personio.com",
+    "path": "/",
+    "secure": false
+  },
+  {
+    "name": "ATHENA-XSRF-TOKEN",
+    "value": "e8a948ce-4e3b-4c54-aff6-4c18237c7783.SBIj6D7vjqldOFxSskOSMQANKXnA8MYi7p7q73Yb7SI",
+    "domain": "unikaltech.app.personio.com",
+    "path": "/",
+    "secure": true
+  },
+  {
+    "name": "_dd_s",
+    "value": "aid=51d8a2b8-4715-4073-8853-25dd283bfb30&rum=2&id=c0d11ebe-3f0a-42c1-a5d0-04ed327781a6&created=1774205987164&expire=1774206887164",
+    "domain": "unikaltech.app.personio.com",
+    "path": "/",
+    "secure": false
+  },
+  {
+    "name": "ATHENA_SESSION",
+    "value": "52c7e71f-cfd7-4fda-a3a3-e5c7fd4ba1e4",
+    "domain": "unikaltech.app.personio.com",
+    "path": "/",
+    "secure": false
+  }
+]

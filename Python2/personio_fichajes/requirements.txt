@@ -1,0 +1,7 @@
+requests>=2.32.0
+selenium>=4.34.0
+python-dotenv>=1.0.1
+pydantic>=2.8.0
+loguru>=0.7.2
+webdriver-manager>=4.0.2
+pyinstaller>=6.10.0

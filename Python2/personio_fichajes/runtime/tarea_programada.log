@@ -1,0 +1,232 @@
+[INFO] Iniciando tarea programada para SOLO_FECHA=2026-03-22 
+2026-03-22 23:37:19 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-22 23:37:20 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-22 23:37:20 | INFO | Sesion autenticada y lista.
+2026-03-22 23:37:20 | INFO | Abriendo nueva instancia de Chrome.
+2026-03-22 23:37:37 | INFO | Chrome redirigido a login. Completa SSO/MFA en la ventana; esperando acceso a attendance...
+2026-03-22 23:38:31 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-22 23:38:31 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-22
+2026-03-22 23:38:37 | INFO | No se encontro fila para SOLO_FECHA=2026-03-22
+[INFO] Tarea finalizada con codigo 0 
+[INFO] Iniciando tarea programada para SOLO_FECHA=2026-03-22 
+2026-03-22 23:52:45 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-22 23:52:45 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-22 23:52:45 | INFO | Sesion autenticada y lista.
+2026-03-22 23:52:45 | INFO | Abriendo nueva instancia de Chrome.
+2026-03-22 23:52:51 | INFO | Chrome redirigido a login. Completa SSO/MFA en la ventana; esperando acceso a attendance...
+2026-03-22 23:53:31 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-22 23:53:31 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-22
+2026-03-22 23:53:38 | INFO | No se encontro fila para SOLO_FECHA=2026-03-22
+[INFO] Tarea finalizada con codigo 0 
+[INFO] Iniciando tarea programada para SOLO_FECHA=2026-03-23 
+[INFO] Chrome Personio ya estaba disponible en puerto 9222 
+2026-03-23 01:00:08 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 01:00:08 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 01:00:08 | INFO | Sesion autenticada y lista.
+2026-03-23 01:00:08 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 01:00:24 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 01:00:24 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 01:00:24 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 01:00:31 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 01:00:31 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 01:00:31 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 01:00:31 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 01:00:31 | INFO | Intentando rellenar label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 01:00:31 | INFO | Abriendo dia 23 mar (lun)
+2026-03-23 01:00:41 | INFO | Guardado completado para 23 mar
+2026-03-23 01:00:41 | INFO | Fin de intento para label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+[INFO] Tarea finalizada con codigo 0 
+[INFO] Iniciando tarea programada para SOLO_FECHA=2026-03-23 
+[INFO] Chrome Personio no estaba disponible; lanzando instancia dedicada... 
+[INFO] Iniciando Chrome aislado para Personio en puerto de depuracion 9222...
+[INFO] Chrome lanzado con datos en C:\chromeDebug-personio.
+[INFO] Si es la primera vez, inicia sesion en Personio en esta ventana.
+[INFO] Luego lanza: ejecutar_servicio_script.bat YYYY-MM-DD
+[INFO] Iniciando tarea programada para SOLO_FECHA=2026-03-23 
+[INFO] Chrome Personio no estaba disponible; lanzando instancia dedicada... 
+[INFO] Chrome Personio disponible en puerto 9222 tras espera 1 
+2026-03-23 01:05:09 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 01:05:10 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 01:05:10 | INFO | Sesion autenticada y lista.
+2026-03-23 01:05:10 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 01:05:28 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 01:05:28 | INFO | Chrome redirigido a login. Completa SSO/MFA en la ventana; esperando acceso a attendance...
+2026-03-23 01:08:31 | ERROR | Error en servicio Personio: Timeout esperando login SSO/MFA. Revisa credenciales o completa MFA en ventana del navegador.
+Traceback (most recent call last):
+
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 88, in <module>
+    main()
+    -> <function main at 0x000001121348D9E0>
+
+> File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 80, in main
+    ejecutar_fichaje_diario()
+    -> <function ejecutar_fichaje_diario at 0x0000011212A81620>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 60, in ejecutar_fichaje_diario
+    driver, conectado_a_existente = auth.navegar_con_sesion(session, attendance_url)
+                                    |    |                  |        -> 'https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true'
+                                    |    |                  -> <requests.sessions.Session object at 0x00000112139DA270>
+                                    |    -> <function AuthManager.navegar_con_sesion at 0x0000011213887C40>
+                                    -> <src.auth.AuthManager object at 0x00000112139DA660>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\auth.py", line 194, in navegar_con_sesion
+    self._esperar_login_exitoso(driver)
+    |    |                      -> <selenium.webdriver.chrome.webdriver.WebDriver (session="2b9a4e142129c1e0f5c688c1010a66ec")>
+    |    -> <function AuthManager._esperar_login_exitoso at 0x0000011213887EC0>
+    -> <src.auth.AuthManager object at 0x00000112139DA660>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\auth.py", line 287, in _esperar_login_exitoso
+    raise AuthError(
+          -> <class 'src.auth.AuthError'>
+
+src.auth.AuthError: Timeout esperando login SSO/MFA. Revisa credenciales o completa MFA en ventana del navegador.
+[INFO] Tarea finalizada con codigo 1 
+[INFO] Iniciando tarea programada para SOLO_FECHA=2026-03-23 
+[INFO] Chrome Personio no estaba disponible; lanzando instancia dedicada... 
+[INFO] Chrome Personio disponible en puerto 9222 tras espera 1 
+2026-03-23 01:13:45 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 01:13:46 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 01:13:46 | INFO | Sesion autenticada y lista.
+2026-03-23 01:13:46 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 01:14:03 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 01:14:03 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 01:14:03 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 01:14:08 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 01:14:08 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 01:14:08 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 01:14:08 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 01:14:08 | INFO | Intentando rellenar label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 01:14:08 | INFO | Abriendo dia 23 mar (lun)
+2026-03-23 01:14:19 | INFO | Guardado completado para 23 mar
+2026-03-23 01:14:19 | INFO | Fin de intento para label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+[INFO] Tarea finalizada con codigo 0 
+[INFO] Iniciando tarea programada para SOLO_FECHA=2026-03-23 
+[INFO] Chrome Personio ya estaba disponible en puerto 9222 
+2026-03-23 01:15:22 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 01:15:23 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 01:15:23 | INFO | Sesion autenticada y lista.
+2026-03-23 01:15:23 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 01:15:27 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 01:15:27 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 01:15:27 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 01:15:42 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 01:15:42 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 01:15:42 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 01:15:42 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 01:15:42 | INFO | Intentando rellenar label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 01:15:42 | INFO | Abriendo dia 23 mar (lun)
+2026-03-23 01:15:54 | WARNING | No se pudo editar/guardar 23 mar (lun). Motivo: Message: no such element: Unable to locate element: {"method":"css selector","selector":"[data-test-id="periods.2.start"]"}
+  (Session info: chrome=146.0.7680.154); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0xd47c13+10dd3]
+	chromedriver!GetHandleVerifier [0xd47d44+10f04]
+	chromedriver!(No symbol) [0xb21f50]
+	chromedriver!(No symbol) [0xb6a9aa]
+	chromedriver!(No symbol) [0xb6ac4b]
+	chromedriver!(No symbol) [0xb615f1]
+	chromedriver!(No symbol) [0xb8d954]
+	chromedriver!(No symbol) [0xb614e4]
+	chromedriver!(No symbol) [0xb8dad4]
+	chromedriver!(No symbol) [0xbaa7de]
+	chromedriver!(No symbol) [0xb8d6a6]
+	chromedriver!(No symbol) [0xb60029]
+	chromedriver!(No symbol) [0xb60de4]
+	chromedriver!GetHandleVerifier [0xfa4509+26d6c9]
+	chromedriver!GetHandleVerifier [0xf9fb43+268d03]
+	chromedriver!GetHandleVerifier [0xfbd85b+286a1b]
+	chromedriver!GetHandleVerifier [0xd61668+2a828]
+	chromedriver!GetHandleVerifier [0xd697fd+329bd]
+	chromedriver!GetHandleVerifier [0xd50588+19748]
+	chromedriver!GetHandleVerifier [0xd50752+19912]
+	chromedriver!GetHandleVerifier [0xd399da+2b9a]
+	KERNEL32!BaseThreadInitThunk [0x76bf5d49+19]
+	ntdll!RtlInitializeExceptionChain [0x7775d81b+6b]
+	ntdll!RtlGetAppContainerNamedObjectPath [0x7775d7a1+231]
+
+2026-03-23 01:15:54 | INFO | Fin de intento para label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+[INFO] Tarea finalizada con codigo 0 
+[INFO] Iniciando tarea programada para SOLO_FECHA=2026-03-23 
+[INFO] Chrome Personio no estaba disponible; lanzando instancia dedicada... 
+[INFO] Chrome Personio disponible en puerto 9222 tras espera 1 
+2026-03-23 01:17:39 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 01:17:40 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 01:17:40 | INFO | Sesion autenticada y lista.
+2026-03-23 01:17:40 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 01:17:44 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 01:17:44 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 01:17:44 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 01:17:51 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 01:17:51 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 01:17:51 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 01:17:51 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 01:17:51 | INFO | Intentando rellenar label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 01:17:51 | INFO | Abriendo dia 23 mar (lun)
+2026-03-23 01:18:05 | INFO | Guardado completado para 23 mar
+2026-03-23 01:18:05 | INFO | Fin de intento para label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+[INFO] Tarea finalizada con codigo 0 
+[INFO] Iniciando tarea programada para SOLO_FECHA=2026-03-23 
+[INFO] Chrome Personio ya estaba disponible en puerto 9222 
+2026-03-23 01:18:44 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 01:18:44 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 01:18:44 | INFO | Sesion autenticada y lista.
+2026-03-23 01:18:44 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 01:18:47 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 01:18:47 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 01:18:47 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 01:18:52 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 01:18:52 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 01:18:52 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 01:18:52 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 01:18:52 | INFO | Saltando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22: ya tiene horas registradas (estado_aprobado)
+[INFO] Tarea finalizada con codigo 0 
+[INFO] Iniciando tarea programada para SOLO_FECHA=2026-03-23 
+[INFO] Chrome Personio no estaba disponible; lanzando instancia dedicada... 
+[INFO] Chrome Personio disponible en puerto 9222 tras espera 1 
+2026-03-23 01:33:14 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 01:33:15 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 01:33:15 | INFO | Sesion autenticada y lista.
+2026-03-23 01:33:15 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 01:33:19 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 01:33:19 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 01:33:19 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 01:33:24 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 01:33:24 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 01:33:24 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 01:33:24 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 01:33:24 | INFO | Saltando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22: ya tiene horas registradas (estado_aprobado)
+[INFO] Tarea finalizada con codigo 0 
+[INFO] Iniciando tarea programada para SOLO_FECHA=2026-03-23
+[INFO] Chrome Personio ya estaba disponible en puerto 9222
+2026-03-23 01:55:55 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 01:55:56 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 01:55:56 | INFO | Sesion autenticada y lista.
+2026-03-23 01:55:56 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 01:55:59 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 01:55:59 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 01:55:59 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 01:56:03 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 01:56:03 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 01:56:03 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 01:56:03 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 01:56:03 | INFO | Intentando rellenar label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 01:56:03 | INFO | Abriendo dia 23 mar (lun)
+2026-03-23 01:56:13 | INFO | Guardado completado para 23 mar
+2026-03-23 01:56:13 | INFO | Fin de intento para label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+[INFO] Iniciando tarea programada para SOLO_FECHA=2026-03-23
+[INFO] Chrome Personio ya estaba disponible en puerto 9222
+2 0 2 6 - 0 3 - 2 3   0 2 : 0 0 : 3 3   |   I N F O   |   I n i c i a n d o   s e r v i c i o   d e   f i c h a j e s   P e r s o n i o . . .  
+ 2 0 2 6 - 0 3 - 2 3   0 2 : 0 0 : 3 4   |   I N F O   |   S e s i o n   r e u t i l i z a d a   d e s d e   c o o k i e s   p e r s i s t i d a s .  
+ 2 0 2 6 - 0 3 - 2 3   0 2 : 0 0 : 3 4   |   I N F O   |   S e s i o n   a u t e n t i c a d a   y   l i s t a .  
+ 2 0 2 6 - 0 3 - 2 3   0 2 : 0 0 : 3 4   |   I N F O   |   C o n e c t a n d o   a   C h r o m e   e x i s t e n t e   e n   p u e r t o   9 2 2 2 .  
+ 2 0 2 6 - 0 3 - 2 3   0 2 : 0 0 : 3 7   |   I N F O   |   P e s t a ± a   n u e v a   a b i e r t a   e n   C h r o m e   e x i s t e n t e .  
+ 2 0 2 6 - 0 3 - 2 3   0 2 : 0 0 : 3 7   |   I N F O   |   C h r o m e   l i s t o   e n   U R L :   h t t p s : / / u n i k a l t e c h . a p p . p e r s o n i o . c o m / a t t e n d a n c e / e m p l o y e e / 3 4 8 1 5 5 8 2 ? h i d e E m p l o y e e H e a d e r = t r u e  
+ 2 0 2 6 - 0 3 - 2 3   0 2 : 0 0 : 3 7   |   I N F O   |   M o d o   f e c h a   u n i c a   a c t i v o :   S O L O _ F E C H A = 2 0 2 6 - 0 3 - 2 3  
+ 2 0 2 6 - 0 3 - 2 3   0 2 : 0 0 : 5 1   |   I N F O   |   F i l a   l o c a l i z a d a   p o r   f e c h a   v i s i b l e = 2 0 2 6 - 0 3 - 2 3 :   l a b e l _ v i s i b l e = ' 2 3   m a r ' ,   d a t e t i m e _ h t m l = 2 0 2 6 - 0 3 - 2 2  
+ 2 0 2 6 - 0 3 - 2 3   0 2 : 0 0 : 5 1   |   I N F O   |   F i l t r a d o   p o r   S O L O _ F E C H A = 2 0 2 6 - 0 3 - 2 3 :   1   f i l a   o b j e t i v o  
+ 2 0 2 6 - 0 3 - 2 3   0 2 : 0 0 : 5 1   |   I N F O   |   I n i c i o   d e   p r o c e s a m i e n t o :   1   f i l a s   c a n d i d a t a s  
+ 2 0 2 6 - 0 3 - 2 3   0 2 : 0 0 : 5 1   |   I N F O   |   P r o g r e s o   1 / 1 :   r e v i s a n d o   l a b e l = ' 2 3   m a r ' ,   f e c h a _ v i s i b l e = 2 0 2 6 - 0 3 - 2 3 ,   d a t e t i m e _ h t m l = 2 0 2 6 - 0 3 - 2 2 ,   d i a = l u n  
+ 2 0 2 6 - 0 3 - 2 3   0 2 : 0 0 : 5 1   |   I N F O   |   S a l t a n d o   l a b e l = ' 2 3   m a r ' ,   f e c h a _ v i s i b l e = 2 0 2 6 - 0 3 - 2 3 ,   d a t e t i m e _ h t m l = 2 0 2 6 - 0 3 - 2 2 :   y a   t i e n e   h o r a s   r e g i s t r a d a s   ( e s t a d o _ a p r o b a d o )  
+ 

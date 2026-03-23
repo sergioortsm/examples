@@ -1,0 +1,372 @@
+{
+  "timecards": [
+    {
+      "day_id": "8e525aaf-6362-4be1-aa09-ccfb20a3a55b",
+      "date": "2026-03-09",
+      "state": "trackable",
+      "is_off_day": false,
+      "assigned_working_schedule_id": "1337414192821645336",
+      "periods": [
+        {
+          "id": "ced08835-68a6-496d-a113-a79d1453607b",
+          "start": "2026-03-09T08:30:00",
+          "end": "2026-03-09T14:30:00",
+          "project_id": null,
+          "comment": null,
+          "type": "work",
+          "origin": "web",
+          "is_auto_generated": false,
+          "geolocation": null
+        },
+        {
+          "id": "5827a5fa-9082-4c6d-8b74-3989f47e1dbe",
+          "start": "2026-03-09T14:30:00",
+          "end": "2026-03-09T15:30:00",
+          "project_id": null,
+          "comment": null,
+          "type": "break",
+          "origin": "web",
+          "is_auto_generated": false,
+          "geolocation": null
+        },
+        {
+          "id": "802fe793-e042-48e3-ab20-f29cd9a23418",
+          "start": "2026-03-09T15:30:00",
+          "end": "2026-03-09T18:00:00",
+          "project_id": null,
+          "comment": null,
+          "type": "work",
+          "origin": "web",
+          "is_auto_generated": false,
+          "geolocation": null
+        }
+      ],
+      "break_duration_minutes": 60,
+      "legacy_break_duration_minutes": 0,
+      "target_hours": {
+        "effective_work_duration_minutes": 510,
+        "effective_break_duration_minutes": 60,
+        "contractual_work_duration_minutes": 510,
+        "contractual_break_duration_minutes": 60,
+        "start_time": "09:00",
+        "end_time": "18:30"
+      },
+      "overtime": null,
+      "time_off": null,
+      "approval": {
+        "status": "confirmed",
+        "rejection_reason": null
+      },
+      "alerts": [],
+      "metadata": {
+        "created_at": "2026-03-15T13:26:09.531Z",
+        "updated_at": "2026-03-15T17:23:24.515Z"
+      },
+      "can_create_time_off_in_lieu": false
+    },
+    {
+      "day_id": "bcc71823-a2bc-4dd4-ab19-c52afc686d33",
+      "date": "2026-03-10",
+      "state": "trackable",
+      "is_off_day": false,
+      "assigned_working_schedule_id": "1337414192821645336",
+      "periods": [],
+      "break_duration_minutes": 0,
+      "legacy_break_duration_minutes": 0,
+      "target_hours": {
+        "effective_work_duration_minutes": 510,
+        "effective_break_duration_minutes": 60,
+        "contractual_work_duration_minutes": 510,
+        "contractual_break_duration_minutes": 60,
+        "start_time": "09:00",
+        "end_time": "18:30"
+      },
+      "overtime": null,
+      "time_off": null,
+      "approval": {
+        "status": "empty",
+        "rejection_reason": null
+      },
+      "alerts": [],
+      "metadata": {
+        "created_at": "2026-03-15T17:24:04.725Z",
+        "updated_at": "2026-03-15T17:38:09.817Z"
+      },
+      "can_create_time_off_in_lieu": false
+    },
+    {
+      "day_id": "a46b9962-c0d2-40f4-95b9-a593f22bdeac",
+      "date": "2026-03-11",
+      "state": "trackable",
+      "is_off_day": false,
+      "assigned_working_schedule_id": "1337414192821645336",
+      "periods": [
+        {
+          "id": "31dd29e6-137f-4582-9bff-702a950d493e",
+          "start": "2026-03-11T08:30:00",
+          "end": "2026-03-11T14:30:00",
+          "project_id": null,
+          "comment": null,
+          "type": "work",
+          "origin": "web",
+          "is_auto_generated": false,
+          "geolocation": null
+        },
+        {
+          "id": "c56e8431-d63b-4ae3-be16-4dacc51c171c",
+          "start": "2026-03-11T14:30:00",
+          "end": "2026-03-11T15:30:00",
+          "project_id": null,
+          "comment": null,
+          "type": "break",
+          "origin": "web",
+          "is_auto_generated": false,
+          "geolocation": null
+        },
+        {
+          "id": "2ac5fd87-e60c-45f0-9d5e-1c18819ff6a3",
+          "start": "2026-03-11T15:30:00",
+          "end": "2026-03-11T18:00:00",
+          "project_id": null,
+          "comment": null,
+          "type": "work",
+          "origin": "web",
+          "is_auto_generated": false,
+          "geolocation": null
+        }
+      ],
+      "break_duration_minutes": 60,
+      "legacy_break_duration_minutes": 0,
+      "target_hours": {
+        "effective_work_duration_minutes": 510,
+        "effective_break_duration_minutes": 60,
+        "contractual_work_duration_minutes": 510,
+        "contractual_break_duration_minutes": 60,
+        "start_time": "09:00",
+        "end_time": "18:30"
+      },
+      "overtime": null,
+      "time_off": null,
+      "approval": {
+        "status": "confirmed",
+        "rejection_reason": null
+      },
+      "alerts": [],
+      "metadata": {
+        "created_at": "2026-03-15T17:24:44.833Z",
+        "updated_at": "2026-03-15T17:24:44.958Z"
+      },
+      "can_create_time_off_in_lieu": false
+    },
+    {
+      "day_id": "1a5af2e1-2695-4f37-99a7-027b9462cf87",
+      "date": "2026-03-12",
+      "state": "trackable",
+      "is_off_day": false,
+      "assigned_working_schedule_id": "1337414192821645336",
+      "periods": [
+        {
+          "id": "e980d7a2-58c0-4dd1-a9e9-ce16745292e4",
+          "start": "2026-03-12T08:30:00",
+          "end": "2026-03-12T14:30:00",
+          "project_id": null,
+          "comment": null,
+          "type": "work",
+          "origin": "web",
+          "is_auto_generated": false,
+          "geolocation": null
+        },
+        {
+          "id": "a4d209ce-081c-4339-a41c-9942f3f098c3",
+          "start": "2026-03-12T14:30:00",
+          "end": "2026-03-12T15:30:00",
+          "project_id": null,
+          "comment": null,
+          "type": "break",
+          "origin": "web",
+          "is_auto_generated": false,
+          "geolocation": null
+        },
+        {
+          "id": "784b7ad6-7427-401c-a0d8-e0d6abdab567",
+          "start": "2026-03-12T15:30:00",
+          "end": "2026-03-12T18:00:00",
+          "project_id": null,
+          "comment": null,
+          "type": "work",
+          "origin": "web",
+          "is_auto_generated": false,
+          "geolocation": null
+        }
+      ],
+      "break_duration_minutes": 60,
+      "legacy_break_duration_minutes": 0,
+      "target_hours": {
+        "effective_work_duration_minutes": 510,
+        "effective_break_duration_minutes": 60,
+        "contractual_work_duration_minutes": 510,
+        "contractual_break_duration_minutes": 60,
+        "start_time": "09:00",
+        "end_time": "18:30"
+      },
+      "overtime": null,
+      "time_off": null,
+      "approval": {
+        "status": "confirmed",
+        "rejection_reason": null
+      },
+      "alerts": [],
+      "metadata": {
+        "created_at": "2026-03-15T17:25:27.222Z",
+        "updated_at": "2026-03-15T17:25:27.337Z"
+      },
+      "can_create_time_off_in_lieu": false
+    },
+    {
+      "day_id": "32690572-f195-47b1-980e-cc529f66e0c5",
+      "date": "2026-03-13",
+      "state": "trackable",
+      "is_off_day": false,
+      "assigned_working_schedule_id": "1337414192821645336",
+      "periods": [
+        {
+          "id": "cdb11ffd-1c3c-43db-822e-51d3d1e8b539",
+          "start": "2026-03-13T08:30:00",
+          "end": "2026-03-13T14:30:00",
+          "project_id": null,
+          "comment": null,
+          "type": "work",
+          "origin": "web",
+          "is_auto_generated": false,
+          "geolocation": null
+        }
+      ],
+      "break_duration_minutes": 0,
+      "legacy_break_duration_minutes": 0,
+      "target_hours": {
+        "effective_work_duration_minutes": 360,
+        "effective_break_duration_minutes": 0,
+        "contractual_work_duration_minutes": 360,
+        "contractual_break_duration_minutes": 0,
+        "start_time": "09:00",
+        "end_time": "15:00"
+      },
+      "overtime": null,
+      "time_off": null,
+      "approval": {
+        "status": "confirmed",
+        "rejection_reason": null
+      },
+      "alerts": [],
+      "metadata": {
+        "created_at": "2026-03-15T17:25:54.557Z",
+        "updated_at": "2026-03-15T17:25:54.684Z"
+      },
+      "can_create_time_off_in_lieu": false
+    },
+    {
+      "day_id": null,
+      "date": "2026-03-14",
+      "state": "trackable",
+      "is_off_day": true,
+      "assigned_working_schedule_id": "1337414192821645336",
+      "periods": [],
+      "break_duration_minutes": 0,
+      "legacy_break_duration_minutes": 0,
+      "target_hours": {
+        "effective_work_duration_minutes": 0,
+        "effective_break_duration_minutes": null,
+        "contractual_work_duration_minutes": 0,
+        "contractual_break_duration_minutes": 0,
+        "start_time": null,
+        "end_time": null
+      },
+      "overtime": null,
+      "time_off": null,
+      "approval": null,
+      "alerts": [],
+      "metadata": null,
+      "can_create_time_off_in_lieu": false
+    },
+    {
+      "day_id": null,
+      "date": "2026-03-15",
+      "state": "trackable",
+      "is_off_day": true,
+      "assigned_working_schedule_id": "1337414192821645336",
+      "periods": [],
+      "break_duration_minutes": 0,
+      "legacy_break_duration_minutes": 0,
+      "target_hours": {
+        "effective_work_duration_minutes": 0,
+        "effective_break_duration_minutes": null,
+        "contractual_work_duration_minutes": 0,
+        "contractual_break_duration_minutes": 0,
+        "start_time": null,
+        "end_time": null
+      },
+      "overtime": null,
+      "time_off": null,
+      "approval": null,
+      "alerts": [],
+      "metadata": null,
+      "can_create_time_off_in_lieu": false
+    }
+  ],
+  "widgets": {
+    "tracked_hours": {
+      "tracked_minutes": 1890,
+      "confirmed_minutes": 1890,
+      "target_minutes": 2400,
+      "contractual_target_minutes": 2400,
+      "pending_minutes": 0
+    },
+    "overtime": null,
+    "time_off": {
+      "confirmed_minutes": 0,
+      "pending_minutes": 0,
+      "public_holidays_minutes": 0,
+      "time_off_minutes": 0
+    },
+    "working_schedule_weeks": [
+      {
+        "weekly_work_minutes": 2400,
+        "weekly_hour_mismatch": false,
+        "week_number": 1,
+        "is_current_active_week": true,
+        "days": [
+          {
+            "day_of_week": 1,
+            "target_work_minutes": 510
+          },
+          {
+            "day_of_week": 2,
+            "target_work_minutes": 510
+          },
+          {
+            "day_of_week": 3,
+            "target_work_minutes": 510
+          },
+          {
+            "day_of_week": 4,
+            "target_work_minutes": 510
+          },
+          {
+            "day_of_week": 5,
+            "target_work_minutes": 360
+          },
+          {
+            "day_of_week": 6,
+            "target_work_minutes": 0
+          },
+          {
+            "day_of_week": 7,
+            "target_work_minutes": 0
+          }
+        ]
+      }
+    ]
+  },
+  "supervisor_person_id": "34818566",
+  "owner_has_propose_rights": true
+}

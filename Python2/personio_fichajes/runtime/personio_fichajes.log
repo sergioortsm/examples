@@ -1,0 +1,762 @@
+2026-03-22 22:08:39 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-22 22:08:40 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-22 22:08:40 | INFO | Sesion autenticada y lista.
+2026-03-22 22:08:40 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-22 22:08:51 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-22 22:08:51 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-18
+2026-03-22 22:09:03 | INFO | Fila localizada por fecha visible=2026-03-18: label_visible='18 mar', datetime_html=2026-03-17, day_id=3e5dcf9d-9a7e-46ad-a52b-ca87d32a3978
+2026-03-22 22:09:03 | INFO | Filtrado por SOLO_FECHA=2026-03-18: 1 fila objetivo
+2026-03-22 22:09:03 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-22 22:09:03 | INFO | Progreso 1/1: revisando label='18 mar', fecha_visible=2026-03-18, datetime_html=2026-03-17, dia=mié
+2026-03-22 22:09:03 | INFO | Saltando label='18 mar', fecha_visible=2026-03-18, datetime_html=2026-03-17: ya tiene horas registradas (estado_aprobado)
+2026-03-22 22:13:29 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-22 22:13:29 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-22 22:13:29 | INFO | Sesion autenticada y lista.
+2026-03-22 22:13:29 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-22 22:13:41 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-22 22:13:41 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-18
+2026-03-22 22:13:54 | INFO | Fila localizada por fecha visible=2026-03-18: label_visible='18 mar', datetime_html=2026-03-17, day_id=3e5dcf9d-9a7e-46ad-a52b-ca87d32a3978
+2026-03-22 22:13:54 | INFO | Filtrado por SOLO_FECHA=2026-03-18: 1 fila objetivo
+2026-03-22 22:13:54 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-22 22:13:54 | INFO | Progreso 1/1: revisando label='18 mar', fecha_visible=2026-03-18, datetime_html=2026-03-17, dia=mié
+2026-03-22 22:13:54 | INFO | Saltando label='18 mar', fecha_visible=2026-03-18, datetime_html=2026-03-17: ya tiene horas registradas (estado_aprobado)
+2026-03-22 22:30:20 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-22 22:30:20 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-22 22:30:20 | INFO | Sesion autenticada y lista.
+2026-03-22 22:30:20 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-22 22:30:32 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-22 22:30:32 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-16
+2026-03-22 22:30:39 | WARNING | Fila omitida al localizar fecha 2026-03-16: Fila sin identificador de fecha valido (nombre='', label='')
+2026-03-22 22:30:44 | INFO | Fila localizada por fecha visible=2026-03-16: label_visible='16 mar', datetime_html=2026-03-15
+2026-03-22 22:30:44 | INFO | Filtrado por SOLO_FECHA=2026-03-16: 1 fila objetivo
+2026-03-22 22:30:44 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-22 22:30:44 | INFO | Progreso 1/1: revisando label='16 mar', fecha_visible=2026-03-16, datetime_html=2026-03-15, dia=lun
+2026-03-22 22:30:44 | INFO | Intentando rellenar label='16 mar', fecha_visible=2026-03-16, datetime_html=2026-03-15
+2026-03-22 22:30:44 | INFO | Abriendo dia 16 mar (lun)
+2026-03-22 22:30:58 | INFO | Guardado completado para 16 mar
+2026-03-22 22:30:58 | INFO | Fin de intento para label='16 mar', fecha_visible=2026-03-16, datetime_html=2026-03-15
+2026-03-22 22:33:04 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-22 22:33:05 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-22 22:33:05 | INFO | Sesion autenticada y lista.
+2026-03-22 22:33:05 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-22 22:33:24 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-22 22:33:24 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-16
+2026-03-22 22:33:30 | INFO | Fila localizada por fecha visible=2026-03-16: label_visible='16 mar', datetime_html=2026-03-15
+2026-03-22 22:33:30 | INFO | Filtrado por SOLO_FECHA=2026-03-16: 1 fila objetivo
+2026-03-22 22:33:30 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-22 22:33:30 | INFO | Progreso 1/1: revisando label='16 mar', fecha_visible=2026-03-16, datetime_html=2026-03-15, dia=lun
+2026-03-22 22:33:30 | INFO | Intentando rellenar label='16 mar', fecha_visible=2026-03-16, datetime_html=2026-03-15
+2026-03-22 22:33:30 | INFO | Abriendo dia 16 mar (lun)
+2026-03-22 22:33:42 | INFO | Guardado completado para 16 mar
+2026-03-22 22:33:42 | INFO | Fin de intento para label='16 mar', fecha_visible=2026-03-16, datetime_html=2026-03-15
+2026-03-22 22:34:09 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-22 22:34:10 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-22 22:34:10 | INFO | Sesion autenticada y lista.
+2026-03-22 22:34:10 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-22 22:34:28 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-22 22:34:28 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-17
+2026-03-22 22:34:33 | INFO | Fila localizada por fecha visible=2026-03-17: label_visible='17 mar', datetime_html=2026-03-16
+2026-03-22 22:34:33 | INFO | Filtrado por SOLO_FECHA=2026-03-17: 1 fila objetivo
+2026-03-22 22:34:33 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-22 22:34:33 | INFO | Progreso 1/1: revisando label='17 mar', fecha_visible=2026-03-17, datetime_html=2026-03-16, dia=mar
+2026-03-22 22:34:33 | INFO | Intentando rellenar label='17 mar', fecha_visible=2026-03-17, datetime_html=2026-03-16
+2026-03-22 22:34:33 | INFO | Abriendo dia 17 mar (mar)
+2026-03-22 22:34:45 | INFO | Guardado completado para 17 mar
+2026-03-22 22:34:45 | INFO | Fin de intento para label='17 mar', fecha_visible=2026-03-17, datetime_html=2026-03-16
+2026-03-22 23:23:25 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-22 23:23:25 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-22 23:23:25 | INFO | Sesion autenticada y lista.
+2026-03-22 23:23:25 | INFO | Abriendo nueva instancia de Chrome.
+2026-03-22 23:23:31 | INFO | Chrome redirigido a login. Completa SSO/MFA en la ventana; esperando acceso a attendance...
+2026-03-22 23:24:03 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-22 23:24:08 | INFO | Dias detectados: 2 mar(lun), 3 mar(mar), 4 mar(mié), 5 mar(jue), 6 mar(vie), 9 mar(lun), 10 mar(mar), 11 mar(mié), 12 mar(jue), 13 mar(vie), 16 mar(lun), 17 mar(mar), 18 mar(mié), 19 mar(jue), 20 mar(vie), 23 mar(lun), 24 mar(mar), 25 mar(mié), 26 mar(jue), 27 mar(vie), 30 mar(lun), 31 mar(mar)
+2026-03-22 23:24:08 | INFO | Inicio de procesamiento: 22 filas candidatas
+2026-03-22 23:24:08 | INFO | Progreso 1/22: revisando label='2 mar', fecha_visible=2026-03-02, datetime_html=2026-03-01, dia=lun
+2026-03-22 23:24:08 | INFO | Saltando label='2 mar', fecha_visible=2026-03-02, datetime_html=2026-03-01: ya tiene horas registradas (estado_aprobado)
+2026-03-22 23:24:08 | INFO | Progreso 2/22: revisando label='3 mar', fecha_visible=2026-03-03, datetime_html=2026-03-02, dia=mar
+2026-03-22 23:24:08 | INFO | Saltando label='3 mar', fecha_visible=2026-03-03, datetime_html=2026-03-02: ya tiene horas registradas (estado_aprobado)
+2026-03-22 23:24:08 | INFO | Progreso 3/22: revisando label='4 mar', fecha_visible=2026-03-04, datetime_html=2026-03-03, dia=mié
+2026-03-22 23:24:08 | INFO | Saltando label='4 mar', fecha_visible=2026-03-04, datetime_html=2026-03-03: ya tiene horas registradas (estado_aprobado)
+2026-03-22 23:24:08 | INFO | Progreso 4/22: revisando label='5 mar', fecha_visible=2026-03-05, datetime_html=2026-03-04, dia=jue
+2026-03-22 23:24:08 | INFO | Saltando label='5 mar', fecha_visible=2026-03-05, datetime_html=2026-03-04: ya tiene horas registradas (estado_aprobado)
+2026-03-22 23:24:08 | INFO | Progreso 5/22: revisando label='6 mar', fecha_visible=2026-03-06, datetime_html=2026-03-05, dia=vie
+2026-03-22 23:24:08 | INFO | Intentando rellenar label='6 mar', fecha_visible=2026-03-06, datetime_html=2026-03-05
+2026-03-22 23:24:08 | INFO | Abriendo dia 6 mar (vie)
+2026-03-22 23:24:13 | INFO | Guardado completado para 6 mar
+2026-03-22 23:24:13 | INFO | Fin de intento para label='6 mar', fecha_visible=2026-03-06, datetime_html=2026-03-05
+2026-03-22 23:24:14 | INFO | Progreso 6/22: revisando label='9 mar', fecha_visible=2026-03-09, datetime_html=2026-03-08, dia=lun
+2026-03-22 23:24:14 | INFO | Saltando label='9 mar', fecha_visible=2026-03-09, datetime_html=2026-03-08: ya tiene horas registradas (estado_aprobado)
+2026-03-22 23:24:14 | INFO | Progreso 7/22: revisando label='10 mar', fecha_visible=2026-03-10, datetime_html=2026-03-09, dia=mar
+2026-03-22 23:24:14 | INFO | Saltando label='10 mar', fecha_visible=2026-03-10, datetime_html=2026-03-09: ya tiene horas registradas (estado_aprobado)
+2026-03-22 23:24:14 | INFO | Progreso 8/22: revisando label='11 mar', fecha_visible=2026-03-11, datetime_html=2026-03-10, dia=mié
+2026-03-22 23:24:14 | INFO | Saltando label='11 mar', fecha_visible=2026-03-11, datetime_html=2026-03-10: ya tiene horas registradas (estado_aprobado)
+2026-03-22 23:24:14 | INFO | Progreso 9/22: revisando label='12 mar', fecha_visible=2026-03-12, datetime_html=2026-03-11, dia=jue
+2026-03-22 23:24:14 | INFO | Saltando label='12 mar', fecha_visible=2026-03-12, datetime_html=2026-03-11: ya tiene horas registradas (estado_aprobado)
+2026-03-22 23:24:14 | INFO | Progreso 10/22: revisando label='13 mar', fecha_visible=2026-03-13, datetime_html=2026-03-12, dia=vie
+2026-03-22 23:24:14 | INFO | Saltando label='13 mar', fecha_visible=2026-03-13, datetime_html=2026-03-12: ya tiene horas registradas (estado_aprobado)
+2026-03-22 23:24:14 | INFO | Progreso 11/22: revisando label='16 mar', fecha_visible=2026-03-16, datetime_html=2026-03-15, dia=lun
+2026-03-22 23:24:14 | INFO | Intentando rellenar label='16 mar', fecha_visible=2026-03-16, datetime_html=2026-03-15
+2026-03-22 23:24:14 | INFO | Abriendo dia 16 mar (lun)
+2026-03-22 23:24:22 | WARNING | Fallo al hacer send_keys en spinbutton: valor='00', detalle={'tag': None, 'text': None, 'contenteditable': None, 'aria-disabled': None, 'aria-valuetext': None, 'class': None, 'enabled': None, 'displayed': None, 'rect': None}, error=Message: stale element reference: stale element not found in the current frame
+  (Session info: chrome=146.0.7680.80); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#staleelementreferenceexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0xe67c13+10dd3]
+	chromedriver!GetHandleVerifier [0xe67d44+10f04]
+	chromedriver!(No symbol) [0xc41f50]
+	chromedriver!(No symbol) [0xc48bbc]
+	chromedriver!(No symbol) [0xc4ae4a]
+	chromedriver!(No symbol) [0xc4aed8]
+	chromedriver!(No symbol) [0xc8b5d9]
+	chromedriver!(No symbol) [0xc8b67e]
+	chromedriver!(No symbol) [0xc846f0]
+	chromedriver!(No symbol) [0xcad90c]
+	chromedriver!(No symbol) [0xc814e4]
+	chromedriver!(No symbol) [0xcadad4]
+	chromedriver!(No symbol) [0xcca7de]
+	chromedriver!(No symbol) [0xcad6a6]
+	chromedriver!(No symbol) [0xc80029]
+	chromedriver!(No symbol) [0xc80de4]
+	chromedriver!GetHandleVerifier [0x10c4509+26d6c9]
+	chromedriver!GetHandleVerifier [0x10bfb43+268d03]
+	chromedriver!GetHandleVerifier [0x10dd85b+286a1b]
+	chromedriver!GetHandleVerifier [0xe81668+2a828]
+	chromedriver!GetHandleVerifier [0xe897fd+329bd]
+	chromedriver!GetHandleVerifier [0xe70588+19748]
+	chromedriver!GetHandleVerifier [0xe70752+19912]
+	chromedriver!GetHandleVerifier [0xe599da+2b9a]
+	KERNEL32!BaseThreadInitThunk [0x76bf5d49+19]
+	ntdll!RtlInitializeExceptionChain [0x7775d81b+6b]
+	ntdll!RtlGetAppContainerNamedObjectPath [0x7775d7a1+231]
+
+2026-03-22 23:24:22 | WARNING | No se pudo editar/guardar 16 mar (lun). Motivo: Message: stale element reference: stale element not found in the current frame
+  (Session info: chrome=146.0.7680.80); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#staleelementreferenceexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0xe67c13+10dd3]
+	chromedriver!GetHandleVerifier [0xe67d44+10f04]
+	chromedriver!(No symbol) [0xc41f50]
+	chromedriver!(No symbol) [0xc48bbc]
+	chromedriver!(No symbol) [0xc4ae4a]
+	chromedriver!(No symbol) [0xc4aed8]
+	chromedriver!(No symbol) [0xc8b5d9]
+	chromedriver!(No symbol) [0xc8b67e]
+	chromedriver!(No symbol) [0xc846f0]
+	chromedriver!(No symbol) [0xcad90c]
+	chromedriver!(No symbol) [0xc814e4]
+	chromedriver!(No symbol) [0xcadad4]
+	chromedriver!(No symbol) [0xcca7de]
+	chromedriver!(No symbol) [0xcad6a6]
+	chromedriver!(No symbol) [0xc80029]
+	chromedriver!(No symbol) [0xc80de4]
+	chromedriver!GetHandleVerifier [0x10c4509+26d6c9]
+	chromedriver!GetHandleVerifier [0x10bfb43+268d03]
+	chromedriver!GetHandleVerifier [0x10dd85b+286a1b]
+	chromedriver!GetHandleVerifier [0xe81668+2a828]
+	chromedriver!GetHandleVerifier [0xe897fd+329bd]
+	chromedriver!GetHandleVerifier [0xe70588+19748]
+	chromedriver!GetHandleVerifier [0xe70752+19912]
+	chromedriver!GetHandleVerifier [0xe599da+2b9a]
+	KERNEL32!BaseThreadInitThunk [0x76bf5d49+19]
+	ntdll!RtlInitializeExceptionChain [0x7775d81b+6b]
+	ntdll!RtlGetAppContainerNamedObjectPath [0x7775d7a1+231]
+
+2026-03-22 23:24:22 | INFO | Fin de intento para label='16 mar', fecha_visible=2026-03-16, datetime_html=2026-03-15
+2026-03-22 23:24:23 | INFO | Progreso 12/22: revisando label='17 mar', fecha_visible=2026-03-17, datetime_html=2026-03-16, dia=mar
+2026-03-22 23:24:23 | INFO | Intentando rellenar label='17 mar', fecha_visible=2026-03-17, datetime_html=2026-03-16
+2026-03-22 23:24:23 | INFO | Abriendo dia 17 mar (mar)
+2026-03-22 23:37:19 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-22 23:37:20 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-22 23:37:20 | INFO | Sesion autenticada y lista.
+2026-03-22 23:37:20 | INFO | Abriendo nueva instancia de Chrome.
+2026-03-22 23:37:37 | INFO | Chrome redirigido a login. Completa SSO/MFA en la ventana; esperando acceso a attendance...
+2026-03-22 23:38:31 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-22 23:38:31 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-22
+2026-03-22 23:38:37 | INFO | No se encontro fila para SOLO_FECHA=2026-03-22
+2026-03-22 23:52:45 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-22 23:52:45 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-22 23:52:45 | INFO | Sesion autenticada y lista.
+2026-03-22 23:52:45 | INFO | Abriendo nueva instancia de Chrome.
+2026-03-22 23:52:51 | INFO | Chrome redirigido a login. Completa SSO/MFA en la ventana; esperando acceso a attendance...
+2026-03-22 23:53:31 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-22 23:53:31 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-22
+2026-03-22 23:53:38 | INFO | No se encontro fila para SOLO_FECHA=2026-03-22
+2026-03-23 00:19:01 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 00:19:02 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 00:19:02 | INFO | Sesion autenticada y lista.
+2026-03-23 00:19:02 | INFO | Abriendo Chrome con perfil 'Profile 1' desde C:\Users\sorts\AppData\Local\Google\Chrome\User Data.
+2026-03-23 00:19:30 | ERROR | Error en servicio Personio: Message: session not created: Chrome failed to start: crashed.
+  (session not created: DevToolsActivePort file doesn't exist)
+  (The process started from chrome location C:\Program Files\Google\Chrome\Application\chrome.exe is no longer running, so ChromeDriver is assuming that Chrome has crashed.); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0xd47c13+10dd3]
+	chromedriver!GetHandleVerifier [0xd47d44+10f04]
+	chromedriver!(No symbol) [0xb21f50]
+	chromedriver!(No symbol) [0xb57487]
+	chromedriver!(No symbol) [0xb524b0]
+	chromedriver!(No symbol) [0xb99aef]
+	chromedriver!(No symbol) [0xb99307]
+	chromedriver!(No symbol) [0xb8d6a6]
+	chromedriver!(No symbol) [0xb60029]
+	chromedriver!(No symbol) [0xb60de4]
+	chromedriver!GetHandleVerifier [0xfa4509+26d6c9]
+	chromedriver!GetHandleVerifier [0xf9fb43+268d03]
+	chromedriver!GetHandleVerifier [0xfbd85b+286a1b]
+	chromedriver!GetHandleVerifier [0xd61668+2a828]
+	chromedriver!GetHandleVerifier [0xd697fd+329bd]
+	chromedriver!GetHandleVerifier [0xd50588+19748]
+	chromedriver!GetHandleVerifier [0xd50752+19912]
+	chromedriver!GetHandleVerifier [0xd399da+2b9a]
+	KERNEL32!BaseThreadInitThunk [0x76bf5d49+19]
+	ntdll!RtlInitializeExceptionChain [0x7775d81b+6b]
+	ntdll!RtlGetAppContainerNamedObjectPath [0x7775d7a1+231]
+
+Traceback (most recent call last):
+
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 82, in <module>
+    main()
+    └ <function main at 0x0000027CF286D9E0>
+
+> File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 74, in main
+    ejecutar_fichaje_diario()
+    └ <function ejecutar_fichaje_diario at 0x0000027CF1E05620>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 60, in ejecutar_fichaje_diario
+    driver, conectado_a_existente = auth.navegar_con_sesion(session, attendance_url)
+                                    │    │                  │        └ 'https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true'
+                                    │    │                  └ <requests.sessions.Session object at 0x0000027CF2DB6E40>
+                                    │    └ <function AuthManager.navegar_con_sesion at 0x0000027CF2C63C40>
+                                    └ <src.auth.AuthManager object at 0x0000027CF2DB7230>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\auth.py", line 165, in navegar_con_sesion
+    driver = self._crear_o_conectar_driver()
+             │    └ <function AuthManager._crear_o_conectar_driver at 0x0000027CF2C63A60>
+             └ <src.auth.AuthManager object at 0x0000027CF2DB7230>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\auth.py", line 157, in _crear_o_conectar_driver
+    return webdriver.Chrome(service=service, options=options)
+           │         │              │                └ <selenium.webdriver.chrome.options.Options object at 0x0000027CF2DB7770>
+           │         │              └ <selenium.webdriver.chrome.service.Service object at 0x0000027CF2DB74D0>
+           │         └ <class 'selenium.webdriver.chrome.webdriver.WebDriver'>
+           └ <module 'selenium.webdriver' from 'C:\\repositorio\\examples\\Python2\\personio_fichajes\\.venv\\Lib\\site-packages\\selenium...
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\.venv\Lib\site-packages\selenium\webdriver\chrome\webdriver.py", line 45, in __init__
+    super().__init__(
+  File "C:\repositorio\examples\Python2\personio_fichajes\.venv\Lib\site-packages\selenium\webdriver\chromium\webdriver.py", line 66, in __init__
+    super().__init__(command_executor=executor, options=self.options)
+                                      │                 │    └ <selenium.webdriver.chrome.options.Options object at 0x0000027CF2DB7770>
+                                      │                 └ <selenium.webdriver.chrome.webdriver.WebDriver (session="None")>
+                                      └ <selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection object at 0x0000027CF2EB9550>
+  File "C:\repositorio\examples\Python2\personio_fichajes\.venv\Lib\site-packages\selenium\webdriver\common\webdriver.py", line 25, in __init__
+    super().__init__(*args, **kwargs)
+                      │       └ {'command_executor': <selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection object at 0x0000027CF2EB9550>, '...
+                      └ ()
+  File "C:\repositorio\examples\Python2\personio_fichajes\.venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 271, in __init__
+    self.start_session(capabilities)
+    │    │             └ {'browserName': 'chrome', 'pageLoadStrategy': <PageLoadStrategy.normal: 'normal'>, 'goog:chromeOptions': {'extensions': [], '...
+    │    └ <function WebDriver.start_session at 0x0000027CF2856980>
+    └ <selenium.webdriver.chrome.webdriver.WebDriver (session="None")>
+  File "C:\repositorio\examples\Python2\personio_fichajes\.venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 366, in start_session
+    response = self.execute(Command.NEW_SESSION, caps)["value"]
+               │    │       │       │            └ {'capabilities': {'firstMatch': [{}], 'alwaysMatch': {'browserName': 'chrome', 'pageLoadStrategy': <PageLoadStrategy.normal: ...
+               │    │       │       └ 'newSession'
+               │    │       └ <class 'selenium.webdriver.remote.command.Command'>
+               │    └ <function WebDriver.execute at 0x0000027CF2856CA0>
+               └ <selenium.webdriver.chrome.webdriver.WebDriver (session="None")>
+  File "C:\repositorio\examples\Python2\personio_fichajes\.venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 446, in execute
+    self.error_handler.check_response(response)
+    │    │             │              └ {'status': 500, 'value': '{"value":{"error":"session not created","message":"session not created: Chrome failed to start: cra...
+    │    │             └ <function ErrorHandler.check_response at 0x0000027CF28393A0>
+    │    └ <selenium.webdriver.remote.errorhandler.ErrorHandler object at 0x0000027CF2EB96A0>
+    └ <selenium.webdriver.chrome.webdriver.WebDriver (session="None")>
+  File "C:\repositorio\examples\Python2\personio_fichajes\.venv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 232, in check_response
+    raise exception_class(message, screen, stacktrace)
+          │               │        │       └ ['\tchromedriver!GetHandleVerifier [0xd47c13+10dd3]', '\tchromedriver!GetHandleVerifier [0xd47d44+10f04]', '\tchromedriver!(N...
+          │               │        └ None
+          │               └ "session not created: Chrome failed to start: crashed.\n  (session not created: DevToolsActivePort file doesn't exist)\n  (Th...
+          └ <class 'selenium.common.exceptions.SessionNotCreatedException'>
+
+selenium.common.exceptions.SessionNotCreatedException: Message: session not created: Chrome failed to start: crashed.
+  (session not created: DevToolsActivePort file doesn't exist)
+  (The process started from chrome location C:\Program Files\Google\Chrome\Application\chrome.exe is no longer running, so ChromeDriver is assuming that Chrome has crashed.); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0xd47c13+10dd3]
+	chromedriver!GetHandleVerifier [0xd47d44+10f04]
+	chromedriver!(No symbol) [0xb21f50]
+	chromedriver!(No symbol) [0xb57487]
+	chromedriver!(No symbol) [0xb524b0]
+	chromedriver!(No symbol) [0xb99aef]
+	chromedriver!(No symbol) [0xb99307]
+	chromedriver!(No symbol) [0xb8d6a6]
+	chromedriver!(No symbol) [0xb60029]
+	chromedriver!(No symbol) [0xb60de4]
+	chromedriver!GetHandleVerifier [0xfa4509+26d6c9]
+	chromedriver!GetHandleVerifier [0xf9fb43+268d03]
+	chromedriver!GetHandleVerifier [0xfbd85b+286a1b]
+	chromedriver!GetHandleVerifier [0xd61668+2a828]
+	chromedriver!GetHandleVerifier [0xd697fd+329bd]
+	chromedriver!GetHandleVerifier [0xd50588+19748]
+	chromedriver!GetHandleVerifier [0xd50752+19912]
+	chromedriver!GetHandleVerifier [0xd399da+2b9a]
+	KERNEL32!BaseThreadInitThunk [0x76bf5d49+19]
+	ntdll!RtlInitializeExceptionChain [0x7775d81b+6b]
+	ntdll!RtlGetAppContainerNamedObjectPath [0x7775d7a1+231]
+
+2026-03-23 00:35:16 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 00:35:17 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 00:35:17 | INFO | Sesion autenticada y lista.
+2026-03-23 00:35:19 | INFO | Abriendo Chrome con perfil 'Profile 1' desde C:\Users\sorts\AppData\Local\Google\Chrome\User Data.
+2026-03-23 00:35:36 | ERROR | Error en servicio Personio: Message: session not created: Chrome failed to start: crashed.
+  (session not created: DevToolsActivePort file doesn't exist)
+  (The process started from chrome location C:\Program Files\Google\Chrome\Application\chrome.exe is no longer running, so ChromeDriver is assuming that Chrome has crashed.); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0xd47c13+10dd3]
+	chromedriver!GetHandleVerifier [0xd47d44+10f04]
+	chromedriver!(No symbol) [0xb21f50]
+	chromedriver!(No symbol) [0xb57487]
+	chromedriver!(No symbol) [0xb524b0]
+	chromedriver!(No symbol) [0xb99aef]
+	chromedriver!(No symbol) [0xb99307]
+	chromedriver!(No symbol) [0xb8d6a6]
+	chromedriver!(No symbol) [0xb60029]
+	chromedriver!(No symbol) [0xb60de4]
+	chromedriver!GetHandleVerifier [0xfa4509+26d6c9]
+	chromedriver!GetHandleVerifier [0xf9fb43+268d03]
+	chromedriver!GetHandleVerifier [0xfbd85b+286a1b]
+	chromedriver!GetHandleVerifier [0xd61668+2a828]
+	chromedriver!GetHandleVerifier [0xd697fd+329bd]
+	chromedriver!GetHandleVerifier [0xd50588+19748]
+	chromedriver!GetHandleVerifier [0xd50752+19912]
+	chromedriver!GetHandleVerifier [0xd399da+2b9a]
+	KERNEL32!BaseThreadInitThunk [0x76bf5d49+19]
+	ntdll!RtlInitializeExceptionChain [0x7775d81b+6b]
+	ntdll!RtlGetAppContainerNamedObjectPath [0x7775d7a1+231]
+
+Traceback (most recent call last):
+
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 88, in <module>
+    main()
+    └ <function main at 0x000002B8806CD9E0>
+
+> File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 80, in main
+    ejecutar_fichaje_diario()
+    └ <function ejecutar_fichaje_diario at 0x000002B8FFB7F7E0>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 60, in ejecutar_fichaje_diario
+    driver, conectado_a_existente = auth.navegar_con_sesion(session, attendance_url)
+                                    │    │                  │        └ 'https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true'
+                                    │    │                  └ <requests.sessions.Session object at 0x000002B880C1AE40>
+                                    │    └ <function AuthManager.navegar_con_sesion at 0x000002B880AC3CE0>
+                                    └ <src.auth.AuthManager object at 0x000002B880C1B230>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\auth.py", line 165, in navegar_con_sesion
+    driver = self._crear_o_conectar_driver()
+             │    └ <function AuthManager._crear_o_conectar_driver at 0x000002B880AC3B00>
+             └ <src.auth.AuthManager object at 0x000002B880C1B230>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\auth.py", line 157, in _crear_o_conectar_driver
+    return webdriver.Chrome(service=service, options=options)
+           │         │              │                └ <selenium.webdriver.chrome.options.Options object at 0x000002B880C1B770>
+           │         │              └ <selenium.webdriver.chrome.service.Service object at 0x000002B880C1B4D0>
+           │         └ <class 'selenium.webdriver.chrome.webdriver.WebDriver'>
+           └ <module 'selenium.webdriver' from 'C:\\repositorio\\examples\\Python2\\personio_fichajes\\.venv\\Lib\\site-packages\\selenium...
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\.venv\Lib\site-packages\selenium\webdriver\chrome\webdriver.py", line 45, in __init__
+    super().__init__(
+  File "C:\repositorio\examples\Python2\personio_fichajes\.venv\Lib\site-packages\selenium\webdriver\chromium\webdriver.py", line 66, in __init__
+    super().__init__(command_executor=executor, options=self.options)
+                                      │                 │    └ <selenium.webdriver.chrome.options.Options object at 0x000002B880C1B770>
+                                      │                 └ <selenium.webdriver.chrome.webdriver.WebDriver (session="None")>
+                                      └ <selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection object at 0x000002B880D19400>
+  File "C:\repositorio\examples\Python2\personio_fichajes\.venv\Lib\site-packages\selenium\webdriver\common\webdriver.py", line 25, in __init__
+    super().__init__(*args, **kwargs)
+                      │       └ {'command_executor': <selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection object at 0x000002B880D19400>, '...
+                      └ ()
+  File "C:\repositorio\examples\Python2\personio_fichajes\.venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 271, in __init__
+    self.start_session(capabilities)
+    │    │             └ {'browserName': 'chrome', 'pageLoadStrategy': <PageLoadStrategy.normal: 'normal'>, 'goog:chromeOptions': {'extensions': [], '...
+    │    └ <function WebDriver.start_session at 0x000002B8806B6980>
+    └ <selenium.webdriver.chrome.webdriver.WebDriver (session="None")>
+  File "C:\repositorio\examples\Python2\personio_fichajes\.venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 366, in start_session
+    response = self.execute(Command.NEW_SESSION, caps)["value"]
+               │    │       │       │            └ {'capabilities': {'firstMatch': [{}], 'alwaysMatch': {'browserName': 'chrome', 'pageLoadStrategy': <PageLoadStrategy.normal: ...
+               │    │       │       └ 'newSession'
+               │    │       └ <class 'selenium.webdriver.remote.command.Command'>
+               │    └ <function WebDriver.execute at 0x000002B8806B6CA0>
+               └ <selenium.webdriver.chrome.webdriver.WebDriver (session="None")>
+  File "C:\repositorio\examples\Python2\personio_fichajes\.venv\Lib\site-packages\selenium\webdriver\remote\webdriver.py", line 446, in execute
+    self.error_handler.check_response(response)
+    │    │             │              └ {'status': 500, 'value': '{"value":{"error":"session not created","message":"session not created: Chrome failed to start: cra...
+    │    │             └ <function ErrorHandler.check_response at 0x000002B8806993A0>
+    │    └ <selenium.webdriver.remote.errorhandler.ErrorHandler object at 0x000002B880D19550>
+    └ <selenium.webdriver.chrome.webdriver.WebDriver (session="None")>
+  File "C:\repositorio\examples\Python2\personio_fichajes\.venv\Lib\site-packages\selenium\webdriver\remote\errorhandler.py", line 232, in check_response
+    raise exception_class(message, screen, stacktrace)
+          │               │        │       └ ['\tchromedriver!GetHandleVerifier [0xd47c13+10dd3]', '\tchromedriver!GetHandleVerifier [0xd47d44+10f04]', '\tchromedriver!(N...
+          │               │        └ None
+          │               └ "session not created: Chrome failed to start: crashed.\n  (session not created: DevToolsActivePort file doesn't exist)\n  (Th...
+          └ <class 'selenium.common.exceptions.SessionNotCreatedException'>
+
+selenium.common.exceptions.SessionNotCreatedException: Message: session not created: Chrome failed to start: crashed.
+  (session not created: DevToolsActivePort file doesn't exist)
+  (The process started from chrome location C:\Program Files\Google\Chrome\Application\chrome.exe is no longer running, so ChromeDriver is assuming that Chrome has crashed.); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#sessionnotcreatedexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0xd47c13+10dd3]
+	chromedriver!GetHandleVerifier [0xd47d44+10f04]
+	chromedriver!(No symbol) [0xb21f50]
+	chromedriver!(No symbol) [0xb57487]
+	chromedriver!(No symbol) [0xb524b0]
+	chromedriver!(No symbol) [0xb99aef]
+	chromedriver!(No symbol) [0xb99307]
+	chromedriver!(No symbol) [0xb8d6a6]
+	chromedriver!(No symbol) [0xb60029]
+	chromedriver!(No symbol) [0xb60de4]
+	chromedriver!GetHandleVerifier [0xfa4509+26d6c9]
+	chromedriver!GetHandleVerifier [0xf9fb43+268d03]
+	chromedriver!GetHandleVerifier [0xfbd85b+286a1b]
+	chromedriver!GetHandleVerifier [0xd61668+2a828]
+	chromedriver!GetHandleVerifier [0xd697fd+329bd]
+	chromedriver!GetHandleVerifier [0xd50588+19748]
+	chromedriver!GetHandleVerifier [0xd50752+19912]
+	chromedriver!GetHandleVerifier [0xd399da+2b9a]
+	KERNEL32!BaseThreadInitThunk [0x76bf5d49+19]
+	ntdll!RtlInitializeExceptionChain [0x7775d81b+6b]
+	ntdll!RtlGetAppContainerNamedObjectPath [0x7775d7a1+231]
+
+2026-03-23 00:49:38 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 00:49:38 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 00:49:38 | INFO | Sesion autenticada y lista.
+2026-03-23 00:49:38 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 00:49:57 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 00:49:57 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true&viewMode=weekly&startDate=2026-03-16
+2026-03-23 00:49:57 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 00:49:58 | INFO | No se encontro fila para SOLO_FECHA=2026-03-23
+2026-03-23 00:51:15 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 00:51:16 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 00:51:16 | INFO | Sesion autenticada y lista.
+2026-03-23 00:51:16 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 00:51:34 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 00:51:34 | INFO | Chrome listo en URL: chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html
+2026-03-23 00:51:34 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 00:52:14 | ERROR | Error en servicio Personio: Message: 
+Stacktrace:
+	chromedriver!GetHandleVerifier [0xd47c13+10dd3]
+	chromedriver!GetHandleVerifier [0xd47d44+10f04]
+	chromedriver!(No symbol) [0xb21f50]
+	chromedriver!(No symbol) [0xb6a9aa]
+	chromedriver!(No symbol) [0xb6ac4b]
+	chromedriver!(No symbol) [0xbacee2]
+	chromedriver!(No symbol) [0xb8d954]
+	chromedriver!(No symbol) [0xbaa7de]
+	chromedriver!(No symbol) [0xb8d6a6]
+	chromedriver!(No symbol) [0xb60029]
+	chromedriver!(No symbol) [0xb60de4]
+	chromedriver!GetHandleVerifier [0xfa4509+26d6c9]
+	chromedriver!GetHandleVerifier [0xf9fb43+268d03]
+	chromedriver!GetHandleVerifier [0xfbd85b+286a1b]
+	chromedriver!GetHandleVerifier [0xd61668+2a828]
+	chromedriver!GetHandleVerifier [0xd697fd+329bd]
+	chromedriver!GetHandleVerifier [0xd50588+19748]
+	chromedriver!GetHandleVerifier [0xd50752+19912]
+	chromedriver!GetHandleVerifier [0xd399da+2b9a]
+	KERNEL32!BaseThreadInitThunk [0x76bf5d49+19]
+	ntdll!RtlInitializeExceptionChain [0x7775d81b+6b]
+	ntdll!RtlGetAppContainerNamedObjectPath [0x7775d7a1+231]
+
+Traceback (most recent call last):
+
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 88, in <module>
+    main()
+    └ <function main at 0x0000025DCBE4D9E0>
+
+> File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 80, in main
+    ejecutar_fichaje_diario()
+    └ <function ejecutar_fichaje_diario at 0x0000025DCB4C5620>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 66, in ejecutar_fichaje_diario
+    bot.rellenar_semana(solo_fecha=solo_fecha)
+    │   │                          └ datetime.date(2026, 3, 23)
+    │   └ <function AttendanceBot.rellenar_semana at 0x0000025DCBE4D8A0>
+    └ <src.attendance_bot.AttendanceBot object at 0x0000025DCB7D2BA0>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\attendance_bot.py", line 443, in rellenar_semana
+    fila_objetivo = self._obtener_fila_por_fecha(solo_fecha)
+                    │    │                       └ datetime.date(2026, 3, 23)
+                    │    └ <function AttendanceBot._obtener_fila_por_fecha at 0x0000025DCBE4D300>
+                    └ <src.attendance_bot.AttendanceBot object at 0x0000025DCB7D2BA0>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\attendance_bot.py", line 208, in _obtener_fila_por_fecha
+    self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, _SELECTOR_FILA)))
+    │    │    │     │  │                            │  │             └ 'div[role="row"][data-test-id="timesheet-timecard"]'
+    │    │    │     │  │                            │  └ 'css selector'
+    │    │    │     │  │                            └ <class 'selenium.webdriver.common.by.By'>
+    │    │    │     │  └ <function presence_of_element_located at 0x0000025DCBE36200>
+    │    │    │     └ <module 'selenium.webdriver.support.expected_conditions' from 'C:\\repositorio\\examples\\Python2\\personio_fichajes\\.venv\\...
+    │    │    └ <function WebDriverWait.until at 0x0000025DCBE4CD60>
+    │    └ <selenium.webdriver.support.wait.WebDriverWait (session="43805e7db3e332729bf7874dc6e52f77")>
+    └ <src.attendance_bot.AttendanceBot object at 0x0000025DCB7D2BA0>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\.venv\Lib\site-packages\selenium\webdriver\support\wait.py", line 121, in until
+    raise TimeoutException(message, screen, stacktrace)
+          │                │        │       └ ['\tchromedriver!GetHandleVerifier [0xd47c13+10dd3]', '\tchromedriver!GetHandleVerifier [0xd47d44+10f04]', '\tchromedriver!(N...
+          │                │        └ None
+          │                └ ''
+          └ <class 'selenium.common.exceptions.TimeoutException'>
+
+selenium.common.exceptions.TimeoutException: Message: 
+Stacktrace:
+	chromedriver!GetHandleVerifier [0xd47c13+10dd3]
+	chromedriver!GetHandleVerifier [0xd47d44+10f04]
+	chromedriver!(No symbol) [0xb21f50]
+	chromedriver!(No symbol) [0xb6a9aa]
+	chromedriver!(No symbol) [0xb6ac4b]
+	chromedriver!(No symbol) [0xbacee2]
+	chromedriver!(No symbol) [0xb8d954]
+	chromedriver!(No symbol) [0xbaa7de]
+	chromedriver!(No symbol) [0xb8d6a6]
+	chromedriver!(No symbol) [0xb60029]
+	chromedriver!(No symbol) [0xb60de4]
+	chromedriver!GetHandleVerifier [0xfa4509+26d6c9]
+	chromedriver!GetHandleVerifier [0xf9fb43+268d03]
+	chromedriver!GetHandleVerifier [0xfbd85b+286a1b]
+	chromedriver!GetHandleVerifier [0xd61668+2a828]
+	chromedriver!GetHandleVerifier [0xd697fd+329bd]
+	chromedriver!GetHandleVerifier [0xd50588+19748]
+	chromedriver!GetHandleVerifier [0xd50752+19912]
+	chromedriver!GetHandleVerifier [0xd399da+2b9a]
+	KERNEL32!BaseThreadInitThunk [0x76bf5d49+19]
+	ntdll!RtlInitializeExceptionChain [0x7775d81b+6b]
+	ntdll!RtlGetAppContainerNamedObjectPath [0x7775d7a1+231]
+
+2026-03-23 00:52:53 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 00:52:54 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 00:52:54 | INFO | Sesion autenticada y lista.
+2026-03-23 00:52:54 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 00:53:05 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 00:53:05 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 00:53:05 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 00:53:10 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 00:53:10 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 00:53:10 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 00:53:10 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 00:53:10 | INFO | Intentando rellenar label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 00:53:10 | INFO | Abriendo dia 23 mar (lun)
+2026-03-23 00:53:20 | INFO | Guardado completado para 23 mar
+2026-03-23 00:53:20 | INFO | Fin de intento para label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 00:57:07 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 00:57:08 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 00:57:08 | INFO | Sesion autenticada y lista.
+2026-03-23 00:57:08 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 00:57:20 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 00:57:20 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 00:57:20 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-22
+2026-03-23 00:57:28 | INFO | No se encontro fila para SOLO_FECHA=2026-03-22
+2026-03-23 01:00:08 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 01:00:08 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 01:00:08 | INFO | Sesion autenticada y lista.
+2026-03-23 01:00:08 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 01:00:24 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 01:00:24 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 01:00:24 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 01:00:31 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 01:00:31 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 01:00:31 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 01:00:31 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 01:00:31 | INFO | Intentando rellenar label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 01:00:31 | INFO | Abriendo dia 23 mar (lun)
+2026-03-23 01:00:41 | INFO | Guardado completado para 23 mar
+2026-03-23 01:00:41 | INFO | Fin de intento para label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 01:05:09 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 01:05:10 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 01:05:10 | INFO | Sesion autenticada y lista.
+2026-03-23 01:05:10 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 01:05:28 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 01:05:28 | INFO | Chrome redirigido a login. Completa SSO/MFA en la ventana; esperando acceso a attendance...
+2026-03-23 01:08:31 | ERROR | Error en servicio Personio: Timeout esperando login SSO/MFA. Revisa credenciales o completa MFA en ventana del navegador.
+Traceback (most recent call last):
+
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 88, in <module>
+    main()
+    └ <function main at 0x000001121348D9E0>
+
+> File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 80, in main
+    ejecutar_fichaje_diario()
+    └ <function ejecutar_fichaje_diario at 0x0000011212A81620>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\servicio.py", line 60, in ejecutar_fichaje_diario
+    driver, conectado_a_existente = auth.navegar_con_sesion(session, attendance_url)
+                                    │    │                  │        └ 'https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true'
+                                    │    │                  └ <requests.sessions.Session object at 0x00000112139DA270>
+                                    │    └ <function AuthManager.navegar_con_sesion at 0x0000011213887C40>
+                                    └ <src.auth.AuthManager object at 0x00000112139DA660>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\auth.py", line 194, in navegar_con_sesion
+    self._esperar_login_exitoso(driver)
+    │    │                      └ <selenium.webdriver.chrome.webdriver.WebDriver (session="2b9a4e142129c1e0f5c688c1010a66ec")>
+    │    └ <function AuthManager._esperar_login_exitoso at 0x0000011213887EC0>
+    └ <src.auth.AuthManager object at 0x00000112139DA660>
+
+  File "C:\repositorio\examples\Python2\personio_fichajes\src\auth.py", line 287, in _esperar_login_exitoso
+    raise AuthError(
+          └ <class 'src.auth.AuthError'>
+
+src.auth.AuthError: Timeout esperando login SSO/MFA. Revisa credenciales o completa MFA en ventana del navegador.
+2026-03-23 01:13:45 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 01:13:46 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 01:13:46 | INFO | Sesion autenticada y lista.
+2026-03-23 01:13:46 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 01:14:03 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 01:14:03 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 01:14:03 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 01:14:08 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 01:14:08 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 01:14:08 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 01:14:08 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 01:14:08 | INFO | Intentando rellenar label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 01:14:08 | INFO | Abriendo dia 23 mar (lun)
+2026-03-23 01:14:19 | INFO | Guardado completado para 23 mar
+2026-03-23 01:14:19 | INFO | Fin de intento para label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 01:15:22 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 01:15:23 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 01:15:23 | INFO | Sesion autenticada y lista.
+2026-03-23 01:15:23 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 01:15:27 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 01:15:27 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 01:15:27 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 01:15:42 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 01:15:42 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 01:15:42 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 01:15:42 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 01:15:42 | INFO | Intentando rellenar label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 01:15:42 | INFO | Abriendo dia 23 mar (lun)
+2026-03-23 01:15:54 | WARNING | No se pudo editar/guardar 23 mar (lun). Motivo: Message: no such element: Unable to locate element: {"method":"css selector","selector":"[data-test-id="periods.2.start"]"}
+  (Session info: chrome=146.0.7680.154); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception
+Stacktrace:
+	chromedriver!GetHandleVerifier [0xd47c13+10dd3]
+	chromedriver!GetHandleVerifier [0xd47d44+10f04]
+	chromedriver!(No symbol) [0xb21f50]
+	chromedriver!(No symbol) [0xb6a9aa]
+	chromedriver!(No symbol) [0xb6ac4b]
+	chromedriver!(No symbol) [0xb615f1]
+	chromedriver!(No symbol) [0xb8d954]
+	chromedriver!(No symbol) [0xb614e4]
+	chromedriver!(No symbol) [0xb8dad4]
+	chromedriver!(No symbol) [0xbaa7de]
+	chromedriver!(No symbol) [0xb8d6a6]
+	chromedriver!(No symbol) [0xb60029]
+	chromedriver!(No symbol) [0xb60de4]
+	chromedriver!GetHandleVerifier [0xfa4509+26d6c9]
+	chromedriver!GetHandleVerifier [0xf9fb43+268d03]
+	chromedriver!GetHandleVerifier [0xfbd85b+286a1b]
+	chromedriver!GetHandleVerifier [0xd61668+2a828]
+	chromedriver!GetHandleVerifier [0xd697fd+329bd]
+	chromedriver!GetHandleVerifier [0xd50588+19748]
+	chromedriver!GetHandleVerifier [0xd50752+19912]
+	chromedriver!GetHandleVerifier [0xd399da+2b9a]
+	KERNEL32!BaseThreadInitThunk [0x76bf5d49+19]
+	ntdll!RtlInitializeExceptionChain [0x7775d81b+6b]
+	ntdll!RtlGetAppContainerNamedObjectPath [0x7775d7a1+231]
+
+2026-03-23 01:15:54 | INFO | Fin de intento para label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 01:17:39 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 01:17:40 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 01:17:40 | INFO | Sesion autenticada y lista.
+2026-03-23 01:17:40 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 01:17:44 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 01:17:44 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 01:17:44 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 01:17:51 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 01:17:51 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 01:17:51 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 01:17:51 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 01:17:51 | INFO | Intentando rellenar label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 01:17:51 | INFO | Abriendo dia 23 mar (lun)
+2026-03-23 01:18:05 | INFO | Guardado completado para 23 mar
+2026-03-23 01:18:05 | INFO | Fin de intento para label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 01:18:44 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 01:18:44 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 01:18:44 | INFO | Sesion autenticada y lista.
+2026-03-23 01:18:44 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 01:18:47 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 01:18:47 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 01:18:47 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 01:18:52 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 01:18:52 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 01:18:52 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 01:18:52 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 01:18:52 | INFO | Saltando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22: ya tiene horas registradas (estado_aprobado)
+2026-03-23 01:30:55 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 01:30:56 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 01:30:56 | INFO | Sesion autenticada y lista.
+2026-03-23 01:30:58 | INFO | Abriendo Chrome con perfil 'Profile 1' desde C:\chromeDebug-personio.
+2026-03-23 01:31:03 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 01:31:03 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 01:31:07 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 01:31:07 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 01:31:07 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 01:31:07 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 01:31:07 | INFO | Intentando rellenar label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 01:31:07 | INFO | Abriendo dia 23 mar (lun)
+2026-03-23 01:31:26 | INFO | Guardado completado para 23 mar
+2026-03-23 01:31:26 | INFO | Fin de intento para label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 01:33:14 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 01:33:15 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 01:33:15 | INFO | Sesion autenticada y lista.
+2026-03-23 01:33:15 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 01:33:19 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 01:33:19 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 01:33:19 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 01:33:24 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 01:33:24 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 01:33:24 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 01:33:24 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 01:33:24 | INFO | Saltando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22: ya tiene horas registradas (estado_aprobado)
+2026-03-23 01:42:42 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 01:42:43 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 01:42:43 | INFO | Sesion autenticada y lista.
+2026-03-23 01:42:43 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 01:42:54 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 01:42:54 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 01:42:54 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 01:42:59 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 01:42:59 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 01:42:59 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 01:42:59 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 01:42:59 | INFO | Saltando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22: ya tiene horas registradas (estado_aprobado)
+2026-03-23 01:55:55 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 01:55:56 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 01:55:56 | INFO | Sesion autenticada y lista.
+2026-03-23 01:55:56 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 01:55:59 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 01:55:59 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 01:55:59 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 01:56:03 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 01:56:03 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 01:56:03 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 01:56:03 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 01:56:03 | INFO | Intentando rellenar label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 01:56:03 | INFO | Abriendo dia 23 mar (lun)
+2026-03-23 01:56:13 | INFO | Guardado completado para 23 mar
+2026-03-23 01:56:13 | INFO | Fin de intento para label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22
+2026-03-23 02:00:33 | INFO | Iniciando servicio de fichajes Personio...
+2026-03-23 02:00:34 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-03-23 02:00:34 | INFO | Sesion autenticada y lista.
+2026-03-23 02:00:34 | INFO | Conectando a Chrome existente en puerto 9222.
+2026-03-23 02:00:37 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-03-23 02:00:37 | INFO | Chrome listo en URL: https://unikaltech.app.personio.com/attendance/employee/34815582?hideEmployeeHeader=true
+2026-03-23 02:00:37 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-03-23
+2026-03-23 02:00:51 | INFO | Fila localizada por fecha visible=2026-03-23: label_visible='23 mar', datetime_html=2026-03-22
+2026-03-23 02:00:51 | INFO | Filtrado por SOLO_FECHA=2026-03-23: 1 fila objetivo
+2026-03-23 02:00:51 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-03-23 02:00:51 | INFO | Progreso 1/1: revisando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22, dia=lun
+2026-03-23 02:00:51 | INFO | Saltando label='23 mar', fecha_visible=2026-03-23, datetime_html=2026-03-22: ya tiene horas registradas (estado_aprobado)

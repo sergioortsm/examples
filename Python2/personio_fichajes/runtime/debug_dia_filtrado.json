@@ -1,0 +1,30 @@
+{
+  "day_id": "bcc71823-a2bc-4dd4-ab19-c52afc686d33",
+  "date": "2026-03-10",
+  "state": "trackable",
+  "is_off_day": false,
+  "assigned_working_schedule_id": "1337414192821645336",
+  "periods": [],
+  "break_duration_minutes": 0,
+  "legacy_break_duration_minutes": 0,
+  "target_hours": {
+    "effective_work_duration_minutes": 510,
+    "effective_break_duration_minutes": 60,
+    "contractual_work_duration_minutes": 510,
+    "contractual_break_duration_minutes": 60,
+    "start_time": "09:00",
+    "end_time": "18:30"
+  },
+  "overtime": null,
+  "time_off": null,
+  "approval": {
+    "status": "empty",
+    "rejection_reason": null
+  },
+  "alerts": [],
+  "metadata": {
+    "created_at": "2026-03-15T17:24:04.725Z",
+    "updated_at": "2026-03-15T17:38:09.817Z"
+  },
+  "can_create_time_off_in_lieu": false
+}
