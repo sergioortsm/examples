@@ -183,6 +183,29 @@ Gmail **no permite la contrasena normal** para SMTP. Se necesita una **Contrasen
 > **Seguridad:** asegurarse de que `configuracion.json` no este en ninguna ruta indexada por git
 > (esta en `dist/`, que deberia estar en `.gitignore`).
 
+#### Probar el envio de email desde consola
+
+Para verificar que la configuracion SMTP funciona sin necesidad de que el bot falle realmente:
+
+```powershell
+cd personio_fichajes
+.\.venv\Scripts\python.exe -c "
+import sys; sys.path.insert(0, '.')
+from src.config import cargar_configuracion
+from src.logger import configurar_logger
+from src.servicio import _enviar_alerta_email
+from datetime import date
+
+cfg = cargar_configuracion()
+logger = configurar_logger(None)
+_enviar_alerta_email(cfg, [date(2026, 4, 15), date(2026, 4, 16)], logger)
+print('Listo.')
+"
+```
+
+Si la configuracion es correcta, llega un email a `email_destinatario` con asunto
+**"Personio: dias sin imputar tras catch-up"** y las dos fechas de prueba en el cuerpo.
+
 ## Fiabilidad
 
 - Reintentos HTTP configurables para errores transitorios (429/5xx).
