@@ -2015,3 +2015,124 @@ src.auth.AuthError: Error durante login SSO: El boton OIDC de Personio no provoc
 2026-04-16 17:51:33 | INFO | Abriendo dia 16 abr (jue)
 2026-04-16 17:51:43 | INFO | Guardado completado para 16 abr (verificado: estado_aprobado)
 2026-04-16 17:51:43 | INFO | Fin de intento OK para label='16 abr', fecha_visible=2026-04-16, datetime_html=2026-04-15
+2026-04-16 23:36:46 | INFO | Modo catch-up iniciado.
+2026-04-16 23:36:46 | INFO | Catch-up: 7 dia(s) sin confirmar en stamp: 2026-04-07, 2026-04-08, 2026-04-09, 2026-04-10, 2026-04-13, 2026-04-14, 2026-04-15
+2026-04-16 23:36:46 | INFO | Catch-up: procesando 2026-04-07...
+2026-04-16 23:36:46 | INFO | Iniciando servicio de fichajes Personio...
+2026-04-16 23:36:46 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-04-07
+2026-04-16 23:39:54 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-04-16 23:39:54 | INFO | Sesion autenticada y lista.
+2026-04-16 23:40:10 | INFO | No se encontro fila para SOLO_FECHA=2026-04-07
+2026-04-16 23:40:12 | INFO | Fichaje de 2026-04-07 registrado en stamp file.
+2026-04-16 23:40:12 | INFO | Catch-up: procesando 2026-04-08...
+2026-04-16 23:40:12 | INFO | Iniciando servicio de fichajes Personio...
+2026-04-16 23:40:12 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-04-08
+2026-04-16 23:40:30 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-04-16 23:40:30 | INFO | Sesion autenticada y lista.
+2026-04-16 23:40:43 | INFO | No se encontro fila para SOLO_FECHA=2026-04-08
+2026-04-16 23:40:45 | INFO | Fichaje de 2026-04-08 registrado en stamp file.
+2026-04-16 23:40:45 | INFO | Catch-up: procesando 2026-04-09...
+2026-04-16 23:40:45 | INFO | Iniciando servicio de fichajes Personio...
+2026-04-16 23:40:45 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-04-09
+2026-04-16 23:40:50 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-04-16 23:40:50 | INFO | Sesion autenticada y lista.
+2026-04-16 23:41:04 | INFO | No se encontro fila para SOLO_FECHA=2026-04-09
+2026-04-16 23:41:06 | INFO | Fichaje de 2026-04-09 registrado en stamp file.
+2026-04-16 23:41:06 | INFO | Catch-up: procesando 2026-04-10...
+2026-04-16 23:41:06 | INFO | Iniciando servicio de fichajes Personio...
+2026-04-16 23:41:06 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-04-10
+2026-04-16 23:41:42 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-04-16 23:41:42 | INFO | Sesion autenticada y lista.
+2026-04-16 23:41:54 | INFO | No se encontro fila para SOLO_FECHA=2026-04-10
+2026-04-16 23:41:56 | INFO | Fichaje de 2026-04-10 registrado en stamp file.
+2026-04-16 23:41:56 | INFO | Catch-up: procesando 2026-04-13...
+2026-04-16 23:41:56 | INFO | Iniciando servicio de fichajes Personio...
+2026-04-16 23:41:56 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-04-13
+2026-04-16 23:42:05 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-04-16 23:42:05 | INFO | Sesion autenticada y lista.
+2026-04-16 23:42:17 | INFO | Fila localizada por fecha visible=2026-04-13: label_visible='13 abr', datetime_html=2026-04-12
+2026-04-16 23:42:17 | INFO | Filtrado por SOLO_FECHA=2026-04-13: 1 fila objetivo
+2026-04-16 23:42:17 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-04-16 23:42:17 | INFO | Progreso 1/1: revisando label='13 abr', fecha_visible=2026-04-13, datetime_html=2026-04-12, dia=lun
+2026-04-16 23:42:17 | WARNING | Saltando label='13 abr', fecha_visible=2026-04-13, datetime_html=2026-04-12: estado aprobado/confirmado (dia ya imputado, no editable)
+2026-04-16 23:42:20 | INFO | Fichaje de 2026-04-13 registrado en stamp file.
+2026-04-16 23:42:20 | INFO | Catch-up: procesando 2026-04-14...
+2026-04-16 23:42:20 | INFO | Iniciando servicio de fichajes Personio...
+2026-04-16 23:42:20 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-04-14
+2026-04-16 23:42:47 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-04-16 23:42:47 | INFO | Sesion autenticada y lista.
+2026-04-16 23:42:59 | INFO | Fila localizada por fecha visible=2026-04-14: label_visible='14 abr', datetime_html=2026-04-13
+2026-04-16 23:42:59 | INFO | Filtrado por SOLO_FECHA=2026-04-14: 1 fila objetivo
+2026-04-16 23:42:59 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-04-16 23:42:59 | INFO | Progreso 1/1: revisando label='14 abr', fecha_visible=2026-04-14, datetime_html=2026-04-13, dia=mar
+2026-04-16 23:42:59 | WARNING | Saltando label='14 abr', fecha_visible=2026-04-14, datetime_html=2026-04-13: estado aprobado/confirmado (dia ya imputado, no editable)
+2026-04-16 23:43:01 | INFO | Fichaje de 2026-04-14 registrado en stamp file.
+2026-04-16 23:43:01 | INFO | Catch-up: procesando 2026-04-15...
+2026-04-16 23:43:01 | INFO | Iniciando servicio de fichajes Personio...
+2026-04-16 23:43:01 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-04-15
+2026-04-16 23:43:19 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-04-16 23:43:19 | INFO | Sesion autenticada y lista.
+2026-04-16 23:43:35 | INFO | Fila localizada por fecha visible=2026-04-15: label_visible='15 abr', datetime_html=2026-04-14
+2026-04-16 23:43:35 | INFO | Filtrado por SOLO_FECHA=2026-04-15: 1 fila objetivo
+2026-04-16 23:43:35 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-04-16 23:43:35 | INFO | Progreso 1/1: revisando label='15 abr', fecha_visible=2026-04-15, datetime_html=2026-04-14, dia=mié
+2026-04-16 23:43:35 | WARNING | Saltando label='15 abr', fecha_visible=2026-04-15, datetime_html=2026-04-14: estado aprobado/confirmado (dia ya imputado, no editable)
+2026-04-16 23:43:37 | INFO | Fichaje de 2026-04-15 registrado en stamp file.
+2026-04-16 23:43:37 | INFO | Catch-up completado: todos los dias procesados correctamente.
+2026-04-16 23:45:40 | INFO | Modo catch-up iniciado.
+2026-04-16 23:45:40 | INFO | Catch-up: todos los dias laborables recientes estan en el stamp. Nada que hacer.
+2026-04-16 23:48:52 | INFO | Modo catch-up iniciado.
+2026-04-16 23:48:52 | INFO | Catch-up: todos los dias laborables recientes estan en el stamp. Nada que hacer.
+2026-04-16 23:55:15 | INFO | Modo catch-up iniciado.
+2026-04-16 23:55:15 | INFO | Catch-up: todos los dias laborables recientes estan en el stamp. Nada que hacer.
+2026-04-16 23:56:10 | INFO | Modo catch-up iniciado.
+2026-04-16 23:56:10 | INFO | Catch-up: 1 dia(s) sin confirmar en stamp: 2026-04-14
+2026-04-16 23:56:10 | INFO | Catch-up: procesando 2026-04-14...
+2026-04-16 23:56:10 | INFO | Iniciando servicio de fichajes Personio...
+2026-04-16 23:56:10 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-04-14
+2026-04-16 23:56:10 | INFO | Confirmacion omitida: entorno no interactivo (tarea programada/servicio).
+2026-04-16 23:56:11 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-04-16 23:56:11 | INFO | Sesion autenticada y lista.
+2026-04-16 23:56:19 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-04-16 23:56:22 | INFO | Fila localizada por fecha visible=2026-04-14: label_visible='14 abr', datetime_html=2026-04-13
+2026-04-16 23:56:22 | INFO | Filtrado por SOLO_FECHA=2026-04-14: 1 fila objetivo
+2026-04-16 23:56:22 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-04-16 23:56:22 | INFO | Progreso 1/1: revisando label='14 abr', fecha_visible=2026-04-14, datetime_html=2026-04-13, dia=mar
+2026-04-16 23:56:22 | WARNING | Saltando label='14 abr', fecha_visible=2026-04-14, datetime_html=2026-04-13: estado aprobado/confirmado (dia ya imputado, no editable)
+2026-04-16 23:56:22 | INFO | Fichaje de 2026-04-14 registrado en stamp file.
+2026-04-16 23:56:22 | INFO | Catch-up completado: todos los dias procesados correctamente.
+2026-04-16 23:57:34 | INFO | Modo catch-up iniciado.
+2026-04-16 23:57:34 | INFO | Catch-up: 1 dia(s) sin confirmar en stamp: 2026-04-15
+2026-04-16 23:57:34 | INFO | Catch-up: procesando 2026-04-15...
+2026-04-16 23:57:34 | INFO | Iniciando servicio de fichajes Personio...
+2026-04-16 23:57:34 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-04-15
+2026-04-16 23:57:34 | INFO | Confirmacion omitida: entorno no interactivo (tarea programada/servicio).
+2026-04-16 23:57:35 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-04-16 23:57:35 | INFO | Sesion autenticada y lista.
+2026-04-16 23:57:43 | INFO | Pestaña nueva abierta en Chrome existente.
+2026-04-16 23:57:47 | INFO | Fila localizada por fecha visible=2026-04-15: label_visible='15 abr', datetime_html=2026-04-14
+2026-04-16 23:57:47 | INFO | Filtrado por SOLO_FECHA=2026-04-15: 1 fila objetivo
+2026-04-16 23:57:47 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-04-16 23:57:47 | INFO | Progreso 1/1: revisando label='15 abr', fecha_visible=2026-04-15, datetime_html=2026-04-14, dia=mié
+2026-04-16 23:57:47 | INFO | Intentando rellenar label='15 abr', fecha_visible=2026-04-15, datetime_html=2026-04-14
+2026-04-16 23:57:47 | INFO | Abriendo dia 15 abr (mié)
+2026-04-16 23:57:59 | INFO | Guardado completado para 15 abr (verificado: estado_aprobado)
+2026-04-16 23:57:59 | INFO | Fin de intento OK para label='15 abr', fecha_visible=2026-04-15, datetime_html=2026-04-14
+2026-04-16 23:58:00 | INFO | Fichaje de 2026-04-15 registrado en stamp file.
+2026-04-16 23:58:00 | INFO | Catch-up completado: todos los dias procesados correctamente.
+2026-04-17 00:04:05 | INFO | Modo catch-up iniciado.
+2026-04-17 00:04:05 | INFO | Catch-up: 1 dia(s) sin confirmar en stamp: 2026-04-16
+2026-04-17 00:04:05 | INFO | Catch-up: procesando 2026-04-16...
+2026-04-17 00:04:05 | INFO | Iniciando servicio de fichajes Personio...
+2026-04-17 00:04:05 | INFO | Modo fecha unica activo: SOLO_FECHA=2026-04-16
+2026-04-17 00:04:05 | INFO | Confirmacion omitida: entorno no interactivo (tarea programada/servicio).
+2026-04-17 00:04:06 | INFO | Sesion reutilizada desde cookies persistidas.
+2026-04-17 00:04:06 | INFO | Sesion autenticada y lista.
+2026-04-17 00:04:24 | INFO | Fila localizada por fecha visible=2026-04-16: label_visible='16 abr', datetime_html=2026-04-15
+2026-04-17 00:04:24 | INFO | Filtrado por SOLO_FECHA=2026-04-16: 1 fila objetivo
+2026-04-17 00:04:24 | INFO | Inicio de procesamiento: 1 filas candidatas
+2026-04-17 00:04:24 | INFO | Progreso 1/1: revisando label='16 abr', fecha_visible=2026-04-16, datetime_html=2026-04-15, dia=jue
+2026-04-17 00:04:24 | WARNING | Saltando label='16 abr', fecha_visible=2026-04-16, datetime_html=2026-04-15: estado aprobado/confirmado (dia ya imputado, no editable)
+2026-04-17 00:04:27 | INFO | Fichaje de 2026-04-16 registrado en stamp file.
+2026-04-17 00:04:27 | INFO | Catch-up completado: todos los dias procesados correctamente.
+2026-04-17 00:16:07 | INFO | Alerta por email enviada a sergio.orts.m@gmail.com.

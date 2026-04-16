@@ -120,10 +120,68 @@ Salida esperada:
 Scripts:
 - `instalar_tareas_programadas.bat`
 - `lanzar_tarea_programada.bat`
+- `lanzar_catch_up.bat`
 
 Notas:
 - Para registrar tareas, ejecutar `instalar_tareas_programadas.bat` como Administrador.
 - Las tareas estan pensadas para ejecutarse con sesion de usuario iniciada (flujo interactivo de Chrome).
+- Se registran 3 tareas:
+  - **Fichaje Personio Lun-Jue** — Lun-Jue a las 17:50
+  - **Fichaje Personio Vie** — Viernes a las 14:20
+  - **Fichaje Personio Catch-up** — Lun-Vie a las 09:00 (watchdog de recuperacion)
+
+## Recuperacion automatica de dias perdidos (catch-up)
+
+Si el PC esta apagado o el bot falla a la hora programada, la tarea watchdog de las 09:00 detecta
+automaticamente los dias sin imputar y los rellena.
+
+Mecanismo:
+- Tras cada imputacion exitosa se escribe `runtime/fichajes_realizados.json` (stamp file).
+- Al arrancar en modo catch-up, el bot compara los ultimos `catch_up_dias` dias laborables con el stamp.
+- Los dias ausentes del stamp se procesan automaticamente (el bot ya es idempotente: si Personio
+  ya tiene periodos, no los sobreescribe).
+- Si `headless=true`, el catch-up se ejecuta sin abrir Chrome visible y no reutiliza la ventana con
+  depuracion remota aunque exista.
+- Si algun dia falla igualmente, puede enviarse una alerta por email (ver seccion siguiente).
+- Log de catch-up en `runtime/catch_up.log`.
+
+Parametro de configuracion: `catch_up_dias` (defecto: `7`).
+
+Limitacion importante:
+- El catch-up headless funciona bien cuando puede reutilizar cookies/sesion persistida.
+- Si la sesion SSO ha caducado y Microsoft/Personio vuelve a pedir MFA o confirmacion manual, el
+  catch-up no podra completarlo en invisible y fallara, dejando log y opcionalmente enviando email.
+
+### Alerta por email (opcional)
+
+Si al terminar el catch-up quedan dias sin imputar, el bot puede enviar un email de aviso.
+
+Configurar en `dist/configuracion.json`:
+
+```json
+{
+  "smtp_host": "smtp.gmail.com",
+  "smtp_port": 587,
+  "smtp_user": "tu.cuenta@gmail.com",
+  "smtp_password": "abcdefghijklmnop",
+  "email_destinatario": "tu.cuenta@gmail.com"
+}
+```
+
+Si no se configuran estos campos, la alerta por email queda desactivada silenciosamente.
+
+#### Configurar Gmail — App Password
+
+Gmail **no permite la contrasena normal** para SMTP. Se necesita una **Contrasena de aplicacion**:
+
+1. Activar verificacion en 2 pasos en [myaccount.google.com/security](https://myaccount.google.com/security)
+2. Ir a [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)
+3. Seleccionar aplicacion **Correo**, dispositivo **Otro** (ej. "Personio Bot") → **Generar**
+4. Copiar la clave de 16 caracteres (ej. `abcdefghijklmnop`) — solo se muestra una vez
+5. Pegarla en `smtp_password` **sin espacios**
+
+> **Seguridad:** asegurarse de que `configuracion.json` no este en ninguna ruta indexada por git
+> (esta en `dist/`, que deberia estar en `.gitignore`).
 
 ## Fiabilidad
 

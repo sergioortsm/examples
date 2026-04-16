@@ -24,18 +24,27 @@ class Configuracion(BaseModel):
     friday_end: str = "15:00"
 
     headless: bool = False
-    modo_prueba: bool = False
+    modo_prueba: bool = False  #Modo prueba: no realiza cambios en Personio, solo simula el proceso y muestra logs.
     modo_interactivo: bool = True
 
     request_timeout_sec: int = 30
     login_timeout_sec: int = 360
     max_retries: int = 3
 
+    catch_up_dias: int = 7  #Dias a cubrir en modo catch-up (si no se ha ejecutado el bot en varios dias, para imputar los dias anteriores automaticamente).
+
     ruta_log: str | None = None
     sesion_cookies_path: str = "session_cookies.json"
     remote_debug_port: int | None = None
     chrome_user_data_dir: str | None = None
     chrome_profile_directory: str | None = None
+
+    # Notificacion por email al finalizar catch-up con dias fallidos (opcional).
+    smtp_host: str | None = None
+    smtp_port: int = 587
+    smtp_user: str | None = None
+    smtp_password: str | None = None
+    email_destinatario: str | None = None
 
     @field_validator(
         "morning_start",

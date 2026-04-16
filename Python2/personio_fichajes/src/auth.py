@@ -130,9 +130,20 @@ class AuthManager:
         except OSError:
             return False
 
+    def _modo_catch_up_headless(self) -> bool:
+        return (
+            os.getenv("MODO_CATCH_UP", "").strip().lower() in ("1", "true", "yes")
+            and self.cfg.headless
+        )
+
+    def _usar_chrome_debug_existente(self) -> bool:
+        if self._modo_catch_up_headless():
+            return False
+        return self._chrome_debug_disponible()
+
     def _crear_o_conectar_driver(self) -> Any:
         options = Options()
-        if self._chrome_debug_disponible():
+        if self._usar_chrome_debug_existente():
             port = self.cfg.remote_debug_port
             options.add_experimental_option("debuggerAddress", f"127.0.0.1:{port}")
         else:
@@ -155,7 +166,7 @@ class AuthManager:
 
         Retorna (driver, conectado_a_existente).
         """
-        conectado_a_existente = self._chrome_debug_disponible()
+        conectado_a_existente = self._usar_chrome_debug_existente()
         driver = self._crear_o_conectar_driver()
         try:
             if conectado_a_existente:
@@ -201,7 +212,7 @@ class AuthManager:
         try:
             options = Options()
 
-            if self._chrome_debug_disponible():
+            if self._usar_chrome_debug_existente():
                 port = self.cfg.remote_debug_port
                 options.add_experimental_option("debuggerAddress", f"127.0.0.1:{port}")
                 service = Service(ChromeDriverManager().install())
@@ -209,6 +220,10 @@ class AuthManager:
                 conectado_a_existente = True
                 self.logger.info(f"Conectado a Chrome existente en puerto {port}.")
             else:
+                if self._modo_catch_up_headless():
+                    self.logger.info(
+                        "Catch-up en modo headless: no se reutilizara Chrome visible aunque el puerto de depuracion exista."
+                    )
                 if self.cfg.headless:
                     options.add_argument("--headless=new")
                 options.add_argument("--disable-gpu")
