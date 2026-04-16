@@ -31,6 +31,7 @@ if "%~1"=="" (
 
 set "SOLO_FECHA=%~1"
 echo [INFO] Modo fecha unica: SOLO_FECHA=%SOLO_FECHA%
+echo [INFO] Se pedira confirmacion en consola antes de lanzar la imputacion.
 
 "%PY_EXE%" -m src.servicio
 set "EXIT_CODE=%ERRORLEVEL%"

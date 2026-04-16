@@ -354,18 +354,18 @@ class AttendanceBot:
             )
         )
 
-    def _rellenar_dia(self, info: dict) -> bool:
+    def _rellenar_dia(self, info: dict) -> tuple[bool, str]:
         nombre = info["nombre"]
         horario = self._horario_para_dia(nombre)
         if not horario:
             self.logger.info(f"Sin horario para '{nombre}' ({info['label']}), se omite.")
-            return False
+            return False, "sin_horario"
 
         if not self._fila_existe(info["day_id"]):
             self.logger.info(
                 f"La fila de {info['label']} ya no esta visible tras refresco de UI; se omite."
             )
-            return False
+            return False, "fila_no_visible"
 
         fila = self._fila_el(info["day_id"])
         self.logger.info(f"Abriendo dia {info['label']} ({nombre})")
@@ -393,10 +393,10 @@ class AttendanceBot:
                 lambda d: (fila.get_attribute("aria-expanded") or "false") == "true"
             )
         except Exception:
-            self.logger.warning(
-                f"No se pudo expandir la fila de {info['label']}; se omite este dia para continuar."
+            self.logger.info(
+                f"No se pudo expandir la fila de {info['label']}; puede estar deshabilitada o no editable en este estado."
             )
-            return False
+            return False, "no_expandida"
 
         aria_controls = fila.get_attribute("aria-controls")
         time.sleep(0.4)
@@ -430,13 +430,32 @@ class AttendanceBot:
             btn_save = form.find_element(By.CSS_SELECTOR, 'button[data-test-id="timecard-save-button"]')
             self._click_elemento(btn_save, "boton guardar")
             time.sleep(1.3)
-            self.logger.info(f"Guardado completado para {info['label']}")
-            return True
+
+            # Verificamos en la fila ya renderizada que el dia queda con horas > 0.
+            try:
+                fila_actualizada = self._fila_el(info["day_id"])
+                tiene_horas, motivo = self._evaluar_fila_rellenada(fila_actualizada)
+            except Exception as exc:
+                self.logger.warning(
+                    f"Se pulso Guardar para {info['label']} pero no se pudo verificar el resultado: {exc}"
+                )
+                return False, "verificacion_no_disponible"
+
+            if not tiene_horas:
+                self.logger.warning(
+                    f"Se pulso Guardar para {info['label']} pero no se detectan horas guardadas tras refresco de UI."
+                )
+                return False, "sin_horas_post_guardado"
+
+            self.logger.info(
+                f"Guardado completado para {info['label']} (verificado: {motivo})"
+            )
+            return True, "guardado_ok"
         except Exception as exc:
             self.logger.warning(
                 f"No se pudo editar/guardar {info['label']} ({nombre}). Motivo: {exc}"
             )
-            return False
+            return False, "error_edicion_guardado"
 
     def rellenar_semana(self, solo_fecha: date | None = None):
         if solo_fecha is not None:
@@ -470,15 +489,30 @@ class AttendanceBot:
                 continue
             if info["tiene_horas"]:
                 motivo = info.get("motivo_relleno", "detector")
-                self.logger.info(
-                    f"Saltando label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html}: ya tiene horas registradas ({motivo})"
-                )
+                if motivo == "estado_aprobado":
+                    self.logger.warning(
+                        f"Saltando label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html}: estado aprobado/confirmado (dia ya imputado, no editable)"
+                    )
+                else:
+                    self.logger.warning(
+                        f"Saltando label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html}: ya tiene horas registradas ({motivo})"
+                    )
                 continue
             self.logger.info(
                 f"Intentando rellenar label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html}"
             )
-            self._rellenar_dia(info)
-            self.logger.info(
-                f"Fin de intento para label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html}"
-            )
+            ok, motivo = self._rellenar_dia(info)
+            if ok:
+                self.logger.info(
+                    f"Fin de intento OK para label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html}"
+                )
+            else:
+                if motivo in {"sin_horario", "fila_no_visible", "no_expandida"}:
+                    self.logger.info(
+                        f"Fin de intento sin accion para label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html} (motivo={motivo})"
+                    )
+                else:
+                    self.logger.warning(
+                        f"Fin de intento sin guardado confirmado para label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html} (motivo={motivo})"
+                    )
             time.sleep(0.8)

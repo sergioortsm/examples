@@ -7,28 +7,75 @@ from pathlib import Path
 
 import requests
 
+_imports_cargados = False
+
 try:
+    # Ejecucion como modulo del paquete.
     from .attendance_bot import AttendanceBot
     from .auth import AuthManager
     from .config import cargar_configuracion
     from .logger import configurar_logger
+    _imports_cargados = True
 except ImportError:
+    pass
+
+if not _imports_cargados:
     try:
         # Compatibilidad para ejecutable PyInstaller (modulos planos en bundle).
         from attendance_bot import AttendanceBot
         from auth import AuthManager
         from config import cargar_configuracion
         from logger import configurar_logger
+        _imports_cargados = True
     except ImportError:
-        # Ejecutado como script desde raiz: forzamos imports calificados.
-        repo_root = Path(__file__).resolve().parents[2]
-        if str(repo_root) not in sys.path:
-            sys.path.insert(0, str(repo_root))
+        pass
 
-        from personio_fichajes.src.attendance_bot import AttendanceBot
-        from personio_fichajes.src.auth import AuthManager
-        from personio_fichajes.src.config import cargar_configuracion
-        from personio_fichajes.src.logger import configurar_logger
+if not _imports_cargados:
+    # Ejecutado como script desde raiz: forzamos imports calificados.
+    repo_root = Path(__file__).resolve().parents[2]
+    if str(repo_root) not in sys.path:
+        sys.path.insert(0, str(repo_root))
+
+    from personio_fichajes.src.attendance_bot import AttendanceBot
+    from personio_fichajes.src.auth import AuthManager
+    from personio_fichajes.src.config import cargar_configuracion
+    from personio_fichajes.src.logger import configurar_logger
+
+
+def _es_terminal_interactiva() -> bool:
+    try:
+        return bool(sys.stdin.isatty() and sys.stdout.isatty())
+    except Exception:
+        return False
+
+
+def _confirmar_imputacion_manual(solo_fecha: date, logger, modo_interactivo: bool = True) -> bool:
+    motivo_omision = None
+    
+    if not modo_interactivo:
+        motivo_omision = "modo_interactivo=false en configuracion"
+    elif not _es_terminal_interactiva():
+        motivo_omision = "entorno no interactivo (tarea programada/servicio)"
+
+    if motivo_omision is not None:
+        logger.info(f"Confirmacion omitida: {motivo_omision}.")
+        return True
+
+    while True:
+        try:
+            respuesta = input(
+                f"\n¿Confirmas lanzar la imputacion para {solo_fecha.isoformat()}? [S/N]: "
+            ).strip().lower()
+        except (EOFError, KeyboardInterrupt):
+            logger.info("Ejecucion cancelada por el usuario antes de iniciar el bot.")
+            return False
+
+        if respuesta == "s":
+            return True
+        if respuesta == "n":
+            return False
+
+        print("Respuesta no valida. Escribe S para continuar o N para cancelar.")
 
 
 def ejecutar_fichaje_diario():
@@ -50,6 +97,11 @@ def ejecutar_fichaje_diario():
         ) from exc
 
     logger.info("Iniciando servicio de fichajes Personio...")
+    logger.info(f"Modo fecha unica activo: SOLO_FECHA={solo_fecha.isoformat()}")
+
+    if not _confirmar_imputacion_manual(solo_fecha, logger, cfg.modo_interactivo):
+        logger.info("Ejecucion cancelada por el usuario. No se realizara ninguna imputacion.")
+        return
 
     session = requests.Session()
     auth = AuthManager(cfg, logger)
@@ -58,8 +110,6 @@ def ejecutar_fichaje_diario():
 
     attendance_url = f"{cfg.base_url}/attendance/employee/{cfg.employee_id}?hideEmployeeHeader=true"
     driver, conectado_a_existente = auth.navegar_con_sesion(session, attendance_url)
-
-    logger.info(f"Modo fecha unica activo: SOLO_FECHA={solo_fecha.isoformat()}")
 
     try:
         bot = AttendanceBot(driver, cfg, logger)

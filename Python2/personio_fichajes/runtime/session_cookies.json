@@ -8,28 +8,35 @@
   },
   {
     "name": "ATHENA-XSRF-TOKEN",
-    "value": "c32ce1c7-cb3d-454b-9572-921dc8315679.uYmadfnKkmiGfCvynOoB5z6PufKHeLweC8iSXYu7XBI",
+    "value": "985412ca-f6b2-458b-9d35-4e6123cb3c50.c99YeCQTTfEFxhf7AcSGXisylktgIZiRuzFxwvq2niQ",
     "domain": "unikaltech.app.personio.com",
     "path": "/",
     "secure": true
   },
   {
     "name": "_dd_s",
-    "value": "aid=51d8a2b8-4715-4073-8853-25dd283bfb30&rum=2&id=d6c38999-d796-43a6-8587-f0adcbeac3fb&created=1774294947884&expire=1774295847884",
-    "domain": "unikaltech.app.personio.com",
-    "path": "/",
-    "secure": false
-  },
-  {
-    "name": "ATHENA_SESSION",
-    "value": "1c8f30b0-449b-4d68-b93e-038f0f3535b9",
+    "value": "aid=51d8a2b8-4715-4073-8853-25dd283bfb30&rum=2&id=caa15f89-9c64-4fc0-b8e4-fb9311b41929&created=1776354680259&expire=1776355580259",
     "domain": "unikaltech.app.personio.com",
     "path": "/",
     "secure": false
   },
   {
     "name": "personio_session",
-    "value": "eyJpdiI6InJ0QUhQam4vZlZQcGpiOVpGMHZzbmc9PSIsInZhbHVlIjoiTDd1YllRZTluazI3SFNlSXJvVVBadVNsckdqYUprSVc0TUtybWNpbStTVTJmWGVYSElUb0ZJNlVkQms1OEV1RmszdWdMK3duVnROT3NaWlhUREFyYk9NL1RFYnF3VnJBSVJBME9Ua0FPTVhmYytBT0JmUUtnUTl4MUl2UC9hSmkiLCJtYWMiOiJkNjU0MTA2YzgxMGJjM2RlZmRjMTlkYzU5Zjg0NDI2YTNlNDliZWQ0NWY3ZTI1ZDI0MmEyY2I3ZmY0Nzc5ZDUyIiwidGFnIjoiIn0%3D",
+    "value": "eyJpdiI6IitrTUJjaWRkZHFHRUlXNFViMC9ycEE9PSIsInZhbHVlIjoiNkxIU1hEYk5WZjZnNjczeS9UcmhIOTRxc3JhWXY2Z0FHaTJYanpVL1d2OGZ3UVpPZi9ZS2ZSZ0JHYzV3S2c0eHJJdGtNV05ma2IyMVhmcnMwMEtlTUhyTjh5SHZpZ2hQUnRCNWNFakVZb2YvcGhXRlFnUjJPZC9pRWh2eWYzN1UiLCJtYWMiOiIyNGIwNzIzZTljZGJhOTUwYTY4YTM5ZjhlN2ZiMDUwZjU1MDI1OTcyMWJjYzAxM2M3NDc1ODQ4Y2NkYjlhYWFhIiwidGFnIjoiIn0%3D",
+    "domain": "unikaltech.app.personio.com",
+    "path": "/",
+    "secure": false
+  },
+  {
+    "name": "ATHENA_SESSION",
+    "value": "f3fcfaad-f05d-43ea-8cc2-d94fb673e062",
+    "domain": "unikaltech.app.personio.com",
+    "path": "/",
+    "secure": false
+  },
+  {
+    "name": "personio_session",
+    "value": "eyJpdiI6IkNXU3d6OHVPWkc0UlNGWGtlcmc0bnc9PSIsInZhbHVlIjoiRzRDY3MrV0FFMitXci9Fd3lWSEJwdjhXUXkySTdrcWxEbDE5K2Z0U2luenVDckZES0hFcTU2Y0NWOGFsYm9idUJ0VEhnelhBSDEwdzVTRFFlZ1hSMXJQQUZUUnRkRStsQytpbWVRY2VLN3BKN2tMNVU3SE50di8yM3V1aTY1OTciLCJtYWMiOiJkMjQ2NjNjYTQ2NzMxYzNiMmJiY2ExMzY3OGYzZWVjYjQ0YzI1ZWZjMzExYjU3MGU1MjFmNjk1Y2VmN2UyNDcwIiwidGFnIjoiIn0%3D",
     "domain": ".app.personio.com",
     "path": "/",
     "secure": false

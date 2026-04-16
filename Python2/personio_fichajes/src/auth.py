@@ -12,6 +12,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.webdriver import WebDriver as ChromeWebDriver
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
@@ -134,7 +135,6 @@ class AuthManager:
         if self._chrome_debug_disponible():
             port = self.cfg.remote_debug_port
             options.add_experimental_option("debuggerAddress", f"127.0.0.1:{port}")
-            self.logger.info(f"Conectando a Chrome existente en puerto {port}.")
         else:
             if self.cfg.headless:
                 options.add_argument("--headless=new")
@@ -146,12 +146,6 @@ class AuthManager:
                 options.add_argument(f"--user-data-dir={self.cfg.chrome_user_data_dir}")
                 if self.cfg.chrome_profile_directory:
                     options.add_argument(f"--profile-directory={self.cfg.chrome_profile_directory}")
-                self.logger.info(
-                    f"Abriendo Chrome con perfil '{self.cfg.chrome_profile_directory or 'Default'}' "
-                    f"desde {self.cfg.chrome_user_data_dir}."
-                )
-            else:
-                self.logger.info("Abriendo nueva instancia de Chrome sin perfil especifico.")
 
         service = Service(ChromeDriverManager().install())
         return ChromeWebDriver(service=service, options=options)
@@ -188,12 +182,11 @@ class AuthManager:
 
             current = (driver.current_url or "").lower()
             if "login.personio.com" in current or "login.microsoftonline.com" in current:
-                self.logger.info(
-                    "Chrome redirigido a login. Completa SSO/MFA en la ventana; esperando acceso a attendance..."
+                self.logger.warning(
+                    "Chrome redirigido a login inesperadamente. Esperando SSO/MFA para acceder a attendance..."
                 )
                 self._esperar_login_exitoso(driver)
 
-            self.logger.info(f"Chrome listo en URL: {driver.current_url}")
             return driver, conectado_a_existente
         except Exception:
             try:
@@ -253,9 +246,6 @@ class AuthManager:
                 self._click_si_existe(driver, (By.ID, "idSIButton9"))
 
             if conectado_a_existente:
-                self.logger.info(
-                    "Revisando estado de sesion en Chrome existente y avanzando login SSO si aparece."
-                )
                 self._esperar_login_exitoso(driver)
             else:
                 self.logger.info(
@@ -282,6 +272,11 @@ class AuthManager:
         deadline = time.time() + self.cfg.login_timeout_sec
         ultimo_click_login = 0.0
         ultimo_click_ms = 0.0
+        estado_login_personio = {
+            "signature": None,
+            "url": None,
+            "retries": 0,
+        }
         while time.time() < deadline:
             url = driver.current_url.lower()
             if "personio.com/attendance/employee" in url and "login.microsoftonline.com" not in url:
@@ -289,10 +284,26 @@ class AuthManager:
 
             # Si Personio muestra una pantalla intermedia de login (boton central),
             # intentamos pulsarlo para continuar al flujo SSO.
-            if (time.time() - ultimo_click_login) >= 5 and self._intentar_click_login_personio(driver, url):
-                ultimo_click_login = time.time()
-                time.sleep(1)
-                continue
+            if (time.time() - ultimo_click_login) >= 5:
+                resultado_login = self._intentar_click_login_personio(
+                    driver, url, estado_login_personio
+                )
+                if resultado_login in {"advanced", "stalled", "blocked"}:
+                    ultimo_click_login = time.time()
+                if resultado_login == "advanced":
+                    time.sleep(1)
+                    continue
+                if resultado_login == "stalled":
+                    time.sleep(1)
+                    continue
+                if resultado_login == "blocked" and estado_login_personio["retries"] >= 3:
+                    raise AuthError(
+                        "El boton OIDC de Personio no provoca transicion al flujo SSO. "
+                        "Revisa si la pagina cambio o si requiere interaccion manual."
+                    )
+                if resultado_login == "blocked":
+                    time.sleep(1)
+                    continue
 
             # En pantallas de Microsoft, intentamos avanzar prompts comunes
             # (Siguiente, Iniciar sesion, Mantener la sesion iniciada, etc.).
@@ -307,42 +318,180 @@ class AuthManager:
             "Timeout esperando login SSO/MFA. Revisa credenciales o completa MFA en ventana del navegador."
         )
 
-    def _intentar_click_login_personio(self, driver, current_url: str) -> bool:
+    def _intentar_click_login_personio(self, driver, current_url: str, estado: dict[str, Any]) -> str:
         if "login.personio.com" not in current_url and "personio.com/login" not in current_url:
-            return False
+            self._reiniciar_estado_login_personio(estado)
+            return "none"
 
-        candidatos = driver.find_elements(By.CSS_SELECTOR, "button, a[role='button'], a")
-        textos_login = (
-            "inicia sesion",
-            "iniciar sesion",
-            "iniciar sesión",
-            "login",
-            "log in",
-            "sign in",
-            "continuar",
-            "continue",
-            "microsoft",
+        candidato = self._seleccionar_candidato_login_personio(driver)
+        if not candidato:
+            return "none"
+
+        if estado["signature"] == candidato["signature"] and estado["url"] == current_url:
+            estado["retries"] += 1
+            self.logger.warning(
+                f"Reclick ignorado sobre boton SSO sin cambio de pantalla: '{candidato['texto'] or candidato['combined'][:50]}'"
+            )
+            return "blocked"
+
+        try:
+            candidato["element"].click()
+        except Exception:
+            return "none"
+
+        self.logger.info(
+            f"Login SSO Personio: pulsando '{candidato['texto'] or candidato['combined'][:50]}'"
         )
 
-        for elem in candidatos:
-            try:
-                if not elem.is_displayed() or not elem.is_enabled():
-                    continue
+        if self._esperar_transicion_login_personio(driver, current_url, candidato["element"]):
+            self._reiniciar_estado_login_personio(estado)
+            self.logger.info("Click de Personio confirmado con transicion al siguiente paso del SSO.")
+            return "advanced"
 
-                texto = (elem.text or "").strip().lower()
-                aria = (elem.get_attribute("aria-label") or "").strip().lower()
-                title = (elem.get_attribute("title") or "").strip().lower()
-                valor = (elem.get_attribute("value") or "").strip().lower()
-                combinado = " ".join([texto, aria, title, valor])
+        estado["signature"] = candidato["signature"]
+        estado["url"] = current_url
+        estado["retries"] = 1
+        self.logger.warning(
+            f"Boton SSO pulsado sin transicion inmediata: '{candidato['texto'] or candidato['combined'][:50]}'"
+        )
+        return "stalled"
 
-                if any(token in combinado for token in textos_login):
-                    elem.click()
-                    self.logger.info("Boton de login detectado en Personio y pulsado automaticamente.")
-                    return True
-            except Exception:
-                continue
+    def _seleccionar_candidato_login_personio(self, driver) -> dict[str, Any] | None:
+        selectores = (
+            ("form[data-provider='oidc'] button[type='submit'][data-provider='oidc']", 200),
+            ("form[data-provider='oidc'] button[type='submit']", 180),
+            ("form[data-provider='oidc'] button", 160),
+            ("button[data-provider='oidc']", 150),
+            ("button, a[role='button'], input[type='submit'], a", 0),
+        )
+        candidatos: list[dict[str, Any]] = []
+        for selector, base_score in selectores:
+            for elem in driver.find_elements(By.CSS_SELECTOR, selector):
+                candidato = self._analizar_candidato_login_personio(elem, selector, base_score)
+                if candidato is not None:
+                    candidatos.append(candidato)
 
-        return False
+        if not candidatos:
+            return None
+
+        candidatos.sort(
+            key=lambda item: (
+                item["score"],
+                len(item["combined"]),
+            ),
+            reverse=True,
+        )
+        return candidatos[0]
+
+    def _analizar_candidato_login_personio(
+        self, elem, selector: str, base_score: int
+    ) -> dict[str, Any] | None:
+        try:
+            if not elem.is_displayed() or not elem.is_enabled():
+                return None
+
+            texto = (elem.text or "").strip()
+            texto_lower = texto.lower()
+            aria = (elem.get_attribute("aria-label") or "").strip().lower()
+            title = (elem.get_attribute("title") or "").strip().lower()
+            valor = (elem.get_attribute("value") or "").strip().lower()
+            provider = (elem.get_attribute("data-provider") or "").strip().lower()
+            tipo = (elem.get_attribute("type") or "").strip().lower()
+            tag = (elem.tag_name or "").strip().lower()
+            combined = " ".join(
+                part for part in [texto_lower, aria, title, valor, provider] if part
+            ).strip()
+
+            if not combined:
+                return None
+
+            score = base_score
+            strong_markers = ("microsoft", "oidc", "unikal")
+            login_markers = (
+                "inicia sesion",
+                "iniciar sesion",
+                "iniciar sesión",
+                "login",
+                "log in",
+                "sign in",
+            )
+            continue_markers = ("continuar", "continue")
+
+            if tag == "button":
+                score += 25
+            elif tag == "input" and tipo == "submit":
+                score += 20
+            elif tag == "a":
+                score -= 15
+
+            if provider == "oidc":
+                score += 80
+            if tipo == "submit":
+                score += 20
+            if any(marker in combined for marker in strong_markers):
+                score += 60
+            if any(marker in combined for marker in login_markers):
+                score += 20
+            if "continuar con usuario unikal" in combined:
+                score += 90
+            elif any(marker in combined for marker in continue_markers):
+                score += 5
+
+            has_strong_marker = any(marker in combined for marker in strong_markers) or provider == "oidc"
+            has_login_marker = any(marker in combined for marker in login_markers)
+            ambiguous_continue_only = any(marker in combined for marker in continue_markers) and not (
+                has_strong_marker or has_login_marker
+            )
+
+            if base_score == 0:
+                if ambiguous_continue_only:
+                    return None
+                if tag == "a" and not has_strong_marker:
+                    return None
+                if not has_strong_marker and not has_login_marker:
+                    return None
+
+            description = (
+                f"selector={selector}, tag={tag}, provider={provider or '-'}, texto={texto or '-'}"
+            )
+            signature = "|".join([selector, tag, provider, tipo, combined])
+            return {
+                "element": elem,
+                "score": score,
+                "combined": combined,
+                "description": description,
+                "signature": signature,                "texto": texto,            }
+        except Exception:
+            return None
+
+    def _esperar_transicion_login_personio(self, driver, current_url: str, clicked_element) -> bool:
+        try:
+            WebDriverWait(driver, 4).until(
+                lambda drv: self._ha_transicionado_login_personio(
+                    drv, current_url, clicked_element
+                )
+            )
+            return True
+        except TimeoutException:
+            return False
+
+    def _ha_transicionado_login_personio(self, driver, current_url: str, clicked_element) -> bool:
+        nueva_url = (driver.current_url or "").lower()
+        if nueva_url != current_url:
+            return True
+        if "login.microsoftonline.com" in nueva_url:
+            return True
+        if driver.find_elements(By.ID, "i0116") or driver.find_elements(By.ID, "i0118"):
+            return True
+        try:
+            return not clicked_element.is_displayed()
+        except StaleElementReferenceException:
+            return True
+
+    def _reiniciar_estado_login_personio(self, estado: dict[str, Any]):
+        estado["signature"] = None
+        estado["url"] = None
+        estado["retries"] = 0
 
     def _intentar_avanzar_login_microsoft(self, driver, current_url: str) -> bool:
         if "login.microsoftonline.com" not in current_url:
@@ -366,7 +515,7 @@ class AuthManager:
                 )
                 if element.is_displayed() and element.is_enabled():
                     element.click()
-                    self.logger.info(f"Prompt Microsoft detectado y pulsado automaticamente: {button_id}")
+                    self.logger.info(f"SSO Microsoft: pulsado '{button_id}'.")
                     return True
             except Exception:
                 continue
@@ -395,7 +544,7 @@ class AuthManager:
 
                 if any(token in combinado for token in textos):
                     elem.click()
-                    self.logger.info("Boton Microsoft detectado por texto y pulsado automaticamente.")
+                    self.logger.info("SSO Microsoft: avanzado por texto visible.")
                     return True
             except Exception:
                 continue

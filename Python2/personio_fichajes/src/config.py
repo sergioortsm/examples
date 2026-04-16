@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
-from pydantic import BaseModel, Field, ValidationError, field_validator
+from pydantic import BaseModel, ValidationError, field_validator
 
 
 _HHMM_PATTERN = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
@@ -26,7 +26,6 @@ class Configuracion(BaseModel):
     headless: bool = False
     modo_prueba: bool = False
     modo_interactivo: bool = True
-    fecha_forzada: str | None = None
 
     request_timeout_sec: int = 30
     login_timeout_sec: int = 360
@@ -56,17 +55,6 @@ class Configuracion(BaseModel):
     @classmethod
     def normalizar_base_url(cls, value: str) -> str:
         return value.rstrip("/")
-
-    @field_validator("fecha_forzada")
-    @classmethod
-    def validar_fecha_forzada(cls, value: str | None) -> str | None:
-        if value in (None, ""):
-            return None
-        # Valida formato ISO YYYY-MM-DD.
-        from datetime import date
-
-        date.fromisoformat(value)
-        return value
 
 
 def _base_path() -> Path:

@@ -8,7 +8,7 @@
   "afternoon_end": "18:00",
   "friday_start": "08:30",
   "friday_end": "14:30",
-  "headless": false,
+  "headless": true,
   "modo_prueba": false,
   "modo_interactivo": true,
   "login_timeout_sec": 360,
