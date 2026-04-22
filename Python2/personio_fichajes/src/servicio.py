@@ -153,7 +153,7 @@ def _confirmar_imputacion_manual(solo_fecha: date, logger, modo_interactivo: boo
         print("Respuesta no valida. Escribe S para continuar o N para cancelar.")
 
 
-def ejecutar_fichaje_diario():
+def ejecutar_fichaje_diario() -> bool:
     cfg = cargar_configuracion()
     logger = configurar_logger(cfg.ruta_log)
 
@@ -176,7 +176,7 @@ def ejecutar_fichaje_diario():
 
     if not _confirmar_imputacion_manual(solo_fecha, logger, cfg.modo_interactivo):
         logger.info("Ejecucion cancelada por el usuario. No se realizara ninguna imputacion.")
-        return
+        return False
 
     session = requests.Session()
     auth = AuthManager(cfg, logger)
@@ -188,7 +188,7 @@ def ejecutar_fichaje_diario():
 
     try:
         bot = AttendanceBot(driver, cfg, logger)
-        bot.rellenar_semana(solo_fecha=solo_fecha)
+        ok = bot.rellenar_semana(solo_fecha=solo_fecha)
     finally:
         if conectado_a_existente:
             # Cerrar solo la pestaña abierta por el bot, sin tocar el resto de Chrome.
@@ -199,11 +199,18 @@ def ejecutar_fichaje_diario():
         else:
             driver.quit()
 
-    _guardar_en_stamp(solo_fecha)
-    logger.info(f"Fichaje de {solo_fecha.isoformat()} registrado en stamp file.")
+    if ok:
+        _guardar_en_stamp(solo_fecha)
+        logger.info(f"Fichaje de {solo_fecha.isoformat()} registrado en stamp file.")
+        return True
+
+    logger.warning(
+        f"No se registro en stamp {solo_fecha.isoformat()} porque no hubo guardado confirmado."
+    )
+    return False
 
 
-def ejecutar_catch_up():
+def ejecutar_catch_up() -> bool:
     """Detecta dias laborables recientes sin imputar y los rellena automaticamente."""
     cfg = cargar_configuracion()
     logger = configurar_logger(cfg.ruta_log)
@@ -215,7 +222,7 @@ def ejecutar_catch_up():
 
     if not dias_pendientes:
         logger.info("Catch-up: todos los dias laborables recientes estan en el stamp. Nada que hacer.")
-        return
+        return True
 
     logger.info(
         f"Catch-up: {len(dias_pendientes)} dia(s) sin confirmar en stamp: "
@@ -227,7 +234,12 @@ def ejecutar_catch_up():
         logger.info(f"Catch-up: procesando {dia.isoformat()}...")
         try:
             os.environ["SOLO_FECHA"] = dia.isoformat()
-            ejecutar_fichaje_diario()
+            ok = ejecutar_fichaje_diario()
+            if not ok:
+                logger.warning(
+                    f"Catch-up: {dia.isoformat()} no quedo confirmado (sin excepcion)."
+                )
+                dias_fallidos.append(dia)
         except Exception as exc:
             logger.error(f"Catch-up: fallo al imputar {dia.isoformat()}: {exc}")
             dias_fallidos.append(dia)
@@ -240,22 +252,28 @@ def ejecutar_catch_up():
             + ", ".join(d.isoformat() for d in dias_fallidos)
         )
         _enviar_alerta_email(cfg, dias_fallidos, logger)
+        return False
     else:
         logger.info("Catch-up completado: todos los dias procesados correctamente.")
+        return True
 
 
 def main():
     modo_catch_up = os.getenv("MODO_CATCH_UP", "").strip().lower() in ("1", "true", "yes")
     if modo_catch_up:
         try:
-            ejecutar_catch_up()
+            ok = ejecutar_catch_up()
+            if not ok:
+                raise RuntimeError("Catch-up finalizado con dias no confirmados")
         except Exception as exc:
             logger = configurar_logger(None)
             logger.exception(f"Error en catch-up Personio: {exc}")
             sys.exit(1)
     else:
         try:
-            ejecutar_fichaje_diario()
+            ok = ejecutar_fichaje_diario()
+            if not ok:
+                raise RuntimeError("Imputacion no confirmada; no se registro en stamp")
         except Exception as exc:
             logger = configurar_logger(None)
             logger.exception(f"Error en servicio Personio: {exc}")

@@ -347,6 +347,19 @@ class AttendanceBot:
         self._set_spinbutton(sbs[0], hora[0])
         self._set_spinbutton(sbs[1], hora[1])
 
+    def _indices_periodos(self, form, campo: str) -> set[int]:
+        indices: set[int] = set()
+        elementos = form.find_elements(
+            By.CSS_SELECTOR,
+            f'[data-test-id^="periods."][data-test-id$=".{campo}"]',
+        )
+        for el in elementos:
+            test_id = el.get_attribute("data-test-id") or ""
+            match = re.match(rf"^periods\.(\d+)\.{campo}$", test_id)
+            if match:
+                indices.add(int(match.group(1)))
+        return indices
+
     def _form(self, aria_controls: str):
         return WebDriverWait(self.driver, 15).until(
             EC.presence_of_element_located(
@@ -420,12 +433,23 @@ class AttendanceBot:
                 self._rellenar_time_group(form, "periods.1.start", horario[1]["inicio"])
                 self._rellenar_time_group(form, "periods.1.end", horario[1]["fin"])
 
+                idx_inicio_antes = self._indices_periodos(form, "start")
+                idx_fin_antes = self._indices_periodos(form, "end")
                 btn_add = form.find_element(By.CSS_SELECTOR, 'button[data-test-id="timecard-add-work"]')
                 self._click_elemento(btn_add, "boton anadir tramo")
-                time.sleep(0.5)
+                WebDriverWait(self.driver, 8).until(
+                    lambda d: len(self._indices_periodos(self._form(aria_controls), "start")) > len(idx_inicio_antes)
+                    and len(self._indices_periodos(self._form(aria_controls), "end")) > len(idx_fin_antes)
+                )
                 form = self._form(aria_controls)
-                self._rellenar_time_group(form, "periods.2.start", horario[2]["inicio"])
-                self._rellenar_time_group(form, "periods.2.end", horario[2]["fin"])
+                idx_inicio_despues = self._indices_periodos(form, "start")
+                idx_fin_despues = self._indices_periodos(form, "end")
+                idx_inicio_nuevo = sorted(idx_inicio_despues - idx_inicio_antes)
+                idx_fin_nuevo = sorted(idx_fin_despues - idx_fin_antes)
+                if not idx_inicio_nuevo or not idx_fin_nuevo:
+                    raise RuntimeError("No aparecio un nuevo tramo editable tras pulsar anadir tramo")
+                self._rellenar_time_group(form, f"periods.{idx_inicio_nuevo[-1]}.start", horario[2]["inicio"])
+                self._rellenar_time_group(form, f"periods.{idx_fin_nuevo[-1]}.end", horario[2]["fin"])
 
             btn_save = form.find_element(By.CSS_SELECTOR, 'button[data-test-id="timecard-save-button"]')
             self._click_elemento(btn_save, "boton guardar")
@@ -457,12 +481,12 @@ class AttendanceBot:
             )
             return False, "error_edicion_guardado"
 
-    def rellenar_semana(self, solo_fecha: date | None = None):
+    def rellenar_semana(self, solo_fecha: date | None = None) -> bool:
         if solo_fecha is not None:
             fila_objetivo = self._obtener_fila_por_fecha(solo_fecha)
             if fila_objetivo is None:
                 self.logger.info(f"No se encontro fila para SOLO_FECHA={solo_fecha}")
-                return
+                return False
             filas = [fila_objetivo]
             self.logger.info(
                 f"Filtrado por SOLO_FECHA={solo_fecha}: {len(filas)} fila objetivo"
@@ -473,7 +497,12 @@ class AttendanceBot:
                 "Dias detectados: "
                 + ", ".join([f"{f['label']}({f['nombre']})" for f in filas])
             )
+        if not filas:
+            self.logger.warning("No hay filas candidatas para procesar.")
+            return False
+
         self.logger.info(f"Inicio de procesamiento: {len(filas)} filas candidatas")
+        exito_global = True
 
         for idx, info in enumerate(filas, start=1):
             fecha_dia: date | None = info.get("fecha")
@@ -486,6 +515,7 @@ class AttendanceBot:
                 self.logger.info(
                     f"Saltando label='{info['label']}', fecha_visible={fecha_dia}, datetime_html={fecha_html}: es una fecha futura"
                 )
+                exito_global = False
                 continue
             if info["tiene_horas"]:
                 motivo = info.get("motivo_relleno", "detector")
@@ -511,8 +541,12 @@ class AttendanceBot:
                     self.logger.info(
                         f"Fin de intento sin accion para label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html} (motivo={motivo})"
                     )
+                    exito_global = False
                 else:
                     self.logger.warning(
                         f"Fin de intento sin guardado confirmado para label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html} (motivo={motivo})"
                     )
+                    exito_global = False
             time.sleep(0.8)
+
+        return exito_global

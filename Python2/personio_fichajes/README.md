@@ -121,6 +121,7 @@ Scripts:
 - `instalar_tareas_programadas.bat`
 - `lanzar_tarea_programada.bat`
 - `lanzar_catch_up.bat`
+- `limpiar_stamp_desde_logs.bat`
 
 Notas:
 - Para registrar tareas, ejecutar `instalar_tareas_programadas.bat` como Administrador.
@@ -129,6 +130,26 @@ Notas:
   - **Fichaje Personio Lun-Jue** — Lun-Jue a las 17:50
   - **Fichaje Personio Vie** — Viernes a las 14:20
   - **Fichaje Personio Catch-up** — Lun-Vie a las 09:00 (watchdog de recuperacion)
+
+## Limpieza automatica del stamp desde logs
+
+Si algun dia quedo marcado por error en `runtime/fichajes_realizados.json`, puedes ejecutar:
+
+```bat
+limpiar_stamp_desde_logs.bat
+```
+
+Que hace esta utilidad:
+- Analiza `runtime/personio_fichajes.log`, `runtime/tarea_programada.log` y `runtime/catch_up.log`.
+- Detecta por fecha si el ultimo estado en logs es **exito** o **fallo**.
+- Elimina del stamp solo las fechas cuyo ultimo estado sea fallo, para que catch-up las reintente.
+
+Tambien se puede lanzar directamente con Python:
+
+```powershell
+cd personio_fichajes
+.\.venv\Scripts\python.exe -m src.limpiar_stamp_desde_logs
+```
 
 ## Recuperacion automatica de dias perdidos (catch-up)
 
