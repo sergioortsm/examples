@@ -99,6 +99,11 @@ def _dias_laborables_pasados(n: int) -> list[date]:
     return list(reversed(resultado))
 
 
+def _es_festivo(fecha: date, cfg) -> bool:
+    """Devuelve True si la fecha esta en la lista de festivos de la configuracion."""
+    return fecha.isoformat() in set(cfg.festivos)
+
+
 # ---------------------------------------------------------------------------
 # Notificacion por email (opcional)
 # ---------------------------------------------------------------------------
@@ -174,6 +179,14 @@ def ejecutar_fichaje_diario() -> bool:
     logger.info("Iniciando servicio de fichajes Personio...")
     logger.info(f"Modo fecha unica activo: SOLO_FECHA={solo_fecha.isoformat()}")
 
+    if _es_festivo(solo_fecha, cfg):
+        logger.info(
+            f"{solo_fecha.isoformat()} es festivo segun configuracion. "
+            "No se realiza fichaje. Se marca en stamp para evitar reintentos."
+        )
+        _guardar_en_stamp(solo_fecha)
+        return True
+
     if not _confirmar_imputacion_manual(solo_fecha, logger, cfg.modo_interactivo):
         logger.info("Ejecucion cancelada por el usuario. No se realizara ninguna imputacion.")
         return False
@@ -218,7 +231,10 @@ def ejecutar_catch_up() -> bool:
 
     stamp = _cargar_stamp()
     dias_candidatos = _dias_laborables_pasados(cfg.catch_up_dias)
-    dias_pendientes = [d for d in dias_candidatos if d.isoformat() not in stamp]
+    dias_pendientes = [
+        d for d in dias_candidatos
+        if d.isoformat() not in stamp and not _es_festivo(d, cfg)
+    ]
 
     if not dias_pendientes:
         logger.info("Catch-up: todos los dias laborables recientes estan en el stamp. Nada que hacer.")

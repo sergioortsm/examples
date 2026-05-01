@@ -89,7 +89,7 @@ class AttendanceBot:
 
         return False, "sin_horas"
 
-    def _horario_para_dia(self, nombre: str) -> list[dict] | None:
+    def _horario_para_dia(self, nombre: str, fecha=None) -> list[dict] | None:
         nombre_norm = self._normalizar_clave_dia(nombre)
         ms = self._parse(self.cfg.morning_start)
         me = self._parse(self.cfg.morning_end)
@@ -97,6 +97,14 @@ class AttendanceBot:
         ae = self._parse(self.cfg.afternoon_end)
         fs = self._parse(self.cfg.friday_start)
         fe = self._parse(self.cfg.friday_end)
+
+        # Jornada intensiva: vispera de festivo nacional (08:30-14:30, tramo unico).
+        if fecha is not None and fecha.isoformat() in set(self.cfg.vigilias_nacionales):
+            self.logger.info(
+                f"{fecha.isoformat()} es vigilia de festivo nacional: aplicando jornada intensiva "
+                f"({self.cfg.morning_start}-{self.cfg.morning_end})."
+            )
+            return [{"tipo": "trabajo", "inicio": ms, "fin": me}]
 
         lun_jue = [
             {"tipo": "trabajo", "inicio": ms, "fin": me},
@@ -369,7 +377,7 @@ class AttendanceBot:
 
     def _rellenar_dia(self, info: dict) -> tuple[bool, str]:
         nombre = info["nombre"]
-        horario = self._horario_para_dia(nombre)
+        horario = self._horario_para_dia(nombre, fecha=info.get("fecha"))
         if not horario:
             self.logger.info(f"Sin horario para '{nombre}' ({info['label']}), se omite.")
             return False, "sin_horario"

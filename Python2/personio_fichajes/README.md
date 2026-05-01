@@ -7,58 +7,86 @@ Bot de automatizacion de fichajes para Personio, inspirado en la arquitectura de
 ```text
 personio_fichajes/
   src/
-    auth.py
-    config.py
-    editor_config.py
+    __init__.py
+    attendance_bot.py       # logica Selenium de fichaje
+    auth.py                 # autenticacion SSO y cookies
+    config.py               # modelo de configuracion (Pydantic)
+    editor_config.py        # editor grafico de configuracion (Tkinter)
     filtrar_fichajes.py
+    limpiar_stamp_desde_logs.py
     logger.py
-    personio_client.py
-    servicio.py
+    servicio.py             # punto de entrada del servicio
   dist/
-    configuracion.json
-  .env.example
+    configuracion.json      # configuracion de produccion (no en git)
+    personio_fichajes_servicio.exe  (tras compilar con build_exe.bat)
+  runtime/
+    fichajes_realizados.json  # stamp file de dias imputados
+    session_cookies.json      # cookies persistidas
   requirements.txt
+  arrancar_chrome_personio.bat
   ejecutar_servicio_script.bat
+  lanzar_tarea_programada.bat
+  lanzar_catch_up.bat
+  instalar_tareas_programadas.bat
+  limpiar_stamp_desde_logs.bat
   build_exe.bat
 ```
 
 ## Flujo diario
 
-1. Login SSO en Personio (Microsoft/Azure AD + MFA).
-2. Consulta del timesheet semanal.
-3. Localizacion del dia actual.
-4. Salto de dias no aplicables (fin de semana, off day, dia ya fichado).
-5. Construccion de periodos (desde working schedule si esta disponible; fallback a config).
-6. Validacion de periodos con endpoint `validate-and-calculate-full-day`.
-7. Guardado final con endpoint `PUT /svc/attendance-api/v1/days/{attendance_day_id}`.
+1. Comprueba si la fecha es festivo (lista `festivos` en config) — si lo es, la marca en stamp y termina sin abrir Chrome.
+2. Login SSO en Personio (Microsoft/Azure AD + MFA) reutilizando cookies persistidas si son validas.
+3. Navegacion con Selenium a la pagina de attendance del empleado.
+4. Localizacion de la fila del dia en el timesheet semanal.
+5. Salto de dias no aplicables: fin de semana (`data-is-weekend`), festivo que Personio conoce (`data-is-off-day`), dia ya con horas imputadas o aprobado.
+6. Determinacion del horario segun el tipo de dia (vigilia intensiva / viernes / Lun-Jue).
+7. Apertura del formulario de imputacion y relleno de los tramos horarios via Selenium.
+8. Guardado y verificacion. Registro en stamp file si el guardado se confirma.
 
 ## Configuracion
 
 Archivo: `dist/configuracion.json`
 
 Campos principales:
-- `employee_id`
-- `timezone`
-- `base_url`
-- Horarios: `morning_start`, `morning_end`, `afternoon_start`, `afternoon_end`, `friday_start`, `friday_end`
-- `headless`, `modo_prueba`, `modo_interactivo`
+- `employee_id` — ID numerico del empleado en Personio (obligatorio)
+- `timezone` — zona horaria (defecto: `"Europe/Madrid"`)
+- `base_url` — URL base de tu instancia Personio
+- Horarios Lun-Jue: `morning_start`, `morning_end`, `afternoon_start`, `afternoon_end`
+- Horario viernes: `friday_start`, `friday_end`
+- Dias especiales: `festivos` (lista ISO), `vigilias_nacionales` (lista ISO) — ver seccion dedicada
+- `headless` — Chrome invisible (defecto: `false`)
+- `modo_prueba` — simula sin guardar en Personio (defecto: `false`)
+- `modo_interactivo` — pide confirmacion en terminal (defecto: `true`; poner `false` en tareas programadas)
 - `request_timeout_sec`, `login_timeout_sec`, `max_retries`
+- `catch_up_dias` — ventana de dias a cubrir en modo catch-up (defecto: `7`)
+- `sesion_cookies_path` — ruta al fichero de cookies (defecto: `session_cookies.json`)
 - `remote_debug_port` (recomendado: `9222`)
 - `chrome_user_data_dir` (recomendado: `C:\\chromeDebug-personio`)
 - `chrome_profile_directory` (recomendado: `Profile 1`)
+- SMTP (opcionales): `smtp_host`, `smtp_port`, `smtp_user`, `smtp_password`, `email_destinatario`
 
 ## Variables de entorno
 
-Crear `.env` desde `.env.example`.
+### Variables de ejecucion (pasadas por los .bat)
 
-Variables opcionales:
-- `PERSONIO_SSO_USERNAME`
-- `PERSONIO_SSO_PASSWORD`
-- `RUTA_CONFIG` (si se quiere apuntar a otra ubicacion del JSON)
+| Variable | Descripcion |
+|---|---|
+| `SOLO_FECHA` | Fecha a imputar en formato `YYYY-MM-DD`. Obligatoria en modo normal. |
+| `MODO_CATCH_UP` | Si es `1`, el servicio entra en modo catch-up y procesa los dias pendientes. |
+
+### Variables de autenticacion (fichero `.env`)
+
+Crear `.env` desde `.env.example`:
+
+| Variable | Descripcion |
+|---|---|
+| `PERSONIO_SSO_USERNAME` | Usuario para autocompletar login SSO (opcional) |
+| `PERSONIO_SSO_PASSWORD` | Password para autocompletar login SSO (opcional) |
+| `RUTA_CONFIG` | Ruta alternativa al `configuracion.json` (opcional) |
 
 Notas:
-- Con MFA, normalmente se requerira validacion manual en el flujo SSO.
-- Las cookies de sesion se persisten en `runtime/session_cookies.json`.
+- Con MFA, normalmente se requerira confirmacion manual aunque se definan usuario y password.
+- Las cookies de sesion se persisten en `runtime/session_cookies.json` para reutilizarlas en ejecuciones futuras.
 
 ## Instalacion y ejecucion (script)
 
@@ -226,6 +254,77 @@ print('Listo.')
 
 Si la configuracion es correcta, llega un email a `email_destinatario` con asunto
 **"Personio: dias sin imputar tras catch-up"** y las dos fechas de prueba en el cuerpo.
+
+## Festivos y jornada intensiva (vigilias)
+
+El bot admite dos listas de fechas en `dist/configuracion.json` para controlar el comportamiento
+en dias especiales:
+
+### `festivos`
+
+Fechas en las que **no se ficha**. El bot las omite completamente y las marca en el stamp file
+para que el catch-up tampoco las reintente.
+
+Corresponde a los festivos del calendario laboral de tu comunidad autónoma. Personio los marca
+como `off-day` si están configurados en el sistema, pero si Personio no los conoce (festivos
+locales, puentes pactados, etc.) puedes declararlos aquí para que el bot no los intente.
+
+```json
+"festivos": [
+  "2026-01-01",
+  "2026-01-06",
+  "2026-04-03",
+  "2026-05-01",
+  "2026-08-15",
+  "2026-10-12",
+  "2026-11-02",
+  "2026-12-07",
+  "2026-12-08",
+  "2026-12-25"
+]
+```
+
+### `vigilias_nacionales`
+
+Fechas de **jornada intensiva**: vísperas de festivos nacionales en las que se trabaja de
+08:30 a 14:30 (tramo único, sin descanso de mediodía). Es el mismo esquema que los viernes
+pero con el horario de mañana (`morning_start` → `morning_end`).
+
+> Nota: solo aplica a vísperas de festivos **nacionales**. Los días anteriores a festivos
+> exclusivamente locales o autonómicos se tratan con jornada normal.
+
+```json
+"vigilias_nacionales": [
+  "2025-12-31",
+  "2026-01-05",
+  "2026-04-02",
+  "2026-04-30",
+  "2026-08-14",
+  "2026-12-24"
+]
+```
+
+### Comportamiento completo
+
+| Tipo de día | Resultado |
+|---|---|
+| Fin de semana | Omitido (Personio lo marca como weekend) |
+| Festivo en `festivos` | Omitido, marcado en stamp (sin Chrome) |
+| Festivo que Personio ya conoce | Omitido por `data-is-off-day="true"` |
+| Vigilia en `vigilias_nacionales` | Fichaje 08:30-14:30 (tramo único) |
+| Viernes normal | Fichaje `friday_start`-`friday_end` (un tramo) |
+| Lun-Jue normal | Fichaje mañana + tarde (dos tramos) |
+
+### Editar las listas
+
+Editar directamente `dist/configuracion.json` con un editor de texto. El editor gráfico
+(`editor_config.py`) **no muestra** estas listas pero las preserva al guardar — no se perderán
+si abres el editor para cambiar otros parámetros.
+
+Las fechas deben estar en formato **`YYYY-MM-DD`**. El bot validará el formato al arrancar y
+mostrará un error claro si alguna fecha es incorrecta.
+
+---
 
 ## Fiabilidad
 

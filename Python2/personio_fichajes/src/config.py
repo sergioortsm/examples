@@ -2,6 +2,7 @@ import json
 import os
 import re
 import sys
+from datetime import date
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -9,6 +10,7 @@ from pydantic import BaseModel, ValidationError, field_validator
 
 
 _HHMM_PATTERN = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
+_FECHA_ISO_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
 class Configuracion(BaseModel):
@@ -46,6 +48,12 @@ class Configuracion(BaseModel):
     smtp_password: str | None = None
     email_destinatario: str | None = None
 
+    # Dias festivos (YYYY-MM-DD) que el bot debe saltar por completo (no fichar ni reintentar).
+    festivos: list[str] = []
+    # Dias de jornada intensiva, visperas de festivos nacionales (YYYY-MM-DD).
+    # Se ficha con el mismo horario que los viernes: morning_start -> morning_end, tramo unico.
+    vigilias_nacionales: list[str] = []
+
     @field_validator(
         "morning_start",
         "morning_end",
@@ -59,6 +67,23 @@ class Configuracion(BaseModel):
         if not _HHMM_PATTERN.match(value):
             raise ValueError(f"Hora invalida: {value}")
         return value
+
+    @field_validator("festivos", "vigilias_nacionales", mode="before")
+    @classmethod
+    def validar_fechas_iso(cls, value: list) -> list[str]:
+        if not isinstance(value, list):
+            raise ValueError("Debe ser una lista de fechas.")
+        resultado: list[str] = []
+        for item in value:
+            s = str(item).strip()
+            if not _FECHA_ISO_PATTERN.match(s):
+                raise ValueError(f"Fecha con formato invalido (esperado YYYY-MM-DD): '{s}'")
+            try:
+                date.fromisoformat(s)
+            except ValueError:
+                raise ValueError(f"Fecha no valida: '{s}'")
+            resultado.append(s)
+        return resultado
 
     @field_validator("base_url")
     @classmethod

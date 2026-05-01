@@ -26,13 +26,8 @@ set "EXIT_CODE=1"
 for /l %%A in (1,1,%MAX_ATTEMPTS%) do (
     call :log [INFO] Intento %%A/%MAX_ATTEMPTS%
 
-    if "%SILENT%"=="1" (
-        powershell -NoProfile -Command "$env:MODO_CATCH_UP='1'; & '%PY_EXE%' -m src.servicio 2>&1 | ForEach-Object { $_ | Out-File -FilePath '%LOG%' -Append -Encoding utf8 }; exit $LASTEXITCODE"
-        set "EXIT_CODE=!ERRORLEVEL!"
-    ) else (
-        powershell -NoProfile -Command "$env:MODO_CATCH_UP='1'; & '%PY_EXE%' -m src.servicio 2>&1 | ForEach-Object { $_; $_ | Out-File -FilePath '%LOG%' -Append -Encoding utf8 }; exit $LASTEXITCODE"
-        set "EXIT_CODE=!ERRORLEVEL!"
-    )
+    powershell -NoProfile -Command "$env:MODO_CATCH_UP='1'; & '%PY_EXE%' -m src.servicio 2>&1 | ForEach-Object { $_; $_ | Out-File -FilePath '%LOG%' -Append -Encoding utf8 }; exit $LASTEXITCODE"
+    set "EXIT_CODE=!ERRORLEVEL!"
 
     if "!EXIT_CODE!"=="0" goto :done
 
@@ -57,6 +52,6 @@ exit /b !EXIT_CODE!
 setlocal DisableDelayedExpansion
 set "LOG_MSG=%*"
 powershell -NoProfile -Command "$env:LOG_MSG | Out-File -FilePath '%LOG%' -Append -Encoding utf8"
-if not "%SILENT%"=="1" echo %*
+echo %*
 endlocal
 exit /b 0

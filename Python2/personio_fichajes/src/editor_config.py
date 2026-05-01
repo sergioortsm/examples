@@ -59,7 +59,10 @@ class EditorConfigApp:
         if employee_id <= 0:
             raise ValueError("employee_id debe ser mayor que 0.")
 
-        payload = {
+        # Partir del JSON actual para preservar claves que la UI no gestiona
+        # (p.ej. festivos, vigilias_nacionales, smtp_*, etc.).
+        payload = dict(self.data)
+        payload.update({
             "employee_id": employee_id,
             "timezone": self.vars["timezone"].get().strip(),
             "base_url": self.vars["base_url"].get().strip(),
@@ -72,7 +75,7 @@ class EditorConfigApp:
             "headless": bool(self.vars["headless"].get()),
             "modo_prueba": bool(self.vars["modo_prueba"].get()),
             "modo_interactivo": bool(self.vars["modo_interactivo"].get()),
-        }
+        })
 
         required_text_fields = [
             "timezone",
