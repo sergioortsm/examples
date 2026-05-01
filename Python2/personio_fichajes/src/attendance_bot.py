@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import random
 import re
 import time
 from datetime import date
@@ -38,6 +39,108 @@ class AttendanceBot:
     def _parse(self, hhmm: str) -> tuple[str, str]:
         h, m = hhmm.split(":")
         return h, m
+
+    def _hora_a_minutos(self, hora: tuple[str, str]) -> int:
+        return int(hora[0]) * 60 + int(hora[1])
+
+    def _minutos_a_hora(self, total_minutos: int) -> tuple[str, str]:
+        minutos_dia = 24 * 60
+        normalizado = max(0, min(total_minutos, minutos_dia - 1))
+        horas = normalizado // 60
+        minutos = normalizado % 60
+        return f"{horas:02d}", f"{minutos:02d}"
+
+    def _sumar_minutos_hora(self, hora: tuple[str, str], delta_minutos: int) -> tuple[str, str]:
+        return self._minutos_a_hora(self._hora_a_minutos(hora) + delta_minutos)
+
+    def _max_desfase_minutos(self) -> int:
+        try:
+            valor = int(getattr(self.cfg, "desfase_horario_max_min", 10))
+        except Exception:
+            valor = 10
+        return max(0, min(valor, 10))
+
+    def _rng_para_dia(self, nombre_norm: str, fecha: date | None) -> random.Random:
+        # Semilla estable por dia para que reintentos del mismo dia mantengan horas consistentes.
+        semilla = f"{getattr(self.cfg, 'employee_id', 'na')}|{fecha.isoformat() if fecha else nombre_norm}"
+        return random.Random(semilla)
+
+    def _aplicar_desfase_horario(
+        self,
+        horario: list[dict],
+        nombre_norm: str,
+        fecha: date | None,
+    ) -> list[dict]:
+        max_desfase = self._max_desfase_minutos()
+        if max_desfase == 0:
+            return horario
+
+        rng = self._rng_para_dia(nombre_norm, fecha)
+
+        if nombre_norm == "vie" or len(horario) == 1:
+            inicio_base = horario[0]["inicio"]
+            fin_base = horario[0]["fin"]
+
+            delta_inicio = rng.randint(-max_desfase, max_desfase)
+            delta_fin = rng.randint(0, max_desfase)
+
+            inicio = self._sumar_minutos_hora(inicio_base, delta_inicio)
+            fin = self._sumar_minutos_hora(fin_base, delta_fin)
+
+            fin_min = max(
+                self._hora_a_minutos(fin),
+                self._hora_a_minutos(fin_base),
+                self._hora_a_minutos(inicio) + 1,
+            )
+            fin = self._minutos_a_hora(fin_min)
+
+            self.logger.info(
+                "Desfase aplicado "
+                f"({fecha.isoformat() if fecha else nombre_norm}): inicio {delta_inicio:+d}m, fin +{delta_fin}m"
+            )
+            return [{"tipo": "trabajo", "inicio": inicio, "fin": fin}]
+
+        inicio_manana_base = horario[0]["inicio"]
+        fin_manana_base = horario[0]["fin"]
+        inicio_tarde_base = horario[2]["inicio"]
+        fin_tarde_base = horario[2]["fin"]
+
+        delta_inicio_manana = rng.randint(-max_desfase, max_desfase)
+        delta_fin_manana = rng.randint(0, max_desfase)
+        delta_inicio_tarde = rng.randint(-max_desfase, max_desfase)
+        delta_fin_tarde = rng.randint(0, max_desfase)
+
+        inicio_manana = self._sumar_minutos_hora(inicio_manana_base, delta_inicio_manana)
+        fin_manana = self._sumar_minutos_hora(fin_manana_base, delta_fin_manana)
+
+        # Evita descansos negativos: la tarde nunca empieza antes de que termine la manana.
+        inicio_tarde_candidato = self._sumar_minutos_hora(inicio_tarde_base, delta_inicio_tarde)
+        inicio_tarde_min = max(
+            self._hora_a_minutos(inicio_tarde_candidato),
+            self._hora_a_minutos(fin_manana),
+        )
+        inicio_tarde = self._minutos_a_hora(inicio_tarde_min)
+
+        fin_tarde = self._sumar_minutos_hora(fin_tarde_base, delta_fin_tarde)
+        fin_tarde_min = max(
+            self._hora_a_minutos(fin_tarde),
+            self._hora_a_minutos(fin_tarde_base),
+            self._hora_a_minutos(inicio_tarde) + 1,
+        )
+        fin_tarde = self._minutos_a_hora(fin_tarde_min)
+
+        self.logger.info(
+            "Desfase aplicado "
+            f"({fecha.isoformat() if fecha else nombre_norm}): "
+            f"inicio manana {delta_inicio_manana:+d}m, fin manana +{delta_fin_manana}m, "
+            f"inicio tarde {delta_inicio_tarde:+d}m, fin tarde +{delta_fin_tarde}m"
+        )
+
+        return [
+            {"tipo": "trabajo", "inicio": inicio_manana, "fin": fin_manana},
+            {"tipo": "descanso", "inicio": fin_manana, "fin": inicio_tarde},
+            {"tipo": "trabajo", "inicio": inicio_tarde, "fin": fin_tarde},
+        ]
 
     def _normalizar_clave_dia(self, clave: str) -> str:
         return (clave or "").strip().lower().replace("é", "e").replace("á", "a")
@@ -104,7 +207,11 @@ class AttendanceBot:
                 f"{fecha.isoformat()} es vigilia de festivo nacional: aplicando jornada intensiva "
                 f"({self.cfg.morning_start}-{self.cfg.morning_end})."
             )
-            return [{"tipo": "trabajo", "inicio": ms, "fin": me}]
+            return self._aplicar_desfase_horario(
+                [{"tipo": "trabajo", "inicio": ms, "fin": me}],
+                nombre_norm,
+                fecha,
+            )
 
         lun_jue = [
             {"tipo": "trabajo", "inicio": ms, "fin": me},
@@ -112,7 +219,7 @@ class AttendanceBot:
             {"tipo": "trabajo", "inicio": as_, "fin": ae},
         ]
         vie = [{"tipo": "trabajo", "inicio": fs, "fin": fe}]
-        return {
+        horario_base = {
             "lun": lun_jue,
             "mar": lun_jue,
             "mie": lun_jue,
@@ -120,6 +227,11 @@ class AttendanceBot:
             "jue": lun_jue,
             "vie": vie,
         }.get(nombre_norm)
+
+        if not horario_base:
+            return None
+
+        return self._aplicar_desfase_horario(horario_base, nombre_norm, fecha)
 
     def _obtener_time_fecha(self, fila):
         selectores = [
@@ -425,7 +537,8 @@ class AttendanceBot:
         form = self._form(aria_controls)
 
         try:
-            if nombre == "vie":
+            # Algunos dias no viernes (p. ej. vigilia nacional) usan tramo unico.
+            if len(horario) == 1:
                 self._rellenar_time_group(form, "periods.0.start", horario[0]["inicio"])
                 self._rellenar_time_group(form, "periods.0.end", horario[0]["fin"])
                 try:
