@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import importlib
 import json
 import os
 import time
 from datetime import date, timedelta
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import requests
 from selenium.webdriver.chrome.options import Options
@@ -17,10 +18,25 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
-try:
-    from .config import Configuracion, obtener_directorio_runtime
-except ImportError:
-    from config import Configuracion, obtener_directorio_runtime
+if TYPE_CHECKING:
+    try:
+        from .config import Configuracion as ConfiguracionType
+    except ImportError:
+        from config import Configuracion as ConfiguracionType
+else:
+    ConfiguracionType = Any
+
+
+def _cargar_dependencias_config():
+    try:
+        config_mod = importlib.import_module(".config", package=__package__)
+        return config_mod.Configuracion, config_mod.obtener_directorio_runtime
+    except Exception:
+        config_mod = importlib.import_module("config")
+        return config_mod.Configuracion, config_mod.obtener_directorio_runtime
+
+
+Configuracion, obtener_directorio_runtime = _cargar_dependencias_config()
 
 
 class AuthError(RuntimeError):
@@ -28,7 +44,7 @@ class AuthError(RuntimeError):
 
 
 class AuthManager:
-    def __init__(self, cfg: Configuracion, logger):
+    def __init__(self, cfg: ConfiguracionType, logger):
         self.cfg = cfg
         self.logger = logger
         cookies_path = Path(cfg.sesion_cookies_path)

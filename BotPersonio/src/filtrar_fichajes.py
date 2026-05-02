@@ -1,17 +1,35 @@
+import importlib
 from datetime import date, timedelta
 import sys
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-try:
-    from .config import Configuracion
-except ImportError:
+if TYPE_CHECKING:
+    try:
+        from .config import Configuracion as ConfiguracionType
+    except ImportError:
+        from config import Configuracion as ConfiguracionType
+else:
+    ConfiguracionType = Any
+
+
+def _cargar_configuracion_cls():
+    try:
+        config_mod = importlib.import_module(".config", package=__package__)
+        return config_mod.Configuracion
+    except Exception:
+        pass
+
     # Ejecutado como script: forzamos raiz del repo para imports calificados.
     repo_root = Path(__file__).resolve().parents[2]
     if str(repo_root) not in sys.path:
         sys.path.insert(0, str(repo_root))
 
-    from personio_fichajes.src.config import Configuracion
+    config_mod = importlib.import_module("personio_fichajes.src.config")
+    return config_mod.Configuracion
+
+
+Configuracion = _cargar_configuracion_cls()
 
 
 def obtener_rango_semanal(fecha: date) -> tuple[date, date]:
@@ -190,7 +208,7 @@ def _extraer_periodos_desde_working_schedule(fecha: date, dia: dict[str, Any]) -
     return periodos
 
 
-def _periodos_por_defecto(fecha: date, cfg: Configuracion) -> list[dict[str, Any]]:
+def _periodos_por_defecto(fecha: date, cfg: ConfiguracionType) -> list[dict[str, Any]]:
     if fecha.weekday() == 4:
         return [
             {
@@ -223,7 +241,7 @@ def _periodos_por_defecto(fecha: date, cfg: Configuracion) -> list[dict[str, Any
     ]
 
 
-def construir_periodos_para_dia(fecha: date, dia: dict[str, Any] | None, cfg: Configuracion) -> list[dict[str, Any]]:
+def construir_periodos_para_dia(fecha: date, dia: dict[str, Any] | None, cfg: ConfiguracionType) -> list[dict[str, Any]]:
     if not dia:
         return _periodos_por_defecto(fecha, cfg)
 

@@ -4,6 +4,7 @@ import random
 import re
 import time
 from datetime import date
+from typing import Any
 
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -13,6 +14,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 _SELECTOR_FILA = 'div[role="row"][data-test-id="timesheet-timecard"]'
+_ESTADOS_APROBADOS = ("aprobada", "approved", "confirmada", "confirmed")
+_MOTIVOS_SIN_ACCION = {"sin_horario", "fila_no_visible", "no_expandida"}
 _MESES_ES = {
     "ene": 1,
     "feb": 2,
@@ -166,7 +169,7 @@ class AttendanceBot:
     def _evaluar_fila_rellenada(self, fila) -> tuple[bool, str]:
         # 1) Si la fila indica estado aprobado/confirmado, no se debe tocar.
         texto_fila = self._normalizar_texto(fila.text)
-        if any(palabra in texto_fila for palabra in ("aprobada", "approved", "confirmada", "confirmed")):
+        if any(palabra in texto_fila for palabra in _ESTADOS_APROBADOS):
             return True, "estado_aprobado"
 
         # 2) Si hay celdas de rango con horas distintas de cero, ya tiene imputacion.
@@ -191,6 +194,20 @@ class AttendanceBot:
             pass
 
         return False, "sin_horas"
+
+    def _esperar_filas_o_error_sso(self) -> None:
+        try:
+            self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, _SELECTOR_FILA)))
+        except Exception as exc:
+            url = (self.driver.current_url or "").lower()
+            if "login.personio.com" in url or "login.microsoftonline.com" in url:
+                raise RuntimeError(
+                    "No se pudo acceder a attendance: Chrome sigue en login SSO/MFA."
+                ) from exc
+            raise
+
+    def _fila_es_omitible(self, fila) -> bool:
+        return fila.get_attribute("data-is-weekend") == "true" or fila.get_attribute("data-is-off-day") == "true"
 
     def _horario_para_dia(self, nombre: str, fecha=None) -> list[dict] | None:
         nombre_norm = self._normalizar_clave_dia(nombre)
@@ -299,22 +316,12 @@ class AttendanceBot:
         }
 
     def _obtener_filas(self) -> list[dict]:
-        try:
-            self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, _SELECTOR_FILA)))
-        except Exception as exc:
-            url = (self.driver.current_url or "").lower()
-            if "login.personio.com" in url or "login.microsoftonline.com" in url:
-                raise RuntimeError(
-                    "No se pudo acceder a attendance: Chrome sigue en login SSO/MFA."
-                ) from exc
-            raise
+        self._esperar_filas_o_error_sso()
         elementos = self.driver.find_elements(By.CSS_SELECTOR, _SELECTOR_FILA)
-        dias: list[dict] = []
+        dias: list[dict[str, Any]] = []
 
         for el in elementos:
-            if el.get_attribute("data-is-weekend") == "true":
-                continue
-            if el.get_attribute("data-is-off-day") == "true":
+            if self._fila_es_omitible(el):
                 continue
 
             try:
@@ -324,23 +331,13 @@ class AttendanceBot:
         return dias
 
     def _obtener_fila_por_fecha(self, fecha_obj: date) -> dict | None:
-        try:
-            self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, _SELECTOR_FILA)))
-        except Exception as exc:
-            url = (self.driver.current_url or "").lower()
-            if "login.personio.com" in url or "login.microsoftonline.com" in url:
-                raise RuntimeError(
-                    "No se pudo acceder a attendance: Chrome sigue en login SSO/MFA."
-                ) from exc
-            raise
+        self._esperar_filas_o_error_sso()
 
         fecha_obj_txt = fecha_obj.isoformat()
         filas = self.driver.find_elements(By.CSS_SELECTOR, _SELECTOR_FILA)
         for fila in filas:
             try:
-                if fila.get_attribute("data-is-weekend") == "true":
-                    continue
-                if fila.get_attribute("data-is-off-day") == "true":
+                if self._fila_es_omitible(fila):
                     continue
 
                 info = self._construir_info_fila(fila)
@@ -487,6 +484,68 @@ class AttendanceBot:
             )
         )
 
+    def _expandir_fila(self, fila, label: str) -> tuple[bool, str]:
+        if (fila.get_attribute("aria-expanded") or "false") != "true":
+            try:
+                fila.send_keys(Keys.ENTER)
+            except Exception:
+                pass
+
+        if (fila.get_attribute("aria-expanded") or "false") != "true":
+            try:
+                self.driver.execute_script("arguments[0].click();", fila)
+            except Exception:
+                pass
+
+        try:
+            WebDriverWait(self.driver, 10).until(
+                lambda d: (fila.get_attribute("aria-expanded") or "false") == "true"
+            )
+        except Exception:
+            self.logger.info(
+                f"No se pudo expandir la fila de {label}; puede estar deshabilitada o no editable en este estado."
+            )
+            return False, ""
+
+        aria_controls = fila.get_attribute("aria-controls")
+        return True, aria_controls or ""
+
+    def _rellenar_form_tramo_unico(self, form, aria_controls: str, horario: list[dict]) -> Any:
+        self._rellenar_time_group(form, "periods.0.start", horario[0]["inicio"])
+        self._rellenar_time_group(form, "periods.0.end", horario[0]["fin"])
+        try:
+            btn_del = form.find_element(By.CSS_SELECTOR, 'button[data-test-id="timecard-delete-period-1"]')
+            btn_del.click()
+            time.sleep(0.4)
+            return self._form(aria_controls)
+        except Exception:
+            return form
+
+    def _rellenar_form_dos_tramos(self, form, aria_controls: str, horario: list[dict]) -> Any:
+        self._rellenar_time_group(form, "periods.0.start", horario[0]["inicio"])
+        self._rellenar_time_group(form, "periods.0.end", horario[0]["fin"])
+        self._rellenar_time_group(form, "periods.1.start", horario[1]["inicio"])
+        self._rellenar_time_group(form, "periods.1.end", horario[1]["fin"])
+
+        idx_inicio_antes = self._indices_periodos(form, "start")
+        idx_fin_antes = self._indices_periodos(form, "end")
+        btn_add = form.find_element(By.CSS_SELECTOR, 'button[data-test-id="timecard-add-work"]')
+        self._click_elemento(btn_add, "boton anadir tramo")
+        WebDriverWait(self.driver, 8).until(
+            lambda d: len(self._indices_periodos(self._form(aria_controls), "start")) > len(idx_inicio_antes)
+            and len(self._indices_periodos(self._form(aria_controls), "end")) > len(idx_fin_antes)
+        )
+        form = self._form(aria_controls)
+        idx_inicio_despues = self._indices_periodos(form, "start")
+        idx_fin_despues = self._indices_periodos(form, "end")
+        idx_inicio_nuevo = sorted(idx_inicio_despues - idx_inicio_antes)
+        idx_fin_nuevo = sorted(idx_fin_despues - idx_fin_antes)
+        if not idx_inicio_nuevo or not idx_fin_nuevo:
+            raise RuntimeError("No aparecio un nuevo tramo editable tras pulsar anadir tramo")
+        self._rellenar_time_group(form, f"periods.{idx_inicio_nuevo[-1]}.start", horario[2]["inicio"])
+        self._rellenar_time_group(form, f"periods.{idx_fin_nuevo[-1]}.end", horario[2]["fin"])
+        return form
+
     def _rellenar_dia(self, info: dict) -> tuple[bool, str]:
         nombre = info["nombre"]
         horario = self._horario_para_dia(nombre, fecha=info.get("fecha"))
@@ -509,29 +568,10 @@ class AttendanceBot:
             self._click_elemento(fila, f"fila {info['label']}")
 
         # Fallback para UIs que requieren foco + Enter para expandir.
-        if (fila.get_attribute("aria-expanded") or "false") != "true":
-            try:
-                fila.send_keys(Keys.ENTER)
-            except Exception:
-                pass
-
-        if (fila.get_attribute("aria-expanded") or "false") != "true":
-            try:
-                self.driver.execute_script("arguments[0].click();", fila)
-            except Exception:
-                pass
-
-        try:
-            WebDriverWait(self.driver, 10).until(
-                lambda d: (fila.get_attribute("aria-expanded") or "false") == "true"
-            )
-        except Exception:
-            self.logger.info(
-                f"No se pudo expandir la fila de {info['label']}; puede estar deshabilitada o no editable en este estado."
-            )
+        expandida, aria_controls = self._expandir_fila(fila, info["label"])
+        if not expandida:
             return False, "no_expandida"
 
-        aria_controls = fila.get_attribute("aria-controls")
         time.sleep(0.4)
 
         form = self._form(aria_controls)
@@ -539,38 +579,9 @@ class AttendanceBot:
         try:
             # Algunos dias no viernes (p. ej. vigilia nacional) usan tramo unico.
             if len(horario) == 1:
-                self._rellenar_time_group(form, "periods.0.start", horario[0]["inicio"])
-                self._rellenar_time_group(form, "periods.0.end", horario[0]["fin"])
-                try:
-                    btn_del = form.find_element(By.CSS_SELECTOR, 'button[data-test-id="timecard-delete-period-1"]')
-                    btn_del.click()
-                    time.sleep(0.4)
-                    form = self._form(aria_controls)
-                except Exception:
-                    pass
+                form = self._rellenar_form_tramo_unico(form, aria_controls, horario)
             else:
-                self._rellenar_time_group(form, "periods.0.start", horario[0]["inicio"])
-                self._rellenar_time_group(form, "periods.0.end", horario[0]["fin"])
-                self._rellenar_time_group(form, "periods.1.start", horario[1]["inicio"])
-                self._rellenar_time_group(form, "periods.1.end", horario[1]["fin"])
-
-                idx_inicio_antes = self._indices_periodos(form, "start")
-                idx_fin_antes = self._indices_periodos(form, "end")
-                btn_add = form.find_element(By.CSS_SELECTOR, 'button[data-test-id="timecard-add-work"]')
-                self._click_elemento(btn_add, "boton anadir tramo")
-                WebDriverWait(self.driver, 8).until(
-                    lambda d: len(self._indices_periodos(self._form(aria_controls), "start")) > len(idx_inicio_antes)
-                    and len(self._indices_periodos(self._form(aria_controls), "end")) > len(idx_fin_antes)
-                )
-                form = self._form(aria_controls)
-                idx_inicio_despues = self._indices_periodos(form, "start")
-                idx_fin_despues = self._indices_periodos(form, "end")
-                idx_inicio_nuevo = sorted(idx_inicio_despues - idx_inicio_antes)
-                idx_fin_nuevo = sorted(idx_fin_despues - idx_fin_antes)
-                if not idx_inicio_nuevo or not idx_fin_nuevo:
-                    raise RuntimeError("No aparecio un nuevo tramo editable tras pulsar anadir tramo")
-                self._rellenar_time_group(form, f"periods.{idx_inicio_nuevo[-1]}.start", horario[2]["inicio"])
-                self._rellenar_time_group(form, f"periods.{idx_fin_nuevo[-1]}.end", horario[2]["fin"])
+                form = self._rellenar_form_dos_tramos(form, aria_controls, horario)
 
             btn_save = form.find_element(By.CSS_SELECTOR, 'button[data-test-id="timecard-save-button"]')
             self._click_elemento(btn_save, "boton guardar")
@@ -602,6 +613,52 @@ class AttendanceBot:
             )
             return False, "error_edicion_guardado"
 
+    def _procesar_fila_semana(self, info: dict, idx: int, total: int) -> tuple[bool, bool]:
+        fecha_dia: date | None = info.get("fecha")
+        fecha_txt = fecha_dia.isoformat() if fecha_dia is not None else "desconocida"
+        fecha_html = info.get("fecha_html")
+        self.logger.info(
+            f"Progreso {idx}/{total}: revisando label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html}, dia={info['nombre']}"
+        )
+        if fecha_dia is not None and fecha_dia > date.today():
+            self.logger.info(
+                f"Saltando label='{info['label']}', fecha_visible={fecha_dia}, datetime_html={fecha_html}: es una fecha futura"
+            )
+            return False, False
+
+        if info["tiene_horas"]:
+            motivo = info.get("motivo_relleno", "detector")
+            if motivo == "estado_aprobado":
+                self.logger.warning(
+                    f"Saltando label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html}: estado aprobado/confirmado (dia ya imputado, no editable)"
+                )
+            else:
+                self.logger.warning(
+                    f"Saltando label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html}: ya tiene horas registradas ({motivo})"
+                )
+            return True, True
+
+        self.logger.info(
+            f"Intentando rellenar label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html}"
+        )
+        ok, motivo = self._rellenar_dia(info)
+        if ok:
+            self.logger.info(
+                f"Fin de intento OK para label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html}"
+            )
+            return True, True
+
+        if motivo in _MOTIVOS_SIN_ACCION:
+            self.logger.info(
+                f"Fin de intento sin accion para label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html} (motivo={motivo})"
+            )
+            return False, False
+
+        self.logger.warning(
+            f"Fin de intento sin guardado confirmado para label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html} (motivo={motivo})"
+        )
+        return False, False
+
     def rellenar_semana(self, solo_fecha: date | None = None) -> bool:
         if solo_fecha is not None:
             fila_objetivo = self._obtener_fila_por_fecha(solo_fecha)
@@ -626,48 +683,9 @@ class AttendanceBot:
         exito_global = True
 
         for idx, info in enumerate(filas, start=1):
-            fecha_dia: date | None = info.get("fecha")
-            fecha_txt = fecha_dia.isoformat() if fecha_dia is not None else "desconocida"
-            fecha_html = info.get("fecha_html")
-            self.logger.info(
-                f"Progreso {idx}/{len(filas)}: revisando label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html}, dia={info['nombre']}"
-            )
-            if fecha_dia is not None and fecha_dia > date.today():
-                self.logger.info(
-                    f"Saltando label='{info['label']}', fecha_visible={fecha_dia}, datetime_html={fecha_html}: es una fecha futura"
-                )
+            ok, mantener_exito = self._procesar_fila_semana(info, idx, len(filas))
+            if not mantener_exito:
                 exito_global = False
-                continue
-            if info["tiene_horas"]:
-                motivo = info.get("motivo_relleno", "detector")
-                if motivo == "estado_aprobado":
-                    self.logger.warning(
-                        f"Saltando label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html}: estado aprobado/confirmado (dia ya imputado, no editable)"
-                    )
-                else:
-                    self.logger.warning(
-                        f"Saltando label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html}: ya tiene horas registradas ({motivo})"
-                    )
-                continue
-            self.logger.info(
-                f"Intentando rellenar label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html}"
-            )
-            ok, motivo = self._rellenar_dia(info)
-            if ok:
-                self.logger.info(
-                    f"Fin de intento OK para label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html}"
-                )
-            else:
-                if motivo in {"sin_horario", "fila_no_visible", "no_expandida"}:
-                    self.logger.info(
-                        f"Fin de intento sin accion para label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html} (motivo={motivo})"
-                    )
-                    exito_global = False
-                else:
-                    self.logger.warning(
-                        f"Fin de intento sin guardado confirmado para label='{info['label']}', fecha_visible={fecha_txt}, datetime_html={fecha_html} (motivo={motivo})"
-                    )
-                    exito_global = False
             time.sleep(0.8)
 
         return exito_global

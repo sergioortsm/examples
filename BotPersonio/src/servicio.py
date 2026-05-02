@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib
 import json
 import os
 import smtplib
@@ -10,39 +11,55 @@ from pathlib import Path
 
 import requests
 
-_imports_cargados = False
-
-try:
-    # Ejecucion como modulo del paquete.
-    from .attendance_bot import AttendanceBot
-    from .auth import AuthManager
-    from .config import cargar_configuracion
-    from .logger import configurar_logger
-    _imports_cargados = True
-except ImportError:
-    pass
-
-if not _imports_cargados:
+def _cargar_dependencias():
     try:
-        # Compatibilidad para ejecutable PyInstaller (modulos planos en bundle).
-        from attendance_bot import AttendanceBot
-        from auth import AuthManager
-        from config import cargar_configuracion
-        from logger import configurar_logger
-        _imports_cargados = True
-    except ImportError:
+        # Ejecucion como modulo del paquete.
+        attendance_mod = importlib.import_module(".attendance_bot", package=__package__)
+        auth_mod = importlib.import_module(".auth", package=__package__)
+        config_mod = importlib.import_module(".config", package=__package__)
+        logger_mod = importlib.import_module(".logger", package=__package__)
+        return (
+            attendance_mod.AttendanceBot,
+            auth_mod.AuthManager,
+            config_mod.cargar_configuracion,
+            logger_mod.configurar_logger,
+        )
+    except Exception:
         pass
 
-if not _imports_cargados:
+    try:
+        # Compatibilidad para ejecutable PyInstaller (modulos planos en bundle).
+        attendance_mod = importlib.import_module("attendance_bot")
+        auth_mod = importlib.import_module("auth")
+        config_mod = importlib.import_module("config")
+        logger_mod = importlib.import_module("logger")
+        return (
+            attendance_mod.AttendanceBot,
+            auth_mod.AuthManager,
+            config_mod.cargar_configuracion,
+            logger_mod.configurar_logger,
+        )
+    except Exception:
+        pass
+
     # Ejecutado como script desde raiz: forzamos imports calificados.
     repo_root = Path(__file__).resolve().parents[2]
     if str(repo_root) not in sys.path:
         sys.path.insert(0, str(repo_root))
 
-    from personio_fichajes.src.attendance_bot import AttendanceBot
-    from personio_fichajes.src.auth import AuthManager
-    from personio_fichajes.src.config import cargar_configuracion
-    from personio_fichajes.src.logger import configurar_logger
+    attendance_mod = importlib.import_module("personio_fichajes.src.attendance_bot")
+    auth_mod = importlib.import_module("personio_fichajes.src.auth")
+    config_mod = importlib.import_module("personio_fichajes.src.config")
+    logger_mod = importlib.import_module("personio_fichajes.src.logger")
+    return (
+        attendance_mod.AttendanceBot,
+        auth_mod.AuthManager,
+        config_mod.cargar_configuracion,
+        logger_mod.configurar_logger,
+    )
+
+
+AttendanceBot, AuthManager, cargar_configuracion, configurar_logger = _cargar_dependencias()
 
 
 def _es_terminal_interactiva() -> bool:
@@ -158,10 +175,7 @@ def _confirmar_imputacion_manual(solo_fecha: date, logger, modo_interactivo: boo
         print("Respuesta no valida. Escribe S para continuar o N para cancelar.")
 
 
-def ejecutar_fichaje_diario() -> bool:
-    cfg = cargar_configuracion()
-    logger = configurar_logger(cfg.ruta_log)
-
+def _obtener_solo_fecha_obligatoria() -> date:
     solo_fecha_raw = os.getenv("SOLO_FECHA", "").strip()
     if not solo_fecha_raw:
         raise ValueError(
@@ -170,11 +184,29 @@ def ejecutar_fichaje_diario() -> bool:
         )
 
     try:
-        solo_fecha = date.fromisoformat(solo_fecha_raw)
+        return date.fromisoformat(solo_fecha_raw)
     except ValueError as exc:
         raise ValueError(
             f"SOLO_FECHA invalida: '{solo_fecha_raw}'. Formato esperado: YYYY-MM-DD"
         ) from exc
+
+
+def _cerrar_driver(driver, conectado_a_existente: bool) -> None:
+    if conectado_a_existente:
+        # Cerrar solo la pestaña abierta por el bot, sin tocar el resto de Chrome.
+        try:
+            driver.close()
+        except Exception:
+            pass
+        return
+    driver.quit()
+
+
+def ejecutar_fichaje_diario() -> bool:
+    cfg = cargar_configuracion()
+    logger = configurar_logger(cfg.ruta_log)
+
+    solo_fecha = _obtener_solo_fecha_obligatoria()
 
     logger.info("Iniciando servicio de fichajes Personio...")
     logger.info(f"Modo fecha unica activo: SOLO_FECHA={solo_fecha.isoformat()}")
@@ -203,14 +235,7 @@ def ejecutar_fichaje_diario() -> bool:
         bot = AttendanceBot(driver, cfg, logger)
         ok = bot.rellenar_semana(solo_fecha=solo_fecha)
     finally:
-        if conectado_a_existente:
-            # Cerrar solo la pestaña abierta por el bot, sin tocar el resto de Chrome.
-            try:
-                driver.close()
-            except Exception:
-                pass
-        else:
-            driver.quit()
+        _cerrar_driver(driver, conectado_a_existente)
 
     if ok:
         _guardar_en_stamp(solo_fecha)
@@ -276,24 +301,22 @@ def ejecutar_catch_up() -> bool:
 
 def main():
     modo_catch_up = os.getenv("MODO_CATCH_UP", "").strip().lower() in ("1", "true", "yes")
-    if modo_catch_up:
-        try:
-            ok = ejecutar_catch_up()
-            if not ok:
-                raise RuntimeError("Catch-up finalizado con dias no confirmados")
-        except Exception as exc:
-            logger = configurar_logger(None)
-            logger.exception(f"Error en catch-up Personio: {exc}")
-            sys.exit(1)
-    else:
-        try:
-            ok = ejecutar_fichaje_diario()
-            if not ok:
-                raise RuntimeError("Imputacion no confirmada; no se registro en stamp")
-        except Exception as exc:
-            logger = configurar_logger(None)
-            logger.exception(f"Error en servicio Personio: {exc}")
-            sys.exit(1)
+    accion = ejecutar_catch_up if modo_catch_up else ejecutar_fichaje_diario
+    msg_no_ok = (
+        "Catch-up finalizado con dias no confirmados"
+        if modo_catch_up
+        else "Imputacion no confirmada; no se registro en stamp"
+    )
+    contexto_error = "catch-up" if modo_catch_up else "servicio"
+
+    try:
+        ok = accion()
+        if not ok:
+            raise RuntimeError(msg_no_ok)
+    except Exception as exc:
+        logger = configurar_logger(None)
+        logger.exception(f"Error en {contexto_error} Personio: {exc}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
