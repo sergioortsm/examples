@@ -1,0 +1,19 @@
+# Credenciales y configuracion local — nunca subir al repositorio
+.env
+dist/configuracion.json
+
+# Sesion, cookies y stamp file de runtime
+runtime/
+
+# Entorno virtual
+.venv/
+
+# Compilacion PyInstaller
+dist/*.exe
+src/build/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
