@@ -14,6 +14,18 @@
     },
     "chat.tools.terminal.autoApprove": {
         ".\\.venv\\Scripts\\python.exe": true,
-        "pytest": true
+        "pytest": true,
+        "/^python -m py_compile src/attendance_bot\\.py src/utils\\.py$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^python -c \"import sys; sys\\.path\\.insert\\(0, r'c:\\\\repositorio\\\\examples\\\\BotPersonio\\\\src'\\); import attendance_bot; import utils; print\\('flat-import-ok'\\)\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^python -m py_compile src/attendance_bot\\.py$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
     }
 }

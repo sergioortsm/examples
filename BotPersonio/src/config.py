@@ -41,12 +41,16 @@ class Configuracion(BaseModel):
     chrome_user_data_dir: str | None = None
     chrome_profile_directory: str | None = None
 
-    # Notificacion por email al finalizar catch-up con dias fallidos (opcional).
+    # Notificacion por email (opcional). Requiere smtp_host, smtp_user, smtp_password y email_destinatario.
+    # email_resumen=True: envia un email al finalizar cada ejecucion (fichaje diario y catch-up)
+    #   con el resumen y el fragmento de log generado. Si False, solo se envia alerta cuando
+    #   hay dias fallidos en catch-up (comportamiento original).
     smtp_host: str | None = None
     smtp_port: int = 587
     smtp_user: str | None = None
     smtp_password: str | None = None
     email_destinatario: str | None = None
+    email_resumen: bool = False  # True: envia log+resumen por email al terminar cada ejecucion.
 
     # Dias festivos (YYYY-MM-DD) que el bot debe saltar por completo (no fichar ni reintentar).
     festivos: list[str] = []

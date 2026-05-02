@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import random
 import re
 import time
 from datetime import date
@@ -11,6 +10,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+
+try:
+    from .utils import aplicar_desfase_horario, parse_hhmm
+except ImportError:
+    from utils import aplicar_desfase_horario, parse_hhmm
 
 
 _SELECTOR_FILA = 'div[role="row"][data-test-id="timesheet-timecard"]'
@@ -39,112 +43,7 @@ class AttendanceBot:
         self.logger = logger
         self.wait = WebDriverWait(driver, 20)
 
-    def _parse(self, hhmm: str) -> tuple[str, str]:
-        h, m = hhmm.split(":")
-        return h, m
-
-    def _hora_a_minutos(self, hora: tuple[str, str]) -> int:
-        return int(hora[0]) * 60 + int(hora[1])
-
-    def _minutos_a_hora(self, total_minutos: int) -> tuple[str, str]:
-        minutos_dia = 24 * 60
-        normalizado = max(0, min(total_minutos, minutos_dia - 1))
-        horas = normalizado // 60
-        minutos = normalizado % 60
-        return f"{horas:02d}", f"{minutos:02d}"
-
-    def _sumar_minutos_hora(self, hora: tuple[str, str], delta_minutos: int) -> tuple[str, str]:
-        return self._minutos_a_hora(self._hora_a_minutos(hora) + delta_minutos)
-
-    def _max_desfase_minutos(self) -> int:
-        try:
-            valor = int(getattr(self.cfg, "desfase_horario_max_min", 10))
-        except Exception:
-            valor = 10
-        return max(0, min(valor, 10))
-
-    def _rng_para_dia(self, nombre_norm: str, fecha: date | None) -> random.Random:
-        # Semilla estable por dia para que reintentos del mismo dia mantengan horas consistentes.
-        semilla = f"{getattr(self.cfg, 'employee_id', 'na')}|{fecha.isoformat() if fecha else nombre_norm}"
-        return random.Random(semilla)
-
-    def _aplicar_desfase_horario(
-        self,
-        horario: list[dict],
-        nombre_norm: str,
-        fecha: date | None,
-    ) -> list[dict]:
-        max_desfase = self._max_desfase_minutos()
-        if max_desfase == 0:
-            return horario
-
-        rng = self._rng_para_dia(nombre_norm, fecha)
-
-        if nombre_norm == "vie" or len(horario) == 1:
-            inicio_base = horario[0]["inicio"]
-            fin_base = horario[0]["fin"]
-
-            delta_inicio = rng.randint(-max_desfase, max_desfase)
-            delta_fin = rng.randint(0, max_desfase)
-
-            inicio = self._sumar_minutos_hora(inicio_base, delta_inicio)
-            fin = self._sumar_minutos_hora(fin_base, delta_fin)
-
-            fin_min = max(
-                self._hora_a_minutos(fin),
-                self._hora_a_minutos(fin_base),
-                self._hora_a_minutos(inicio) + 1,
-            )
-            fin = self._minutos_a_hora(fin_min)
-
-            self.logger.info(
-                "Desfase aplicado "
-                f"({fecha.isoformat() if fecha else nombre_norm}): inicio {delta_inicio:+d}m, fin +{delta_fin}m"
-            )
-            return [{"tipo": "trabajo", "inicio": inicio, "fin": fin}]
-
-        inicio_manana_base = horario[0]["inicio"]
-        fin_manana_base = horario[0]["fin"]
-        inicio_tarde_base = horario[2]["inicio"]
-        fin_tarde_base = horario[2]["fin"]
-
-        delta_inicio_manana = rng.randint(-max_desfase, max_desfase)
-        delta_fin_manana = rng.randint(0, max_desfase)
-        delta_inicio_tarde = rng.randint(-max_desfase, max_desfase)
-        delta_fin_tarde = rng.randint(0, max_desfase)
-
-        inicio_manana = self._sumar_minutos_hora(inicio_manana_base, delta_inicio_manana)
-        fin_manana = self._sumar_minutos_hora(fin_manana_base, delta_fin_manana)
-
-        # Evita descansos negativos: la tarde nunca empieza antes de que termine la manana.
-        inicio_tarde_candidato = self._sumar_minutos_hora(inicio_tarde_base, delta_inicio_tarde)
-        inicio_tarde_min = max(
-            self._hora_a_minutos(inicio_tarde_candidato),
-            self._hora_a_minutos(fin_manana),
-        )
-        inicio_tarde = self._minutos_a_hora(inicio_tarde_min)
-
-        fin_tarde = self._sumar_minutos_hora(fin_tarde_base, delta_fin_tarde)
-        fin_tarde_min = max(
-            self._hora_a_minutos(fin_tarde),
-            self._hora_a_minutos(fin_tarde_base),
-            self._hora_a_minutos(inicio_tarde) + 1,
-        )
-        fin_tarde = self._minutos_a_hora(fin_tarde_min)
-
-        self.logger.info(
-            "Desfase aplicado "
-            f"({fecha.isoformat() if fecha else nombre_norm}): "
-            f"inicio manana {delta_inicio_manana:+d}m, fin manana +{delta_fin_manana}m, "
-            f"inicio tarde {delta_inicio_tarde:+d}m, fin tarde +{delta_fin_tarde}m"
-        )
-
-        return [
-            {"tipo": "trabajo", "inicio": inicio_manana, "fin": fin_manana},
-            {"tipo": "descanso", "inicio": fin_manana, "fin": inicio_tarde},
-            {"tipo": "trabajo", "inicio": inicio_tarde, "fin": fin_tarde},
-        ]
-
+    # region Normalizacion y calendario
     def _normalizar_clave_dia(self, clave: str) -> str:
         return (clave or "").strip().lower().replace("é", "e").replace("á", "a")
 
@@ -195,28 +94,14 @@ class AttendanceBot:
 
         return False, "sin_horas"
 
-    def _esperar_filas_o_error_sso(self) -> None:
-        try:
-            self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, _SELECTOR_FILA)))
-        except Exception as exc:
-            url = (self.driver.current_url or "").lower()
-            if "login.personio.com" in url or "login.microsoftonline.com" in url:
-                raise RuntimeError(
-                    "No se pudo acceder a attendance: Chrome sigue en login SSO/MFA."
-                ) from exc
-            raise
-
-    def _fila_es_omitible(self, fila) -> bool:
-        return fila.get_attribute("data-is-weekend") == "true" or fila.get_attribute("data-is-off-day") == "true"
-
     def _horario_para_dia(self, nombre: str, fecha=None) -> list[dict] | None:
         nombre_norm = self._normalizar_clave_dia(nombre)
-        ms = self._parse(self.cfg.morning_start)
-        me = self._parse(self.cfg.morning_end)
-        as_ = self._parse(self.cfg.afternoon_start)
-        ae = self._parse(self.cfg.afternoon_end)
-        fs = self._parse(self.cfg.friday_start)
-        fe = self._parse(self.cfg.friday_end)
+        ms = parse_hhmm(self.cfg.morning_start)
+        me = parse_hhmm(self.cfg.morning_end)
+        as_ = parse_hhmm(self.cfg.afternoon_start)
+        ae = parse_hhmm(self.cfg.afternoon_end)
+        fs = parse_hhmm(self.cfg.friday_start)
+        fe = parse_hhmm(self.cfg.friday_end)
 
         # Jornada intensiva: vispera de festivo nacional (08:30-14:30, tramo unico).
         if fecha is not None and fecha.isoformat() in set(self.cfg.vigilias_nacionales):
@@ -224,7 +109,9 @@ class AttendanceBot:
                 f"{fecha.isoformat()} es vigilia de festivo nacional: aplicando jornada intensiva "
                 f"({self.cfg.morning_start}-{self.cfg.morning_end})."
             )
-            return self._aplicar_desfase_horario(
+            return aplicar_desfase_horario(
+                self.cfg,
+                self.logger,
                 [{"tipo": "trabajo", "inicio": ms, "fin": me}],
                 nombre_norm,
                 fecha,
@@ -248,19 +135,7 @@ class AttendanceBot:
         if not horario_base:
             return None
 
-        return self._aplicar_desfase_horario(horario_base, nombre_norm, fecha)
-
-    def _obtener_time_fecha(self, fila):
-        selectores = [
-            'div[class*="DayCell-module__cell"] time[datetime]',
-            'div[role="gridcell"] time[datetime]',
-            'time[datetime]',
-        ]
-        for selector in selectores:
-            elementos = fila.find_elements(By.CSS_SELECTOR, selector)
-            if elementos:
-                return elementos[0]
-        raise RuntimeError("No se encontro time[datetime] para la fecha de la fila")
+        return aplicar_desfase_horario(self.cfg, self.logger, horario_base, nombre_norm, fecha)
 
     def _resolver_fecha_visible(self, label: str, fecha_html: date | None) -> date | None:
         texto = self._normalizar_texto(label).replace(".", "")
@@ -291,6 +166,34 @@ class AttendanceBot:
             return fecha_html
 
         return min(candidatos, key=lambda candidata: abs((candidata - fecha_html).days))
+    # endregion
+
+    # region Lectura de filas
+    def _esperar_filas_o_error_sso(self) -> None:
+        try:
+            self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, _SELECTOR_FILA)))
+        except Exception as exc:
+            url = (self.driver.current_url or "").lower()
+            if "login.personio.com" in url or "login.microsoftonline.com" in url:
+                raise RuntimeError(
+                    "No se pudo acceder a attendance: Chrome sigue en login SSO/MFA."
+                ) from exc
+            raise
+
+    def _fila_es_omitible(self, fila) -> bool:
+        return fila.get_attribute("data-is-weekend") == "true" or fila.get_attribute("data-is-off-day") == "true"
+
+    def _obtener_time_fecha(self, fila):
+        selectores = [
+            'div[class*="DayCell-module__cell"] time[datetime]',
+            'div[role="gridcell"] time[datetime]',
+            'time[datetime]',
+        ]
+        for selector in selectores:
+            elementos = fila.find_elements(By.CSS_SELECTOR, selector)
+            if elementos:
+                return elementos[0]
+        raise RuntimeError("No se encontro time[datetime] para la fecha de la fila")
 
     def _construir_info_fila(self, fila) -> dict:
         nombre = fila.find_element(By.CSS_SELECTOR, "span[aria-hidden='true']").text.strip().lower()
@@ -361,7 +264,9 @@ class AttendanceBot:
 
     def _fila_existe(self, day_id: str) -> bool:
         return bool(self.driver.find_elements(By.CSS_SELECTOR, f'div[data-attendance-day-id="{day_id}"]'))
+    # endregion
 
+    # region Interaccion UI
     def _describir_elemento(self, element) -> str:
         try:
             rect = self.driver.execute_script(
@@ -509,7 +414,9 @@ class AttendanceBot:
 
         aria_controls = fila.get_attribute("aria-controls")
         return True, aria_controls or ""
+    # endregion
 
+    # region Relleno
     def _rellenar_form_tramo_unico(self, form, aria_controls: str, horario: list[dict]) -> Any:
         self._rellenar_time_group(form, "periods.0.start", horario[0]["inicio"])
         self._rellenar_time_group(form, "periods.0.end", horario[0]["fin"])
@@ -612,7 +519,9 @@ class AttendanceBot:
                 f"No se pudo editar/guardar {info['label']} ({nombre}). Motivo: {exc}"
             )
             return False, "error_edicion_guardado"
+    # endregion
 
+    # region Orquestacion
     def _procesar_fila_semana(self, info: dict, idx: int, total: int) -> tuple[bool, bool]:
         fecha_dia: date | None = info.get("fecha")
         fecha_txt = fecha_dia.isoformat() if fecha_dia is not None else "desconocida"
@@ -689,3 +598,4 @@ class AttendanceBot:
             time.sleep(0.8)
 
         return exito_global
+    # endregion
