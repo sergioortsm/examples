@@ -339,3 +339,15 @@ mostrará un error claro si alguna fecha es incorrecta.
 - Mantener `modo_prueba=true` hasta validar entorno.
 - Verificar permisos y politicas corporativas para automatizacion SSO.
 - Revisar cambios de endpoints internos en Personio, ya que pueden variar con el tiempo.
+
+
+## Imputar un rango de fechas (manual)
+
+Además del modo por fecha única (`SOLO_FECHA`) y del catch-up, puedes lanzar imputaciones de un rango concreto con el script:
+
+- `imputar_rango_fechas.bat YYYY-MM-DD YYYY-MM-DD`
+
+Ejemplo:
+
+```powershell
+imputar_rango_fechas.bat 2026-05-04 2026-05-05

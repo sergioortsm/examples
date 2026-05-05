@@ -77,23 +77,17 @@ def aplicar_desfase_horario(
 
     inicio_manana_base = horario[0]["inicio"]
     fin_manana_base = horario[0]["fin"]
-    inicio_tarde_base = horario[2]["inicio"]
     fin_tarde_base = horario[2]["fin"]
 
     delta_inicio_manana = rng.randint(-max_desfase, max_desfase)
     delta_fin_manana = rng.randint(0, max_desfase)
-    delta_inicio_tarde = rng.randint(-max_desfase, max_desfase)
     delta_fin_tarde = rng.randint(0, max_desfase)
 
     inicio_manana = sumar_minutos_hora(inicio_manana_base, delta_inicio_manana)
     fin_manana = sumar_minutos_hora(fin_manana_base, delta_fin_manana)
 
-    inicio_tarde_candidato = sumar_minutos_hora(inicio_tarde_base, delta_inicio_tarde)
-    inicio_tarde_min = max(
-        hora_a_minutos(inicio_tarde_candidato),
-        hora_a_minutos(fin_manana),
-    )
-    inicio_tarde = minutos_a_hora(inicio_tarde_min)
+    # Regla Personio: el descanso entre manana y tarde debe ser exactamente 60 minutos.
+    inicio_tarde = minutos_a_hora(hora_a_minutos(fin_manana) + 60)
 
     fin_tarde = sumar_minutos_hora(fin_tarde_base, delta_fin_tarde)
     fin_tarde_min = max(
@@ -107,7 +101,8 @@ def aplicar_desfase_horario(
         "Desfase aplicado "
         f"({fecha.isoformat() if fecha else nombre_norm}): "
         f"inicio manana {delta_inicio_manana:+d}m, fin manana +{delta_fin_manana}m, "
-        f"inicio tarde {delta_inicio_tarde:+d}m, fin tarde +{delta_fin_tarde}m"
+        "inicio tarde ajustado a +60m sobre fin manana, "
+        f"fin tarde +{delta_fin_tarde}m"
     )
 
     return [
