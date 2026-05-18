@@ -26,6 +26,11 @@
         "/^python -m py_compile src/attendance_bot\\.py$/": {
             "approve": true,
             "matchCommandLine": true
+        },
+        "Test-Path": true,
+        "/^Set-Location \"C:/repositorio/examples/BotPersonio\"; if \\(Test-Path \"\\.venv/Scripts/python\\.exe\"\\) \\{ \\./\\.venv/Scripts/python\\.exe -m py_compile src/attendance_bot\\.py \\} else \\{ python -m py_compile src/attendance_bot\\.py \\}$/": {
+            "approve": true,
+            "matchCommandLine": true
         }
     }
 }

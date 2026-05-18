@@ -20,6 +20,7 @@ except ImportError:
 _SELECTOR_FILA = 'div[role="row"][data-test-id="timesheet-timecard"]'
 _ESTADOS_APROBADOS = ("aprobada", "approved", "confirmada", "confirmed")
 _MOTIVOS_SIN_ACCION = {"sin_horario", "fila_no_visible", "no_expandida"}
+_MAX_SEMANAS_ATRAS_SOLO_FECHA = 2
 _MESES_ES = {
     "ene": 1,
     "feb": 2,
@@ -258,6 +259,77 @@ class AttendanceBot:
                 self.logger.warning(f"Fila omitida al localizar fecha {fecha_obj_txt}: {exc}")
 
         return None
+
+    def _firma_semana_visible(self) -> tuple[str, ...]:
+        filas = self.driver.find_elements(By.CSS_SELECTOR, _SELECTOR_FILA)
+        firma: list[str] = []
+        for fila in filas[:3]:
+            try:
+                time_el = self._obtener_time_fecha(fila)
+                firma.append(time_el.get_attribute("datetime") or (time_el.text or ""))
+            except Exception:
+                continue
+        return tuple(firma)
+
+    def _controles_semana_anterior(self):
+        selectores = [
+            'button[data-test-id="timesheet-week-navigation-previous"]',
+            'button[data-test-id="attendance-timecards-previous-week"]',
+            'button[aria-label*="anterior"]',
+            'button[aria-label*="previous"]',
+            'button[title*="anterior"]',
+            'button[title*="previous"]',
+            'button[aria-label*="prev"]',
+            'button[title*="prev"]',
+        ]
+        candidatos: list[Any] = []
+        for selector in selectores:
+            for boton in self.driver.find_elements(By.CSS_SELECTOR, selector):
+                if boton in candidatos:
+                    continue
+                candidatos.append(boton)
+
+        if candidatos:
+            return candidatos
+
+        xpaths = [
+            "//button[contains(translate(normalize-space(@aria-label), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'anterior')]",
+            "//button[contains(translate(normalize-space(@aria-label), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'previous')]",
+            "//button[contains(translate(normalize-space(@title), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'anterior')]",
+            "//button[contains(translate(normalize-space(@title), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'previous')]",
+            "//button[contains(translate(normalize-space(.), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'anterior')]",
+            "//button[contains(translate(normalize-space(.), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'previous')]",
+        ]
+        for xpath in xpaths:
+            for boton in self.driver.find_elements(By.XPATH, xpath):
+                if boton in candidatos:
+                    continue
+                candidatos.append(boton)
+        return candidatos
+
+    def _ir_a_semana_anterior(self) -> bool:
+        firma_antes = self._firma_semana_visible()
+        controles = self._controles_semana_anterior()
+        if not controles:
+            self.logger.warning("No se encontro control de navegacion a semana anterior en attendance.")
+            return False
+
+        for idx, control in enumerate(controles, start=1):
+            try:
+                self._click_elemento(control, f"navegacion semana anterior (opcion {idx})")
+                WebDriverWait(self.driver, 8).until(
+                    lambda d: self._firma_semana_visible() != firma_antes
+                )
+                self._esperar_filas_o_error_sso()
+                return True
+            except Exception as exc:
+                self.logger.info(
+                    f"No se pudo usar control de semana anterior opcion {idx}: {exc}"
+                )
+                continue
+
+        self.logger.warning("No fue posible navegar a semana anterior con los controles detectados.")
+        return False
 
     def _fila_el(self, day_id: str):
         return self.driver.find_element(By.CSS_SELECTOR, f'div[data-attendance-day-id="{day_id}"]')
@@ -570,7 +642,22 @@ class AttendanceBot:
 
     def rellenar_semana(self, solo_fecha: date | None = None) -> bool:
         if solo_fecha is not None:
-            fila_objetivo = self._obtener_fila_por_fecha(solo_fecha)
+            fila_objetivo = None
+            for intento in range(_MAX_SEMANAS_ATRAS_SOLO_FECHA + 1):
+                fila_objetivo = self._obtener_fila_por_fecha(solo_fecha)
+                if fila_objetivo is not None:
+                    break
+
+                if intento >= _MAX_SEMANAS_ATRAS_SOLO_FECHA:
+                    break
+
+                self.logger.info(
+                    "SOLO_FECHA no visible en la semana actual; "
+                    f"intentando semana anterior (paso {intento + 1}/{_MAX_SEMANAS_ATRAS_SOLO_FECHA})."
+                )
+                if not self._ir_a_semana_anterior():
+                    break
+
             if fila_objetivo is None:
                 self.logger.info(f"No se encontro fila para SOLO_FECHA={solo_fecha}")
                 return False
