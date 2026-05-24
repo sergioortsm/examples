@@ -101,7 +101,21 @@ python .\src\servicio.py
 O con lanzador:
 
 ```bat
-ejecutar_servicio_script.bat
+ejecutar_servicio_script.bat YYYY-MM-DD
+```
+
+## Recuperacion manual de un dia concreto
+
+Si un dia no se imputo (por ejemplo, porque el bot no conecto), puedes lanzarlo manualmente indicando la fecha:
+
+```bat
+.\ejecutar_servicio_script.bat 2026-05-22
+```
+
+Para calcular automaticamente el viernes pasado en PowerShell y ejecutarlo en una sola linea:
+
+```powershell
+$hoy=Get-Date; $dias=((([int]$hoy.DayOfWeek)-5)+7)%7; if($dias -eq 0){$dias=7}; $viernes=$hoy.AddDays(-$dias).ToString('yyyy-MM-dd'); .\ejecutar_servicio_script.bat $viernes
 ```
 
 ## Flujo recomendado (Chrome Personio dedicado)
