@@ -70,17 +70,16 @@ class LogsView(ft.Column):
         )
         self.page_info_text = ft.Text("Pagina 1 / 1")
 
-        self.column_selector = ft.Column(
+        self.column_selector = ft.Row(
             [],
-            spacing=4,
-            tight=True,
+            spacing=8,
+            wrap=True,
             scroll=ft.ScrollMode.AUTO,
-            expand=True,
         )
         self.column_selector_container = ft.Container(
             content=self.column_selector,
             visible=self.column_selector_visible,
-            height=220,
+            height=120,
             padding=ft.padding.Padding(top=4),
         )
         self.column_selector_panel = self.column_selector_container
@@ -239,11 +238,14 @@ class LogsView(ft.Column):
         is_busy = bool(state.get("is_loading", False)) or is_applying
 
         self.column_selector.controls = [
-            ft.Checkbox(
-                label=column,
-                value=column in pending_columns,
-                disabled=is_busy,
-                on_change=lambda e, col=column: self.app.on_logs_toggle_column(col, bool(e.control.value)),
+            ft.Container(
+                content=ft.Checkbox(
+                    label=column,
+                    value=column in pending_columns,
+                    disabled=is_busy,
+                    on_change=lambda e, col=column: self.app.on_logs_toggle_column(col, bool(e.control.value)),
+                ),
+                width=210,
             )
             for column in columns
         ]
@@ -338,18 +340,32 @@ class LogsView(ft.Column):
         is_message = self._is_message_column(column_name)
         max_lines = 3 if is_message else 2
         if is_message:
+            preview = value.replace("\n", " ").strip()
+            tooltip_text = preview if preview else "Mensaje vacio"
             content = ft.GestureDetector(
                 mouse_cursor=ft.MouseCursor.CLICK,
                 on_tap=lambda e, text=value, col=column_name: self.app.on_logs_open_message_detail(text, col),
                 content=ft.Container(
-                    content=ft.Text(
-                        value,
-                        max_lines=2,
-                        overflow=ft.TextOverflow.ELLIPSIS,
-                        no_wrap=False,
+                    content=ft.Row(
+                        [
+                            ft.Container(
+                                content=ft.Text(
+                                    value,
+                                    max_lines=2,
+                                    overflow=ft.TextOverflow.ELLIPSIS,
+                                    no_wrap=False,
+                                ),
+                                expand=True,
+                            ),
+                            ft.Icon(ft.Icons.OPEN_IN_FULL, size=16, color=ft.Colors.BLUE_GREY_500),
+                        ],
+                        spacing=8,
+                        vertical_alignment=ft.CrossAxisAlignment.CENTER,
                     ),
                     width=self._message_column_width(),
-                    padding=ft.padding.Padding(right=4),
+                    padding=ft.padding.Padding(left=6, top=4, right=6, bottom=4),
+                    border_radius=ft.BorderRadius(6, 6, 6, 6),
+                    tooltip=f"Clic para ver completo: {tooltip_text}",
                 ),
             )
             return ft.DataCell(content)

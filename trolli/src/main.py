@@ -1,6 +1,8 @@
 from importlib.metadata import PackageNotFoundError, version
 import asyncio
 import inspect
+import json
+import os
 
 import flet as ft
 from datetime import datetime
@@ -24,6 +26,7 @@ class TrelloApp(AppLayout):
         self.store: DataStore = store
         self.user: str | None = None
         self._fallback_storage: dict[str, object] = {}
+        self._prefs_path = Path(os.getenv("APPDATA", str(Path.home()))) / "trolli" / "logs_prefs.json"
         self._page.on_route_change = self.route_change
         self._page.on_error = lambda e: print(f"FLET ERROR: {getattr(e, 'data', e)}")
         self.boards = self.store.get_boards()
@@ -83,22 +86,38 @@ class TrelloApp(AppLayout):
         if hasattr(self.file_picker, "on_result"):
             self.file_picker.on_result = self.on_log_file_selected
         self._page.services.append(self.file_picker)
-        self.logs_message_dialog_title = ft.Text("")
+        self.logs_message_dialog_title = ft.Row(
+            [
+                ft.Icon(ft.Icons.ARTICLE_OUTLINED, size=18, color=ft.Colors.BLUE_GREY_700),
+                ft.Text("", weight=ft.FontWeight.W_600),
+            ],
+            spacing=8,
+            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+        )
+        self.logs_message_dialog_meta = ft.Text("", size=12, color=ft.Colors.BLUE_GREY_700)
         self.logs_message_dialog_body = ft.Text("", selectable=True)
         self.logs_message_dialog_content = ft.Column(
-            [self.logs_message_dialog_body],
+            [
+                self.logs_message_dialog_meta,
+                ft.Divider(height=10, thickness=1),
+                self.logs_message_dialog_body,
+            ],
             scroll=ft.ScrollMode.AUTO,
             expand=True,
+        )
+        self.logs_message_dialog_container = ft.Container(
+            content=self.logs_message_dialog_content,
+            width=860,
+            height=400,
+            padding=ft.padding.Padding(left=12, top=12, right=12, bottom=12),
+            border=ft.Border.all(1, ft.Colors.BLUE_GREY_100),
+            border_radius=ft.BorderRadius(8, 8, 8, 8),
+            bgcolor=ft.Colors.WHITE,
         )
         self.logs_message_dialog: ft.AlertDialog = ft.AlertDialog(
             modal=True,
             title=self.logs_message_dialog_title,
-            content=ft.Container(
-                content=self.logs_message_dialog_content,
-                width=800,
-                height=360,
-                padding=ft.padding.Padding(left=8, top=8, right=8, bottom=8),
-            ),
+            content=self.logs_message_dialog_container,
             actions=[
                 ft.TextButton("Copiar", on_click=self.on_logs_copy_message_detail),
                 ft.TextButton("Cerrar", on_click=self.on_logs_close_message_detail),
@@ -120,26 +139,58 @@ class TrelloApp(AppLayout):
         )
 
     def _storage_get(self, key: str, default=None):
-        # Evita APIs deprecadas y soporta storages sync/async segun version de Flet.
-        for attr_name in ("client_storage", "session"):
+        # Compatibilidad entre versiones de Flet (sync/async) y distintos backends.
+        for attr_name in ("client_storage", "shared_preferences", "session"):
             storage = getattr(self._page, attr_name, None)
-            if storage and hasattr(storage, "get"):
+            if not storage:
+                continue
+            for getter_name in ("get", "get_async"):
+                getter = getattr(storage, getter_name, None)
+                if not callable(getter):
+                    continue
                 try:
-                    value = storage.get(key)
+                    value = getter(key)
                     if inspect.isawaitable(value):
-                        # Algunas versiones devuelven corrutinas; evitamos propagar ese valor.
+                        # Si solo hay API async y estamos en flujo sync, usamos fallback sin romper UI.
                         continue
                     return default if value is None else value
                 except Exception:
                     continue
         return self._fallback_storage.get(key, default)
 
+    def _read_prefs_file(self) -> dict[str, object]:
+        try:
+            if not self._prefs_path.exists():
+                return {}
+            raw = self._prefs_path.read_text(encoding="utf-8")
+            data = json.loads(raw)
+            return data if isinstance(data, dict) else {}
+        except Exception:
+            return {}
+
+    def _write_prefs_file_atomic(self, data: dict[str, object]):
+        try:
+            self._prefs_path.parent.mkdir(parents=True, exist_ok=True)
+            temp_path = self._prefs_path.with_suffix(".tmp")
+            temp_path.write_text(
+                json.dumps(data, ensure_ascii=True, indent=2),
+                encoding="utf-8",
+            )
+            os.replace(temp_path, self._prefs_path)
+        except Exception:
+            pass
+
     def _storage_set(self, key: str, value):
-        for attr_name in ("client_storage", "session"):
+        for attr_name in ("client_storage", "shared_preferences", "session"):
             storage = getattr(self._page, attr_name, None)
-            if storage and hasattr(storage, "set"):
+            if not storage:
+                continue
+            for setter_name in ("set", "set_async"):
+                setter = getattr(storage, setter_name, None)
+                if not callable(setter):
+                    continue
                 try:
-                    result = storage.set(key, value)
+                    result = setter(key, value)
                     if inspect.isawaitable(result):
                         try:
                             asyncio.get_running_loop().create_task(result)
@@ -154,6 +205,8 @@ class TrelloApp(AppLayout):
         if self not in self._page.controls:
             self._page.add(self)
         self._page.update()
+        # Restaura las preferencias de los logs al inicializar
+        self._restore_logs_preferences()
         # create an initial board for demonstration if no boards
         if len(self.boards) == 0:
             self.create_new_board("My First Board")
@@ -165,6 +218,7 @@ class TrelloApp(AppLayout):
         self.set_all_boards_view()
 
     def _restore_logs_preferences(self):
+        file_prefs = self._read_prefs_file()
         defaults = {
             "search_text": "",
             "level_filter": "All",
@@ -174,7 +228,9 @@ class TrelloApp(AppLayout):
             "visible_columns": [],
         }
         for key, default_value in defaults.items():
-            stored_value = self._storage_get(f"logs_{key}", None)
+            stored_value = file_prefs.get(key, None)
+            if stored_value is None:
+                stored_value = self._storage_get(f"logs_{key}", None)
             self.logs_state[key] = default_value if stored_value is None else stored_value
 
         if not isinstance(self.logs_state.get("visible_columns"), list):
@@ -189,6 +245,16 @@ class TrelloApp(AppLayout):
         self.logs_state["sort_desc"] = bool(self.logs_state.get("sort_desc", False))
 
     def _persist_logs_preferences(self):
+        prefs_to_persist: dict[str, object] = {
+            "search_text": self.logs_state["search_text"],
+            "level_filter": self.logs_state["level_filter"],
+            "sort_by": self.logs_state["sort_by"],
+            "sort_desc": self.logs_state["sort_desc"],
+            "page_size": self.logs_state["page_size"],
+            "visible_columns": self.logs_state["visible_columns"],
+        }
+        self._write_prefs_file_atomic(prefs_to_persist)
+
         self._storage_set("logs_search_text", self.logs_state["search_text"])
         self._storage_set("logs_level_filter", self.logs_state["level_filter"])
         self._storage_set("logs_sort_by", self.logs_state["sort_by"])
@@ -545,8 +611,19 @@ class TrelloApp(AppLayout):
         self.logs_state["message_dialog_open"] = True
         self.logs_state["message_dialog_text"] = message_text or ""
         self.logs_state["message_dialog_title"] = f"{column_name} completo"
-        self.logs_message_dialog_title.value = self.logs_state["message_dialog_title"]
+        title_text = self.logs_message_dialog_title.controls[1]
+        if isinstance(title_text, ft.Text):
+            title_text.value = self.logs_state["message_dialog_title"]
         self.logs_message_dialog_body.value = self.logs_state["message_dialog_text"]
+        line_count = self.logs_state["message_dialog_text"].count("\n") + (1 if self.logs_state["message_dialog_text"] else 0)
+        char_count = len(self.logs_state["message_dialog_text"])
+        self.logs_message_dialog_meta.value = f"{line_count} lineas · {char_count} caracteres"
+
+        window = getattr(self._page, "window", None)
+        window_width = getattr(window, "width", None)
+        if isinstance(window_width, (int, float)):
+            self.logs_message_dialog_container.width = max(480, min(1100, int(window_width * 0.88)))
+
         if self.logs_message_dialog not in self._page.overlay:
             self._page.overlay.append(self.logs_message_dialog)
         self.logs_message_dialog.open = True
