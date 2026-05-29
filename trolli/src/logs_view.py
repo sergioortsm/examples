@@ -87,7 +87,22 @@ class LogsView(ft.Column):
         self.toggle_column_selector_button = ft.TextButton(
             "Mostrar",
             icon=ft.Icons.KEYBOARD_ARROW_DOWN,
-            on_click=self.toggle_column_selector,
+            on_click=lambda e: self.app.on_logs_toggle_column_selector(),
+        )
+        self.apply_columns_button = ft.ElevatedButton(
+            "Aplicar",
+            icon=ft.Icons.CHECK,
+            on_click=lambda e: self.app.on_logs_apply_columns(),
+            disabled=True,
+        )
+        self.apply_columns_status = ft.Row(
+            [
+                ft.ProgressRing(width=14, height=14, stroke_width=2),
+                ft.Text("Aplicando...", size=12, color=ft.Colors.BLUE_GREY_700),
+            ],
+            spacing=6,
+            visible=False,
+            vertical_alignment=ft.CrossAxisAlignment.CENTER,
         )
 
         self.table_content_container = ft.Container(expand=True)
@@ -142,8 +157,12 @@ class LogsView(ft.Column):
                             [
                                 ft.Text("Columnas visibles", size=16, weight=ft.FontWeight.W_600),
                                 self.toggle_column_selector_button,
+                                self.apply_columns_button,
+                                self.apply_columns_status,
                             ],
-                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                            alignment=ft.MainAxisAlignment.START,
+                            spacing=12,
+                            wrap=True,
                         ),
                         self.column_selector_panel,
                     ],
@@ -212,26 +231,40 @@ class LogsView(ft.Column):
 
     def _render_column_selector(self, state: dict):
         columns = state.get("columns", [])
-        visible_columns = set(state.get("visible_columns", []))
+        pending_list = list(state.get("visible_columns_pending", state.get("visible_columns", [])))
+        pending_columns = set(pending_list)
+        applied_columns = list(state.get("visible_columns", []))
+        self.column_selector_visible = bool(state.get("column_selector_expanded", False))
+        is_applying = bool(state.get("is_applying_columns", False))
+        is_busy = bool(state.get("is_loading", False)) or is_applying
 
         self.column_selector.controls = [
             ft.Checkbox(
                 label=column,
-                value=column in visible_columns,
+                value=column in pending_columns,
+                disabled=is_busy,
                 on_change=lambda e, col=column: self.app.on_logs_toggle_column(col, bool(e.control.value)),
             )
             for column in columns
         ]
 
         has_columns = len(columns) > 0
-        self.toggle_column_selector_button.disabled = not has_columns
+        self.toggle_column_selector_button.disabled = (not has_columns) or is_busy
+        self.apply_columns_button.disabled = (not has_columns) or is_busy or (pending_list == applied_columns)
+        self.apply_columns_status.visible = is_applying
         if not has_columns:
             self.column_selector_visible = False
         self._sync_column_selector_visibility()
 
-    def toggle_column_selector(self, e):
-        self.column_selector_visible = not self.column_selector_visible
-        self._sync_column_selector_visibility()
+    def refresh_column_selector(self, state: dict):
+        # Refresco ligero para evitar reconstruir la tabla completa en cada checkbox.
+        self._render_column_selector(state)
+        if getattr(self, "page", None) is not None:
+            self.update()
+
+    def refresh_table_only(self, state: dict):
+        # Refresco acotado del area de tabla para evitar re-render global innecesario.
+        self._render_table(state)
         if getattr(self, "page", None) is not None:
             self.update()
 

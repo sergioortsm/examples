@@ -22,6 +22,7 @@
         ".\\scripts\\update-flet-env.ps1": true,
         "Set-Content": true,
         "name,": true,
-        "obj": true
+        "obj": true,
+        ".\\.venv\\Scripts\\python.exe": true
     }
 }

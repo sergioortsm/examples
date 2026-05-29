@@ -32,8 +32,11 @@ class TrelloApp(AppLayout):
             "file_path": "",
             "file_label": "Sin archivo cargado",
             "is_loading": False,
+            "is_applying_columns": False,
             "columns": [],
             "visible_columns": [],
+            "visible_columns_pending": [],
+            "column_selector_expanded": False,
             "level_options": ["All"],
             "search_text": "",
             "level_filter": "All",
@@ -82,11 +85,16 @@ class TrelloApp(AppLayout):
         self._page.services.append(self.file_picker)
         self.logs_message_dialog_title = ft.Text("")
         self.logs_message_dialog_body = ft.Text("", selectable=True)
+        self.logs_message_dialog_content = ft.Column(
+            [self.logs_message_dialog_body],
+            scroll=ft.ScrollMode.AUTO,
+            expand=True,
+        )
         self.logs_message_dialog: ft.AlertDialog = ft.AlertDialog(
             modal=True,
             title=self.logs_message_dialog_title,
             content=ft.Container(
-                content=self.logs_message_dialog_body,
+                content=self.logs_message_dialog_content,
                 width=800,
                 height=360,
                 padding=ft.padding.Padding(left=8, top=8, right=8, bottom=8),
@@ -171,6 +179,7 @@ class TrelloApp(AppLayout):
 
         if not isinstance(self.logs_state.get("visible_columns"), list):
             self.logs_state["visible_columns"] = []
+        self.logs_state["visible_columns_pending"] = list(self.logs_state.get("visible_columns", []))
 
         try:
             self.logs_state["page_size"] = int(self.logs_state.get("page_size", 100))
@@ -244,6 +253,8 @@ class TrelloApp(AppLayout):
                         "file_label": f"Archivo: {Path(file_path).name}",
                         "columns": [],
                         "visible_columns": [],
+                        "visible_columns_pending": [],
+                        "column_selector_expanded": False,
                         "level_options": ["All"],
                         "current_page": 1,
                         "total_pages": 1,
@@ -260,6 +271,11 @@ class TrelloApp(AppLayout):
             if not valid_visible:
                 valid_visible = list(result.columns)
 
+            pending_columns = self.logs_state.get("visible_columns_pending", [])
+            valid_pending = [c for c in pending_columns if c in result.columns]
+            if not valid_pending:
+                valid_pending = list(valid_visible)
+
             sort_by = self.logs_state.get("sort_by")
             if sort_by not in result.columns:
                 sort_by = result.columns[0] if result.columns else None
@@ -275,6 +291,8 @@ class TrelloApp(AppLayout):
                     "file_label": f"Archivo: {Path(file_path).name}",
                     "columns": result.columns,
                     "visible_columns": valid_visible,
+                    "visible_columns_pending": valid_pending,
+                    "column_selector_expanded": False,
                     "level_options": level_options,
                     "sort_by": sort_by,
                     "level_filter": level_filter,
@@ -345,17 +363,39 @@ class TrelloApp(AppLayout):
                 pass
             self._page.update()
             try:
-                self._refresh_logs_view_core()
-            finally:
-                self.logs_state["is_loading"] = False
+                asyncio.get_running_loop().create_task(self._refresh_logs_view_deferred())
+            except RuntimeError:
+                # Fallback para contextos sin loop async.
                 try:
-                    self.logs_view.render(self.logs_state)
-                except RuntimeError:
-                    pass
-                self._page.update()
+                    self._refresh_logs_view_core()
+                finally:
+                    self.logs_state["is_loading"] = False
+                    try:
+                        self.logs_view.render(self.logs_state)
+                    except RuntimeError:
+                        pass
+                    self._page.update()
             return
 
         self._refresh_logs_view_core()
+
+    async def _refresh_logs_view_deferred(self, min_loading_seconds: float = 0.15):
+        # Cede un ciclo para que Flet pinte el overlay antes del trabajo de filtrado/orden/paginacion.
+        loop = asyncio.get_running_loop()
+        started = loop.time()
+        await asyncio.sleep(0)
+        try:
+            self._refresh_logs_view_core()
+        finally:
+            remaining = min_loading_seconds - (loop.time() - started)
+            if remaining > 0:
+                await asyncio.sleep(remaining)
+            self.logs_state["is_loading"] = False
+            try:
+                self.logs_view.render(self.logs_state)
+            except RuntimeError:
+                pass
+            self._page.update()
 
     def on_logs_search_change(self, value: str):
         self.logs_state["search_text"] = value or ""
@@ -397,7 +437,7 @@ class TrelloApp(AppLayout):
         self.refresh_logs_view()
 
     def on_logs_toggle_column(self, column_name: str, is_visible: bool):
-        current = list(self.logs_state.get("visible_columns", []))
+        current = list(self.logs_state.get("visible_columns_pending", []))
         if is_visible and column_name not in current:
             current.append(column_name)
         if not is_visible and column_name in current:
@@ -406,8 +446,70 @@ class TrelloApp(AppLayout):
         if not current and self.logs_state["columns"]:
             current = [self.logs_state["columns"][0]]
 
-        self.logs_state["visible_columns"] = current
-        self.refresh_logs_view()
+        self.logs_state["visible_columns_pending"] = current
+        try:
+            self.logs_view.refresh_column_selector(self.logs_state)
+        except RuntimeError:
+            pass
+
+    def on_logs_toggle_column_selector(self):
+        if not self.logs_state.get("columns"):
+            return
+        if bool(self.logs_state.get("is_loading", False)) or bool(self.logs_state.get("is_applying_columns", False)):
+            return
+
+        current = bool(self.logs_state.get("column_selector_expanded", False))
+        self.logs_state["column_selector_expanded"] = not current
+        try:
+            self.logs_view.refresh_column_selector(self.logs_state)
+        except RuntimeError:
+            pass
+
+    def on_logs_apply_columns(self):
+        columns = list(self.logs_state.get("columns", []))
+        if not columns:
+            return
+        if bool(self.logs_state.get("is_applying_columns", False)):
+            return
+
+        pending = [c for c in self.logs_state.get("visible_columns_pending", []) if c in columns]
+        if not pending:
+            pending = [columns[0]]
+
+        self.logs_state["visible_columns_pending"] = pending
+        self.logs_state["is_applying_columns"] = True
+
+        try:
+            self.logs_view.refresh_column_selector(self.logs_state)
+        except RuntimeError:
+            pass
+        self._page.update()
+
+        try:
+            asyncio.get_running_loop().create_task(self._apply_columns_deferred(list(pending)))
+        except RuntimeError:
+            self._apply_columns_sync(list(pending))
+
+    async def _apply_columns_deferred(self, pending: list[str]):
+        # Cede el control para que Flet pinte el estado "Aplicando..." antes del trabajo de UI.
+        await asyncio.sleep(0)
+        self._apply_columns_sync(pending)
+
+    def _apply_columns_sync(self, pending: list[str]):
+        try:
+            self.logs_state["visible_columns"] = list(pending)
+            # Cambiar columnas visibles no altera filtros, orden ni pagina.
+            # Evitamos recomputo pesado y solo repintamos la tabla actual.
+            self._persist_logs_preferences()
+            self.logs_view.refresh_table_only(self.logs_state)
+        finally:
+            self.logs_state["is_applying_columns"] = False
+            # Colapsar al finalizar para que el usuario vea el estado "Aplicando..." mientras corre.
+            self.logs_state["column_selector_expanded"] = False
+            try:
+                self.logs_view.refresh_column_selector(self.logs_state)
+            except RuntimeError:
+                pass
 
     def on_logs_export_click(self):
         if not self.logs_state.get("file_path"):
