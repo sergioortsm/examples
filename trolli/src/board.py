@@ -8,7 +8,7 @@ class Board(ft.Container):
     id_counter = itertools.count()
 
     def __init__(self, app, store: DataStore, name: str, page: ft.Page):
-        self.page: ft.Page = page
+        self._page: ft.Page = page
         self.board_id = next(Board.id_counter)
         self.store: DataStore = store
         self.app = app
@@ -19,7 +19,7 @@ class Board(ft.Container):
         self.sidebar_width = 250
         self.chrome_width = 60        
         self.add_list_button = ft.FloatingActionButton(
-            icon=ft.Icons.ADD, text="add a list", height=30, on_click=self.create_list
+            icon=ft.Icons.ADD, height=30, on_click=self.create_list, tooltip="add a list"
         )
 
         self.board_lists = ft.Row(
@@ -28,8 +28,8 @@ class Board(ft.Container):
             scroll=ft.ScrollMode.AUTO,
             spacing=10,
             expand=True,
-            width=self._get_available_width(True, self.app.page.width),
-            height=(self.app.page.height - 95),
+            width=self._get_available_width(True, self.app._page.width),
+            height=(self.app._page.height - 95),
         )
         for l in self.store.get_lists_by_board(self.board_id):
             self.add_list(l)
@@ -37,9 +37,9 @@ class Board(ft.Container):
         super().__init__(
             content=self.board_lists,
             data=self,
-            margin=ft.margin.all(0),
-            padding=ft.padding.only(top=10, right=0),
-            height=self.app.page.height,
+            margin=ft.margin.Margin(left=0, top=0, right=0, bottom=0),
+            padding=ft.padding.Padding(top=10, right=0),
+            height=self.app._page.height,
             expand=True,
         )
         self._apply_column_widths()
@@ -64,7 +64,7 @@ class Board(ft.Container):
         if list_count == 0:
             return self.default_column_width
 
-        page_width = self.app.page.width if self.app.page else 1200
+        page_width = self.app._page.width if self.app._page else 1200
         available_width = self.board_lists.width or self._get_available_width(
             True, page_width
         )
@@ -88,7 +88,7 @@ class Board(ft.Container):
 
     def _apply_column_widths(self):
         nav_visible = getattr(getattr(self.app, "sidebar", None), "visible", True)
-        page_width = self.app.page.width if self.app.page else 1200
+        page_width = self.app._page.width if self.app._page else 1200
         self.board_lists.width = self._get_available_width(nav_visible, page_width)
         column_width = self._calculate_column_width()
         for board_list in self._get_lists():
@@ -120,7 +120,7 @@ class Board(ft.Container):
             color_options.data = e.control.data
             for k, v in option_dict.items():
                 if k == e.control.data:
-                    v.border = ft.border.all(3, ft.Colors.BLACK26)
+                    v.border = ft.Border.all(3, ft.Colors.BLACK26)
                 else:
                     v.border = None
             dialog.content.update()
@@ -139,18 +139,18 @@ class Board(ft.Container):
                     self,
                     self.store,
                     dialog_text.value,
-                    self.page,
+                    self._page,
                     color=color_options.data,
                 )
                 self.add_list(new_list)
-            self.page.close(dialog)
+            self._page.close(dialog)
 
         def textfield_change(e):
             if dialog_text.value == "":
                 create_button.disabled = True
             else:
                 create_button.disabled = False
-            self.page.update()
+            self._page.update()
 
         dialog_text = ft.TextField(
             label="New List Name", on_submit=close_dlg, on_change=textfield_change
@@ -163,7 +163,8 @@ class Board(ft.Container):
             content=ft.Column(
                 [
                     ft.Container(
-                        content=dialog_text, padding=ft.padding.symmetric(horizontal=5)
+                        content=dialog_text,
+                        padding=ft.padding.Padding(left=5, right=5),
                     ),
                     color_options,
                     ft.Row(
@@ -179,28 +180,28 @@ class Board(ft.Container):
             ),
             on_dismiss=lambda e: print("Modal dialog dismissed!"),
         )
-        self.page.open(dialog)
+        self._page.open(dialog)
         dialog_text.focus()
 
     def remove_list(self, list: BoardList, e):
         self.board_lists.controls.remove(list)
         self.store.remove_list(self.board_id, list.board_list_id)
         self._apply_column_widths()
-        self.page.update()
+        self._page.update()
 
     def add_list(self, list):
         self.board_lists.controls.insert(-1, list)
         self.store.add_list(self.board_id, list)
         self._apply_column_widths()
-        self.page.update()
+        self._page.update()
 
     def color_option_creator(self, color: str):
         return ft.Container(
             bgcolor=color,
-            border_radius=ft.border_radius.all(50),
+            border_radius=ft.BorderRadius(50, 50, 50, 50),
             height=10,
             width=10,
-            padding=ft.padding.all(5),
-            alignment=ft.alignment.center,
+            padding=ft.padding.Padding(left=5, top=5, right=5, bottom=5),
+            alignment=ft.Alignment(x=0, y=0),
             data=color,
         )

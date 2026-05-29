@@ -10,19 +10,16 @@ class Sidebar(ft.Container):
         self.nav_rail_visible = True
         self.top_nav_items = [
             ft.NavigationRailDestination(
-                label_content=ft.Text("Boards"),
                 label="Boards",
                 icon=ft.Icons.BOOK_OUTLINED,
                 selected_icon=ft.Icons.BOOK_OUTLINED,
             ),
             ft.NavigationRailDestination(
-                label_content=ft.Text("Members"),
                 label="Members",
                 icon=ft.Icons.PERSON,
                 selected_icon=ft.Icons.PERSON,
             ),
             ft.NavigationRailDestination(
-                label_content=ft.Text("Logs"),
                 label="Logs",
                 icon=ft.Icons.DESCRIPTION_OUTLINED,
                 selected_icon=ft.Icons.DESCRIPTION,
@@ -61,26 +58,26 @@ class Sidebar(ft.Container):
                     # divider
                     ft.Container(
                         bgcolor=ft.Colors.BLACK26,
-                        border_radius=ft.border_radius.all(30),
+                        border_radius=ft.BorderRadius(30, 30, 30, 30),
                         height=1,
-                        alignment=ft.alignment.center_right,
+                        alignment=ft.Alignment(x=1, y=0),
                         width=220,
                     ),
                     self.top_nav_rail,
                     # divider
                     ft.Container(
                         bgcolor=ft.Colors.BLACK26,
-                        border_radius=ft.border_radius.all(30),
+                        border_radius=ft.BorderRadius(30, 30, 30, 30),
                         height=1,
-                        alignment=ft.alignment.center_right,
+                        alignment=ft.Alignment(x=1, y=0),
                         width=220,
                     ),
                     self.bottom_nav_rail,
                 ],
                 tight=True,
             ),
-            padding=ft.padding.all(15),
-            margin=ft.margin.all(0),
+            padding=ft.padding.Padding(left=15, top=15, right=15, bottom=15),
+            margin=ft.margin.Margin(left=0, top=0, right=0, bottom=0),
             width=250,
             bgcolor=ft.Colors.BLUE_GREY,
             visible=self.nav_rail_visible,
@@ -93,19 +90,6 @@ class Sidebar(ft.Container):
             b = boards[i]
             self.bottom_nav_rail.destinations.append(
                 ft.NavigationRailDestination(
-                    label_content=ft.TextField(
-                        value=b.name,
-                        hint_text=b.name,
-                        text_size=12,
-                        read_only=True,
-                        on_focus=self.board_name_focus,
-                        on_blur=self.board_name_blur,
-                        border=ft.InputBorder.NONE,
-                        height=50,
-                        width=150,
-                        text_align=ft.TextAlign.START,
-                        data=i,
-                    ),
                     label=b.name,
                     selected_icon=ft.Icons.CHEVRON_RIGHT_ROUNDED,
                     icon=ft.Icons.CHEVRON_RIGHT_OUTLINED,
@@ -135,16 +119,14 @@ class Sidebar(ft.Container):
         self.bottom_nav_rail.selected_index = None
         self.top_nav_rail.selected_index = index
         if index == 0:
-            self.page.route = "/boards"
+            self.page.navigate("/boards")
         elif index == 1:
-            self.page.route = "/members"
+            self.page.navigate("/members")
         elif index == 2:
-            self.page.route = "/logs"
-        self.page.update()
+            self.page.navigate("/logs")
 
     def bottom_nav_change(self, e):
         index = e if (type(e) == int) else e.control.selected_index
         self.top_nav_rail.selected_index = None
         self.bottom_nav_rail.selected_index = index
-        self.page.route = f"/board/{index}"
-        self.page.update()
+        self.page.navigate(f"/board/{index}")

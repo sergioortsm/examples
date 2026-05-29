@@ -21,7 +21,7 @@ class LogsView(ft.Column):
         self.app = app
         self.column_selector_visible = False
 
-        self.title_text = ft.Text("SharePoint ULS Logs", theme_style=ft.TextThemeStyle.HEADLINE_MEDIUM)
+        self.title_text = ft.Text("SharePoint ULS Logs", size=28, weight=ft.FontWeight.W_600)
         self.file_text = ft.Text("Sin archivo cargado", color=ft.Colors.BLACK54)
         self.status_text = ft.Text("", color=ft.Colors.RED_600)
 
@@ -36,13 +36,13 @@ class LogsView(ft.Column):
             label="Nivel",
             options=[ft.dropdown.Option("All")],
             value="All",
-            on_change=lambda e: self.app.on_logs_level_change(e.control.value),
+            on_select=lambda e: self.app.on_logs_level_change(e.control.value),
         )
         self.sort_dropdown = ft.Dropdown(
             width=240,
             label="Ordenar por",
             options=[],
-            on_change=lambda e: self.app.on_logs_sort_column_change(e.control.value),
+            on_select=lambda e: self.app.on_logs_sort_column_change(e.control.value),
         )
         self.sort_direction_button = ft.IconButton(
             icon=ft.Icons.ARROW_DOWNWARD,
@@ -55,7 +55,7 @@ class LogsView(ft.Column):
             label="Filas por pagina",
             value="100",
             options=[ft.dropdown.Option("50"), ft.dropdown.Option("100"), ft.dropdown.Option("250")],
-            on_change=lambda e: self.app.on_logs_page_size_change(e.control.value),
+            on_select=lambda e: self.app.on_logs_page_size_change(e.control.value),
         )
 
         self.prev_page_button = ft.IconButton(
@@ -81,7 +81,7 @@ class LogsView(ft.Column):
             content=self.column_selector,
             visible=self.column_selector_visible,
             height=220,
-            padding=ft.padding.only(top=4),
+            padding=ft.padding.Padding(top=4),
         )
         self.column_selector_panel = self.column_selector_container
         self.toggle_column_selector_button = ft.TextButton(
@@ -94,8 +94,8 @@ class LogsView(ft.Column):
         self.loading_overlay = ft.Container(
             visible=False,
             expand=True,
-            bgcolor=ft.Colors.with_opacity(0.28, ft.Colors.BLACK),
-            alignment=ft.alignment.center,
+            bgcolor="#47000000",
+            alignment=ft.Alignment(x=0, y=0),
             content=ft.Column(
                 [
                     ft.ProgressRing(width=44, height=44, stroke_width=4, color=ft.Colors.WHITE),
@@ -118,7 +118,7 @@ class LogsView(ft.Column):
             ft.Row(
                 [
                     ft.Column([self.title_text, self.file_text], spacing=2, expand=True),
-                    ft.ElevatedButton("Abrir .log", icon=ft.Icons.FOLDER_OPEN, on_click=lambda e: self.app.open_log_file_dialog()),
+                    ft.ElevatedButton("Abrir .log", icon=ft.Icons.FOLDER_OPEN, on_click=self.app.open_log_file_dialog),
                     ft.ElevatedButton("Exportar CSV", icon=ft.Icons.DOWNLOAD, on_click=lambda e: self.app.on_logs_export_click()),
                 ],
                 alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
@@ -140,7 +140,7 @@ class LogsView(ft.Column):
                     [
                         ft.Row(
                             [
-                                ft.Text("Columnas visibles", weight=ft.FontWeight.W_600),
+                                ft.Text("Columnas visibles", size=16, weight=ft.FontWeight.W_600),
                                 self.toggle_column_selector_button,
                             ],
                             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
@@ -149,9 +149,9 @@ class LogsView(ft.Column):
                     ],
                     spacing=6,
                 ),
-                padding=ft.padding.all(8),
-                bgcolor=ft.Colors.WHITE54,
-                border_radius=ft.border_radius.all(6),
+                padding=ft.padding.Padding(left=8, top=8, right=8, bottom=8),
+                bgcolor="#8AFFFFFF",
+                border_radius=ft.BorderRadius(6, 6, 6, 6),
             ),
             self.table_container,
             ft.Row(
@@ -253,14 +253,14 @@ class LogsView(ft.Column):
         if not visible_columns:
             self.table_content_container.content = ft.Container(
                 content=ft.Text("No hay columnas visibles para mostrar."),
-                padding=ft.padding.all(10),
+                padding=ft.padding.Padding(left=10, top=10, right=10, bottom=10),
             )
             return
 
         if not page_rows:
             self.table_content_container.content = ft.Container(
                 content=ft.Text("No hay filas para los filtros actuales."),
-                padding=ft.padding.all(10),
+                padding=ft.padding.Padding(left=10, top=10, right=10, bottom=10),
             )
             return
 
@@ -293,7 +293,7 @@ class LogsView(ft.Column):
             [
                 ft.Container(
                     content=ft.Row([data_table], scroll=ft.ScrollMode.AUTO),
-                    margin=ft.margin.only(top=8, right=8, bottom=8, left=8),
+                    margin=ft.margin.Margin(top=8, right=8, bottom=8, left=8),
                 )
             ],
             expand=True,
@@ -305,21 +305,21 @@ class LogsView(ft.Column):
         is_message = self._is_message_column(column_name)
         max_lines = 3 if is_message else 2
         if is_message:
-            content = ft.Container(
-                content=ft.Text(
-                    value,
-                    max_lines=2,
-                    overflow=ft.TextOverflow.ELLIPSIS,
-                    style=ft.TextStyle(decoration=ft.TextDecoration.UNDERLINE),
-                    no_wrap=False,
-                ),
-                width=self._message_column_width(),
-                padding=ft.padding.only(right=4),
-            )
-            return ft.DataCell(
-                content,
+            content = ft.GestureDetector(
+                mouse_cursor=ft.MouseCursor.CLICK,
                 on_tap=lambda e, text=value, col=column_name: self.app.on_logs_open_message_detail(text, col),
+                content=ft.Container(
+                    content=ft.Text(
+                        value,
+                        max_lines=2,
+                        overflow=ft.TextOverflow.ELLIPSIS,
+                        no_wrap=False,
+                    ),
+                    width=self._message_column_width(),
+                    padding=ft.padding.Padding(right=4),
+                ),
             )
+            return ft.DataCell(content)
         else:
             content = ft.Container(
                 content=ft.Text(

@@ -1,3 +1,7 @@
+from importlib.metadata import PackageNotFoundError, version
+import asyncio
+import inspect
+
 import flet as ft
 from datetime import datetime
 from pathlib import Path
@@ -16,10 +20,12 @@ from log_service import (
 
 class TrelloApp(AppLayout):
     def __init__(self, page: ft.Page, store: DataStore):
-        self.page: ft.Page = page
+        self._page: ft.Page = page
         self.store: DataStore = store
         self.user: str | None = None
-        self.page.on_route_change = self.route_change
+        self._fallback_storage: dict[str, object] = {}
+        self._page.on_route_change = self.route_change
+        self._page.on_error = lambda e: print(f"FLET ERROR: {getattr(e, 'data', e)}")
         self.boards = self.store.get_boards()
         self.logs_rows: list[dict[str, str]] = []
         self.logs_state = {
@@ -43,12 +49,12 @@ class TrelloApp(AppLayout):
             "message_dialog_text": "",
             "message_dialog_title": "Detalle de Message",
         }
-        self.login_profile_button = ft.PopupMenuItem(text="Log in", on_click=self.login)
+        self.login_profile_button = ft.PopupMenuItem(content="Log in", on_click=self.login)
         self.appbar_items = [
             self.login_profile_button,
             ft.PopupMenuItem(),  # divider
-            ft.PopupMenuItem(text="Open SharePoint LOG", on_click=self.open_log_file_dialog),
-            ft.PopupMenuItem(text="Settings"),
+            ft.PopupMenuItem(content="Open SharePoint LOG", on_click=self.open_log_file_dialog),
+            ft.PopupMenuItem(content="Settings"),
         ]
         self.appbar = ft.AppBar(
             leading=ft.Icon(ft.Icons.GRID_GOLDENRATIO_ROUNDED),
@@ -65,13 +71,15 @@ class TrelloApp(AppLayout):
             actions=[
                 ft.Container(
                     content=ft.PopupMenuButton(items=self.appbar_items),
-                    margin=ft.margin.only(left=50, right=25),
+                    margin=ft.margin.Margin(left=50, right=25),
                 )
             ],
         )
-        self.page.appbar = self.appbar
-        self.file_picker = ft.FilePicker(on_result=self.on_log_file_selected)
-        self.page.overlay.append(self.file_picker)
+        self._page.appbar = self.appbar
+        self.file_picker = ft.FilePicker()
+        if hasattr(self.file_picker, "on_result"):
+            self.file_picker.on_result = self.on_log_file_selected
+        self._page.services.append(self.file_picker)
         self.logs_message_dialog_title = ft.Text("")
         self.logs_message_dialog_body = ft.Text("", selectable=True)
         self.logs_message_dialog: ft.AlertDialog = ft.AlertDialog(
@@ -81,7 +89,7 @@ class TrelloApp(AppLayout):
                 content=self.logs_message_dialog_body,
                 width=800,
                 height=360,
-                padding=ft.padding.all(8),
+                padding=ft.padding.Padding(left=8, top=8, right=8, bottom=8),
             ),
             actions=[
                 ft.TextButton("Copiar", on_click=self.on_logs_copy_message_detail),
@@ -92,32 +100,61 @@ class TrelloApp(AppLayout):
         )
         self._restore_logs_preferences()
         self.logs_view = LogsView(self)
-        self.logs_view.render(self.logs_state)
 
-        self.page.update()
+        self._page.update()
         super().__init__(
             self,
-            self.page,
+            self._page,
             self.store,
             tight=False,
             expand=True,
             vertical_alignment=ft.CrossAxisAlignment.START,
         )
 
+    def _storage_get(self, key: str, default=None):
+        # Evita APIs deprecadas y soporta storages sync/async segun version de Flet.
+        for attr_name in ("client_storage", "session"):
+            storage = getattr(self._page, attr_name, None)
+            if storage and hasattr(storage, "get"):
+                try:
+                    value = storage.get(key)
+                    if inspect.isawaitable(value):
+                        # Algunas versiones devuelven corrutinas; evitamos propagar ese valor.
+                        continue
+                    return default if value is None else value
+                except Exception:
+                    continue
+        return self._fallback_storage.get(key, default)
+
+    def _storage_set(self, key: str, value):
+        for attr_name in ("client_storage", "session"):
+            storage = getattr(self._page, attr_name, None)
+            if storage and hasattr(storage, "set"):
+                try:
+                    result = storage.set(key, value)
+                    if inspect.isawaitable(result):
+                        try:
+                            asyncio.get_running_loop().create_task(result)
+                        except RuntimeError:
+                            continue
+                    return
+                except Exception:
+                    continue
+        self._fallback_storage[key] = value
+
     def initialize(self):
-        self.page.views.append(
-            ft.View(
-                "/",
-                [self.appbar, self],
-                padding=ft.padding.all(0),
-                bgcolor=ft.Colors.BLUE_GREY_200,
-            )
-        )
-        self.page.update()
+        if self not in self._page.controls:
+            self._page.add(self)
+        self._page.update()
         # create an initial board for demonstration if no boards
         if len(self.boards) == 0:
             self.create_new_board("My First Board")
-        self.page.go("/")
+        # Render de logs_view solo si ya está en el árbol de controles
+        try:
+            self.logs_view.render(self.logs_state)
+        except RuntimeError:
+            pass
+        self.set_all_boards_view()
 
     def _restore_logs_preferences(self):
         defaults = {
@@ -129,46 +166,76 @@ class TrelloApp(AppLayout):
             "visible_columns": [],
         }
         for key, default_value in defaults.items():
-            try:
-                stored_value = self.page.client_storage.get(f"logs_{key}")
-            except Exception:
-                stored_value = None
+            stored_value = self._storage_get(f"logs_{key}", None)
             self.logs_state[key] = default_value if stored_value is None else stored_value
 
+        if not isinstance(self.logs_state.get("visible_columns"), list):
+            self.logs_state["visible_columns"] = []
+
+        try:
+            self.logs_state["page_size"] = int(self.logs_state.get("page_size", 100))
+        except (TypeError, ValueError):
+            self.logs_state["page_size"] = 100
+
+        self.logs_state["sort_desc"] = bool(self.logs_state.get("sort_desc", False))
+
     def _persist_logs_preferences(self):
-        self.page.client_storage.set("logs_search_text", self.logs_state["search_text"])
-        self.page.client_storage.set("logs_level_filter", self.logs_state["level_filter"])
-        self.page.client_storage.set("logs_sort_by", self.logs_state["sort_by"])
-        self.page.client_storage.set("logs_sort_desc", self.logs_state["sort_desc"])
-        self.page.client_storage.set("logs_page_size", self.logs_state["page_size"])
-        self.page.client_storage.set("logs_visible_columns", self.logs_state["visible_columns"])
+        self._storage_set("logs_search_text", self.logs_state["search_text"])
+        self._storage_set("logs_level_filter", self.logs_state["level_filter"])
+        self._storage_set("logs_sort_by", self.logs_state["sort_by"])
+        self._storage_set("logs_sort_desc", self.logs_state["sort_desc"])
+        self._storage_set("logs_page_size", self.logs_state["page_size"])
+        self._storage_set("logs_visible_columns", self.logs_state["visible_columns"])
 
     def open_log_file_dialog(self, e=None):
-        self.file_picker.pick_files(
-            allow_multiple=False,
-            allowed_extensions=["log"],
-            dialog_title="Selecciona un archivo .log de SharePoint",
-        )
+        print("[LOGS] open_log_file_dialog llamado")
+        async def _pick_and_handle_file():
+            files = await self.file_picker.pick_files(
+                allow_multiple=False,
+                file_type=ft.FilePickerFileType.CUSTOM,
+                allowed_extensions=["log"],
+                dialog_title="Selecciona un archivo .log de SharePoint",
+            )
+            self._handle_selected_log_files(files)
 
-    def on_log_file_selected(self, e: ft.FilePickerResultEvent):
-        if not e.files:
+        try:
+            asyncio.get_running_loop().create_task(_pick_and_handle_file())
+        except RuntimeError:
+            pass
+
+    def _handle_selected_log_files(self, files):
+        print(f"[LOGS] _handle_selected_log_files: files={files}")
+        if not files:
+            print("[LOGS] _handle_selected_log_files: sin archivos, saliendo")
             return
-        file_path = e.files[0].path
+
+        file_path = getattr(files[0], "path", None)
+        print(f"[LOGS] _handle_selected_log_files: file_path={file_path!r}")
         if not file_path:
+            print("[LOGS] _handle_selected_log_files: ruta vacía, saliendo")
             return
+
         self.load_log_file(file_path)
-        if self.page.route != "/logs":
-            self.page.go("/logs")
+        if self._page.route != "/logs":
+            self._page.navigate("/logs")
         else:
             self.set_logs_view()
 
+    def on_log_file_selected(self, e):
+        self._handle_selected_log_files(getattr(e, "files", None))
+
     def load_log_file(self, file_path: str):
+        print(f"[LOGS] load_log_file: iniciando con file_path={file_path!r}")
         self.logs_state["is_loading"] = True
-        self.logs_view.render(self.logs_state)
-        self.page.update()
+        try:
+            self.logs_view.render(self.logs_state)
+        except RuntimeError:
+            pass
+        self._page.update()
 
         try:
             result = load_sharepoint_log(file_path)
+            print(f"[LOGS] load_sharepoint_log: error={result.error!r} rows={len(result.rows)} columns={result.columns}")
             if result.error:
                 self.logs_rows = []
                 self.logs_state.update(
@@ -219,8 +286,11 @@ class TrelloApp(AppLayout):
             self.refresh_logs_view()
         finally:
             self.logs_state["is_loading"] = False
-            self.logs_view.render(self.logs_state)
-            self.page.update()
+            try:
+                self.logs_view.render(self.logs_state)
+            except RuntimeError:
+                pass
+            self._page.update()
 
     def _refresh_logs_view_core(self):
         if not self.logs_state.get("columns"):
@@ -232,8 +302,11 @@ class TrelloApp(AppLayout):
                     "current_page": 1,
                 }
             )
-            self.logs_view.render(self.logs_state)
-            self.page.update()
+            try:
+                self.logs_view.render(self.logs_state)
+            except RuntimeError:
+                pass
+            self._page.update()
             return
 
         page_rows, filtered_total, total_pages, safe_page = apply_filters_sort_paginate(
@@ -256,21 +329,30 @@ class TrelloApp(AppLayout):
             }
         )
         self._persist_logs_preferences()
-        self.logs_view.render(self.logs_state)
-        self.page.update()
+        try:
+            self.logs_view.render(self.logs_state)
+        except RuntimeError:
+            pass
+        self._page.update()
 
     def refresh_logs_view(self, show_loading: bool = True):
         # Centraliza el overlay para cualquier accion que refresque el listado.
         if show_loading and not bool(self.logs_state.get("is_loading", False)):
             self.logs_state["is_loading"] = True
-            self.logs_view.render(self.logs_state)
-            self.page.update()
+            try:
+                self.logs_view.render(self.logs_state)
+            except RuntimeError:
+                pass
+            self._page.update()
             try:
                 self._refresh_logs_view_core()
             finally:
                 self.logs_state["is_loading"] = False
-                self.logs_view.render(self.logs_state)
-                self.page.update()
+                try:
+                    self.logs_view.render(self.logs_state)
+                except RuntimeError:
+                    pass
+                self._page.update()
             return
 
         self._refresh_logs_view_core()
@@ -329,14 +411,14 @@ class TrelloApp(AppLayout):
 
     def on_logs_export_click(self):
         if not self.logs_state.get("file_path"):
-            self.page.open(ft.SnackBar(ft.Text("Carga un archivo antes de exportar.")))
-            self.page.update()
+            self._page.open(ft.SnackBar(ft.Text("Carga un archivo antes de exportar.")))
+            self._page.update()
             return
 
         visible_columns = self.logs_state.get("visible_columns", [])
         if not visible_columns:
-            self.page.open(ft.SnackBar(ft.Text("No hay columnas visibles para exportar.")))
-            self.page.update()
+            self._page.open(ft.SnackBar(ft.Text("No hay columnas visibles para exportar.")))
+            self._page.update()
             return
 
         rows_to_export, _, _, _ = apply_filters_sort_paginate(
@@ -354,8 +436,8 @@ class TrelloApp(AppLayout):
         timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
         export_file = source.with_name(f"{source.stem}-filtered-{timestamp}.csv")
         output_path = export_rows_to_csv(str(export_file), visible_columns, rows_to_export)
-        self.page.open(ft.SnackBar(ft.Text(f"CSV exportado: {output_path}")))
-        self.page.update()
+        self._page.open(ft.SnackBar(ft.Text(f"CSV exportado: {output_path}")))
+        self._page.update()
 
     def on_logs_open_message_detail(self, message_text: str, column_name: str = "Message"):
         self.logs_state["message_dialog_open"] = True
@@ -363,46 +445,48 @@ class TrelloApp(AppLayout):
         self.logs_state["message_dialog_title"] = f"{column_name} completo"
         self.logs_message_dialog_title.value = self.logs_state["message_dialog_title"]
         self.logs_message_dialog_body.value = self.logs_state["message_dialog_text"]
-        self.page.open(self.logs_message_dialog)
-        self.page.update()
+        if self.logs_message_dialog not in self._page.overlay:
+            self._page.overlay.append(self.logs_message_dialog)
+        self.logs_message_dialog.open = True
+        self._page.update()
 
     def on_logs_close_message_detail(self, e=None):
         if not bool(self.logs_state.get("message_dialog_open", False)):
             return
         self.logs_state["message_dialog_open"] = False
-        self.page.close(self.logs_message_dialog)
-        self.page.update()
+        self.logs_message_dialog.open = False
+        self._page.update()
 
     def on_logs_copy_message_detail(self, e=None):
         message_text = str(self.logs_state.get("message_dialog_text", ""))
         if not message_text:
-            self.page.open(ft.SnackBar(ft.Text("No hay texto para copiar.")))
-            self.page.update()
+            self._page.open(ft.SnackBar(ft.Text("No hay texto para copiar.")))
+            self._page.update()
             return
 
-        self.page.set_clipboard(message_text)
-        self.page.open(ft.SnackBar(ft.Text("Mensaje copiado al portapapeles.")))
-        self.page.update()
+        self._page.set_clipboard(message_text)
+        self._page.open(ft.SnackBar(ft.Text("Mensaje copiado al portapapeles.")))
+        self._page.update()
 
     def login(self, e):
         def close_dlg(e):
             if user_name.value == "" or password.value == "":
                 user_name.error_text = "Please provide username"
                 password.error_text = "Please provide password"
-                self.page.update()
+                self._page.update()
                 return
             else:
                 user = User(user_name.value, password.value)
                 if user not in self.store.get_users():
                     self.store.add_user(user)
                 self.user = user_name.value
-                self.page.client_storage.set("current_user", user_name.value)
+                self._storage_set("current_user", user_name.value)
 
-            self.page.close(dialog)
+            self._page.close(dialog)
             self.appbar_items[0] = ft.PopupMenuItem(
-                text=f"{self.page.client_storage.get('current_user')}'s Profile"
+                content=f"{self._storage_get('current_user', '')}'s Profile"
             )
-            self.page.update()
+            self._page.update()
 
         user_name = ft.TextField(label="User name")
         password = ft.TextField(label="Password", password=True)
@@ -418,15 +502,15 @@ class TrelloApp(AppLayout):
             ),
             on_dismiss=lambda e: print("Modal dialog dismissed!"),
         )
-        self.page.open(dialog)
+        self._page.open(dialog)
 
     def route_change(self, e):
-        troute = ft.TemplateRoute(self.page.route)
+        troute = ft.TemplateRoute(self._page.route)
         if troute.match("/"):
-            self.page.go("/boards")
+            self.set_all_boards_view()
         elif troute.match("/board/:id"):
             if int(troute.id) >= len(self.store.get_boards()): # type: ignore
-                self.page.go("/")
+                self.set_all_boards_view()
                 return
             self.set_board_view(int(troute.id)) # type: ignore
         elif troute.match("/boards"):
@@ -436,7 +520,7 @@ class TrelloApp(AppLayout):
         elif troute.match("/logs"):
             self.set_logs_view()
             self.refresh_logs_view()
-        self.page.update()
+        self._page.update()
 
     def add_board(self, e):
         def close_dlg(e):
@@ -444,15 +528,15 @@ class TrelloApp(AppLayout):
                 type(e.control) is ft.TextField and e.control.value != ""
             ):
                 self.create_new_board(dialog_text.value)
-            self.page.close(dialog)
-            self.page.update()
+            self._page.close(dialog)
+            self._page.update()
 
         def textfield_change(e):
             if dialog_text.value == "":
                 create_button.disabled = True
             else:
                 create_button.disabled = False
-            self.page.update()
+            self._page.update()
 
         dialog_text = ft.TextField(
             label="New Board Name", on_submit=close_dlg, on_change=textfield_change
@@ -477,13 +561,13 @@ class TrelloApp(AppLayout):
             ),
             on_dismiss=lambda e: print("Modal dialog dismissed!"),
         )
-        self.page.open(dialog)
+        self._page.open(dialog)
         dialog.open = True
-        self.page.update()
+        self._page.update()
         dialog_text.focus()
 
     def create_new_board(self, board_name):
-        new_board = Board(self, self.store, board_name, self.page)
+        new_board = Board(self, self.store, board_name, self._page)
         self.store.add_board(new_board)
         self.hydrate_all_boards_view()
 
@@ -502,11 +586,14 @@ def main(page: ft.Page):
     page.fonts = {"Pacifico": "Pacifico-Regular.ttf"}
     page.bgcolor = ft.Colors.BLUE_GREY_200
     app = TrelloApp(page, InMemoryStore())
-    page.add(app)
-    page.update()
     app.initialize()
 
 
-print("flet version: ", ft.version.version) # type: ignore
+try:
+    flet_version = version("flet")
+except PackageNotFoundError:
+    flet_version = "unknown"
+
+print("flet version: ", flet_version)
 print("flet path: ", ft.__file__)
-ft.app(target=main, assets_dir="../assets")
+ft.run(main, assets_dir="../assets")

@@ -8,8 +8,8 @@ class AppLayout(ft.Row):
     def __init__(self, app, page: ft.Page, store: DataStore, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.app = app
-        self.page: ft.Page = page
-        self.page.on_resized = self.page_resize
+        self._page: ft.Page = page
+        self._page.on_resized = self.page_resize
         self.store: DataStore = store
         self.toggle_nav_rail_button = ft.IconButton(
             icon=ft.Icons.ARROW_CIRCLE_LEFT,
@@ -32,7 +32,7 @@ class AppLayout(ft.Row):
                                 theme_style=ft.TextThemeStyle.HEADLINE_MEDIUM,
                             ),
                             expand=True,
-                            padding=ft.padding.only(top=15),
+                            padding=ft.padding.Padding(top=15),
                         ),
                         ft.Container(
                             ft.TextButton(
@@ -51,7 +51,7 @@ class AppLayout(ft.Row):
                                     },
                                 ),
                             ),
-                            padding=ft.padding.only(right=50, top=15),
+                            padding=ft.padding.Padding(right=50, top=15),
                         ),
                     ]
                 ),
@@ -60,7 +60,7 @@ class AppLayout(ft.Row):
                         ft.TextField(
                             hint_text="Search all boards",
                             autofocus=False,
-                            content_padding=ft.padding.only(left=10),
+                            content_padding=ft.padding.Padding(left=10),
                             width=200,
                             height=40,
                             text_size=12,
@@ -89,40 +89,40 @@ class AppLayout(ft.Row):
             self._active_view.expand = True
         self.controls[-1] = self._active_view
         self.sidebar.sync_board_destinations()
-        self.page.update()
+        self._page.update()
 
     def set_board_view(self, i):
         self.active_view = self.store.get_boards()[i]
         self.sidebar.bottom_nav_rail.selected_index = i
         self.sidebar.top_nav_rail.selected_index = None
         self.page_resize()
-        self.page.update()
+        self._page.update()
 
     def set_all_boards_view(self):
         self.active_view = self.all_boards_view
         self.hydrate_all_boards_view()
         self.sidebar.top_nav_rail.selected_index = 0
         self.sidebar.bottom_nav_rail.selected_index = None
-        self.page.update()
+        self._page.update()
 
     def set_members_view(self):
         self.active_view = self.members_view
         self.sidebar.top_nav_rail.selected_index = 1
         self.sidebar.bottom_nav_rail.selected_index = None
-        self.page.update()
+        self._page.update()
 
     def set_logs_view(self):
         self.active_view = self.logs_view
         self.sidebar.top_nav_rail.selected_index = 2
         self.sidebar.bottom_nav_rail.selected_index = None
-        self.page.update()
+        self._page.update()
 
     def page_resize(self, e=None):
         if type(self.active_view) is Board:
             self.active_view.resize(
-                self.sidebar.visible, self.page.width, self.page.height
+                self.sidebar.visible, self._page.width, self._page.height
             )
-        self.page.update()
+        self._page.update()
 
     def hydrate_all_boards_view(self):
         self.all_boards_view.controls[-1] = ft.Row(
@@ -158,16 +158,16 @@ class AppLayout(ft.Row):
                                         ),
                                     ]
                                 ),
-                                padding=ft.padding.only(right=-10),
-                                border_radius=ft.border_radius.all(3),
+                                padding=ft.padding.Padding(right=-10),
+                                border_radius=ft.BorderRadius(3, 3, 3, 3),
                             ),
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                     ),
-                    border=ft.border.all(1, ft.Colors.BLACK38),
-                    border_radius=ft.border_radius.all(5),
+                    border=ft.Border.all(1, ft.Colors.BLACK38),
+                    border_radius=ft.BorderRadius(5, 5, 5, 5),
                     bgcolor=ft.Colors.WHITE60,
-                    padding=ft.padding.all(10),
+                    padding=ft.padding.Padding(left=10, top=10, right=10, bottom=10),
                     width=250,
                     data=b,
                 )
@@ -184,4 +184,4 @@ class AppLayout(ft.Row):
         self.sidebar.visible = not self.sidebar.visible
         self.toggle_nav_rail_button.selected = not self.toggle_nav_rail_button.selected
         self.page_resize()
-        self.page.update()
+        self._page.update()

@@ -19,7 +19,7 @@ class BoardList(ft.Container):
         page: ft.Page,
         color: str = "",
     ):
-        self.page: ft.Page = page
+        self._page: ft.Page = page
         self.board_list_id = next(BoardList.id_counter)
         self.store: DataStore = store
         self.board = board
@@ -38,7 +38,7 @@ class BoardList(ft.Container):
 
         self.end_indicator = ft.Container(
             bgcolor=ft.Colors.BLACK26,
-            border_radius=ft.border_radius.all(30),
+            border_radius=ft.BorderRadius(30, 30, 30, 30),
             height=3,
             width=self.get_item_width(),
             opacity=0.0,
@@ -50,7 +50,7 @@ class BoardList(ft.Container):
                     value=self.title,
                     width=max(120, self.get_content_width() - 80),
                     height=40,
-                    content_padding=ft.padding.only(left=10, bottom=10),
+                    content_padding=ft.padding.Padding(left=10, bottom=10),
                 ),
                 ft.TextButton(text="Save", on_click=self.save_title),
             ]
@@ -98,7 +98,7 @@ class BoardList(ft.Container):
                             ),
                         ],
                     ),
-                    padding=ft.padding.only(right=-10),
+                    padding=ft.padding.Padding(right=-10),
                 ),
             ],
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
@@ -127,10 +127,10 @@ class BoardList(ft.Container):
                 data=self.title,
             ),
             width=self.column_width,
-            border=ft.border.all(2, ft.Colors.BLACK12),
-            border_radius=ft.border_radius.all(5),
+            border=ft.Border.all(2, ft.Colors.BLACK12),
+            border_radius=ft.BorderRadius(5, 5, 5, 5),
             bgcolor=self.color if (self.color != "") else ft.Colors.BACKGROUND,
-            padding=ft.padding.only(bottom=10, right=10, left=10, top=5),
+            padding=ft.padding.Padding(bottom=10, right=10, left=10, top=5),
         )
 
         self.view = ft.DragTarget(
@@ -182,7 +182,7 @@ class BoardList(ft.Container):
             self.update()
 
     def item_drag_accept(self, e):
-        src = self.page.get_control(e.src_id)
+        src = self._page.get_control(e.src_id)
         self.add_item(src.data.item_text)
         src.data.list.remove_item(src.data)
         self.end_indicator.opacity = 0.0
@@ -198,21 +198,21 @@ class BoardList(ft.Container):
         self.update()
 
     def list_drag_accept(self, e):
-        src = self.page.get_control(e.src_id)
+        src = self._page.get_control(e.src_id)
         l = self.board.content.controls
         to_index = l.index(e.control.data)
         from_index = l.index(src.content.data)
         l[to_index], l[from_index] = l[from_index], l[to_index]
-        self.inner_list.border = ft.border.all(2, ft.Colors.BLACK12)
-        self.page.update()
+        self.inner_list.border = ft.Border.all(2, ft.Colors.BLACK12)
+        self._page.update()
 
     def list_will_drag_accept(self, e):
         if e.data == "true":
-            self.inner_list.border = ft.border.all(2, ft.Colors.BLACK)
+            self.inner_list.border = ft.Border.all(2, ft.Colors.BLACK)
         self.update()
 
     def list_drag_leave(self, e):
-        self.inner_list.border = ft.border.all(2, ft.Colors.BLACK12)
+        self.inner_list.border = ft.Border.all(2, ft.Colors.BLACK12)
         self.update()
 
     def delete_list(self, e):
@@ -260,9 +260,9 @@ class BoardList(ft.Container):
             [
                 ft.Container(
                     bgcolor=ft.Colors.BLACK26,
-                    border_radius=ft.border_radius.all(30),
+                    border_radius=ft.BorderRadius(30, 30, 30, 30),
                     height=3,
-                    alignment=ft.alignment.center_right,
+                    alignment=ft.Alignment(x=1, y=0),
                     width=self.get_item_width(),
                     opacity=0.0,
                 )
@@ -292,7 +292,7 @@ class BoardList(ft.Container):
             self.store.add_item(self.board_list_id, new_item)
             self.new_item_field.value = ""
 
-        self.page.update()
+        self._page.update()
 
     def remove_item(self, item: Item):
         controls_list = [x.controls[1] for x in self.items.controls]

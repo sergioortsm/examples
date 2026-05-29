@@ -21,7 +21,7 @@ class Item(ft.Container):
             [
                 ft.Container(
                     content=self.checkbox,
-                    border_radius=ft.border_radius.all(5),
+                    border_radius=ft.BorderRadius(5, 5, 5, 5),
                 )
             ],
             width=self.item_width,
