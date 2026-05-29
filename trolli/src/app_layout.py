@@ -20,6 +20,8 @@ class AppLayout(ft.Row):
         )
         self.sidebar = Sidebar(self, self.store)
         self.members_view = ft.Text("members view")
+        if not hasattr(self, "logs_view"):
+            self.logs_view = ft.Text("logs view")
         self.all_boards_view = ft.Column(
             [
                 ft.Row(
@@ -83,6 +85,8 @@ class AppLayout(ft.Row):
     @active_view.setter
     def active_view(self, view):
         self._active_view = view
+        if hasattr(self._active_view, "expand"):
+            self._active_view.expand = True
         self.controls[-1] = self._active_view
         self.sidebar.sync_board_destinations()
         self.page.update()
@@ -104,6 +108,12 @@ class AppLayout(ft.Row):
     def set_members_view(self):
         self.active_view = self.members_view
         self.sidebar.top_nav_rail.selected_index = 1
+        self.sidebar.bottom_nav_rail.selected_index = None
+        self.page.update()
+
+    def set_logs_view(self):
+        self.active_view = self.logs_view
+        self.sidebar.top_nav_rail.selected_index = 2
         self.sidebar.bottom_nav_rail.selected_index = None
         self.page.update()
 

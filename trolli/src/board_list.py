@@ -25,11 +25,13 @@ class BoardList(ft.Container):
         self.board = board
         self.title = title
         self.color = color
+        self.column_width = getattr(self.board, "default_column_width", 250)
         self.items = ft.Column([], tight=True, spacing=4)
         self.items.controls = self.store.get_items(self.board_list_id)
         self.new_item_field = ft.TextField(
             label="new card name",
             height=50,
+            width=self.get_content_width(),
             bgcolor=ft.Colors.WHITE,
             on_submit=self.add_item_handler,
         )
@@ -38,7 +40,7 @@ class BoardList(ft.Container):
             bgcolor=ft.Colors.BLACK26,
             border_radius=ft.border_radius.all(30),
             height=3,
-            width=200,
+            width=self.get_item_width(),
             opacity=0.0,
         )
 
@@ -46,7 +48,7 @@ class BoardList(ft.Container):
             [
                 ft.TextField(
                     value=self.title,
-                    width=150,
+                    width=max(120, self.get_content_width() - 80),
                     height=40,
                     content_padding=ft.padding.only(left=10, bottom=10),
                 ),
@@ -124,7 +126,7 @@ class BoardList(ft.Container):
                 tight=True,
                 data=self.title,
             ),
-            width=250,
+            width=self.column_width,
             border=ft.border.all(2, ft.Colors.BLACK12),
             border_radius=ft.border_radius.all(5),
             bgcolor=self.color if (self.color != "") else ft.Colors.BACKGROUND,
@@ -150,6 +152,34 @@ class BoardList(ft.Container):
             on_leave=self.item_drag_leave,
         )
         super().__init__(content=self.view, data=self)
+        self.set_width(self.column_width, update=False)
+
+    def get_content_width(self) -> float:
+        return max(150, self.column_width - 24)
+
+    def get_item_width(self) -> float:
+        return max(130, self.get_content_width() - 8)
+
+    def set_width(self, width: float, update: bool = True):
+        self.column_width = width
+        self.width = width
+        self.inner_list.width = width
+        self.new_item_field.width = self.get_content_width()
+        self.end_indicator.width = self.get_item_width()
+
+        if self.edit_field.controls:
+            self.edit_field.controls[0].width = max(120, self.get_content_width() - 80)
+
+        for wrapped_item in self.items.controls:
+            if len(wrapped_item.controls) > 0:
+                wrapped_item.controls[0].width = self.get_item_width()
+            if len(wrapped_item.controls) > 1 and hasattr(
+                wrapped_item.controls[1], "set_width"
+            ):
+                wrapped_item.controls[1].set_width(self.get_item_width(), update=False)
+
+        if update:
+            self.update()
 
     def item_drag_accept(self, e):
         src = self.page.get_control(e.src_id)
@@ -233,7 +263,7 @@ class BoardList(ft.Container):
                     border_radius=ft.border_radius.all(30),
                     height=3,
                     alignment=ft.alignment.center_right,
-                    width=200,
+                    width=self.get_item_width(),
                     opacity=0.0,
                 )
             ]

@@ -15,17 +15,20 @@ class Item(ft.Container):
         self.store: DataStore = store
         self.list = list
         self.item_text = item_text
+        self.item_width = self.list.get_item_width()
+        self.checkbox = ft.Checkbox(label=f"{self.item_text}", width=self.item_width)
+        self.card_row = ft.Row(
+            [
+                ft.Container(
+                    content=self.checkbox,
+                    border_radius=ft.border_radius.all(5),
+                )
+            ],
+            width=self.item_width,
+            wrap=True,
+        )
         self.card_item = ft.Card(
-            content=ft.Row(
-                [
-                    ft.Container(
-                        content=ft.Checkbox(label=f"{self.item_text}", width=200),
-                        border_radius=ft.border_radius.all(5),
-                    )
-                ],
-                width=200,
-                wrap=True,
-            ),
+            content=self.card_row,
             elevation=1,
             data=self.list,
         )
@@ -41,6 +44,13 @@ class Item(ft.Container):
             data=self,
         )
         super().__init__(content=self.view)
+
+    def set_width(self, width: float, update: bool = True):
+        self.item_width = width
+        self.checkbox.width = width
+        self.card_row.width = width
+        if update:
+            self.update()
 
     def drag_accept(self, e):
         src = self.page.get_control(e.src_id)

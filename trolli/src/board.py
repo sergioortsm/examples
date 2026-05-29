@@ -13,6 +13,11 @@ class Board(ft.Container):
         self.store: DataStore = store
         self.app = app
         self.name = name
+        self.min_column_width = 240
+        self.max_column_width = 420
+        self.default_column_width = 250
+        self.sidebar_width = 250
+        self.chrome_width = 60        
         self.add_list_button = ft.FloatingActionButton(
             icon=ft.Icons.ADD, text="add a list", height=30, on_click=self.create_list
         )
@@ -21,8 +26,9 @@ class Board(ft.Container):
             controls=[self.add_list_button],
             vertical_alignment=ft.CrossAxisAlignment.START,
             scroll=ft.ScrollMode.AUTO,
+            spacing=10,
             expand=True,
-            width=(self.app.page.width - 310),
+            width=self._get_available_width(True, self.app.page.width),
             height=(self.app.page.height - 95),
         )
         for l in self.store.get_lists_by_board(self.board_id):
@@ -34,12 +40,59 @@ class Board(ft.Container):
             margin=ft.margin.all(0),
             padding=ft.padding.only(top=10, right=0),
             height=self.app.page.height,
+            expand=True,
         )
+        self._apply_column_widths()
 
     def resize(self, nav_rail_extended, width, height):
-        self.board_lists.width = (width - 310) if nav_rail_extended else (width - 50)
+        self.board_lists.width = self._get_available_width(nav_rail_extended, width)
+        self._apply_column_widths()
         self.height = height
         self.update()
+
+    def _get_available_width(self, nav_rail_extended: bool, width: float) -> float:
+        sidebar_offset = self.sidebar_width if nav_rail_extended else 0
+        return max(320, width - sidebar_offset - self.chrome_width)
+
+    def _get_lists(self):
+        return [c for c in self.board_lists.controls if isinstance(c, BoardList)]
+
+    def _calculate_column_width(self) -> float:
+        lists = self._get_lists()
+        list_count = len(lists)
+
+        if list_count == 0:
+            return self.default_column_width
+
+        page_width = self.app.page.width if self.app.page else 1200
+        available_width = self.board_lists.width or self._get_available_width(
+            True, page_width
+        )
+
+        # Solo hay gaps entre columnas: N-1
+        total_gap_width = self.board_lists.spacing * max(0, list_count - 1)
+
+        # Para pocas columnas, que llenen todo el ancho disponible
+        width_for_lists = max(
+            self.min_column_width * list_count,
+            available_width - total_gap_width,
+        )
+        dynamic_width = width_for_lists / list_count
+
+        # 1-4 columnas: sin tope superior para que se estiren y no quede hueco
+        if list_count <= 4:
+            return max(self.min_column_width, dynamic_width)
+
+        # 5+ columnas: mantener tope para no tener columnas excesivas
+        return max(self.min_column_width, min(self.max_column_width, dynamic_width))
+
+    def _apply_column_widths(self):
+        nav_visible = getattr(getattr(self.app, "sidebar", None), "visible", True)
+        page_width = self.app.page.width if self.app.page else 1200
+        self.board_lists.width = self._get_available_width(nav_visible, page_width)
+        column_width = self._calculate_column_width()
+        for board_list in self._get_lists():
+            board_list.set_width(column_width)
 
     def create_list(self, e):
 
@@ -132,11 +185,13 @@ class Board(ft.Container):
     def remove_list(self, list: BoardList, e):
         self.board_lists.controls.remove(list)
         self.store.remove_list(self.board_id, list.board_list_id)
+        self._apply_column_widths()
         self.page.update()
 
     def add_list(self, list):
         self.board_lists.controls.insert(-1, list)
         self.store.add_list(self.board_id, list)
+        self._apply_column_widths()
         self.page.update()
 
     def color_option_creator(self, color: str):
