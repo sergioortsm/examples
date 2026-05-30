@@ -161,6 +161,18 @@ class LogsView(ft.Column):
             mouse_cursor=ft.MouseCursor.CLICK,
             on_click=lambda e: self.app.on_logs_toggle_column_selector(),
         )
+        self.open_log_button = ft.IconButton(
+            icon=ft.Icons.FOLDER_OPEN,
+            tooltip="Abrir .log",
+            mouse_cursor=ft.MouseCursor.CLICK,
+            on_click=self.app.open_log_file_dialog,
+        )
+        self.export_csv_button = ft.IconButton(
+            icon=ft.Icons.DOWNLOAD,
+            tooltip="Exportar CSV",
+            mouse_cursor=ft.MouseCursor.CLICK,
+            on_click=lambda e: self.app.on_logs_export_click(),
+        )
         self.apply_columns_button = ft.Button(
             "Aplicar",
             icon=ft.Icons.CHECK_CIRCLE,
@@ -169,8 +181,7 @@ class LogsView(ft.Column):
         )
         self.apply_columns_status = ft.Row(
             [
-                ft.ProgressRing(width=14, height=14, stroke_width=2),
-                ft.Text("Aplicando...", size=12, color=ft.Colors.BLUE_GREY_700),
+                ft.ProgressRing(width=14, height=14, stroke_width=2, color=ft.Colors.BLUE_GREY_700),
             ],
             spacing=6,
             visible=False,
@@ -194,15 +205,7 @@ class LogsView(ft.Column):
             expand=True,
             bgcolor="#47000000",
             alignment=ft.Alignment(x=0, y=0),
-            content=ft.Column(
-                [
-                    ft.ProgressRing(width=44, height=44, stroke_width=4, color=ft.Colors.WHITE),
-                    ft.Text("Cargando...", color=ft.Colors.WHITE),
-                ],
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                tight=True,
-                spacing=10,
-            ),
+            content=ft.ProgressRing(width=44, height=44, stroke_width=4, color=ft.Colors.WHITE),
         )
 
         self.table_container = ft.Stack(
@@ -249,11 +252,20 @@ class LogsView(ft.Column):
             ft.Row(
                 [
                     ft.Column([self.title_text, self.metadata_row], spacing=2, expand=True),
-                    ft.Button("Abrir .log", icon=ft.Icons.FOLDER_OPEN, on_click=self.app.open_log_file_dialog),
-                    ft.Button("Exportar CSV", icon=ft.Icons.DOWNLOAD, on_click=lambda e: self.app.on_logs_export_click()),
+                    ft.Container(
+                        content=ft.Row(
+                            [
+                                self.open_log_button,
+                                self.export_csv_button,
+                            ],
+                            spacing=4,
+                            tight=True,
+                        ),
+                        padding=ft.padding.Padding(top=6, right=8),
+                    ),
                 ],
                 alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-                vertical_alignment=ft.CrossAxisAlignment.START,
+                vertical_alignment=ft.CrossAxisAlignment.CENTER,
             ),
             self.watch_row,
             self.filters_row,

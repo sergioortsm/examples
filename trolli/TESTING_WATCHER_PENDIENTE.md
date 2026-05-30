@@ -1,8 +1,8 @@
-# Testing del watcher en vivo — Estado y pendientes
+# Testing del watcher en vivo — Estado actualizado
 
-> Documento de continuidad para retomar en otro chat. Resume qué se ha validado y qué queda
-> pendiente del modo "watcher en vivo" (File Watcher LIFO) sobre ficheros `.log` de
-> SharePoint OnPrem en local.
+> Documento de continuidad del modo "watcher en vivo" (File Watcher LIFO) sobre ficheros `.log`
+> de SharePoint OnPrem en local. Queda como resumen limpio de lo ya validado y de los
+> seguimientos reales que restan.
 
 ## Contexto rápido
 
@@ -40,86 +40,13 @@
     - Resultado de escritura: 50.000 líneas en 2,97 s (~16.847 líneas/s).
     - Resultado en UI: `buffer_count=50019`, carga fluida, sin errores en `trolli.log`.
 
-## Pendiente 🔲
+## Estado actual
 
-### Problema bloqueante encontrado al hacer append
-
-`Add-Content` de PowerShell **NO comparte escritura** y choca contra nuestro tailer (abierto con share read+write+delete). SharePoint sí abre con esos shares, así que para emularlo hay que usar `System.IO.FileStream` directamente.
-
-Error obtenido:
-```
-Add-Content : El proceso no puede obtener acceso al archivo 'C:\Temp\LOGS\SAPCOL03-20260529-2319.log'
-porque está siendo utilizado en otro proceso.
-```
-
-> **Importante**: el problema NO es nuestro código (nuestro tailer está bien). Es que `Add-Content`
-> no abre con `FileShare.ReadWrite`. La prueba realista debe usar el snippet .NET de abajo.
-
-> Estado actual: resuelto para testing mediante scripts PowerShell en `scripts/` que usan
-> `System.IO.FileStream` con `FileShare.ReadWrite | Delete`.
-
-### Test 1 — Append en vivo (compartiendo escritura como SharePoint) ✅
-
-```powershell
-$current = "C:\Temp\LOGS\SAPCOL03-20260529-2319.log"  # ajustar al actual "En vivo:"
-
-$fs = [System.IO.FileStream]::new(
-    $current,
-    [System.IO.FileMode]::Append,
-    [System.IO.FileAccess]::Write,
-    [System.IO.FileShare]::ReadWrite -bor [System.IO.FileShare]::Delete
-)
-$sw = [System.IO.StreamWriter]::new($fs, [System.Text.Encoding]::UTF8)
-try {
-    1..30 | ForEach-Object {
-        $ts = (Get-Date).ToString("MM/dd/yyyy HH:mm:ss.fff")
-        $sw.WriteLine("$ts`tw3wp.exe (0x1234)`t0x5678`tTest Area`tTest Category`tabcd`tInformation`tAppend secuencial #$_`t")
-        $sw.Flush()
-        Start-Sleep -Seconds 1
-    }
-}
-finally {
-    $sw.Dispose()
-    $fs.Dispose()
-}
-```
-
-**Esperado**:
-- 1 fila nueva por segundo, aparece arriba (LIFO, page 1).
-- `buffer_count` sube 1 a 1.
-- `lines/s` ≈ 1.
-- `file_label` no cambia.
-
-### Test 2 — Stress (50.000 líneas de golpe) ✅
-
-```powershell
-$current = "C:\Temp\LOGS\SAPCOL03-20260529-2319.log"
-
-$fs = [System.IO.FileStream]::new(
-    $current,
-    [System.IO.FileMode]::Append,
-    [System.IO.FileAccess]::Write,
-    [System.IO.FileShare]::ReadWrite -bor [System.IO.FileShare]::Delete
-)
-$sw = [System.IO.StreamWriter]::new($fs, [System.Text.Encoding]::UTF8)
-try {
-    for ($i = 1; $i -le 50000; $i++) {
-        $ts = (Get-Date).ToString("MM/dd/yyyy HH:mm:ss.fff")
-        $sw.WriteLine("$ts`tw3wp.exe (0x1234)`t0x5678`tStress Area`tStress Category`tabcd`tInformation`tStress line #$i`t")
-    }
-    $sw.Flush()
-}
-finally {
-    $sw.Dispose()
-    $fs.Dispose()
-}
-```
-
-**Esperado**:
-- `buffer_count` salta a ~50.000 (cap 100.000).
-- `lines/s` pico alto y baja.
-- UI sigue respondiendo (scroll, clic).
-- Sin `[WATCHER] Error` en consola.
+- No hay bloqueantes funcionales abiertos para el watcher en vivo.
+- El problema de testing con `Add-Content` quedó acotado: no sirve para emular SharePoint porque
+  no abre con `FileShare.ReadWrite`. Los scripts de `scripts/` ya usan `System.IO.FileStream`
+  con `FileShare.ReadWrite | Delete`, que es el camino válido para las pruebas.
+- Los tests principales de append, stress, auto-pausa y ciclo Stop/Start quedaron cerrados.
 
 ### Test 3 — Auto-pausa con filtros ✅ (30/05/2026)
 
@@ -167,11 +94,18 @@ Validado con evidencia en runtime (`src/trolli.log`) + revisión de flujo en có
 
 Conclusión: **cerrado**. El ciclo Stop/Start cumple lo esperado para modo live y mantiene persistencia de carpeta/patrón.
 
+## Seguimiento real pendiente 🔲
+
+1. Hacer una pasada final de smoke manual con datos reales de la carpeta objetivo antes de dar el
+    flujo por completamente cerrado en uso diario.
+2. Si se quiere documentar operación para terceros, mover de este archivo a README una versión
+    corta de arranque + scripts de prueba, dejando este documento solo como historial técnico.
+
 ## Scripts disponibles
 
-- `scripts/test-watcher-append.ps1` — Test 1.
-- `scripts/test-watcher-stress.ps1` — Test 2.
-- `scripts/test-watcher-trickle.ps1` — soporte para Test 3 y Test 4.
+- `scripts/test-watcher-append.ps1` — append secuencial con shares compatibles.
+- `scripts/test-watcher-stress.ps1` — burst de 50.000 líneas.
+- `scripts/test-watcher-trickle.ps1` — goteo sostenido para auto-pausa y reanudación visual.
 - `scripts/test-watcher-rotate.ps1` — simulación manual de rotación.
 - `scripts/test-watcher-common.ps1` — helpers compartidos.
 
@@ -202,3 +136,9 @@ Get-Content c:\repositorio\examples\trolli\src\trolli.log -Tail 30 -Wait
 - **Auto-pausa**: `_is_view_following_live()` → `True` solo si `page==1` + sin search + level=="All". Si no, acumula `pending_new_count` y muestra chip.
 - **Tests con datos realistas**: `scripts/test-watcher-common.ps1` ahora genera líneas ULS tabuladas con valores inspirados en logs reales (Process, Area, Category, EventID, Level, Correlation), para que los filtros sean significativos.
 - **Chip de pendientes**: formato compacto actual en UI: `Nuevas (N)`.
+
+## Resumen corto
+
+El watcher en vivo quedó funcional y con los casos principales validados en local. Lo que queda no
+es un bug abierto del watcher sino, como mucho, una validación final de operación con datos reales
+en el entorno objetivo y decidir si parte de esta guía se compacta en documentación estable.

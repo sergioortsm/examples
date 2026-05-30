@@ -14,10 +14,12 @@ from user import User
 from data_store import DataStore
 from memory_store import InMemoryStore
 from dialog import DialogSizer, build_logs_message_dialog
+from notification_banner import build_notification_banner
 from logs_view import LogsView
 from app_logging import (
     install_asyncio_exception_handler,
     install_global_exception_hooks,
+    resolve_app_data_dir,
     setup_logging,
 )
 from log_service import (
@@ -41,7 +43,8 @@ class TrelloApp(AppLayout):
         self.user: str | None = None
         self._fallback_storage: dict[str, object] = {}
         self._shared_preferences = ft.SharedPreferences()
-        self._prefs_path = Path(os.getenv("APPDATA", str(Path.home()))) / "trolli" / "logs_prefs.json"
+        self._prefs_path = resolve_app_data_dir() / "logs_prefs.json"
+        logger.info("[PREFS] logs_prefs.json path: %s", self._prefs_path)
         self._page.on_route_change = self.route_change
         self._page.on_error = self._on_page_error
         self.boards = self.store.get_boards()
@@ -90,6 +93,7 @@ class TrelloApp(AppLayout):
         self._watcher_pending_lock = __import__("threading").Lock()
         self._watcher_drain_task: asyncio.Task | None = None
         self._watcher_lines_window: list[tuple[float, int]] = []  # (timestamp, count) ultimos 5s
+        self._live_cap_logged_for_size: int | None = None  # ultima page_size para la que ya se logueo el cap
         self.login_profile_button = ft.PopupMenuItem(content="Log in", on_click=self.login)
         self.appbar_items = [
             self.login_profile_button,
@@ -132,22 +136,13 @@ class TrelloApp(AppLayout):
             on_copy=self.on_logs_copy_message_detail,
             on_close=self.on_logs_close_message_detail,
         )
-        self.global_loading_label = ft.Text("Cargando archivo...", color=ft.Colors.WHITE)
         self.global_loading_overlay = ft.Container(
             visible=False,
             width=max(0, int(getattr(self._page, "width", 0) or 0)),
             height=max(0, int(getattr(self._page, "height", 0) or 0)),
             bgcolor="#66000000",
             alignment=ft.Alignment(x=0, y=0),
-            content=ft.Column(
-                [
-                    ft.ProgressRing(width=52, height=52, stroke_width=4, color=ft.Colors.WHITE),
-                    self.global_loading_label,
-                ],
-                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                tight=True,
-                spacing=12,
-            ),
+            content=ft.ProgressRing(width=52, height=52, stroke_width=4, color=ft.Colors.WHITE),
         )
         self._global_loading_counter = 0
         self._global_loading_registered = False
@@ -168,6 +163,88 @@ class TrelloApp(AppLayout):
         route = getattr(self._page, "route", "")
         event_data = getattr(e, "data", e)
         logger.error("Flet UI error | route=%s | event=%s", route, event_data)
+
+    def _open_control(self, control: ft.Control):
+        """Abre un SnackBar o AlertDialog de forma compatible con Flet 0.85.x y versiones superiores."""
+        if isinstance(control, ft.SnackBar):
+            # API clasica: page.snack_bar
+            try:
+                self._page.snack_bar = control
+                control.open = True
+                return
+            except Exception:
+                pass
+            # Fallback: overlay (elimina anteriores para evitar acumulación)
+            for old in list(self._page.overlay):
+                if isinstance(old, ft.SnackBar):
+                    self._page.overlay.remove(old)
+            self._page.overlay.append(control)
+            control.open = True
+            return
+        # AlertDialog y similares
+        if hasattr(self._page, "show_dialog"):
+            self._page.show_dialog(control)
+            return
+        if control not in self._page.overlay:
+            self._page.overlay.append(control)
+        control.open = True
+
+    def _close_control(self, control: ft.Control):
+        """Cierra un control de forma compatible con Flet 0.85.x y versiones superiores."""
+        if hasattr(control, "open"):
+            control.open = False
+
+    def _show_snack_bar(self, message: str):
+        self._open_control(ft.SnackBar(ft.Text(message)))
+
+    # ------------------------------------------------------------------
+    # Notification banner (error / success)
+    # ------------------------------------------------------------------
+
+    def _show_banner(self, message: str, level: str) -> None:
+        self._close_banner()  # cierra el banner anterior si lo hay
+        self._active_banner = build_notification_banner(
+            message=message,
+            level=level,
+            on_close=self._close_banner,
+        )
+        self._active_banner_open = True
+        if hasattr(self._page, "show_dialog"):
+            self._page.show_dialog(self._active_banner)
+        else:
+            if self._active_banner not in self._page.overlay:
+                self._page.overlay.append(self._active_banner)
+            self._active_banner.open = True
+            self._page.update()
+
+    def _close_banner(self, e=None) -> None:
+        if not getattr(self, "_active_banner_open", False):
+            return  # ya cerrado o nunca abierto
+        banner = getattr(self, "_active_banner", None)
+        self._active_banner = None
+        self._active_banner_open = False
+        if banner is None:
+            return
+        if hasattr(self._page, "pop_dialog"):
+            try:
+                self._page.pop_dialog()
+                return
+            except Exception:
+                pass
+        if hasattr(self._page, "close_dialog"):
+            try:
+                self._page.close_dialog(banner)
+                return
+            except Exception:
+                pass
+        banner.open = False
+        self._page.update()
+
+    def show_error(self, message: str) -> None:
+        self._show_banner(message, "error")
+
+    def show_success(self, message: str) -> None:
+        self._show_banner(message, "success")
 
     def _storage_get(self, key: str, default=None):
         # Compatibilidad entre versiones de Flet (sync/async) y distintos backends.
@@ -192,6 +269,30 @@ class TrelloApp(AppLayout):
                     continue
         return self._fallback_storage.get(key, default)
 
+    def _default_logs_preferences(self) -> dict[str, object]:
+        return {
+            "search_text": "",
+            "level_filter": "All",
+            "sort_by": None,
+            "sort_desc": False,
+            "page_size": 100,
+            "visible_columns": [],
+            "watch_folder": "",
+            "watch_pattern": r".+\.log$",
+        }
+
+    def _ensure_logs_preferences_file(self) -> dict[str, object]:
+        defaults = self._default_logs_preferences()
+        if self._prefs_path.exists():
+            return defaults
+
+        self._write_prefs_file_atomic(defaults)
+        if self._prefs_path.exists():
+            logger.info("[PREFS] logs_prefs.json creado con valores por defecto en %s", self._prefs_path)
+        else:
+            logger.warning("[PREFS] no se pudo crear logs_prefs.json en %s", self._prefs_path)
+        return defaults
+
     def _read_prefs_file(self) -> dict[str, object]:
         try:
             if not self._prefs_path.exists():
@@ -200,6 +301,7 @@ class TrelloApp(AppLayout):
             data = json.loads(raw)
             return data if isinstance(data, dict) else {}
         except Exception:
+            logger.exception("[PREFS] Error al leer logs_prefs.json desde %s", self._prefs_path)
             return {}
 
     def _write_prefs_file_atomic(self, data: dict[str, object]):
@@ -212,7 +314,7 @@ class TrelloApp(AppLayout):
             )
             os.replace(temp_path, self._prefs_path)
         except Exception:
-            pass
+            logger.exception("[PREFS] Error al escribir logs_prefs.json en %s", self._prefs_path)
 
     def _storage_set(self, key: str, value):
         for storage in (self._shared_preferences, getattr(self._page, "client_storage", None), getattr(self._page, "session", None)):
@@ -226,7 +328,8 @@ class TrelloApp(AppLayout):
                     result = setter(key, value)
                     if inspect.isawaitable(result):
                         try:
-                            asyncio.get_running_loop().create_task(result)
+                            task = asyncio.get_running_loop().create_task(result)
+                            task.add_done_callback(lambda t, k=key: self._on_storage_set_task_done(k, t))
                         except RuntimeError:
                             # Sin loop activo (o en thread), no intentamos ejecutar la coroutine.
                             # La cerramos para evitar warning y dejamos persistencia en fallback.
@@ -238,6 +341,12 @@ class TrelloApp(AppLayout):
                 except Exception:
                     continue
         self._fallback_storage[key] = value
+
+    def _on_storage_set_task_done(self, key: str, task: asyncio.Task):
+        try:
+            task.result()
+        except Exception:
+            logger.debug("Storage set_async fallo para key=%s", key, exc_info=True)
 
     def initialize(self):
         if not self._global_loading_registered:
@@ -262,21 +371,15 @@ class TrelloApp(AppLayout):
             self.set_logs_view()
 
     def _restore_logs_preferences(self):
+        defaults = self._default_logs_preferences()
+        self._ensure_logs_preferences_file()
         file_prefs = self._read_prefs_file()
-        defaults = {
-            "search_text": "",
-            "level_filter": "All",
-            "sort_by": None,
-            "sort_desc": False,
-            "page_size": 100,
-            "visible_columns": [],
-            "watch_folder": "",
-            "watch_pattern": r".+\.log$",
-        }
         for key, default_value in defaults.items():
             stored_value = file_prefs.get(key, None)
             if stored_value is None:
                 stored_value = self._storage_get(f"logs_{key}", None)
+            if key == "sort_by" and stored_value == "":
+                stored_value = None
             self.logs_state[key] = default_value if stored_value is None else stored_value
 
         if not isinstance(self.logs_state.get("visible_columns"), list):
@@ -289,6 +392,7 @@ class TrelloApp(AppLayout):
             self.logs_state["page_size"] = 100
 
         self.logs_state["sort_desc"] = bool(self.logs_state.get("sort_desc", False))
+        self._persist_logs_preferences_if_needed()
 
     def _persist_logs_preferences(self):
         prefs_to_persist: dict[str, object] = {
@@ -305,7 +409,7 @@ class TrelloApp(AppLayout):
 
         self._storage_set("logs_search_text", self.logs_state["search_text"])
         self._storage_set("logs_level_filter", self.logs_state["level_filter"])
-        self._storage_set("logs_sort_by", self.logs_state["sort_by"])
+        self._storage_set("logs_sort_by", self.logs_state["sort_by"] or "")
         self._storage_set("logs_sort_desc", self.logs_state["sort_desc"])
         self._storage_set("logs_page_size", self.logs_state["page_size"])
         self._storage_set("logs_visible_columns", self.logs_state["visible_columns"])
@@ -411,7 +515,6 @@ class TrelloApp(AppLayout):
 
     def begin_global_loading(self, label: str = "Cargando archivo..."):
         self._global_loading_counter += 1
-        self.global_loading_label.value = label
         self._sync_global_loading_overlay_size()
         self.global_loading_overlay.visible = True
 
@@ -447,6 +550,7 @@ class TrelloApp(AppLayout):
                     "error": result.error,
                 }
             )
+            self.show_error(f"No se pudo cargar el log: {result.error}")
             return
 
         self.logs_rows = result.rows
@@ -530,7 +634,9 @@ class TrelloApp(AppLayout):
                 pass
             self._page.update()
 
-    def _refresh_logs_view_core(self, should_render: bool = True):
+    LIVE_MODE_MAX_ROWS = 50
+
+    def _refresh_logs_view_core(self, should_render: bool = True, page_size_override: int | None = None):
         if not self.logs_state.get("columns"):
             self._invalidate_logs_query_cache()
             self.logs_state.update(
@@ -561,10 +667,14 @@ class TrelloApp(AppLayout):
             )
             self._logs_query_cache_signature = query_signature
 
+        effective_page_size = (
+            page_size_override if page_size_override is not None
+            else int(self.logs_state["page_size"])
+        )
         page_rows, filtered_total, total_pages, safe_page = paginate_rows(
             self._logs_query_cache_rows,
             self.logs_state["current_page"],
-            int(self.logs_state["page_size"]),
+            effective_page_size,
         )
 
         self.logs_state.update(
@@ -754,18 +864,45 @@ class TrelloApp(AppLayout):
 
     # ===== Watcher handlers =====
 
+    def _normalize_watch_folder(self, value: str) -> str:
+        folder = (value or "").strip().strip('"').strip("'")
+        if not folder:
+            return ""
+        expanded = os.path.expandvars(os.path.expanduser(folder))
+        return str(Path(expanded))
+
     def on_logs_watch_folder_change(self, value: str):
-        self.logs_state["watch_folder"] = (value or "").strip()
+        self.logs_state["watch_folder"] = self._normalize_watch_folder(value)
+        self.logs_state["watch_error"] = ""
+        self._close_banner()
+        try:
+            self.logs_view.render(self.logs_state)
+        except RuntimeError:
+            pass
         self._persist_logs_preferences_if_needed()
 
     def on_logs_watch_pattern_change(self, value: str):
         self.logs_state["watch_pattern"] = (value or "").strip()
+        self.logs_state["watch_error"] = ""
+        self._close_banner()
+        try:
+            self.logs_view.render(self.logs_state)
+        except RuntimeError:
+            pass
         self._persist_logs_preferences_if_needed()
 
     def _is_view_following_live(self) -> bool:
-        """True si la vista esta en modo 'seguir el flujo': pagina 1 sin filtros activos."""
+        """True si la vista esta en modo 'seguir el flujo': pagina 1 sin filtros activos.
+
+        Excepcion: si no hay filas cargadas aun (arranque de modo Vivo o buffer vacio),
+        siempre sigue el flujo para que las primeras lineas sean siempre visibles,
+        independientemente de filtros restaurados de sesiones anteriores.
+        """
         if int(self.logs_state.get("current_page", 1)) != 1:
             return False
+        # Sin filas todavia -> no hay nada que 'auto-pausar'; mostrar siempre.
+        if not self.logs_rows:
+            return True
         if (self.logs_state.get("search_text") or "").strip():
             return False
         if (self.logs_state.get("level_filter") or "All") != "All":
@@ -846,7 +983,16 @@ class TrelloApp(AppLayout):
                     self.logs_rows = snap_rows
                     self._invalidate_logs_query_cache()
                     self.logs_state["pending_new_count"] = 0
-                    self._refresh_logs_view_core(should_render=True)
+                    current_page_size = int(self.logs_state["page_size"])
+                    live_cap = min(current_page_size, self.LIVE_MODE_MAX_ROWS)
+                    if live_cap < current_page_size and self._live_cap_logged_for_size != current_page_size:
+                        logger.info(
+                            "[WATCHER] live cap applied (page_size=%d -> %d)",
+                            current_page_size,
+                            live_cap,
+                        )
+                        self._live_cap_logged_for_size = current_page_size
+                    self._refresh_logs_view_core(should_render=True, page_size_override=live_cap)
                 else:
                     self.logs_state["pending_new_count"] = int(self.logs_state.get("pending_new_count", 0)) + total_new_rows
                     try:
@@ -894,14 +1040,16 @@ class TrelloApp(AppLayout):
             self._start_watcher()
 
     def _start_watcher(self):
-        folder = (self.logs_state.get("watch_folder") or "").strip()
+        folder = self._normalize_watch_folder(str(self.logs_state.get("watch_folder") or ""))
+        self.logs_state["watch_folder"] = folder
         pattern = (self.logs_state.get("watch_pattern") or r".+\.log$").strip()
         if not folder:
-            self._page.open(ft.SnackBar(ft.Text("Indica una carpeta para vigilar.")))
+            self.show_error("Indica una carpeta para vigilar.")
             self._page.update()
             return
         if not Path(folder).is_dir():
-            self.logs_state["watch_error"] = "La carpeta no existe o no es accesible."
+            self.logs_state["watch_error"] = ""
+            self.show_error("La carpeta a vigilar no existe o no es accesible.")
             try:
                 self.logs_view.render(self.logs_state)
             except RuntimeError:
@@ -935,7 +1083,8 @@ class TrelloApp(AppLayout):
             )
         except ValueError as e:
             self.logs_state["is_watching"] = False
-            self.logs_state["watch_error"] = str(e)
+            self.logs_state["watch_error"] = ""
+            self.show_error(f"No se pudo iniciar el vigilante: {e}")
             try:
                 self.logs_view.render(self.logs_state)
             except RuntimeError:
@@ -944,6 +1093,7 @@ class TrelloApp(AppLayout):
             return
 
         self._watcher.start()
+        self._close_banner()  # éxito: cierra banner de error previo si lo había
         try:
             self._watcher_drain_task = asyncio.get_running_loop().create_task(self._watcher_drain_loop())
         except RuntimeError:
@@ -961,6 +1111,7 @@ class TrelloApp(AppLayout):
                 self._watcher.stop()
             except Exception:
                 logger.exception("[WATCHER] Error al detener")
+                self.show_error("Error al detener el vigilante (ver logs).")
             self._watcher = None
         if self._watcher_drain_task is not None:
             self._watcher_drain_task.cancel()
@@ -974,14 +1125,18 @@ class TrelloApp(AppLayout):
         self._page.update()
 
     def on_logs_export_click(self):
+        logger.info("[CSV] on_logs_export_click invocado | file_path=%r visible_columns=%s rows=%d",
+                    self.logs_state.get("file_path"),
+                    self.logs_state.get("visible_columns"),
+                    len(self.logs_rows))
         if not self.logs_state.get("file_path"):
-            self._page.open(ft.SnackBar(ft.Text("Carga un archivo antes de exportar.")))
+            self.show_error("Carga un archivo antes de exportar.")
             self._page.update()
             return
 
         visible_columns = self.logs_state.get("visible_columns", [])
         if not visible_columns:
-            self._page.open(ft.SnackBar(ft.Text("No hay columnas visibles para exportar.")))
+            self.show_error("No hay columnas visibles para exportar.")
             self._page.update()
             return
 
@@ -996,11 +1151,16 @@ class TrelloApp(AppLayout):
             max(len(self.logs_rows), 1),
         )
 
-        source = Path(str(self.logs_state["file_path"]))
-        timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-        export_file = source.with_name(f"{source.stem}-filtered-{timestamp}.csv")
-        output_path = export_rows_to_csv(str(export_file), visible_columns, rows_to_export)
-        self._page.open(ft.SnackBar(ft.Text(f"CSV exportado: {output_path}")))
+        try:
+            source = Path(str(self.logs_state["file_path"]))
+            timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+            export_file = source.with_name(f"{source.stem}-filtered-{timestamp}.csv")
+            output_path = export_rows_to_csv(str(export_file), visible_columns, rows_to_export)
+            logger.info("[CSV] Exportado: %s (%d filas)", output_path, len(rows_to_export))
+            self.show_success(f"CSV exportado: {output_path}")
+        except Exception as exc:
+            logger.exception("[CSV] Error al exportar")
+            self.show_error(f"Error al exportar: {exc}")
         self._page.update()
 
     def on_logs_open_message_detail(self, message_text: str, column_name: str = "Message"):
@@ -1041,12 +1201,12 @@ class TrelloApp(AppLayout):
     def on_logs_copy_message_detail(self, e=None):
         message_text = str(self.logs_state.get("message_dialog_text", ""))
         if not message_text:
-            self._page.open(ft.SnackBar(ft.Text("No hay texto para copiar.")))
+            self._show_snack_bar("No hay texto para copiar.")
             self._page.update()
             return
 
         self._page.set_clipboard(message_text)
-        self._page.open(ft.SnackBar(ft.Text("Mensaje copiado al portapapeles.")))
+        self._show_snack_bar("Mensaje copiado al portapapeles.")
         self._page.update()
 
     def login(self, e):
@@ -1063,7 +1223,7 @@ class TrelloApp(AppLayout):
                 self.user = user_name.value
                 self._storage_set("current_user", user_name.value)
 
-            self._page.close(dialog)
+            self._close_control(dialog)
             self.appbar_items[0] = ft.PopupMenuItem(
                 content=f"{self._storage_get('current_user', '')}'s Profile"
             )
@@ -1083,7 +1243,7 @@ class TrelloApp(AppLayout):
             ),
             on_dismiss=lambda e: logger.debug("Modal dialog dismissed!"),
         )
-        self._page.open(dialog)
+        self._open_control(dialog)
 
     def route_change(self, e):
         troute = ft.TemplateRoute(self._page.route)
@@ -1109,7 +1269,7 @@ class TrelloApp(AppLayout):
                 type(e.control) is ft.TextField and e.control.value != ""
             ):
                 self.create_new_board(dialog_text.value)
-            self._page.close(dialog)
+            self._close_control(dialog)
             self._page.update()
 
         def textfield_change(e):
@@ -1142,8 +1302,7 @@ class TrelloApp(AppLayout):
             ),
             on_dismiss=lambda e: logger.debug("Modal dialog dismissed!"),
         )
-        self._page.open(dialog)
-        dialog.open = True
+        self._open_control(dialog)
         self._page.update()
         dialog_text.focus()
 

@@ -139,7 +139,7 @@ class Board(ft.Container):
                     color=color_options.data,
                 )
                 self.add_list(new_list)
-            self._page.close(dialog)
+            self.app._close_control(dialog)
 
         def textfield_change(e):
             if dialog_text.value == "":
@@ -176,7 +176,7 @@ class Board(ft.Container):
             ),
             on_dismiss=lambda e: print("Modal dialog dismissed!"),
         )
-        self._page.open(dialog)
+        self.app._open_control(dialog)
         dialog_text.focus()
 
     def remove_list(self, list: BoardList, e):

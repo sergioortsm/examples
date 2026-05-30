@@ -9,6 +9,7 @@ Clon de Trello construido con [Flet](https://flet.dev/) en Python. Permite gesti
 	- Filtros por nivel, búsqueda de texto libre y paginación eficiente.
 	- Selector de columnas visibles y exportación a CSV del filtrado actual.
 	- Overlay de carga no bloqueante y preferencias de usuario persistentes.
+- **Notificaciones de aplicación**: banners superiores responsivos para mensajes de error y éxito, pensados para flujos de aplicación y `try/except` controlados.
 - **UI responsiva**: interfaz moderna con [Flet](https://flet.dev/) y componentes personalizables.
 
 ## Requisitos
@@ -28,6 +29,24 @@ pip install -r requirements.txt
 
 ```bash
 flet run src/main.py
+```
+
+## Notificaciones de aplicación
+
+La app incluye un componente reutilizable basado en `ft.Banner` para mostrar mensajes de estado en la parte superior de la pantalla, justo debajo del `AppBar`.
+
+- Componente: `src/notification_banner.py`
+- API pública en `TrelloApp`: `show_error(message)` y `show_success(message)`
+- Casos de uso: errores controlados, confirmaciones de acciones y mensajes breves de la app
+
+Ejemplo de uso desde la app:
+
+```python
+try:
+	output_path = export_rows_to_csv(...)
+	self.show_success(f"CSV exportado: {output_path}")
+except Exception as exc:
+	self.show_error(f"Error al exportar: {exc}")
 ```
 
 ## Log interno de la aplicación

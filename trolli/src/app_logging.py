@@ -34,14 +34,23 @@ def _resolve_default_log_dir() -> Path:
     return Path.cwd()
 
 
-def _resolve_log_path() -> Path:
+def resolve_app_data_dir() -> Path:
+    """Directorio base para artefactos de la app (logs, preferencias, etc.).
+
+    Usa la misma politica que el fichero de log: respeta TROLLI_LOG_DIR si esta
+    definido y, en caso contrario, cae en el directorio del script/exe.
+    """
     log_dir_env = os.getenv("TROLLI_LOG_DIR", "").strip()
     if log_dir_env:
-        log_dir = Path(log_dir_env)
+        app_dir = Path(log_dir_env)
     else:
-        log_dir = _resolve_default_log_dir()
-    log_dir.mkdir(parents=True, exist_ok=True)
-    return log_dir / "trolli.log"
+        app_dir = _resolve_default_log_dir()
+    app_dir.mkdir(parents=True, exist_ok=True)
+    return app_dir
+
+
+def _resolve_log_path() -> Path:
+    return resolve_app_data_dir() / "trolli.log"
 
 
 def setup_logging() -> logging.Logger:
