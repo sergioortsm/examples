@@ -37,7 +37,12 @@ class LogsView(ft.Column):
         return column_name.strip().lower() == "message"
     
     def __init__(self, app):
-        super().__init__(expand=True, spacing=10)
+        super().__init__(
+            expand=True,
+            spacing=10,
+            scroll=ft.ScrollMode.AUTO,
+            horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
+        )
         self.app = app
         self.column_selector_visible = False
 
@@ -215,7 +220,6 @@ class LogsView(ft.Column):
 
         # Inicializacion de contenedores de tabla y overlay de carga
         self.table_content_container = ft.Container(
-            expand=True,
             padding=ft.padding.Padding(left=8, top=8, right=8, bottom=8),
         )
         self.loading_overlay = ft.Container(
@@ -231,11 +235,9 @@ class LogsView(ft.Column):
                 self.table_content_container,
                 self.loading_overlay,
             ],
-            expand=True,
         )
         self.table_surface = ft.Container(
             content=self.table_container,
-            expand=True,
             bgcolor=APP_SURFACE,
             border=ft.Border.all(1, APP_BORDER),
             border_radius=ft.BorderRadius(16, 16, 16, 16),
@@ -551,19 +553,14 @@ class LogsView(ft.Column):
         min_table_width = max(600, sum(self._column_width(column) for column in visible_columns))
 
         data_table = fdt.DataTable2(
-            expand=True,
             min_width=min_table_width,
-            fixed_top_rows=1,
-            fixed_left_columns=1 if visible_columns else 0,
-            # Cabecera uniforme: usar el MISMO color para heading_row_color y fixed_corner_color,
-            # asi la celda sticky de la esquina superior-izquierda no destaca sobre el resto del header.
+            fixed_top_rows=0,
+            fixed_left_columns=0,
             heading_row_color=APP_SURFACE_MUTED,
             fixed_corner_color=APP_SURFACE_MUTED,
-            # Columna sticky (Timestamp): mismo fondo que el resto de filas (transparente)
-            # para que NO se distinga del resto del cuerpo.
             fixed_columns_color=APP_SURFACE_ALT,
             visible_horizontal_scroll_bar=True,
-            visible_vertical_scroll_bar=True,
+            visible_vertical_scroll_bar=False,
             # Altura uniforme para layout/scroll predecibles.
             data_row_height=42,
             horizontal_margin=18,
@@ -577,9 +574,9 @@ class LogsView(ft.Column):
             empty=ft.Text("No hay filas para los filtros actuales."),
         )
 
-        # DataTable2 gestiona su propio scroll (horizontal con min_width, vertical con fixed_top_rows).
-        # NO envolver en ft.Row(scroll=AUTO): daría espacio horizontal infinito y rompería size=L.
         self.table_content_container.content = data_table
+        # Volver al inicio de la vista al cambiar de página.
+        self.scroll_to(offset=0, duration=0)
 
     def _build_row(self, idx: int, row: dict[str, str], visible_columns: list[str]) -> fdt.DataRow2:
         """Construye una DataRow2 con zebra striping y handlers de tap/doble-tap/clic-derecho.
