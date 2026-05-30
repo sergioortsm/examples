@@ -19,6 +19,8 @@ class AppLayout(ft.Row):
             on_click=self.toggle_nav_rail,
         )
         self.sidebar = Sidebar(self, self.store)
+        # Inicio con panel lateral contraido.
+        self.sidebar.visible = False
         self.members_view = ft.Text("members view")
         if not hasattr(self, "logs_view"):
             self.logs_view = ft.Text("logs view")
@@ -77,6 +79,8 @@ class AppLayout(ft.Row):
         self._active_view: ft.Control = self.all_boards_view
 
         self.controls = [self.sidebar, self.toggle_nav_rail_button, self.active_view]
+        # Refleja estado contraido en el boton (muestra icono de expandir).
+        self.toggle_nav_rail_button.selected = True
 
     @property
     def active_view(self):

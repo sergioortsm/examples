@@ -2,6 +2,7 @@ from importlib.metadata import PackageNotFoundError, version
 import asyncio
 import inspect
 import json
+import logging
 import os
 
 import flet as ft
@@ -14,6 +15,11 @@ from data_store import DataStore
 from memory_store import InMemoryStore
 from dialog import DialogSizer, build_logs_message_dialog
 from logs_view import LogsView
+from app_logging import (
+    install_asyncio_exception_handler,
+    install_global_exception_hooks,
+    setup_logging,
+)
 from log_service import (
     apply_filters_sort_paginate,
     export_rows_to_csv,
@@ -21,6 +27,9 @@ from log_service import (
     load_sharepoint_log,
     paginate_rows,
 )
+
+
+logger = logging.getLogger("trolli")
 
 
 class TrelloApp(AppLayout):
@@ -32,7 +41,7 @@ class TrelloApp(AppLayout):
         self._shared_preferences = ft.SharedPreferences()
         self._prefs_path = Path(os.getenv("APPDATA", str(Path.home()))) / "trolli" / "logs_prefs.json"
         self._page.on_route_change = self.route_change
-        self._page.on_error = lambda e: print(f"FLET ERROR: {getattr(e, 'data', e)}")
+        self._page.on_error = self._on_page_error
         self.boards = self.store.get_boards()
         self.logs_rows: list[dict[str, str]] = []
         self._logs_query_cache_signature: tuple[object, ...] | None = None
@@ -137,6 +146,11 @@ class TrelloApp(AppLayout):
             vertical_alignment=ft.CrossAxisAlignment.START,
         )
 
+    def _on_page_error(self, e):
+        route = getattr(self._page, "route", "")
+        event_data = getattr(e, "data", e)
+        logger.error("Flet UI error | route=%s | event=%s", route, event_data)
+
     def _storage_get(self, key: str, default=None):
         # Compatibilidad entre versiones de Flet (sync/async) y distintos backends.
         for storage in (self._shared_preferences, getattr(self._page, "client_storage", None), getattr(self._page, "session", None)):
@@ -149,7 +163,11 @@ class TrelloApp(AppLayout):
                 try:
                     value = getter(key)
                     if inspect.isawaitable(value):
-                        # Si solo hay API async y estamos en flujo sync, usamos fallback sin romper UI.
+                        # En contexto sync no bloqueamos para resolver getters async.
+                        # Se cierra la coroutine para evitar RuntimeWarning y se prueba fallback.
+                        if inspect.iscoroutine(value):
+                            value.close()
+                        logger.debug("Storage getter async omitido para key=%s", key)
                         continue
                     return default if value is None else value
                 except Exception:
@@ -192,6 +210,11 @@ class TrelloApp(AppLayout):
                         try:
                             asyncio.get_running_loop().create_task(result)
                         except RuntimeError:
+                            # Sin loop activo (o en thread), no intentamos ejecutar la coroutine.
+                            # La cerramos para evitar warning y dejamos persistencia en fallback.
+                            if inspect.iscoroutine(result):
+                                result.close()
+                            logger.debug("Storage setter async omitido sin loop activo para key=%s", key)
                             continue
                     return
                 except Exception:
@@ -215,7 +238,10 @@ class TrelloApp(AppLayout):
             self.logs_view.render(self.logs_state)
         except RuntimeError:
             pass
-        self.set_all_boards_view()
+        if self._page.route != "/logs":
+            self._page.navigate("/logs")
+        else:
+            self.set_logs_view()
 
     def _restore_logs_preferences(self):
         file_prefs = self._read_prefs_file()
@@ -312,7 +338,7 @@ class TrelloApp(AppLayout):
         self._logs_prefs_signature_last_saved = current_signature
 
     def open_log_file_dialog(self, e=None):
-        print("[LOGS] open_log_file_dialog llamado")
+        logger.info("[LOGS] open_log_file_dialog llamado")
         async def _pick_and_handle_file():
             files = await self.file_picker.pick_files(
                 allow_multiple=False,
@@ -328,15 +354,15 @@ class TrelloApp(AppLayout):
             pass
 
     def _handle_selected_log_files(self, files):
-        print(f"[LOGS] _handle_selected_log_files: files={files}")
+        logger.info("[LOGS] _handle_selected_log_files: files=%s", files)
         if not files:
-            print("[LOGS] _handle_selected_log_files: sin archivos, saliendo")
+            logger.info("[LOGS] _handle_selected_log_files: sin archivos, saliendo")
             return
 
         file_path = getattr(files[0], "path", None)
-        print(f"[LOGS] _handle_selected_log_files: file_path={file_path!r}")
+        logger.info("[LOGS] _handle_selected_log_files: file_path=%r", file_path)
         if not file_path:
-            print("[LOGS] _handle_selected_log_files: ruta vacía, saliendo")
+            logger.warning("[LOGS] _handle_selected_log_files: ruta vacia, saliendo")
             return
 
         self.load_log_file(file_path)
@@ -371,7 +397,12 @@ class TrelloApp(AppLayout):
     def _load_log_file_sync(self, file_path: str):
         self._invalidate_logs_query_cache()
         result = load_sharepoint_log(file_path)
-        print(f"[LOGS] load_sharepoint_log: error={result.error!r} rows={len(result.rows)} columns={result.columns}")
+        logger.info(
+            "[LOGS] load_sharepoint_log: error=%r rows=%s columns=%s",
+            result.error,
+            len(result.rows),
+            result.columns,
+        )
         if result.error:
             self.logs_rows = []
             self.logs_state.update(
@@ -451,7 +482,7 @@ class TrelloApp(AppLayout):
             self._page.update()
 
     def load_log_file(self, file_path: str):
-        print(f"[LOGS] load_log_file: iniciando con file_path={file_path!r}")
+        logger.info("[LOGS] load_log_file: iniciando con file_path=%r", file_path)
         self.begin_global_loading("Cargando archivo .log...")
         scheduled_async = False
         self._page.update()
@@ -803,7 +834,7 @@ class TrelloApp(AppLayout):
                 ],
                 tight=True,
             ),
-            on_dismiss=lambda e: print("Modal dialog dismissed!"),
+            on_dismiss=lambda e: logger.debug("Modal dialog dismissed!"),
         )
         self._page.open(dialog)
 
@@ -862,7 +893,7 @@ class TrelloApp(AppLayout):
                 ],
                 tight=True,
             ),
-            on_dismiss=lambda e: print("Modal dialog dismissed!"),
+            on_dismiss=lambda e: logger.debug("Modal dialog dismissed!"),
         )
         self._page.open(dialog)
         dialog.open = True
@@ -880,23 +911,28 @@ class TrelloApp(AppLayout):
 
 
 def main(page: ft.Page):
+    page.window_maximized = True  # Configura la ventana maximizada
+    install_asyncio_exception_handler(logger)
 
-    page.title = "Flet Trello clone"
+    page.title = "Sharepoint ULS Log Viewer"
     page.padding = 0
     page.theme = ft.Theme(font_family="Verdana")
     page.theme_mode = ft.ThemeMode.LIGHT
     page.theme.page_transitions.windows = "cupertino" # type: ignore
     page.fonts = {"Pacifico": "Pacifico-Regular.ttf"}
-    page.bgcolor = ft.Colors.BLUE_GREY_200
+    page.bgcolor = ft.Colors.BLUE_GREY_200    
     app = TrelloApp(page, InMemoryStore())
     app.initialize()
 
 
 try:
+    setup_logging()    
+    install_global_exception_hooks(logger)
+
     flet_version = version("flet")
 except PackageNotFoundError:
     flet_version = "unknown"
 
-print("flet version: ", flet_version)
-print("flet path: ", ft.__file__)
+logger.info("flet version: %s", flet_version)
+logger.info("flet path: %s", ft.__file__)
 ft.run(main, assets_dir="../assets")

@@ -24,6 +24,10 @@
         "name,": true,
         "obj": true,
         ".\\.venv\\Scripts\\python.exe": true,
-        "&": true
+        "&": true,
+        "Test-Path": true,
+        "Push-Location": true,
+        "Pop-Location": true,
+        "Get-Item": true
     }
 }

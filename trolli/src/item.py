@@ -16,7 +16,11 @@ class Item(ft.Container):
         self.list = list
         self.item_text = item_text
         self.item_width = self.list.get_item_width()
-        self.checkbox = ft.Checkbox(label=f"{self.item_text}", width=self.item_width)
+        #self.checkbox = ft.Checkbox(label=f"{self.item_text}", width=self.item_width)
+        self.checkbox = ft.GestureDetector(
+                            mouse_cursor=ft.MouseCursor.CLICK,
+                            content=ft.Checkbox(label=f"{self.item_text}", width=self.item_width),
+                        )
         self.card_row = ft.Row(
             [
                 ft.Container(

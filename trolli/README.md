@@ -30,6 +30,13 @@ pip install -r requirements.txt
 flet run src/main.py
 ```
 
+## Log interno de la aplicación
+
+- Por defecto, el log interno se escribe en la misma carpeta del punto de arranque:
+	- En desarrollo, junto a `src/main.py`, por ejemplo `src/trolli.log`.
+	- En una app empaquetada, junto al ejecutable.
+- Si defines la variable de entorno `TROLLI_LOG_DIR`, esa carpeta tiene prioridad y el archivo se crea como `trolli.log` dentro de ella.
+
 ## Demo
 
 Prueba la app en producción: [https://flet-trolli.fly.dev/](https://flet-trolli.fly.dev/)

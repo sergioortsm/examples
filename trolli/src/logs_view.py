@@ -90,11 +90,13 @@ class LogsView(ft.Column):
         self.prev_page_button = ft.IconButton(
             icon=ft.Icons.CHEVRON_LEFT,
             tooltip="Pagina anterior",
+            mouse_cursor=ft.MouseCursor.CLICK,
             on_click=lambda e: self.app.on_logs_prev_page(),
         )
         self.next_page_button = ft.IconButton(
             icon=ft.Icons.CHEVRON_RIGHT,
             tooltip="Pagina siguiente",
+            mouse_cursor=ft.MouseCursor.CLICK,
             on_click=lambda e: self.app.on_logs_next_page(),
         )
         self.page_info_text = ft.Text("Pagina 1 / 1")
@@ -109,6 +111,7 @@ class LogsView(ft.Column):
         self.toggle_column_selector_button = ft.IconButton(
             icon=ft.Icons.VIEW_COLUMN,
             tooltip="Columnas visibles",
+            mouse_cursor=ft.MouseCursor.CLICK,
             on_click=lambda e: self.app.on_logs_toggle_column_selector(),
         )
         self.apply_columns_button = ft.Button(
@@ -134,7 +137,7 @@ class LogsView(ft.Column):
             apply_columns_status=self.apply_columns_status,
             apply_columns_button=self.apply_columns_button,
             on_close=self._close_column_selector,
-            show_close_button=False,
+            show_close_button=True,
         )
 
         # Inicializacion de contenedores de tabla y overlay de carga
@@ -283,11 +286,14 @@ class LogsView(ft.Column):
                 padding=ft.padding.Padding(left=0, top=0, right=0, bottom=0),
                 content=ft.Row(
                     [
-                        ft.Checkbox(
-                            value=column in pending_columns,
-                            disabled=is_busy,
-                            scale=0.9,
-                            on_change=lambda e, col=column: self.app.on_logs_toggle_column(col, bool(e.control.value)),
+                        ft.GestureDetector(
+                            mouse_cursor=ft.MouseCursor.CLICK,
+                            content=ft.Checkbox(
+                                value=column in pending_columns,
+                                disabled=is_busy,
+                                scale=0.9,
+                                on_change=lambda e, col=column: self.app.on_logs_toggle_column(col, bool(e.control.value)),
+                            ),
                         ),
                         ft.Container(
                             width=112,
