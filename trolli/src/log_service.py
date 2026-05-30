@@ -37,6 +37,35 @@ def _split_row(line: str, expected_columns: int) -> list[str]:
     return parts
 
 
+def build_row_from_line(
+    line: str,
+    columns: list[str],
+    level_col_idx: int = -1,
+) -> tuple[dict[str, str], str]:
+    """Parsea una linea ULS y devuelve (row_dict_con_search_key, nivel_o_vacio).
+
+    Reutilizable por el tailer en modo streaming. No hace I/O. Eficiente:
+    - Una sola pasada de split.
+    - Un solo lowercase para _search_key.
+    """
+    n_cols = len(columns)
+    row_values = _split_row(line, n_cols)
+    search_key = "\t".join(row_values).lower()
+    row = dict(zip(columns, row_values))
+    row["_search_key"] = search_key
+    level = ""
+    if 0 <= level_col_idx < len(row_values):
+        level = row_values[level_col_idx].strip()
+    return row, level
+
+
+def parse_header_line(header_line: str) -> list[str]:
+    """Extrae columnas de la primera linea no vacia de un ULS."""
+    if "\t" not in header_line:
+        return []
+    return [c.strip() for c in header_line.split("\t") if c.strip()]
+
+
 def load_sharepoint_log(file_path: str) -> LogLoadResult:
     path = Path(file_path)
     if not path.exists() or not path.is_file():
@@ -98,21 +127,15 @@ def load_sharepoint_log(file_path: str) -> LogLoadResult:
     level_values: set[str] = set()
     level_column = next((c for c in columns if c.lower() == "level"), None)
     level_col_idx: int = columns.index(level_column) if level_column else -1
-    n_cols = len(columns)
 
     for raw_line in line_iter:
-        if not raw_line.strip():
+        line = raw_line.rstrip("\r\n")
+        if not line.strip():
             continue
-        row_values = _split_row(raw_line, n_cols)
-        # _search_key: clave de búsqueda pre-computada (evita lowercase por columna en cada consulta).
-        search_key = "\t".join(row_values).lower()
-        row = dict(zip(columns, row_values))
-        row["_search_key"] = search_key
+        row, level = build_row_from_line(line, columns, level_col_idx)
         rows.append(row)
-        if level_col_idx >= 0:
-            level = row_values[level_col_idx].strip()
-            if level:
-                level_values.add(level)
+        if level:
+            level_values.add(level)
 
     return LogLoadResult(
         file_path=file_path,

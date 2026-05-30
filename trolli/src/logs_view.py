@@ -54,6 +54,53 @@ class LogsView(ft.Column):
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
         )
 
+        # --- Watcher (modo live) ---------------------------------------------
+        self.watch_folder_field = ft.TextField(
+            label="Carpeta a vigilar",
+            hint_text=r"C:\Program Files\Common Files\Microsoft Shared\Web Server Extensions\16\LOGS",
+            expand=True,
+            on_change=lambda e: self.app.on_logs_watch_folder_change(e.control.value),
+        )
+        self.watch_pattern_field = ft.TextField(
+            label="Patron (regex)",
+            hint_text=r".+-\d{8}-\d{4}\.log$",
+            width=240,
+            on_change=lambda e: self.app.on_logs_watch_pattern_change(e.control.value),
+        )
+        self.watch_toggle_button = ft.IconButton(
+            icon=ft.Icons.PLAY_ARROW,
+            icon_color=ft.Colors.GREEN_700,
+            tooltip="Iniciar vigilancia en vivo",
+            on_click=lambda e: self.app.on_logs_toggle_watch(),
+        )
+        self.watch_status_text = ft.Text("", size=12, color=ft.Colors.BLUE_GREY_700)
+        self.watch_row = ft.Row(
+            [
+                self.watch_folder_field,
+                self.watch_pattern_field,
+                self.watch_toggle_button,
+                self.watch_status_text,
+            ],
+            spacing=8,
+            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+        )
+
+        # Chip "N nuevas lineas pendientes" (auto-pausa cuando hay filtros activos)
+        self.pending_new_text = ft.Text("Nuevas (0)")
+        self.pending_new_button = ft.FilledTonalButton(
+            content=ft.Row(
+                [
+                    ft.Icon(ft.Icons.ARROW_UPWARD, size=16),
+                    self.pending_new_text,
+                ],
+                spacing=6,
+                tight=True,
+                vertical_alignment=ft.CrossAxisAlignment.CENTER,
+            ),
+            on_click=lambda e: self.app.on_logs_show_pending_new(),
+            visible=False,
+        )
+
         self.search_field = ft.TextField(
             label="Buscar",
             hint_text="Texto libre en todas las columnas",
@@ -208,7 +255,9 @@ class LogsView(ft.Column):
                 alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                 vertical_alignment=ft.CrossAxisAlignment.START,
             ),
+            self.watch_row,
             self.filters_row,
+            ft.Row([self.pending_new_button], alignment=ft.MainAxisAlignment.START),
             self.table_container,
             ft.Row(
                 [self.prev_page_button, self.page_info_text, self.next_page_button],
@@ -262,6 +311,43 @@ class LogsView(ft.Column):
         self.prev_page_button.disabled = current_page <= 1
         self.next_page_button.disabled = current_page >= total_pages
         self.loading_overlay.visible = bool(state.get("is_loading", False))
+
+        # --- watcher ---
+        is_watching = bool(state.get("is_watching", False))
+        self.watch_folder_field.value = state.get("watch_folder", "")
+        self.watch_pattern_field.value = state.get("watch_pattern", "")
+        self.watch_folder_field.disabled = is_watching
+        self.watch_pattern_field.disabled = is_watching
+        if is_watching:
+            self.watch_toggle_button.icon = ft.Icons.STOP
+            self.watch_toggle_button.icon_color = ft.Colors.RED_700
+            self.watch_toggle_button.tooltip = "Detener vigilancia"
+        else:
+            self.watch_toggle_button.icon = ft.Icons.PLAY_ARROW
+            self.watch_toggle_button.icon_color = ft.Colors.GREEN_700
+            self.watch_toggle_button.tooltip = "Iniciar vigilancia en vivo"
+        watch_error = state.get("watch_error", "")
+        if watch_error:
+            self.watch_status_text.value = watch_error
+            self.watch_status_text.color = ft.Colors.RED_600
+        elif is_watching:
+            rate = state.get("lines_per_sec", 0.0)
+            buf = state.get("buffer_count", 0)
+            buf_max = state.get("buffer_max", 0)
+            self.watch_status_text.value = (
+                f"En vivo · buffer {buf}/{buf_max} · {rate:.0f} l/s"
+            )
+            self.watch_status_text.color = ft.Colors.GREEN_800
+        else:
+            self.watch_status_text.value = ""
+
+        pending_new = int(state.get("pending_new_count", 0))
+        if pending_new > 0:
+            self.pending_new_text.value = f"Nuevas ({pending_new})"
+            self.pending_new_button.visible = True
+        else:
+            self.pending_new_text.value = "Nuevas (0)"
+            self.pending_new_button.visible = False
 
         self._render_column_selector(state)
         self._render_table(state)

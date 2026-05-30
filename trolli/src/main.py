@@ -27,6 +27,8 @@ from log_service import (
     load_sharepoint_log,
     paginate_rows,
 )
+from log_buffer import LifoLogBuffer
+from log_watcher import LogWatcher
 
 
 logger = logging.getLogger("trolli")
@@ -71,7 +73,23 @@ class TrelloApp(AppLayout):
             "message_dialog_open": False,
             "message_dialog_text": "",
             "message_dialog_title": "Detalle de Message",
+            # --- modo watcher (live tailing) ---
+            "watch_folder": "",
+            "watch_pattern": r".+\.log$",
+            "is_watching": False,
+            "watch_error": "",
+            "buffer_count": 0,
+            "buffer_max": 100_000,
+            "pending_new_count": 0,
+            "lines_per_sec": 0.0,
         }
+        # Buffer LIFO compartido entre el hilo del watcher y el event loop.
+        self._log_buffer = LifoLogBuffer(maxlen=100_000)
+        self._watcher: LogWatcher | None = None
+        self._watcher_pending_batches: list[tuple[list[dict[str, str]], list[str], list[str]]] = []
+        self._watcher_pending_lock = __import__("threading").Lock()
+        self._watcher_drain_task: asyncio.Task | None = None
+        self._watcher_lines_window: list[tuple[float, int]] = []  # (timestamp, count) ultimos 5s
         self.login_profile_button = ft.PopupMenuItem(content="Log in", on_click=self.login)
         self.appbar_items = [
             self.login_profile_button,
@@ -252,6 +270,8 @@ class TrelloApp(AppLayout):
             "sort_desc": False,
             "page_size": 100,
             "visible_columns": [],
+            "watch_folder": "",
+            "watch_pattern": r".+\.log$",
         }
         for key, default_value in defaults.items():
             stored_value = file_prefs.get(key, None)
@@ -278,6 +298,8 @@ class TrelloApp(AppLayout):
             "sort_desc": self.logs_state["sort_desc"],
             "page_size": self.logs_state["page_size"],
             "visible_columns": self.logs_state["visible_columns"],
+            "watch_folder": self.logs_state.get("watch_folder", ""),
+            "watch_pattern": self.logs_state.get("watch_pattern", ""),
         }
         self._write_prefs_file_atomic(prefs_to_persist)
 
@@ -287,6 +309,8 @@ class TrelloApp(AppLayout):
         self._storage_set("logs_sort_desc", self.logs_state["sort_desc"])
         self._storage_set("logs_page_size", self.logs_state["page_size"])
         self._storage_set("logs_visible_columns", self.logs_state["visible_columns"])
+        self._storage_set("logs_watch_folder", self.logs_state.get("watch_folder", ""))
+        self._storage_set("logs_watch_pattern", self.logs_state.get("watch_pattern", ""))
 
     def _logs_query_signature(self) -> tuple[object, ...]:
         return (
@@ -307,6 +331,8 @@ class TrelloApp(AppLayout):
             bool(self.logs_state.get("sort_desc", False)),
             int(self.logs_state.get("page_size", 100)),
             tuple(self.logs_state.get("visible_columns", [])),
+            self.logs_state.get("watch_folder", ""),
+            self.logs_state.get("watch_pattern", ""),
         )
 
     def _invalidate_logs_query_cache(self):
@@ -725,6 +751,227 @@ class TrelloApp(AppLayout):
                 self.logs_view.refresh_column_selector(self.logs_state)
             except RuntimeError:
                 pass
+
+    # ===== Watcher handlers =====
+
+    def on_logs_watch_folder_change(self, value: str):
+        self.logs_state["watch_folder"] = (value or "").strip()
+        self._persist_logs_preferences_if_needed()
+
+    def on_logs_watch_pattern_change(self, value: str):
+        self.logs_state["watch_pattern"] = (value or "").strip()
+        self._persist_logs_preferences_if_needed()
+
+    def _is_view_following_live(self) -> bool:
+        """True si la vista esta en modo 'seguir el flujo': pagina 1 sin filtros activos."""
+        if int(self.logs_state.get("current_page", 1)) != 1:
+            return False
+        if (self.logs_state.get("search_text") or "").strip():
+            return False
+        if (self.logs_state.get("level_filter") or "All") != "All":
+            return False
+        return True
+
+    def _watcher_on_batch_threadsafe(self, file_path: str, rows: list, levels: list, columns: list):
+        """Callback invocado desde el hilo del watcher. Acumula y NO toca la UI."""
+        try:
+            self._log_buffer.set_columns(columns)
+            self._log_buffer.extend(rows, levels)
+            with self._watcher_pending_lock:
+                self._watcher_pending_batches.append((rows, levels, columns))
+        except Exception:
+            logger.exception("[WATCHER] Error en callback batch")
+
+    def _watcher_on_status_threadsafe(self, status: dict):
+        with self._watcher_pending_lock:
+            self._watcher_pending_batches.append(("__status__", status))  # type: ignore[arg-type]
+
+    def _watcher_on_file_changed_threadsafe(self, file_path: str):
+        with self._watcher_pending_lock:
+            self._watcher_pending_batches.append(("__file_changed__", file_path))  # type: ignore[arg-type]
+
+    async def _watcher_drain_loop(self):
+        """Drena los lotes acumulados por el watcher y refresca la UI con coalescing."""
+        REFRESH_MS = 250
+        try:
+            while self._watcher is not None and self._watcher.is_running():
+                await asyncio.sleep(REFRESH_MS / 1000.0)
+                with self._watcher_pending_lock:
+                    pending = self._watcher_pending_batches
+                    self._watcher_pending_batches = []
+
+                if not pending:
+                    self._update_lines_per_sec(0)
+                    continue
+
+                total_new_rows = 0
+                columns_seen: list[str] = []
+                file_changed: str | None = None
+                for item in pending:
+                    if isinstance(item, tuple) and len(item) == 2 and item[0] == "__status__":
+                        status = item[1] or {}
+                        if isinstance(status, dict):
+                            for k, v in status.items():
+                                if k == "watch_error":
+                                    self.logs_state["watch_error"] = v
+                        continue
+                    if isinstance(item, tuple) and len(item) == 2 and item[0] == "__file_changed__":
+                        file_changed = str(item[1])
+                        continue
+                    if isinstance(item, tuple) and len(item) == 3:
+                        rows, _levels, columns = item
+                        total_new_rows += len(rows)
+                        if columns and not columns_seen:
+                            columns_seen = list(columns)
+
+                if file_changed:
+                    self.logs_state["file_path"] = file_changed
+                    self.logs_state["file_label"] = f"En vivo: {Path(file_changed).name}"
+
+                snap_rows, snap_columns, snap_levels, buf_size, _total = self._log_buffer.snapshot()
+                if snap_columns and self.logs_state.get("columns") != snap_columns:
+                    self.logs_state["columns"] = snap_columns
+                    visible = [c for c in self.logs_state.get("visible_columns", []) if c in snap_columns]
+                    if not visible:
+                        visible = list(snap_columns)
+                    self.logs_state["visible_columns"] = visible
+                    self.logs_state["visible_columns_pending"] = list(visible)
+                self.logs_state["level_options"] = ["All"] + snap_levels
+                self.logs_state["buffer_count"] = buf_size
+                self.logs_state["buffer_max"] = self._log_buffer.maxlen
+                self._update_lines_per_sec(total_new_rows)
+
+                following = self._is_view_following_live()
+                if following and total_new_rows > 0:
+                    self.logs_rows = snap_rows
+                    self._invalidate_logs_query_cache()
+                    self.logs_state["pending_new_count"] = 0
+                    self._refresh_logs_view_core(should_render=True)
+                else:
+                    self.logs_state["pending_new_count"] = int(self.logs_state.get("pending_new_count", 0)) + total_new_rows
+                    try:
+                        self.logs_view.render(self.logs_state)
+                    except RuntimeError:
+                        pass
+                    self._page.update()
+        except asyncio.CancelledError:
+            return
+        except Exception:
+            logger.exception("[WATCHER] Drain loop error")
+
+    def _update_lines_per_sec(self, new_count: int):
+        import time as _time
+        now = _time.monotonic()
+        if new_count > 0:
+            self._watcher_lines_window.append((now, new_count))
+        cutoff = now - 5.0
+        self._watcher_lines_window = [(t, c) for t, c in self._watcher_lines_window if t >= cutoff]
+        total = sum(c for _, c in self._watcher_lines_window)
+        self.logs_state["lines_per_sec"] = total / 5.0
+
+    def on_logs_show_pending_new(self):
+        """Forzar consumo del buffer y reset de filtros que estan ocultando lo nuevo."""
+        self.logs_state["current_page"] = 1
+        snap_rows, snap_columns, snap_levels, buf_size, _ = self._log_buffer.snapshot()
+        if snap_columns:
+            self.logs_state["columns"] = snap_columns
+            visible = [c for c in self.logs_state.get("visible_columns", []) if c in snap_columns]
+            if not visible:
+                visible = list(snap_columns)
+            self.logs_state["visible_columns"] = visible
+            self.logs_state["visible_columns_pending"] = list(visible)
+        self.logs_state["level_options"] = ["All"] + snap_levels
+        self.logs_state["buffer_count"] = buf_size
+        self.logs_state["pending_new_count"] = 0
+        self.logs_rows = snap_rows
+        self._invalidate_logs_query_cache()
+        self.refresh_logs_view()
+
+    def on_logs_toggle_watch(self):
+        if self.logs_state.get("is_watching", False):
+            self._stop_watcher()
+        else:
+            self._start_watcher()
+
+    def _start_watcher(self):
+        folder = (self.logs_state.get("watch_folder") or "").strip()
+        pattern = (self.logs_state.get("watch_pattern") or r".+\.log$").strip()
+        if not folder:
+            self._page.open(ft.SnackBar(ft.Text("Indica una carpeta para vigilar.")))
+            self._page.update()
+            return
+        if not Path(folder).is_dir():
+            self.logs_state["watch_error"] = "La carpeta no existe o no es accesible."
+            try:
+                self.logs_view.render(self.logs_state)
+            except RuntimeError:
+                pass
+            self._page.update()
+            return
+
+        # Resetea estado de carga manual previa.
+        self._log_buffer = LifoLogBuffer(maxlen=self.logs_state.get("buffer_max", 100_000))
+        self.logs_rows = []
+        self._invalidate_logs_query_cache()
+        self.logs_state.update({
+            "is_watching": True,
+            "watch_error": "",
+            "pending_new_count": 0,
+            "buffer_count": 0,
+            "lines_per_sec": 0.0,
+            "current_page": 1,
+            "file_label": "Esperando primer fichero...",
+        })
+        self._persist_logs_preferences_if_needed()
+
+        try:
+            self._watcher = LogWatcher(
+                folder=folder,
+                pattern=pattern,
+                on_batch=self._watcher_on_batch_threadsafe,
+                on_status=self._watcher_on_status_threadsafe,
+                on_file_changed=self._watcher_on_file_changed_threadsafe,
+                start_from_end_for_current=True,
+            )
+        except ValueError as e:
+            self.logs_state["is_watching"] = False
+            self.logs_state["watch_error"] = str(e)
+            try:
+                self.logs_view.render(self.logs_state)
+            except RuntimeError:
+                pass
+            self._page.update()
+            return
+
+        self._watcher.start()
+        try:
+            self._watcher_drain_task = asyncio.get_running_loop().create_task(self._watcher_drain_loop())
+        except RuntimeError:
+            self._watcher_drain_task = None
+
+        try:
+            self.logs_view.render(self.logs_state)
+        except RuntimeError:
+            pass
+        self._page.update()
+
+    def _stop_watcher(self):
+        if self._watcher is not None:
+            try:
+                self._watcher.stop()
+            except Exception:
+                logger.exception("[WATCHER] Error al detener")
+            self._watcher = None
+        if self._watcher_drain_task is not None:
+            self._watcher_drain_task.cancel()
+            self._watcher_drain_task = None
+        self.logs_state["is_watching"] = False
+        self.logs_state["lines_per_sec"] = 0.0
+        try:
+            self.logs_view.render(self.logs_state)
+        except RuntimeError:
+            pass
+        self._page.update()
 
     def on_logs_export_click(self):
         if not self.logs_state.get("file_path"):
