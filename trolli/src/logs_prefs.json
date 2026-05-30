@@ -1,13 +1,27 @@
 {
   "search_text": "",
-  "level_filter": "All",
+  "level_filter": "Medium",
   "sort_by": "Timestamp",
   "sort_desc": false,
-  "page_size": 100,
+  "page_size": 50,
   "visible_columns": [
     "Timestamp",
-    "Message"
+    "Message",
+    "Area",
+    "Level",
+    "Process",
+    "Category",
+    "TID",
+    "EventID",
+    "Correlation"
   ],
+  "column_widths": {
+    "Timestamp": 220,
+    "Process": 110,
+    "Level": 90,
+    "Correlation": 140,
+    "Message": 1300
+  },
   "watch_folder": "C:\\Temp\\LOGS",
   "watch_pattern": ".+\\.log$"
 }

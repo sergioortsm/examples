@@ -1,5 +1,6 @@
 import flet as ft
 from data_store import DataStore
+from ui_tokens import APP_BORDER, APP_DIVIDER, APP_SIDEBAR_BG, APP_TEXT_ON_ACCENT
 
 
 class Sidebar(ft.Container):
@@ -31,7 +32,7 @@ class Sidebar(ft.Container):
             label_type=ft.NavigationRailLabelType.ALL,
             on_change=self.top_nav_change,
             destinations=self.top_nav_items,
-            bgcolor=ft.Colors.BLUE_GREY,
+            bgcolor=APP_SIDEBAR_BG,
             extended=True,
             height=165,
         )
@@ -42,7 +43,7 @@ class Sidebar(ft.Container):
             on_change=self.bottom_nav_change,
             extended=True,
             expand=True,
-            bgcolor=ft.Colors.BLUE_GREY,
+            bgcolor=APP_SIDEBAR_BG,
         )
         self.toggle_nav_rail_button = ft.IconButton(ft.Icons.ARROW_BACK)
 
@@ -51,13 +52,13 @@ class Sidebar(ft.Container):
                 [
                     ft.Row(
                         [
-                            ft.Text("Workspace"),
+                            ft.Text("Workspace", color=APP_TEXT_ON_ACCENT),
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                     ),
                     # divider
                     ft.Container(
-                        bgcolor=ft.Colors.BLACK_26,
+                        bgcolor=APP_DIVIDER,
                         border_radius=ft.BorderRadius(30, 30, 30, 30),
                         height=1,
                         alignment=ft.Alignment(x=1, y=0),
@@ -66,7 +67,7 @@ class Sidebar(ft.Container):
                     self.top_nav_rail,
                     # divider
                     ft.Container(
-                        bgcolor=ft.Colors.BLACK_26,
+                        bgcolor=APP_DIVIDER,
                         border_radius=ft.BorderRadius(30, 30, 30, 30),
                         height=1,
                         alignment=ft.Alignment(x=1, y=0),
@@ -79,7 +80,8 @@ class Sidebar(ft.Container):
             padding=ft.padding.Padding(left=15, top=15, right=15, bottom=15),
             margin=ft.margin.Margin(left=0, top=0, right=0, bottom=0),
             width=250,
-            bgcolor=ft.Colors.BLUE_GREY,
+            bgcolor=APP_SIDEBAR_BG,
+            border=ft.Border(right=ft.BorderSide(1, APP_BORDER)),
             visible=self.nav_rail_visible,
         )
 

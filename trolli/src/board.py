@@ -2,6 +2,19 @@ import itertools
 import flet as ft
 from board_list import BoardList
 from data_store import DataStore
+from ui_tokens import (
+    APP_BORDER,
+    APP_BORDER_STRONG,
+    APP_DIVIDER,
+    APP_SHELL_ACCENT,
+    APP_SHELL_ACCENT_HOVER,
+    APP_SURFACE,
+    APP_SURFACE_ALT,
+    APP_TEXT_MUTED,
+    APP_TEXT_ON_ACCENT,
+    APP_TEXT_PRIMARY,
+    surface_shadow,
+)
 
 
 class Board(ft.Container):
@@ -19,7 +32,12 @@ class Board(ft.Container):
         self.sidebar_width = 250
         self.chrome_width = 60        
         self.add_list_button = ft.FloatingActionButton(
-            icon=ft.Icons.ADD, height=30, on_click=self.create_list, tooltip="add a list"
+            icon=ft.Icons.ADD,
+            height=30,
+            bgcolor=APP_SHELL_ACCENT,
+            foreground_color=APP_TEXT_ON_ACCENT,
+            on_click=self.create_list,
+            tooltip="add a list",
         )
 
         self.board_lists = ft.Row(
@@ -116,12 +134,19 @@ class Board(ft.Container):
             color_options.data = e.control.data
             for k, v in option_dict.items():
                 if k == e.control.data:
-                    v.border = ft.Border.all(3, ft.Colors.BLACK_26)
+                    v.border = ft.Border.all(3, APP_BORDER_STRONG)
                 else:
-                    v.border = None
+                    v.border = ft.Border.all(1, APP_BORDER)
             dialog.content.update()
 
-        color_options = ft.GridView(runs_count=3, max_extent=40, data="", height=150)
+        color_options = ft.GridView(
+            runs_count=3,
+            max_extent=44,
+            data="",
+            height=150,
+            spacing=10,
+            run_spacing=10,
+        )
 
         for _, v in option_dict.items():
             v.on_click = set_color
@@ -149,30 +174,59 @@ class Board(ft.Container):
             self._page.update()
 
         dialog_text = ft.TextField(
-            label="New List Name", on_submit=close_dlg, on_change=textfield_change
+            label="New List Name",
+            on_submit=close_dlg,
+            on_change=textfield_change,
+            bgcolor=APP_SURFACE,
+            border_color=APP_BORDER,
+            focused_border_color=APP_SHELL_ACCENT,
+            text_style=ft.TextStyle(color=APP_TEXT_PRIMARY),
+            label_style=ft.TextStyle(color=APP_TEXT_MUTED),
         )
         create_button = ft.Button(
-            "Create", bgcolor=ft.Colors.BLUE_200, on_click=close_dlg, disabled=True
+            "Create",
+            bgcolor=APP_SHELL_ACCENT,
+            color=APP_TEXT_ON_ACCENT,
+            on_click=close_dlg,
+            disabled=True,
         )
         dialog = ft.AlertDialog(
             title=ft.Text("Name your new list"),
-            content=ft.Column(
-                [
-                    ft.Container(
-                        content=dialog_text,
-                        padding=ft.padding.Padding(left=5, right=5),
-                    ),
-                    color_options,
-                    ft.Row(
-                        [
-                            ft.Button("Cancel", on_click=close_dlg),
-                            create_button,
-                        ],
-                        alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-                    ),
-                ],
-                tight=True,
-                alignment=ft.MainAxisAlignment.CENTER,
+            content=ft.Container(
+                content=ft.Column(
+                    [
+                        ft.Container(
+                            content=dialog_text,
+                            padding=ft.padding.Padding(left=5, right=5),
+                        ),
+                        ft.Column(
+                            [
+                                ft.Text("Choose a color", size=12, color=APP_TEXT_MUTED),
+                                ft.Divider(height=10, thickness=1, color=APP_DIVIDER),
+                                color_options,
+                            ],
+                            spacing=6,
+                        ),
+                        ft.Row(
+                            [
+                                ft.Button(
+                                    "Cancel",
+                                    color=APP_TEXT_MUTED,
+                                    on_click=close_dlg,
+                                ),
+                                create_button,
+                            ],
+                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+                        ),
+                    ],
+                    tight=True,
+                    alignment=ft.MainAxisAlignment.CENTER,
+                ),
+                bgcolor=APP_SURFACE_ALT,
+                border=ft.Border.all(1, APP_BORDER),
+                border_radius=ft.BorderRadius(14, 14, 14, 14),
+                padding=ft.padding.Padding(left=12, top=12, right=12, bottom=12),
+                shadow=surface_shadow(offset_y=4, blur_radius=12),
             ),
             on_dismiss=lambda e: print("Modal dialog dismissed!"),
         )
@@ -195,9 +249,10 @@ class Board(ft.Container):
         return ft.Container(
             bgcolor=color,
             border_radius=ft.BorderRadius(50, 50, 50, 50),
-            height=10,
-            width=10,
-            padding=ft.padding.Padding(left=5, top=5, right=5, bottom=5),
+            border=ft.Border.all(1, APP_BORDER),
+            height=18,
+            width=18,
+            padding=ft.padding.Padding(left=6, top=6, right=6, bottom=6),
             alignment=ft.Alignment(x=0, y=0),
             data=color,
         )

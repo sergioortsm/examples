@@ -5,6 +5,7 @@ if TYPE_CHECKING:
 import itertools
 import flet as ft
 from data_store import DataStore
+from ui_tokens import APP_BORDER, APP_SURFACE, APP_TEXT_PRIMARY
 
 
 class Item(ft.Container):
@@ -19,14 +20,20 @@ class Item(ft.Container):
         #self.checkbox = ft.Checkbox(label=f"{self.item_text}", width=self.item_width)
         self.checkbox = ft.GestureDetector(
                             mouse_cursor=ft.MouseCursor.CLICK,
-                            content=ft.Checkbox(label=f"{self.item_text}", width=self.item_width),
+                            content=ft.Checkbox(
+                                label=f"{self.item_text}",
+                                width=self.item_width,
+                                label_style=ft.TextStyle(color=APP_TEXT_PRIMARY),
+                            ),
                         )
         self.card_row = ft.Row(
             [
                 ft.Container(
                     content=self.checkbox,
-                    border_radius=ft.BorderRadius(5, 5, 5, 5),
-                    padding=ft.padding.symmetric(horizontal=4, vertical=2),
+                    bgcolor=APP_SURFACE,
+                    border=ft.Border.all(1, APP_BORDER),
+                    border_radius=ft.BorderRadius(10, 10, 10, 10),
+                    padding=ft.padding.symmetric(horizontal=8, vertical=6),
                 )
             ],
             width=self.item_width,

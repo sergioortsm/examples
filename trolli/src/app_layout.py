@@ -2,6 +2,7 @@ from board import Board
 from data_store import DataStore
 import flet as ft
 from sidebar import Sidebar
+from ui_tokens import APP_BORDER, APP_SHELL_ACCENT, APP_SHELL_ACCENT_HOVER, APP_SURFACE, APP_TEXT_MUTED, surface_shadow
 
 
 class AppLayout(ft.Row):
@@ -13,7 +14,7 @@ class AppLayout(ft.Row):
         self.store: DataStore = store
         self.toggle_nav_rail_button = ft.IconButton(
             icon=ft.Icons.ARROW_CIRCLE_LEFT,
-            icon_color=ft.Colors.BLUE_GREY_400,
+            icon_color=APP_TEXT_MUTED,
             selected=False,
             selected_icon=ft.Icons.ARROW_CIRCLE_RIGHT,
             on_click=self.toggle_nav_rail,
@@ -43,8 +44,12 @@ class AppLayout(ft.Row):
                                 on_click=self.app.add_board,
                                 style=ft.ButtonStyle(
                                     bgcolor={
-                                        ft.ControlState.DEFAULT: ft.Colors.BLUE_200,
-                                        ft.ControlState.HOVERED: ft.Colors.BLUE_400,
+                                        ft.ControlState.DEFAULT: APP_SHELL_ACCENT,
+                                        ft.ControlState.HOVERED: APP_SHELL_ACCENT_HOVER,
+                                    },
+                                    color={
+                                        ft.ControlState.DEFAULT: APP_SURFACE,
+                                        ft.ControlState.HOVERED: APP_SURFACE,
                                     },
                                     shape={
                                         ft.ControlState.DEFAULT: ft.RoundedRectangleBorder(
@@ -66,8 +71,8 @@ class AppLayout(ft.Row):
                             width=200,
                             height=40,
                             text_size=12,
-                            border_color=ft.Colors.BLACK_26,
-                            focused_border_color=ft.Colors.BLUE_ACCENT,
+                            border_color=APP_BORDER,
+                            focused_border_color=APP_SHELL_ACCENT,
                             suffix_icon=ft.Icons.SEARCH,
                         )
                     ]
@@ -173,9 +178,10 @@ class AppLayout(ft.Row):
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                     ),
-                    border=ft.Border.all(1, ft.Colors.BLACK_38),
+                    border=ft.Border.all(1, APP_BORDER),
                     border_radius=ft.BorderRadius(5, 5, 5, 5),
-                    bgcolor=ft.Colors.WHITE_60,
+                    bgcolor=APP_SURFACE,
+                    shadow=surface_shadow(offset_y=4, blur_radius=12),
                     padding=ft.padding.Padding(left=10, top=10, right=10, bottom=10),
                     width=250,
                     data=b,

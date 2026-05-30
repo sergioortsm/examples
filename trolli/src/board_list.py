@@ -6,6 +6,17 @@ import itertools
 import flet as ft
 from item import Item
 from data_store import DataStore
+from ui_tokens import (
+    APP_BORDER,
+    APP_BORDER_STRONG,
+    APP_DIVIDER,
+    APP_SHELL_ACCENT,
+    APP_SURFACE,
+    APP_SURFACE_ALT,
+    APP_TEXT_MUTED,
+    APP_TEXT_PRIMARY,
+    surface_shadow,
+)
 
 
 class BoardList(ft.Container):
@@ -32,12 +43,15 @@ class BoardList(ft.Container):
             label="new card name",
             height=38,
             width=self.get_content_width(),
-            bgcolor=ft.Colors.WHITE,
+            bgcolor=APP_SURFACE,
+            border_color=APP_BORDER,
+            focused_border_color=APP_SHELL_ACCENT,
+            text_style=ft.TextStyle(color=APP_TEXT_PRIMARY),
             on_submit=self.add_item_handler,
         )
 
         self.end_indicator = ft.Container(
-            bgcolor=ft.Colors.BLACK_26,
+            bgcolor=APP_DIVIDER,
             border_radius=ft.BorderRadius(30, 30, 30, 30),
             height=3,
             width=self.get_item_width(),
@@ -51,6 +65,10 @@ class BoardList(ft.Container):
                     width=max(100, self.get_content_width() - 70),
                     height=34,
                     content_padding=ft.padding.Padding(left=10, bottom=10),
+                    bgcolor=APP_SURFACE,
+                    border_color=APP_BORDER,
+                    focused_border_color=APP_SHELL_ACCENT,
+                    text_style=ft.TextStyle(color=APP_TEXT_PRIMARY),
                 ),
                 ft.TextButton(text="Save", on_click=self.save_title),
             ]
@@ -61,6 +79,7 @@ class BoardList(ft.Container):
                 ft.Text(
                     value=self.title,
                     theme_style=ft.TextThemeStyle.TITLE_MEDIUM,
+                    color=APP_TEXT_PRIMARY,
                     text_align=ft.TextAlign.LEFT,
                     overflow=ft.TextOverflow.CLIP,
                     expand=True,
@@ -73,7 +92,7 @@ class BoardList(ft.Container):
                                     value="Edit",
                                     theme_style=ft.TextThemeStyle.LABEL_MEDIUM,
                                     text_align=ft.TextAlign.CENTER,
-                                    color=self.color,
+                                    color=self.color or APP_TEXT_MUTED,
                                 ),
                                 on_click=self.edit_title,
                             ),
@@ -83,7 +102,7 @@ class BoardList(ft.Container):
                                     value="Delete",
                                     theme_style=ft.TextThemeStyle.LABEL_MEDIUM,
                                     text_align=ft.TextAlign.CENTER,
-                                    color=self.color,
+                                    color=self.color or APP_TEXT_MUTED,
                                 ),
                                 on_click=self.delete_list,
                             ),
@@ -93,7 +112,7 @@ class BoardList(ft.Container):
                                     value="Move List",
                                     theme_style=ft.TextThemeStyle.LABEL_MEDIUM,
                                     text_align=ft.TextAlign.CENTER,
-                                    color=self.color,
+                                    color=self.color or APP_TEXT_MUTED,
                                 )
                             ),
                         ],
@@ -112,8 +131,8 @@ class BoardList(ft.Container):
                     ft.TextButton(
                         content=ft.Row(
                             [
-                                ft.Icon(ft.Icons.ADD),
-                                ft.Text("add card", color=ft.Colors.BLACK_38),
+                                ft.Icon(ft.Icons.ADD, color=APP_TEXT_MUTED),
+                                ft.Text("add card", color=APP_TEXT_MUTED),
                             ],
                             tight=True,
                         ),
@@ -127,10 +146,11 @@ class BoardList(ft.Container):
                 data=self.title,
             ),
             width=self.column_width,
-            border=ft.Border.all(2, ft.Colors.BLACK12),
-            border_radius=ft.BorderRadius(5, 5, 5, 5),
-            bgcolor=self.color if (self.color != "") else ft.Colors.BACKGROUND,
+            border=ft.Border.all(1, APP_BORDER),
+            border_radius=ft.BorderRadius(12, 12, 12, 12),
+            bgcolor=self.color if (self.color != "") else APP_SURFACE_ALT,
             padding=ft.padding.Padding(bottom=6, right=8, left=8, top=4),
+            shadow=surface_shadow(offset_y=4, blur_radius=12),
         )
 
         self.view = ft.DragTarget(
@@ -208,11 +228,11 @@ class BoardList(ft.Container):
 
     def list_will_drag_accept(self, e):
         if e.data == "true":
-            self.inner_list.border = ft.Border.all(2, ft.Colors.BLACK)
+            self.inner_list.border = ft.Border.all(2, APP_BORDER_STRONG)
         self.update()
 
     def list_drag_leave(self, e):
-        self.inner_list.border = ft.Border.all(2, ft.Colors.BLACK12)
+        self.inner_list.border = ft.Border.all(1, APP_BORDER)
         self.update()
 
     def delete_list(self, e):
@@ -228,6 +248,7 @@ class BoardList(ft.Container):
         self.header.controls[0] = ft.Text(
             value=self.title,
             theme_style=ft.TextThemeStyle.TITLE_MEDIUM,
+            color=APP_TEXT_PRIMARY,
             text_align=ft.TextAlign.LEFT,
             overflow=ft.TextOverflow.CLIP,
             expand=True,
@@ -259,7 +280,7 @@ class BoardList(ft.Container):
         control_to_add = ft.Column(
             [
                 ft.Container(
-                    bgcolor=ft.Colors.BLACK_26,
+                    bgcolor=APP_DIVIDER,
                     border_radius=ft.BorderRadius(30, 30, 30, 30),
                     height=3,
                     alignment=ft.Alignment(x=1, y=0),

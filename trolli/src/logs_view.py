@@ -4,22 +4,32 @@ from __future__ import annotations
 import flet as ft
 import flet_datatable2 as fdt
 from dialog import DialogSizer, build_column_selector_dialog
+from ui_tokens import APP_BORDER, APP_OVERLAY, APP_SURFACE, APP_SURFACE_ALT, APP_SURFACE_MUTED, APP_TEXT_MUTED, APP_TEXT_PRIMARY, surface_shadow
 
 
 class LogsView(ft.Column):
     _COLUMN_FIXED_WIDTHS: dict[str, int] = {
-        "Timestamp": 165,
-        "Process": 90,
+        "Timestamp": 180,
+        "Process": 110,
         "TID": 60,
-        "Area": 120,
-        "Category": 130,
+        "Area": 150,
+        "Category": 150,
         "EventID": 75,
-        "Level": 80,
-        "Correlation": 100,
+        "Level": 90,
+        "Correlation": 140,
+        "Message": 640,
     }
 
     def _column_width(self, column_name: str) -> int:
-        """Ancho fijo en píxeles para columnas no-Message. Usa mapa por nombre; fallback 120."""
+        """Ancho fijo por columna, con override persistido en logs_prefs.json."""
+        stored_widths = getattr(self.app, "logs_state", {}).get("column_widths", {})
+        if isinstance(stored_widths, dict):
+            try:
+                stored = int(stored_widths.get(column_name, 0))
+            except (TypeError, ValueError):
+                stored = 0
+            if stored > 0:
+                return stored
         return self._COLUMN_FIXED_WIDTHS.get(column_name, 120)
 
     def _is_message_column(self, column_name: str) -> bool:
@@ -31,10 +41,15 @@ class LogsView(ft.Column):
         self.app = app
         self.column_selector_visible = False
 
-        self.title_text = ft.Text("SharePoint ULS Logs", size=28, weight=ft.FontWeight.W_600)
+        self.title_text = ft.Text(
+            "SharePoint ULS Logs",
+            size=28,
+            weight=ft.FontWeight.W_600,
+            color=APP_TEXT_PRIMARY,
+        )
         self.file_text = ft.Text(
             "Sin archivo cargado",
-            color=ft.Colors.BLACK_54,
+            color=APP_TEXT_MUTED,
             max_lines=1,
             no_wrap=True,
             overflow=ft.TextOverflow.ELLIPSIS,
@@ -73,7 +88,7 @@ class LogsView(ft.Column):
             tooltip="Iniciar vigilancia en vivo",
             on_click=lambda e: self.app.on_logs_toggle_watch(),
         )
-        self.watch_status_text = ft.Text("", size=12, color=ft.Colors.BLUE_GREY_700)
+        self.watch_status_text = ft.Text("", size=12, color=APP_TEXT_MUTED)
         self.watch_row = ft.Row(
             [
                 self.watch_folder_field,
@@ -199,11 +214,14 @@ class LogsView(ft.Column):
         )
 
         # Inicializacion de contenedores de tabla y overlay de carga
-        self.table_content_container = ft.Container(expand=True)
+        self.table_content_container = ft.Container(
+            expand=True,
+            padding=ft.padding.Padding(left=8, top=8, right=8, bottom=8),
+        )
         self.loading_overlay = ft.Container(
             visible=False,
             expand=True,
-            bgcolor="#47000000",
+            bgcolor=APP_OVERLAY,
             alignment=ft.Alignment(x=0, y=0),
             content=ft.ProgressRing(width=44, height=44, stroke_width=4, color=ft.Colors.WHITE),
         )
@@ -214,6 +232,15 @@ class LogsView(ft.Column):
                 self.loading_overlay,
             ],
             expand=True,
+        )
+        self.table_surface = ft.Container(
+            content=self.table_container,
+            expand=True,
+            bgcolor=APP_SURFACE,
+            border=ft.Border.all(1, APP_BORDER),
+            border_radius=ft.BorderRadius(16, 16, 16, 16),
+            clip_behavior=ft.ClipBehavior.ANTI_ALIAS,
+            shadow=surface_shadow(),
         )
 
         # Fila de filtros + boton columnas alineado a la derecha
@@ -270,7 +297,7 @@ class LogsView(ft.Column):
             self.watch_row,
             self.filters_row,
             ft.Row([self.pending_new_button], alignment=ft.MainAxisAlignment.START),
-            self.table_container,
+            self.table_surface,
             ft.Row(
                 [self.prev_page_button, self.page_info_text, self.next_page_button],
                 alignment=ft.MainAxisAlignment.END,
@@ -504,45 +531,48 @@ class LogsView(ft.Column):
 
 
         data_table_columns = []
-        for idx, column in enumerate(visible_columns):
-            if self._is_message_column(column) or (len(visible_columns) == 1):
-                data_table_columns.append(
-                    fdt.DataColumn2(
-                        label=ft.Text(column),
-                        size=fdt.DataColumnSize.L if self._is_message_column(column) else None,
-                        fixed_width=None if self._is_message_column(column) else self._column_width(column),
-                    )
+        for column in visible_columns:
+            data_table_columns.append(
+                fdt.DataColumn2(
+                    label=ft.Container(
+                        content=ft.Text(
+                            column,
+                            size=12,
+                            weight=ft.FontWeight.W_600,
+                            color=APP_TEXT_MUTED,
+                        ),
+                        padding=ft.padding.Padding(left=4, top=10, right=4, bottom=10),
+                    ),
+                    fixed_width=self._column_width(column),
                 )
-            else:
-                data_table_columns.append(
-                    fdt.DataColumn2(
-                        label=ft.Text(column),
-                        fixed_width=self._column_width(column),
-                    )
-                )
+            )
 
-        # min_width = suma de columnas fijas + mínimo razonable para columnas size=
-        fixed_total = sum(
-            self._column_width(c) for c in visible_columns if not self._is_message_column(c)
-        )
-        has_message_col = any(self._is_message_column(c) for c in visible_columns)
-        min_table_width = max(600, fixed_total + (360 if has_message_col else 0))
+        # Priorizar scroll horizontal: la tabla mide la suma real de sus columnas.
+        min_table_width = max(600, sum(self._column_width(column) for column in visible_columns))
 
         data_table = fdt.DataTable2(
             expand=True,
             min_width=min_table_width,
             fixed_top_rows=1,
             fixed_left_columns=1 if visible_columns else 0,
-            heading_row_color=ft.Colors.BLUE_GREY_100,
+            # Cabecera uniforme: usar el MISMO color para heading_row_color y fixed_corner_color,
+            # asi la celda sticky de la esquina superior-izquierda no destaca sobre el resto del header.
+            heading_row_color=APP_SURFACE_MUTED,
+            fixed_corner_color=APP_SURFACE_MUTED,
+            # Columna sticky (Timestamp): mismo fondo que el resto de filas (transparente)
+            # para que NO se distinga del resto del cuerpo.
+            fixed_columns_color=APP_SURFACE_ALT,
+            visible_horizontal_scroll_bar=True,
+            visible_vertical_scroll_bar=True,
+            # Altura uniforme para layout/scroll predecibles.
+            data_row_height=42,
             horizontal_margin=18,
             column_spacing=24,
             show_heading_checkbox=False,
             columns=data_table_columns,
             rows=[
-                fdt.DataRow2(
-                    cells=[self._build_cell(column, row) for column in visible_columns]
-                )
-                for row in page_rows
+                self._build_row(idx, row, visible_columns)
+                for idx, row in enumerate(page_rows)
             ],
             empty=ft.Text("No hay filas para los filtros actuales."),
         )
@@ -551,44 +581,71 @@ class LogsView(ft.Column):
         # NO envolver en ft.Row(scroll=AUTO): daría espacio horizontal infinito y rompería size=L.
         self.table_content_container.content = data_table
 
-    def _build_cell(self, column_name: str, row: dict[str, str]) -> ft.DataCell:
+    def _build_row(self, idx: int, row: dict[str, str], visible_columns: list[str]) -> fdt.DataRow2:
+        """Construye una DataRow2 con zebra striping y handlers de tap/doble-tap/clic-derecho.
+
+        - Zebra striping con `decoration` (BoxDecoration) en filas impares.
+        - on_double_tap: abre el diálogo de detalle con todas las columnas visibles.
+        - on_secondary_tap (clic derecho): copia la fila como TSV al portapapeles.
+        NOTA: para que estos eventos del row se disparen, las celdas NO deben tener
+        sus propios handlers de tap (ver `_build_cell`).
+        """
+        decoration = ft.BoxDecoration(
+            bgcolor=APP_SURFACE if idx % 2 == 0 else APP_SURFACE_ALT,
+        )
+
+        return fdt.DataRow2(
+            cells=[self._build_cell(column, row, idx) for column in visible_columns],
+            decoration=decoration,
+            on_double_tap=lambda e, r=row, cols=visible_columns: self.app.on_logs_open_message_detail(r, cols),
+            on_secondary_tap=lambda e, r=row, cols=visible_columns: self.app.on_logs_copy_row(r, cols),
+        )
+
+    def _build_cell(self, column_name: str, row: dict[str, str], row_index: int) -> ft.DataCell:
         value = str(row.get(column_name, ""))
         is_message = self._is_message_column(column_name)
+        cell_bgcolor = APP_SURFACE if row_index % 2 == 0 else APP_SURFACE_ALT
         if is_message:
             preview = value.replace("\n", " ").strip()
             tooltip_text = preview if preview else "Mensaje vacio"
-            content = ft.GestureDetector(
-                mouse_cursor=ft.MouseCursor.CLICK,
-                on_tap=lambda e, text=value, col=column_name: self.app.on_logs_open_message_detail(text, col),
-                content=ft.Container(
-                    content=ft.Row(
-                        [
-                            ft.Container(
-                                content=ft.Text(
-                                    value,
-                                    max_lines=2,
-                                    overflow=ft.TextOverflow.ELLIPSIS,
-                                    no_wrap=False,
-                                ),
-                                expand=True,
+            # NOTA: sin GestureDetector — los handlers van en DataRow2 (on_double_tap / on_secondary_tap).
+            # El icono OPEN_IN_FULL queda como pista visual de que la fila es interactiva.
+            content = ft.Container(
+                content=ft.Row(
+                    [
+                        ft.Container(
+                            content=ft.Text(
+                                value,
+                                max_lines=2,
+                                overflow=ft.TextOverflow.ELLIPSIS,
+                                no_wrap=False,
                             ),
-                            ft.Icon(ft.Icons.OPEN_IN_FULL, size=16, color=ft.Colors.BLUE_GREY_500),
-                        ],
-                        spacing=8,
-                        vertical_alignment=ft.CrossAxisAlignment.CENTER,
-                    ),
-                    padding=ft.padding.Padding(left=6, top=4, right=6, bottom=4),
-                    border_radius=ft.BorderRadius(6, 6, 6, 6),
-                    tooltip=f"Clic para ver completo: {tooltip_text}",
+                            expand=True,
+                        ),
+                        ft.Icon(ft.Icons.OPEN_IN_FULL, size=16, color=APP_TEXT_MUTED),
+                    ],
+                    spacing=8,
+                    vertical_alignment=ft.CrossAxisAlignment.CENTER,
                 ),
+                padding=ft.padding.Padding(left=6, top=4, right=6, bottom=4),
+                border_radius=ft.BorderRadius(6, 6, 6, 6),
+                bgcolor=cell_bgcolor,
+                border=ft.Border.all(1, APP_BORDER),
+                tooltip=f"Doble clic para ver completo · Clic derecho para copiar fila — {tooltip_text}",
             )
             return ft.DataCell(content)
         else:
             return ft.DataCell(
-                ft.Text(
-                    value,
-                    selectable=True,
-                    max_lines=2,
-                    overflow=ft.TextOverflow.ELLIPSIS,
+                ft.Container(
+                    content=ft.Text(
+                        value,
+                        selectable=True,
+                        max_lines=2,
+                        overflow=ft.TextOverflow.ELLIPSIS,
+                        color=APP_TEXT_PRIMARY,
+                    ),
+                    padding=ft.padding.Padding(left=4, top=6, right=4, bottom=6),
+                    bgcolor=cell_bgcolor,
+                    border_radius=ft.BorderRadius(6, 6, 6, 6),
                 )
             )
