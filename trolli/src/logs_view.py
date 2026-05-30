@@ -1,16 +1,26 @@
 from __future__ import annotations
 
+
 import flet as ft
+import flet_datatable2 as fdt
+from dialog import DialogSizer, build_column_selector_dialog
 
 
 class LogsView(ft.Column):
-    def _column_width(self, column_name: str) -> int:
-        """Devuelve el ancho en píxeles para columnas normales (excepto Message)."""
-        return 120
+    _COLUMN_FIXED_WIDTHS: dict[str, int] = {
+        "Timestamp": 165,
+        "Process": 90,
+        "TID": 60,
+        "Area": 120,
+        "Category": 130,
+        "EventID": 75,
+        "Level": 80,
+        "Correlation": 100,
+    }
 
-    def _message_column_width(self) -> int:
-        """Ancho fijo para la columna Message."""
-        return 820
+    def _column_width(self, column_name: str) -> int:
+        """Ancho fijo en píxeles para columnas no-Message. Usa mapa por nombre; fallback 120."""
+        return self._COLUMN_FIXED_WIDTHS.get(column_name, 120)
 
     def _is_message_column(self, column_name: str) -> bool:
         """Devuelve True si la columna es 'Message' (insensible a mayúsculas/minúsculas)."""
@@ -22,8 +32,27 @@ class LogsView(ft.Column):
         self.column_selector_visible = False
 
         self.title_text = ft.Text("SharePoint ULS Logs", size=28, weight=ft.FontWeight.W_600)
-        self.file_text = ft.Text("Sin archivo cargado", color=ft.Colors.BLACK54)
-        self.status_text = ft.Text("", color=ft.Colors.RED_600)
+        self.file_text = ft.Text(
+            "Sin archivo cargado",
+            color=ft.Colors.BLACK_54,
+            max_lines=1,
+            no_wrap=True,
+            overflow=ft.TextOverflow.ELLIPSIS,
+        )
+        self.status_text = ft.Text(
+            "",
+            color=ft.Colors.RED_600,
+            max_lines=1,
+            no_wrap=True,
+        )
+        self.metadata_row = ft.Row(
+            [
+                ft.Container(content=self.file_text, expand=True),
+                self.status_text,
+            ],
+            spacing=12,
+            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+        )
 
         self.search_field = ft.TextField(
             label="Buscar",
@@ -72,25 +101,19 @@ class LogsView(ft.Column):
 
         self.column_selector = ft.Row(
             [],
-            spacing=8,
+            spacing=2,
             wrap=True,
+            run_spacing=2,
             scroll=ft.ScrollMode.AUTO,
         )
-        self.column_selector_container = ft.Container(
-            content=self.column_selector,
-            visible=self.column_selector_visible,
-            height=120,
-            padding=ft.padding.Padding(top=4),
-        )
-        self.column_selector_panel = self.column_selector_container
-        self.toggle_column_selector_button = ft.TextButton(
-            "Mostrar",
-            icon=ft.Icons.KEYBOARD_ARROW_DOWN,
+        self.toggle_column_selector_button = ft.IconButton(
+            icon=ft.Icons.VIEW_COLUMN,
+            tooltip="Columnas visibles",
             on_click=lambda e: self.app.on_logs_toggle_column_selector(),
         )
-        self.apply_columns_button = ft.ElevatedButton(
+        self.apply_columns_button = ft.Button(
             "Aplicar",
-            icon=ft.Icons.CHECK,
+            icon=ft.Icons.CHECK_CIRCLE,
             on_click=lambda e: self.app.on_logs_apply_columns(),
             disabled=True,
         )
@@ -103,7 +126,18 @@ class LogsView(ft.Column):
             visible=False,
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
         )
+        (
+            self.column_selector_dialog_container,
+            self.column_selector_dialog,
+        ) = build_column_selector_dialog(
+            column_selector=self.column_selector,
+            apply_columns_status=self.apply_columns_status,
+            apply_columns_button=self.apply_columns_button,
+            on_close=self._close_column_selector,
+            show_close_button=False,
+        )
 
+        # Inicializacion de contenedores de tabla y overlay de carga
         self.table_content_container = ft.Container(expand=True)
         self.loading_overlay = ft.Container(
             visible=False,
@@ -120,6 +154,7 @@ class LogsView(ft.Column):
                 spacing=10,
             ),
         )
+
         self.table_container = ft.Stack(
             [
                 self.table_content_container,
@@ -128,55 +163,60 @@ class LogsView(ft.Column):
             expand=True,
         )
 
+        # Fila de filtros + boton columnas alineado a la derecha
+        self.filters_row = ft.Row(
+            [
+                ft.Row(
+                    [
+                        self.search_field,
+                        self.level_dropdown,
+                        self.sort_dropdown,
+                        self.sort_direction_button,
+                        self.page_size_dropdown,
+                    ],
+                    spacing=8,
+                    expand=True,
+                    vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                ),
+                ft.Row(
+                    [
+                        ft.Container(
+                            content=self.toggle_column_selector_button,
+                            alignment=ft.Alignment(1, 0),
+                            padding=ft.padding.Padding(left=12),
+                        ),
+                    ],
+                    spacing=0,
+                    vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                ),
+            ],
+            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+            wrap=False,
+        )
+
         self.controls = [
             ft.Row(
                 [
-                    ft.Column([self.title_text, self.file_text], spacing=2, expand=True),
-                    ft.ElevatedButton("Abrir .log", icon=ft.Icons.FOLDER_OPEN, on_click=self.app.open_log_file_dialog),
-                    ft.ElevatedButton("Exportar CSV", icon=ft.Icons.DOWNLOAD, on_click=lambda e: self.app.on_logs_export_click()),
+                    ft.Column([self.title_text, self.metadata_row], spacing=2, expand=True),
+                    ft.Button("Abrir .log", icon=ft.Icons.FOLDER_OPEN, on_click=self.app.open_log_file_dialog),
+                    ft.Button("Exportar CSV", icon=ft.Icons.DOWNLOAD, on_click=lambda e: self.app.on_logs_export_click()),
                 ],
                 alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                 vertical_alignment=ft.CrossAxisAlignment.START,
             ),
-            self.status_text,
-            ft.Row(
-                [
-                    self.search_field,
-                    self.level_dropdown,
-                    self.sort_dropdown,
-                    self.sort_direction_button,
-                    self.page_size_dropdown,
-                ],
-                wrap=True,
-            ),
-            ft.Container(
-                content=ft.Column(
-                    [
-                        ft.Row(
-                            [
-                                ft.Text("Columnas visibles", size=16, weight=ft.FontWeight.W_600),
-                                self.toggle_column_selector_button,
-                                self.apply_columns_button,
-                                self.apply_columns_status,
-                            ],
-                            alignment=ft.MainAxisAlignment.START,
-                            spacing=12,
-                            wrap=True,
-                        ),
-                        self.column_selector_panel,
-                    ],
-                    spacing=6,
-                ),
-                padding=ft.padding.Padding(left=8, top=8, right=8, bottom=8),
-                bgcolor="#8AFFFFFF",
-                border_radius=ft.BorderRadius(6, 6, 6, 6),
-            ),
+            self.filters_row,
             self.table_container,
             ft.Row(
                 [self.prev_page_button, self.page_info_text, self.next_page_button],
                 alignment=ft.MainAxisAlignment.END,
             ),
         ]
+
+    def _close_column_selector(self):
+        # Oculta el panel selector de columnas
+        self.app.logs_state["column_selector_expanded"] = False
+        self.refresh_column_selector(self.app.logs_state)
 
     def render(self, state: dict):
         self.file_text.value = state.get("file_label", "Sin archivo cargado")
@@ -239,13 +279,31 @@ class LogsView(ft.Column):
 
         self.column_selector.controls = [
             ft.Container(
-                content=ft.Checkbox(
-                    label=column,
-                    value=column in pending_columns,
-                    disabled=is_busy,
-                    on_change=lambda e, col=column: self.app.on_logs_toggle_column(col, bool(e.control.value)),
+                width=150,
+                padding=ft.padding.Padding(left=0, top=0, right=0, bottom=0),
+                content=ft.Row(
+                    [
+                        ft.Checkbox(
+                            value=column in pending_columns,
+                            disabled=is_busy,
+                            scale=0.9,
+                            on_change=lambda e, col=column: self.app.on_logs_toggle_column(col, bool(e.control.value)),
+                        ),
+                        ft.Container(
+                            width=112,
+                            content=ft.Text(
+                                column,
+                                size=12,
+                                max_lines=1,
+                                no_wrap=True,
+                                overflow=ft.TextOverflow.ELLIPSIS,
+                            ),
+                        ),
+                    ],
+                    spacing=2,
+                    tight=True,
+                    vertical_alignment=ft.CrossAxisAlignment.CENTER,
                 ),
-                width=210,
             )
             for column in columns
         ]
@@ -270,16 +328,57 @@ class LogsView(ft.Column):
         if getattr(self, "page", None) is not None:
             self.update()
 
+    def refresh_loading_state(self, state: dict):
+        # Refresco ligero para mostrar overlay/estado de paginacion sin reconstruir la tabla.
+        current_page = state.get("current_page", 1)
+        total_pages = state.get("total_pages", 1)
+        self.page_info_text.value = f"Pagina {current_page} / {total_pages}"
+        is_loading = bool(state.get("is_loading", False))
+        self.prev_page_button.disabled = is_loading or current_page <= 1
+        self.next_page_button.disabled = is_loading or current_page >= total_pages
+        self.loading_overlay.visible = is_loading
+        if getattr(self, "page", None) is not None:
+            self.update()
+
+    def _update_column_selector_dialog_size(self):
+        page = getattr(self, "page", None)
+        if page is None:
+            return
+
+        DialogSizer.fit_container(
+            page,
+            self.column_selector_dialog_container,
+            width_ratio=0.41,
+            min_width=260,
+            max_width=490,
+            height_ratio=0.36,
+            min_height=160,
+            max_height=350,
+        )
+
     def _sync_column_selector_visibility(self):
-        self.column_selector_container.visible = self.column_selector_visible
-        self.toggle_column_selector_button.text = (
-            "Ocultar" if self.column_selector_visible else "Mostrar"
-        )
-        self.toggle_column_selector_button.icon = (
-            ft.Icons.KEYBOARD_ARROW_UP
-            if self.column_selector_visible
-            else ft.Icons.KEYBOARD_ARROW_DOWN
-        )
+        page = getattr(self, "page", None)
+        if page is not None:
+            if self.column_selector_visible:
+                self._update_column_selector_dialog_size()
+                opener = getattr(page, "open", None)
+                if callable(opener):
+                    opener(self.column_selector_dialog)
+                else:
+                    if self.column_selector_dialog not in page.overlay:
+                        page.overlay.append(self.column_selector_dialog)
+                    self.column_selector_dialog.open = True
+                    page.update()
+            else:
+                closer = getattr(page, "close", None)
+                if callable(closer):
+                    closer(self.column_selector_dialog)
+                else:
+                    self.column_selector_dialog.open = False
+                    page.update()
+        # Mantener icono estable para evitar dos botones de cierre simultaneos.
+        self.toggle_column_selector_button.icon = ft.Icons.VIEW_COLUMN
+        self.toggle_column_selector_button.tooltip = "Columnas visibles"
 
     def _render_table(self, state: dict):
         visible_columns = state.get("visible_columns", [])
@@ -299,46 +398,58 @@ class LogsView(ft.Column):
             )
             return
 
-        data_table = ft.DataTable(
-            columns=[
-                ft.DataColumn(
-                    ft.Container(
-                        content=ft.Text(column),
-                        width=self._message_column_width() if self._is_message_column(column) else self._column_width(column),
+
+        data_table_columns = []
+        for idx, column in enumerate(visible_columns):
+            if self._is_message_column(column) or (len(visible_columns) == 1):
+                data_table_columns.append(
+                    fdt.DataColumn2(
+                        label=ft.Text(column),
+                        size=fdt.DataColumnSize.L if self._is_message_column(column) else None,
+                        fixed_width=None if self._is_message_column(column) else self._column_width(column),
                     )
                 )
-                for column in visible_columns
-            ],
+            else:
+                data_table_columns.append(
+                    fdt.DataColumn2(
+                        label=ft.Text(column),
+                        fixed_width=self._column_width(column),
+                    )
+                )
+
+        # min_width = suma de columnas fijas + mínimo razonable para columnas size=
+        fixed_total = sum(
+            self._column_width(c) for c in visible_columns if not self._is_message_column(c)
+        )
+        has_message_col = any(self._is_message_column(c) for c in visible_columns)
+        min_table_width = max(600, fixed_total + (360 if has_message_col else 0))
+
+        data_table = fdt.DataTable2(
+            expand=True,
+            min_width=min_table_width,
+            fixed_top_rows=1,
+            fixed_left_columns=1 if visible_columns else 0,
+            heading_row_color=ft.Colors.BLUE_GREY_100,
+            horizontal_margin=18,
+            column_spacing=24,
+            show_heading_checkbox=False,
+            columns=data_table_columns,
             rows=[
-                ft.DataRow(
+                fdt.DataRow2(
                     cells=[self._build_cell(column, row) for column in visible_columns]
                 )
                 for row in page_rows
             ],
-            expand=True,
-            heading_row_color=ft.Colors.BLUE_GREY_100,
-            data_row_min_height=44,
-            data_row_max_height=64,
-            horizontal_margin=18,
-            column_spacing=24,
-            show_checkbox_column=False,
+            empty=ft.Text("No hay filas para los filtros actuales."),
         )
 
-        self.table_content_container.content = ft.Column(
-            [
-                ft.Container(
-                    content=ft.Row([data_table], scroll=ft.ScrollMode.AUTO),
-                    margin=ft.margin.Margin(top=8, right=8, bottom=8, left=8),
-                )
-            ],
-            expand=True,
-            scroll=ft.ScrollMode.AUTO,
-        )
+        # DataTable2 gestiona su propio scroll (horizontal con min_width, vertical con fixed_top_rows).
+        # NO envolver en ft.Row(scroll=AUTO): daría espacio horizontal infinito y rompería size=L.
+        self.table_content_container.content = data_table
 
     def _build_cell(self, column_name: str, row: dict[str, str]) -> ft.DataCell:
         value = str(row.get(column_name, ""))
         is_message = self._is_message_column(column_name)
-        max_lines = 3 if is_message else 2
         if is_message:
             preview = value.replace("\n", " ").strip()
             tooltip_text = preview if preview else "Mensaje vacio"
@@ -362,7 +473,6 @@ class LogsView(ft.Column):
                         spacing=8,
                         vertical_alignment=ft.CrossAxisAlignment.CENTER,
                     ),
-                    width=self._message_column_width(),
                     padding=ft.padding.Padding(left=6, top=4, right=6, bottom=4),
                     border_radius=ft.BorderRadius(6, 6, 6, 6),
                     tooltip=f"Clic para ver completo: {tooltip_text}",
@@ -370,13 +480,11 @@ class LogsView(ft.Column):
             )
             return ft.DataCell(content)
         else:
-            content = ft.Container(
-                content=ft.Text(
+            return ft.DataCell(
+                ft.Text(
                     value,
                     selectable=True,
-                    max_lines=max_lines,
+                    max_lines=2,
                     overflow=ft.TextOverflow.ELLIPSIS,
-                ),
-                width=self._column_width(column_name),
+                )
             )
-            return ft.DataCell(content)

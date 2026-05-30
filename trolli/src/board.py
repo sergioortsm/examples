@@ -13,9 +13,9 @@ class Board(ft.Container):
         self.store: DataStore = store
         self.app = app
         self.name = name
-        self.min_column_width = 240
-        self.max_column_width = 420
-        self.default_column_width = 250
+        self.min_column_width = 190
+        self.max_column_width = 340
+        self.default_column_width = 200
         self.sidebar_width = 250
         self.chrome_width = 60        
         self.add_list_button = ft.FloatingActionButton(
@@ -26,7 +26,7 @@ class Board(ft.Container):
             controls=[self.add_list_button],
             vertical_alignment=ft.CrossAxisAlignment.START,
             scroll=ft.ScrollMode.AUTO,
-            spacing=10,
+            spacing=8,
             expand=True,
             width=self._get_available_width(True, self.app._page.width),
             height=(self.app._page.height - 95),
@@ -79,11 +79,7 @@ class Board(ft.Container):
         )
         dynamic_width = width_for_lists / list_count
 
-        # 1-4 columnas: sin tope superior para que se estiren y no quede hueco
-        if list_count <= 4:
-            return max(self.min_column_width, dynamic_width)
-
-        # 5+ columnas: mantener tope para no tener columnas excesivas
+        # Siempre aplicar tope: columnas compactas independientemente del número
         return max(self.min_column_width, min(self.max_column_width, dynamic_width))
 
     def _apply_column_widths(self):
@@ -120,7 +116,7 @@ class Board(ft.Container):
             color_options.data = e.control.data
             for k, v in option_dict.items():
                 if k == e.control.data:
-                    v.border = ft.Border.all(3, ft.Colors.BLACK26)
+                    v.border = ft.Border.all(3, ft.Colors.BLACK_26)
                 else:
                     v.border = None
             dialog.content.update()
@@ -155,8 +151,8 @@ class Board(ft.Container):
         dialog_text = ft.TextField(
             label="New List Name", on_submit=close_dlg, on_change=textfield_change
         )
-        create_button = ft.ElevatedButton(
-            text="Create", bgcolor=ft.Colors.BLUE_200, on_click=close_dlg, disabled=True
+        create_button = ft.Button(
+            "Create", bgcolor=ft.Colors.BLUE_200, on_click=close_dlg, disabled=True
         )
         dialog = ft.AlertDialog(
             title=ft.Text("Name your new list"),
@@ -169,7 +165,7 @@ class Board(ft.Container):
                     color_options,
                     ft.Row(
                         [
-                            ft.ElevatedButton(text="Cancel", on_click=close_dlg),
+                            ft.Button("Cancel", on_click=close_dlg),
                             create_button,
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,

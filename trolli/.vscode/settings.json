@@ -23,6 +23,7 @@
         "Set-Content": true,
         "name,": true,
         "obj": true,
-        ".\\.venv\\Scripts\\python.exe": true
+        ".\\.venv\\Scripts\\python.exe": true,
+        "&": true
     }
 }

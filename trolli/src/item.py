@@ -22,6 +22,7 @@ class Item(ft.Container):
                 ft.Container(
                     content=self.checkbox,
                     border_radius=ft.BorderRadius(5, 5, 5, 5),
+                    padding=ft.padding.symmetric(horizontal=4, vertical=2),
                 )
             ],
             width=self.item_width,
@@ -30,6 +31,7 @@ class Item(ft.Container):
         self.card_item = ft.Card(
             content=self.card_row,
             elevation=1,
+            margin=ft.margin.all(2),
             data=self.list,
         )
         self.view = ft.Draggable(

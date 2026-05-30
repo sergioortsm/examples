@@ -64,7 +64,7 @@ class AppLayout(ft.Row):
                             width=200,
                             height=40,
                             text_size=12,
-                            border_color=ft.Colors.BLACK26,
+                            border_color=ft.Colors.BLACK_26,
                             focused_border_color=ft.Colors.BLUE_ACCENT,
                             suffix_icon=ft.Icons.SEARCH,
                         )
@@ -122,6 +122,11 @@ class AppLayout(ft.Row):
             self.active_view.resize(
                 self.sidebar.visible, self._page.width, self._page.height
             )
+        if hasattr(self.app, "on_layout_resize"):
+            try:
+                self.app.on_layout_resize(e)
+            except Exception:
+                pass
         self._page.update()
 
     def hydrate_all_boards_view(self):
@@ -164,9 +169,9 @@ class AppLayout(ft.Row):
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                     ),
-                    border=ft.Border.all(1, ft.Colors.BLACK38),
+                    border=ft.Border.all(1, ft.Colors.BLACK_38),
                     border_radius=ft.BorderRadius(5, 5, 5, 5),
-                    bgcolor=ft.Colors.WHITE60,
+                    bgcolor=ft.Colors.WHITE_60,
                     padding=ft.padding.Padding(left=10, top=10, right=10, bottom=10),
                     width=250,
                     data=b,

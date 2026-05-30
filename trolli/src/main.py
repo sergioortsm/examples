@@ -12,11 +12,14 @@ from board import Board
 from user import User
 from data_store import DataStore
 from memory_store import InMemoryStore
+from dialog import DialogSizer, build_logs_message_dialog
 from logs_view import LogsView
 from log_service import (
     apply_filters_sort_paginate,
     export_rows_to_csv,
+    filter_sort_rows,
     load_sharepoint_log,
+    paginate_rows,
 )
 
 
@@ -26,11 +29,16 @@ class TrelloApp(AppLayout):
         self.store: DataStore = store
         self.user: str | None = None
         self._fallback_storage: dict[str, object] = {}
+        self._shared_preferences = ft.SharedPreferences()
         self._prefs_path = Path(os.getenv("APPDATA", str(Path.home()))) / "trolli" / "logs_prefs.json"
         self._page.on_route_change = self.route_change
         self._page.on_error = lambda e: print(f"FLET ERROR: {getattr(e, 'data', e)}")
         self.boards = self.store.get_boards()
         self.logs_rows: list[dict[str, str]] = []
+        self._logs_query_cache_signature: tuple[object, ...] | None = None
+        self._logs_query_cache_rows: list[dict[str, str]] = []
+        self._logs_prefs_signature_last_saved: tuple[object, ...] | None = None
+        self._logs_refresh_pending = False
         self.logs_state = {
             "file_path": "",
             "file_label": "Sin archivo cargado",
@@ -86,45 +94,36 @@ class TrelloApp(AppLayout):
         if hasattr(self.file_picker, "on_result"):
             self.file_picker.on_result = self.on_log_file_selected
         self._page.services.append(self.file_picker)
-        self.logs_message_dialog_title = ft.Row(
-            [
-                ft.Icon(ft.Icons.ARTICLE_OUTLINED, size=18, color=ft.Colors.BLUE_GREY_700),
-                ft.Text("", weight=ft.FontWeight.W_600),
-            ],
-            spacing=8,
-            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+        self._page.services.append(self._shared_preferences)
+        (
+            self.logs_message_dialog_title,
+            self.logs_message_dialog_meta,
+            self.logs_message_dialog_body,
+            self.logs_message_dialog_container,
+            self.logs_message_dialog,
+        ) = build_logs_message_dialog(
+            on_copy=self.on_logs_copy_message_detail,
+            on_close=self.on_logs_close_message_detail,
         )
-        self.logs_message_dialog_meta = ft.Text("", size=12, color=ft.Colors.BLUE_GREY_700)
-        self.logs_message_dialog_body = ft.Text("", selectable=True)
-        self.logs_message_dialog_content = ft.Column(
-            [
-                self.logs_message_dialog_meta,
-                ft.Divider(height=10, thickness=1),
-                self.logs_message_dialog_body,
-            ],
-            scroll=ft.ScrollMode.AUTO,
-            expand=True,
+        self.global_loading_label = ft.Text("Cargando archivo...", color=ft.Colors.WHITE)
+        self.global_loading_overlay = ft.Container(
+            visible=False,
+            width=max(0, int(getattr(self._page, "width", 0) or 0)),
+            height=max(0, int(getattr(self._page, "height", 0) or 0)),
+            bgcolor="#66000000",
+            alignment=ft.Alignment(x=0, y=0),
+            content=ft.Column(
+                [
+                    ft.ProgressRing(width=52, height=52, stroke_width=4, color=ft.Colors.WHITE),
+                    self.global_loading_label,
+                ],
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                tight=True,
+                spacing=12,
+            ),
         )
-        self.logs_message_dialog_container = ft.Container(
-            content=self.logs_message_dialog_content,
-            width=860,
-            height=400,
-            padding=ft.padding.Padding(left=12, top=12, right=12, bottom=12),
-            border=ft.Border.all(1, ft.Colors.BLUE_GREY_100),
-            border_radius=ft.BorderRadius(8, 8, 8, 8),
-            bgcolor=ft.Colors.WHITE,
-        )
-        self.logs_message_dialog: ft.AlertDialog = ft.AlertDialog(
-            modal=True,
-            title=self.logs_message_dialog_title,
-            content=self.logs_message_dialog_container,
-            actions=[
-                ft.TextButton("Copiar", on_click=self.on_logs_copy_message_detail),
-                ft.TextButton("Cerrar", on_click=self.on_logs_close_message_detail),
-            ],
-            actions_alignment=ft.MainAxisAlignment.END,
-            on_dismiss=self.on_logs_close_message_detail,
-        )
+        self._global_loading_counter = 0
+        self._global_loading_registered = False
         self._restore_logs_preferences()
         self.logs_view = LogsView(self)
 
@@ -140,9 +139,8 @@ class TrelloApp(AppLayout):
 
     def _storage_get(self, key: str, default=None):
         # Compatibilidad entre versiones de Flet (sync/async) y distintos backends.
-        for attr_name in ("client_storage", "shared_preferences", "session"):
-            storage = getattr(self._page, attr_name, None)
-            if not storage:
+        for storage in (self._shared_preferences, getattr(self._page, "client_storage", None), getattr(self._page, "session", None)):
+            if storage is None:
                 continue
             for getter_name in ("get", "get_async"):
                 getter = getattr(storage, getter_name, None)
@@ -181,9 +179,8 @@ class TrelloApp(AppLayout):
             pass
 
     def _storage_set(self, key: str, value):
-        for attr_name in ("client_storage", "shared_preferences", "session"):
-            storage = getattr(self._page, attr_name, None)
-            if not storage:
+        for storage in (self._shared_preferences, getattr(self._page, "client_storage", None), getattr(self._page, "session", None)):
+            if storage is None:
                 continue
             for setter_name in ("set", "set_async"):
                 setter = getattr(storage, setter_name, None)
@@ -202,6 +199,9 @@ class TrelloApp(AppLayout):
         self._fallback_storage[key] = value
 
     def initialize(self):
+        if not self._global_loading_registered:
+            self._page.overlay.append(self.global_loading_overlay)
+            self._global_loading_registered = True
         if self not in self._page.controls:
             self._page.add(self)
         self._page.update()
@@ -262,6 +262,55 @@ class TrelloApp(AppLayout):
         self._storage_set("logs_page_size", self.logs_state["page_size"])
         self._storage_set("logs_visible_columns", self.logs_state["visible_columns"])
 
+    def _logs_query_signature(self) -> tuple[object, ...]:
+        return (
+            self.logs_state.get("file_path", ""),
+            tuple(self.logs_state.get("columns", [])),
+            self.logs_state.get("search_text", ""),
+            self.logs_state.get("level_filter", "All"),
+            self.logs_state.get("sort_by", None),
+            bool(self.logs_state.get("sort_desc", False)),
+            int(self.logs_state.get("page_size", 100)),
+        )
+
+    def _logs_prefs_signature(self) -> tuple[object, ...]:
+        return (
+            self.logs_state.get("search_text", ""),
+            self.logs_state.get("level_filter", "All"),
+            self.logs_state.get("sort_by", None),
+            bool(self.logs_state.get("sort_desc", False)),
+            int(self.logs_state.get("page_size", 100)),
+            tuple(self.logs_state.get("visible_columns", [])),
+        )
+
+    def _invalidate_logs_query_cache(self):
+        self._logs_query_cache_signature = None
+        self._logs_query_cache_rows = []
+
+    async def _rebuild_logs_query_cache_in_thread_if_needed(self):
+        query_signature = self._logs_query_signature()
+        if query_signature == self._logs_query_cache_signature:
+            return
+
+        rows = await asyncio.to_thread(
+            filter_sort_rows,
+            self.logs_rows,
+            self.logs_state["columns"],
+            self.logs_state["search_text"],
+            self.logs_state["level_filter"],
+            self.logs_state["sort_by"],
+            self.logs_state["sort_desc"],
+        )
+        self._logs_query_cache_rows = rows
+        self._logs_query_cache_signature = query_signature
+
+    def _persist_logs_preferences_if_needed(self):
+        current_signature = self._logs_prefs_signature()
+        if current_signature == self._logs_prefs_signature_last_saved:
+            return
+        self._persist_logs_preferences()
+        self._logs_prefs_signature_last_saved = current_signature
+
     def open_log_file_dialog(self, e=None):
         print("[LOGS] open_log_file_dialog llamado")
         async def _pick_and_handle_file():
@@ -299,85 +348,134 @@ class TrelloApp(AppLayout):
     def on_log_file_selected(self, e):
         self._handle_selected_log_files(getattr(e, "files", None))
 
-    def load_log_file(self, file_path: str):
-        print(f"[LOGS] load_log_file: iniciando con file_path={file_path!r}")
-        self.logs_state["is_loading"] = True
-        try:
-            self.logs_view.render(self.logs_state)
-        except RuntimeError:
-            pass
-        self._page.update()
+    def _sync_global_loading_overlay_size(self):
+        self.global_loading_overlay.width = max(0, int(getattr(self._page, "width", 0) or 0))
+        self.global_loading_overlay.height = max(0, int(getattr(self._page, "height", 0) or 0))
 
-        try:
-            result = load_sharepoint_log(file_path)
-            print(f"[LOGS] load_sharepoint_log: error={result.error!r} rows={len(result.rows)} columns={result.columns}")
-            if result.error:
-                self.logs_rows = []
-                self.logs_state.update(
-                    {
-                        "file_path": file_path,
-                        "file_label": f"Archivo: {Path(file_path).name}",
-                        "columns": [],
-                        "visible_columns": [],
-                        "visible_columns_pending": [],
-                        "column_selector_expanded": False,
-                        "level_options": ["All"],
-                        "current_page": 1,
-                        "total_pages": 1,
-                        "filtered_total": 0,
-                        "page_rows": [],
-                        "error": result.error,
-                    }
-                )
-                return
+    def on_layout_resize(self, e=None):
+        self._sync_global_loading_overlay_size()
+        if self.global_loading_overlay.visible:
+            self._page.update()
 
-            self.logs_rows = result.rows
-            visible_columns = self.logs_state.get("visible_columns", [])
-            valid_visible = [c for c in visible_columns if c in result.columns]
-            if not valid_visible:
-                valid_visible = list(result.columns)
+    def begin_global_loading(self, label: str = "Cargando archivo..."):
+        self._global_loading_counter += 1
+        self.global_loading_label.value = label
+        self._sync_global_loading_overlay_size()
+        self.global_loading_overlay.visible = True
 
-            pending_columns = self.logs_state.get("visible_columns_pending", [])
-            valid_pending = [c for c in pending_columns if c in result.columns]
-            if not valid_pending:
-                valid_pending = list(valid_visible)
+    def end_global_loading(self):
+        self._global_loading_counter = max(0, self._global_loading_counter - 1)
+        if self._global_loading_counter == 0:
+            self.global_loading_overlay.visible = False
 
-            sort_by = self.logs_state.get("sort_by")
-            if sort_by not in result.columns:
-                sort_by = result.columns[0] if result.columns else None
-
-            level_filter = self.logs_state.get("level_filter", "All")
-            level_options = ["All"] + result.levels
-            if level_filter not in level_options:
-                level_filter = "All"
-
+    def _load_log_file_sync(self, file_path: str):
+        self._invalidate_logs_query_cache()
+        result = load_sharepoint_log(file_path)
+        print(f"[LOGS] load_sharepoint_log: error={result.error!r} rows={len(result.rows)} columns={result.columns}")
+        if result.error:
+            self.logs_rows = []
             self.logs_state.update(
                 {
                     "file_path": file_path,
                     "file_label": f"Archivo: {Path(file_path).name}",
-                    "columns": result.columns,
-                    "visible_columns": valid_visible,
-                    "visible_columns_pending": valid_pending,
+                    "columns": [],
+                    "visible_columns": [],
+                    "visible_columns_pending": [],
                     "column_selector_expanded": False,
-                    "level_options": level_options,
-                    "sort_by": sort_by,
-                    "level_filter": level_filter,
+                    "level_options": ["All"],
                     "current_page": 1,
-                    "error": "",
+                    "total_pages": 1,
+                    "filtered_total": 0,
+                    "page_rows": [],
+                    "error": result.error,
                 }
             )
+            return
 
-            self.refresh_logs_view()
+        self.logs_rows = result.rows
+        visible_columns = self.logs_state.get("visible_columns", [])
+        valid_visible = [c for c in visible_columns if c in result.columns]
+        if not valid_visible:
+            valid_visible = list(result.columns)
+
+        pending_columns = self.logs_state.get("visible_columns_pending", [])
+        valid_pending = [c for c in pending_columns if c in result.columns]
+        if not valid_pending:
+            valid_pending = list(valid_visible)
+
+        sort_by = self.logs_state.get("sort_by")
+        if sort_by not in result.columns:
+            sort_by = result.columns[0] if result.columns else None
+
+        level_filter = self.logs_state.get("level_filter", "All")
+        level_options = ["All"] + result.levels
+        if level_filter not in level_options:
+            level_filter = "All"
+
+        self.logs_state.update(
+            {
+                "file_path": file_path,
+                "file_label": f"Archivo: {Path(file_path).name}",
+                "columns": result.columns,
+                "visible_columns": valid_visible,
+                "visible_columns_pending": valid_pending,
+                "column_selector_expanded": False,
+                "level_options": level_options,
+                "sort_by": sort_by,
+                "level_filter": level_filter,
+                "current_page": 1,
+                "error": "",
+            }
+        )
+
+        self.refresh_logs_view(show_loading=False)
+
+    async def _load_log_file_deferred(self, file_path: str, min_loading_seconds: float = 0.15):
+        # Cede un ciclo para garantizar que el overlay global se pinte antes del parseo pesado.
+        loop = asyncio.get_running_loop()
+        started = loop.time()
+        await asyncio.sleep(0)
+        try:
+            # run_in_executor mueve el parseo (CPU/IO intensivo) a un thread del pool,
+            # liberando el event loop de Flet durante la carga del fichero.
+            await loop.run_in_executor(None, self._load_log_file_sync, file_path)
         finally:
-            self.logs_state["is_loading"] = False
+            remaining = min_loading_seconds - (loop.time() - started)
+            if remaining > 0:
+                await asyncio.sleep(remaining)
+            self.end_global_loading()
             try:
                 self.logs_view.render(self.logs_state)
             except RuntimeError:
                 pass
             self._page.update()
 
-    def _refresh_logs_view_core(self):
+    def load_log_file(self, file_path: str):
+        print(f"[LOGS] load_log_file: iniciando con file_path={file_path!r}")
+        self.begin_global_loading("Cargando archivo .log...")
+        scheduled_async = False
+        self._page.update()
+
+        try:
+            asyncio.get_running_loop().create_task(self._load_log_file_deferred(file_path))
+            scheduled_async = True
+            return
+        except RuntimeError:
+            # Fallback para entornos sin loop async.
+            self._load_log_file_sync(file_path)
+        finally:
+            if scheduled_async:
+                return
+            self.end_global_loading()
+            try:
+                self.logs_view.render(self.logs_state)
+            except RuntimeError:
+                pass
+            self._page.update()
+
+    def _refresh_logs_view_core(self, should_render: bool = True):
         if not self.logs_state.get("columns"):
+            self._invalidate_logs_query_cache()
             self.logs_state.update(
                 {
                     "page_rows": [],
@@ -386,20 +484,28 @@ class TrelloApp(AppLayout):
                     "current_page": 1,
                 }
             )
-            try:
-                self.logs_view.render(self.logs_state)
-            except RuntimeError:
-                pass
-            self._page.update()
+            if should_render:
+                try:
+                    self.logs_view.render(self.logs_state)
+                except RuntimeError:
+                    pass
+                self._page.update()
             return
 
-        page_rows, filtered_total, total_pages, safe_page = apply_filters_sort_paginate(
-            self.logs_rows,
-            self.logs_state["columns"],
-            self.logs_state["search_text"],
-            self.logs_state["level_filter"],
-            self.logs_state["sort_by"],
-            self.logs_state["sort_desc"],
+        query_signature = self._logs_query_signature()
+        if query_signature != self._logs_query_cache_signature:
+            self._logs_query_cache_rows = filter_sort_rows(
+                self.logs_rows,
+                self.logs_state["columns"],
+                self.logs_state["search_text"],
+                self.logs_state["level_filter"],
+                self.logs_state["sort_by"],
+                self.logs_state["sort_desc"],
+            )
+            self._logs_query_cache_signature = query_signature
+
+        page_rows, filtered_total, total_pages, safe_page = paginate_rows(
+            self._logs_query_cache_rows,
             self.logs_state["current_page"],
             int(self.logs_state["page_size"]),
         )
@@ -412,19 +518,24 @@ class TrelloApp(AppLayout):
                 "current_page": safe_page,
             }
         )
-        self._persist_logs_preferences()
-        try:
-            self.logs_view.render(self.logs_state)
-        except RuntimeError:
-            pass
-        self._page.update()
+        self._persist_logs_preferences_if_needed()
+        if should_render:
+            try:
+                self.logs_view.render(self.logs_state)
+            except RuntimeError:
+                pass
+            self._page.update()
 
     def refresh_logs_view(self, show_loading: bool = True):
         # Centraliza el overlay para cualquier accion que refresque el listado.
-        if show_loading and not bool(self.logs_state.get("is_loading", False)):
+        if show_loading:
+            if bool(self.logs_state.get("is_loading", False)):
+                self._logs_refresh_pending = True
+                return
+
             self.logs_state["is_loading"] = True
             try:
-                self.logs_view.render(self.logs_state)
+                self.logs_view.refresh_loading_state(self.logs_state)
             except RuntimeError:
                 pass
             self._page.update()
@@ -433,7 +544,7 @@ class TrelloApp(AppLayout):
             except RuntimeError:
                 # Fallback para contextos sin loop async.
                 try:
-                    self._refresh_logs_view_core()
+                    self._refresh_logs_view_core(should_render=False)
                 finally:
                     self.logs_state["is_loading"] = False
                     try:
@@ -451,7 +562,8 @@ class TrelloApp(AppLayout):
         started = loop.time()
         await asyncio.sleep(0)
         try:
-            self._refresh_logs_view_core()
+            await self._rebuild_logs_query_cache_in_thread_if_needed()
+            self._refresh_logs_view_core(should_render=False)
         finally:
             remaining = min_loading_seconds - (loop.time() - started)
             if remaining > 0:
@@ -462,6 +574,9 @@ class TrelloApp(AppLayout):
             except RuntimeError:
                 pass
             self._page.update()
+            if self._logs_refresh_pending:
+                self._logs_refresh_pending = False
+                self.refresh_logs_view(show_loading=True)
 
     def on_logs_search_change(self, value: str):
         self.logs_state["search_text"] = value or ""
@@ -525,7 +640,10 @@ class TrelloApp(AppLayout):
             return
 
         current = bool(self.logs_state.get("column_selector_expanded", False))
-        self.logs_state["column_selector_expanded"] = not current
+        next_state = not current
+        self.logs_state["column_selector_expanded"] = next_state
+        if next_state:
+            self.logs_state["visible_columns_pending"] = list(self.logs_state.get("visible_columns", []))
         try:
             self.logs_view.refresh_column_selector(self.logs_state)
         except RuntimeError:
@@ -566,7 +684,7 @@ class TrelloApp(AppLayout):
             self.logs_state["visible_columns"] = list(pending)
             # Cambiar columnas visibles no altera filtros, orden ni pagina.
             # Evitamos recomputo pesado y solo repintamos la tabla actual.
-            self._persist_logs_preferences()
+            self._persist_logs_preferences_if_needed()
             self.logs_view.refresh_table_only(self.logs_state)
         finally:
             self.logs_state["is_applying_columns"] = False
@@ -619,10 +737,16 @@ class TrelloApp(AppLayout):
         char_count = len(self.logs_state["message_dialog_text"])
         self.logs_message_dialog_meta.value = f"{line_count} lineas · {char_count} caracteres"
 
-        window = getattr(self._page, "window", None)
-        window_width = getattr(window, "width", None)
-        if isinstance(window_width, (int, float)):
-            self.logs_message_dialog_container.width = max(480, min(1100, int(window_width * 0.88)))
+        DialogSizer.fit_container(
+            self._page,
+            self.logs_message_dialog_container,
+            width_ratio=0.88,
+            min_width=480,
+            max_width=1100,
+            height_ratio=0.70,
+            min_height=300,
+            max_height=760,
+        )
 
         if self.logs_message_dialog not in self._page.overlay:
             self._page.overlay.append(self.logs_message_dialog)
@@ -675,7 +799,7 @@ class TrelloApp(AppLayout):
                 [
                     user_name,
                     password,
-                    ft.ElevatedButton(text="Login", on_click=close_dlg),
+                    ft.Button("Login", on_click=close_dlg),
                 ],
                 tight=True,
             ),
@@ -720,8 +844,8 @@ class TrelloApp(AppLayout):
         dialog_text = ft.TextField(
             label="New Board Name", on_submit=close_dlg, on_change=textfield_change
         )
-        create_button = ft.ElevatedButton(
-            text="Create", bgcolor=ft.Colors.BLUE_200, on_click=close_dlg, disabled=True
+        create_button = ft.Button(
+            "Create", bgcolor=ft.Colors.BLUE_200, on_click=close_dlg, disabled=True
         )
         dialog = ft.AlertDialog(
             title=ft.Text("Name your new board"),
@@ -730,7 +854,7 @@ class TrelloApp(AppLayout):
                     dialog_text,
                     ft.Row(
                         [
-                            ft.ElevatedButton(text="Cancel", on_click=close_dlg),
+                            ft.Button("Cancel", on_click=close_dlg),
                             create_button,
                         ],
                         alignment=ft.MainAxisAlignment.SPACE_BETWEEN,

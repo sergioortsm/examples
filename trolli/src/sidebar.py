@@ -57,7 +57,7 @@ class Sidebar(ft.Container):
                     ),
                     # divider
                     ft.Container(
-                        bgcolor=ft.Colors.BLACK26,
+                        bgcolor=ft.Colors.BLACK_26,
                         border_radius=ft.BorderRadius(30, 30, 30, 30),
                         height=1,
                         alignment=ft.Alignment(x=1, y=0),
@@ -66,7 +66,7 @@ class Sidebar(ft.Container):
                     self.top_nav_rail,
                     # divider
                     ft.Container(
-                        bgcolor=ft.Colors.BLACK26,
+                        bgcolor=ft.Colors.BLACK_26,
                         border_radius=ft.BorderRadius(30, 30, 30, 30),
                         height=1,
                         alignment=ft.Alignment(x=1, y=0),

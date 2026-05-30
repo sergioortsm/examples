@@ -26,18 +26,18 @@ class BoardList(ft.Container):
         self.title = title
         self.color = color
         self.column_width = getattr(self.board, "default_column_width", 250)
-        self.items = ft.Column([], tight=True, spacing=4)
+        self.items = ft.Column([], tight=True, spacing=3)
         self.items.controls = self.store.get_items(self.board_list_id)
         self.new_item_field = ft.TextField(
             label="new card name",
-            height=50,
+            height=38,
             width=self.get_content_width(),
             bgcolor=ft.Colors.WHITE,
             on_submit=self.add_item_handler,
         )
 
         self.end_indicator = ft.Container(
-            bgcolor=ft.Colors.BLACK26,
+            bgcolor=ft.Colors.BLACK_26,
             border_radius=ft.BorderRadius(30, 30, 30, 30),
             height=3,
             width=self.get_item_width(),
@@ -48,8 +48,8 @@ class BoardList(ft.Container):
             [
                 ft.TextField(
                     value=self.title,
-                    width=max(120, self.get_content_width() - 80),
-                    height=40,
+                    width=max(100, self.get_content_width() - 70),
+                    height=34,
                     content_padding=ft.padding.Padding(left=10, bottom=10),
                 ),
                 ft.TextButton(text="Save", on_click=self.save_title),
@@ -113,7 +113,7 @@ class BoardList(ft.Container):
                         content=ft.Row(
                             [
                                 ft.Icon(ft.Icons.ADD),
-                                ft.Text("add card", color=ft.Colors.BLACK38),
+                                ft.Text("add card", color=ft.Colors.BLACK_38),
                             ],
                             tight=True,
                         ),
@@ -122,7 +122,7 @@ class BoardList(ft.Container):
                     self.items,
                     self.end_indicator,
                 ],
-                spacing=4,
+                spacing=3,
                 tight=True,
                 data=self.title,
             ),
@@ -130,7 +130,7 @@ class BoardList(ft.Container):
             border=ft.Border.all(2, ft.Colors.BLACK12),
             border_radius=ft.BorderRadius(5, 5, 5, 5),
             bgcolor=self.color if (self.color != "") else ft.Colors.BACKGROUND,
-            padding=ft.padding.Padding(bottom=10, right=10, left=10, top=5),
+            padding=ft.padding.Padding(bottom=6, right=8, left=8, top=4),
         )
 
         self.view = ft.DragTarget(
@@ -155,10 +155,10 @@ class BoardList(ft.Container):
         self.set_width(self.column_width, update=False)
 
     def get_content_width(self) -> float:
-        return max(150, self.column_width - 24)
+        return max(120, self.column_width - 18)
 
     def get_item_width(self) -> float:
-        return max(130, self.get_content_width() - 8)
+        return max(100, self.get_content_width() - 6)
 
     def set_width(self, width: float, update: bool = True):
         self.column_width = width
@@ -168,7 +168,7 @@ class BoardList(ft.Container):
         self.end_indicator.width = self.get_item_width()
 
         if self.edit_field.controls:
-            self.edit_field.controls[0].width = max(120, self.get_content_width() - 80)
+            self.edit_field.controls[0].width = max(100, self.get_content_width() - 70)
 
         for wrapped_item in self.items.controls:
             if len(wrapped_item.controls) > 0:
@@ -259,7 +259,7 @@ class BoardList(ft.Container):
         control_to_add = ft.Column(
             [
                 ft.Container(
-                    bgcolor=ft.Colors.BLACK26,
+                    bgcolor=ft.Colors.BLACK_26,
                     border_radius=ft.BorderRadius(30, 30, 30, 30),
                     height=3,
                     alignment=ft.Alignment(x=1, y=0),

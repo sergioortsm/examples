@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 import csv
+import io
 
 MAX_LOG_SIZE_BYTES = 50 * 1024 * 1024
 
@@ -60,12 +61,20 @@ def load_sharepoint_log(file_path: str) -> LogLoadResult:
         )
 
     text = _read_text_with_fallbacks(file_path)
-    lines = [line for line in text.splitlines() if line.strip()]
 
-    if not lines:
+    # Iterar con io.StringIO evita materializar una segunda lista gigante con splitlines().
+    line_iter = iter(io.StringIO(text))
+
+    header_line: str | None = None
+    for raw_line in line_iter:
+        stripped = raw_line.strip()
+        if stripped:
+            header_line = stripped
+            break
+
+    if not header_line:
         return LogLoadResult(file_path=file_path, columns=[], rows=[], levels=[], error="El archivo esta vacio.")
 
-    header_line = lines[0]
     if "\t" not in header_line:
         return LogLoadResult(
             file_path=file_path,
@@ -88,13 +97,20 @@ def load_sharepoint_log(file_path: str) -> LogLoadResult:
     rows: list[dict[str, str]] = []
     level_values: set[str] = set()
     level_column = next((c for c in columns if c.lower() == "level"), None)
+    level_col_idx: int = columns.index(level_column) if level_column else -1
+    n_cols = len(columns)
 
-    for line in lines[1:]:
-        row_values = _split_row(line, len(columns))
-        row = {columns[i]: row_values[i] for i in range(len(columns))}
+    for raw_line in line_iter:
+        if not raw_line.strip():
+            continue
+        row_values = _split_row(raw_line, n_cols)
+        # _search_key: clave de búsqueda pre-computada (evita lowercase por columna en cada consulta).
+        search_key = "\t".join(row_values).lower()
+        row = dict(zip(columns, row_values))
+        row["_search_key"] = search_key
         rows.append(row)
-        if level_column:
-            level = row.get(level_column, "").strip()
+        if level_col_idx >= 0:
+            level = row_values[level_col_idx].strip()
             if level:
                 level_values.add(level)
 
@@ -117,6 +133,25 @@ def apply_filters_sort_paginate(
     page: int,
     page_size: int,
 ) -> tuple[list[dict[str, str]], int, int, int]:
+    filtered = filter_sort_rows(
+        rows,
+        columns,
+        search_text,
+        level_filter,
+        sort_by,
+        sort_desc,
+    )
+    return paginate_rows(filtered, page, page_size)
+
+
+def filter_sort_rows(
+    rows: list[dict[str, str]],
+    columns: list[str],
+    search_text: str,
+    level_filter: str,
+    sort_by: str | None,
+    sort_desc: bool,
+) -> list[dict[str, str]]:
     search = (search_text or "").strip().lower()
     level_filter_normalized = (level_filter or "All").strip()
 
@@ -127,16 +162,28 @@ def apply_filters_sort_paginate(
             filtered = [r for r in filtered if r.get(level_column, "") == level_filter_normalized]
 
     if search:
-        filtered = [
-            r
-            for r in filtered
-            if any(search in (r.get(column, "").lower()) for column in columns)
-        ]
+        # Usar _search_key pre-computado evita hacer lowercase × columna en cada fila.
+        if filtered and "_search_key" in filtered[0]:
+            filtered = [r for r in filtered if search in r["_search_key"]]
+        else:
+            filtered = [
+                r
+                for r in filtered
+                if any(search in r.get(column, "").lower() for column in columns)
+            ]
 
     if sort_by and sort_by in columns:
         filtered = sorted(filtered, key=lambda row: row.get(sort_by, ""), reverse=sort_desc)
 
-    total_filtered = len(filtered)
+    return filtered
+
+
+def paginate_rows(
+    filtered_rows: list[dict[str, str]],
+    page: int,
+    page_size: int,
+) -> tuple[list[dict[str, str]], int, int, int]:
+    total_filtered = len(filtered_rows)
     if total_filtered == 0:
         return [], 0, 1, 1
 
@@ -146,7 +193,7 @@ def apply_filters_sort_paginate(
 
     start = (safe_page - 1) * safe_page_size
     end = start + safe_page_size
-    return filtered[start:end], total_filtered, total_pages, safe_page
+    return filtered_rows[start:end], total_filtered, total_pages, safe_page
 
 
 def export_rows_to_csv(file_path: str, columns: list[str], rows: list[dict[str, str]]) -> str:
