@@ -67,4 +67,78 @@ Prueba la app en producción: [https://flet-trolli.fly.dev/](https://flet-trolli
 - Compatible con Flet >= 0.85.2.
 
 ---
+
+## Informe de rendimiento: Virtual Scrolling Real (2026-05-31)
+
+### Contexto
+
+`DataTable2` construye el body con un `ListView.builder` interno en Flutter, que **solo virtualiza si recibe una altura acotada (`bounded height`)**. Sin `height` fijo en el container, Flutter expande el widget a su contenido total y pinta **todas** las filas — independientemente del pool de Python.
+
+### Cambios implementados
+
+| Fichero | Cambio |
+|---------|--------|
+| [src/logs_view.py](src/logs_view.py) | `table_content_container.height=600` (inicial) + `clip_behavior=ANTI_ALIAS`. Constante `_TABLE_UI_OVERHEAD_PX=310`. `visible_vertical_scroll_bar=True` en `_build_table_pool`. Método `update_table_height(viewport_height)`. |
+| [src/main.py](src/main.py) | `page.on_resize = _on_page_resize`. Llamada a `update_table_height(page.height)` en `initialize()`. |
+
+### Datos de benchmark
+
+**Archivo de prueba:** `SAPCOL03-20260529-1219.log` — 56.512 filas, 9 columnas, 20 MB.
+
+#### Pre-fix (sin height acotado)
+
+| rows | render ms | Impacto |
+|------|-----------|--------|
+| 50 | 295–490 ms | UI usable pero lenta |
+| 250 | **27.464 ms** | Freeze total de UI — bloqueante |
+
+#### Post-fix (con height acotado, `ListView.builder` activo en Flutter)
+
+| Escenario | rows | render ms |
+|-----------|------|-----------|
+| Primera carga (cold, pool build) | 250 | ~4.000 ms |
+| Render inmediata siguiente (warm, mismo tamaño) | 250 | **417 ms** |
+| Cambio de tamaño de página 50→250 (warm) | 250 | 1.476–2.062 ms |
+| rows=100 warm | 100 | 669–1.351 ms |
+| rows=100 (cambio de tamaño desde 50) | 100 | 839–1.351 ms |
+| rows=50 steady state (sin rebuild de pool) | 50 | 293–580 ms |
+| rows=50 tras rebuild (250→50) | 50 | 885–1.253 ms |
+| rows=18 (filtro activo) | 18 | 248 ms |
+| rows=6 (live mode, primeras líneas) | 6 | 140 ms |
+
+#### Coste de bridge por tamaño de slice
+
+El pool mutación (Python) es O(1). El coste de serialización Flet (WebSocket diff) depende del **cambio en la longitud de la lista `rows`**:
+
+| Evento | rows enviadas al bridge | Coste observado |
+|--------|------------------------|-----------------|
+| Sin cambio de longitud (steady state rows=50) | 0 diffs de estructura | 311–580 ms |
+| Cambio 50→250 | +200 DataRow2 nuevas | ~1.500 ms |
+| Cambio 250→50 | −200 DataRow2 removidas | ~885–1.253 ms |
+| Rebuild completo de pool (cold build) | 250 DataRow2 × N celdas | ~4.000 ms (una sola vez) |
+
+### Análisis
+
+El freeze de **27 segundos** con `rows=250` desaparece completamente. Flutter ahora utiliza su `ListView.builder` interno y solo renderiza las ~14 filas visibles en pantalla (altura tabla ≈600px / 42px por fila).
+
+El cuello de botella residual en cambios de tamaño es **100% coste del bridge de Flet**: `_pool_rows[:n]` serializa diffs estructurales del árbol de controles cuando `n` varía. 250 `DataRow2` × 9 columnas = 2.250 referencias de control enviadas al bridge. El pool elimina la *creación* de objetos Python pero no el coste de serialización estructural.
+
+En steady state con `rows=50` fijo (paginación sin cambio de page_size), el rendimiento es idéntico al pre-fix (~350–490 ms), confirmando que el bottleneck pre-fix era exclusivamente Flutter render.
+
+### Estado actual del stack de rendimiento
+
+| Capa | Estado | Coste típico |
+|------|--------|--------------|
+| Creación de objetos Python (pool) | ✅ Sin allocations en render | 0 ms |
+| Mutación de datos en pool | ✅ Solo `.value` y `bgcolor` | <1 ms |
+| Renderizado Flutter | ✅ O(filas visibles) ~14 rows | incluido en render ms |
+| Bridge Flet — steady state (mismo n) | ✅ Solo diffs de valores | 293–580 ms |
+| Bridge Flet — cambio de tamaño de slice | ⚠️ O(Δn × celdas) | 800–2.000 ms |
+| Filter + sort Python (100k filas) | ✅ Cache dos niveles | filter ~5ms, sort ~65ms |
+
+### Siguiente paso pendiente (Opción B — Sliding Window)
+
+Para eliminar el coste de bridge en cambios de page_size: **sliding window de tamaño fijo** (~60 `DataRow2` siempre en el slice), con dos `Container` spacers de altura variable que simulan el scroll total del dataset. El bridge siempre serializa exactamente ~60 rows independientemente del tamaño del dataset, la página actual o el page_size configurado.
+
+---
 Desarrollado por [tu-nombre-o-alias].

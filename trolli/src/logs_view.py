@@ -15,6 +15,11 @@ class LogsView(ft.Column):
     _DEFAULT_DATA_ROW_HEIGHT = 42
     _MESSAGE_DATA_ROW_HEIGHT = 64
 
+    # Altura aproximada de los controles UI por encima de la tabla (título, watcher,
+    # filtros, chip de nuevas, paginación y spacings). Calibrar si la tabla queda
+    # cortada o genera scrollbar exterior innecesario.
+    _TABLE_UI_OVERHEAD_PX: int = 310
+
     _COLUMN_FIXED_WIDTHS: dict[str, int] = {
         "Timestamp": 180,
         "Process": 110,
@@ -34,7 +39,7 @@ class LogsView(ft.Column):
         "HIGH": "#FFF1E6",
         "WARNING": "#FFF8E1",
         "MEDIUM": "#FFF8E1",
-        "UNEXPECTED": "#F3E8FD",
+        "UNEXPECTED": "#FDECEA",
         "MONITORABLE": "#E8F8F0",
         "INFO": None,
         "INFORMATION": None,
@@ -307,9 +312,13 @@ class LogsView(ft.Column):
             show_close_button=True,
         )
 
-        # Inicializacion de contenedores de tabla y overlay de carga
+        # Inicializacion de contenedores de tabla y overlay de carga.
+        # height=600 es valor inicial; se sobreescribe en update_table_height() cuando
+        # la página notifica su altura real (on_resize y al montar la vista).
         self.table_content_container = ft.Container(
             padding=ft.padding.Padding(left=8, top=8, right=8, bottom=8),
+            height=600,
+            clip_behavior=ft.ClipBehavior.ANTI_ALIAS,
         )
         self.table_surface = ft.Container(
             content=self.table_content_container,
@@ -637,6 +646,16 @@ class LogsView(ft.Column):
         self.toggle_column_selector_button.icon = ft.Icons.VIEW_COLUMN
         self.toggle_column_selector_button.tooltip = "Columnas visibles"
 
+    def update_table_height(self, viewport_height: float) -> None:
+        """Ajusta la altura de la tabla al viewport disponible.
+
+        Debe llamarse cada vez que cambia el tamaño de la ventana (on_resize)
+        y al montar la vista de Logs por primera vez.
+        El llamador es responsable de invocar page.update() si es necesario.
+        """
+        h = max(300, int(viewport_height) - self._TABLE_UI_OVERHEAD_PX)
+        self.table_content_container.height = h
+
     def _invalidate_table_pool(self):
         self._pool_data_table = None
         self._pool_visible_columns = None
@@ -655,8 +674,7 @@ class LogsView(ft.Column):
         asi no hay que reasignar lambdas en cada render.
         """
         cols_tuple = tuple(visible_columns)
-        has_message_col = any(self._is_message_column(c) for c in visible_columns)
-        specific_height = self._MESSAGE_DATA_ROW_HEIGHT if has_message_col else None
+        specific_height = None
 
         # Columnas (cabeceras)
         data_table_columns = []
@@ -705,9 +723,9 @@ class LogsView(ft.Column):
                 if is_message:
                     text_ctrl = ft.Text(
                         "",
-                        max_lines=2,
+                        max_lines=1,
                         overflow=ft.TextOverflow.ELLIPSIS,
-                        no_wrap=False,
+                        no_wrap=True,
                     )
                     cell_container = ft.Container(
                         content=ft.Row(
@@ -731,8 +749,9 @@ class LogsView(ft.Column):
                     text_ctrl = ft.Text(
                         "",
                         selectable=True,
-                        max_lines=2,
+                        max_lines=1,
                         overflow=ft.TextOverflow.ELLIPSIS,
+                        no_wrap=True,
                         color=APP_TEXT_PRIMARY,
                     )
                     cell_container = ft.Container(
@@ -768,7 +787,7 @@ class LogsView(ft.Column):
             fixed_corner_color=APP_SURFACE_MUTED,
             fixed_columns_color=APP_SURFACE_ALT,
             visible_horizontal_scroll_bar=True,
-            visible_vertical_scroll_bar=False,
+            visible_vertical_scroll_bar=True,
             data_row_height=self._DEFAULT_DATA_ROW_HEIGHT,
             horizontal_margin=18,
             column_spacing=24,

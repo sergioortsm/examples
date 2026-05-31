@@ -401,6 +401,9 @@ class TrelloApp(AppLayout):
         if self._root_stack is not None and self._root_stack not in self._page.controls:
             self._page.add(self._root_stack)
         self._page.update()
+        # Ajustar altura de tabla al viewport real antes del primer render.
+        self._page.on_resize = self._on_page_resize
+        self.logs_view.update_table_height(self._page.height or 768)
         # Restaura las preferencias de los logs al inicializar
         self._restore_logs_preferences()
         # create an initial board for demonstration if no boards
@@ -649,6 +652,16 @@ class TrelloApp(AppLayout):
 
     def on_log_file_selected(self, e):
         self._handle_selected_log_files(getattr(e, "files", None))
+
+    def _on_page_resize(self, e=None) -> None:
+        """Reajusta la altura de la tabla cuando la ventana cambia de tamaño."""
+        h = getattr(e, "height", None) or getattr(self._page, "height", None) or 768
+        try:
+            self.logs_view.update_table_height(float(h))
+            if getattr(self.logs_view, "page", None) is not None:
+                self.logs_view.update()
+        except Exception:
+            pass
 
     def on_layout_resize(self, e=None):
         if self.global_loading_overlay.visible:
