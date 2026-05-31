@@ -3,7 +3,7 @@
   "level_filter": "All",
   "sort_by": "Timestamp",
   "sort_desc": true,
-  "page_size": 50,
+  "page_size": 250,
   "visible_columns": [
     "Timestamp",
     "Message",

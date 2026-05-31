@@ -1733,11 +1733,11 @@ class TrelloApp(AppLayout):
 
 
 def main(page: ft.Page):
-    page.window_maximized = True  # Configura la ventana maximizada
+    page.window.maximized = True  # Configura la ventana maximizada
     install_asyncio_exception_handler(logger)
 
     page.title = "Sharepoint ULS Log Viewer"
-    page.padding = 0
+    page.padding = ft.padding.Padding(left=0, top=0, right=16, bottom=0)
     page.theme = ft.Theme(font_family="Verdana")
     page.theme.tooltip_theme = ft.TooltipTheme(
         wait_duration=700,

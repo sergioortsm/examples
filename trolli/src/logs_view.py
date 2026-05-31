@@ -18,7 +18,7 @@ class LogsView(ft.Column):
     # Altura aproximada de los controles UI por encima de la tabla (título, watcher,
     # filtros, chip de nuevas, paginación y spacings). Calibrar si la tabla queda
     # cortada o genera scrollbar exterior innecesario.
-    _TABLE_UI_OVERHEAD_PX: int = 310
+    _TABLE_UI_OVERHEAD_PX: int = 360
 
     _COLUMN_FIXED_WIDTHS: dict[str, int] = {
         "Timestamp": 180,
@@ -252,12 +252,28 @@ class LogsView(ft.Column):
             icon=ft.Icons.CHEVRON_LEFT,
             tooltip="Pagina anterior",
             mouse_cursor=ft.MouseCursor.CLICK,
+            style=ft.ButtonStyle(
+                bgcolor={
+                    ft.ControlState.DEFAULT: ft.Colors.BLUE_GREY_100,
+                    ft.ControlState.HOVERED: ft.Colors.BLUE_GREY_200,
+                    ft.ControlState.DISABLED: ft.Colors.TRANSPARENT,
+                },
+                shape=ft.RoundedRectangleBorder(radius=8),
+            ),
             on_click=lambda e: self.app.on_logs_prev_page(),
         )
         self.next_page_button = ft.IconButton(
             icon=ft.Icons.CHEVRON_RIGHT,
             tooltip="Pagina siguiente",
             mouse_cursor=ft.MouseCursor.CLICK,
+            style=ft.ButtonStyle(
+                bgcolor={
+                    ft.ControlState.DEFAULT: ft.Colors.BLUE_GREY_100,
+                    ft.ControlState.HOVERED: ft.Colors.BLUE_GREY_200,
+                    ft.ControlState.DISABLED: ft.Colors.TRANSPARENT,
+                },
+                shape=ft.RoundedRectangleBorder(radius=8),
+            ),
             on_click=lambda e: self.app.on_logs_next_page(),
         )
         self.page_info_text = ft.Text("Pagina 1 / 1")
@@ -383,11 +399,14 @@ class LogsView(ft.Column):
             self.watch_row,
             self.filters_row,
             ft.Row([self.pending_new_button], alignment=ft.MainAxisAlignment.START),
-            self.table_surface,
-            ft.Row(
-                [self.prev_page_button, self.page_info_text, self.next_page_button],
-                alignment=ft.MainAxisAlignment.END,
+            ft.Container(
+                content=ft.Row(
+                    [self.prev_page_button, self.page_info_text, self.next_page_button],
+                    alignment=ft.MainAxisAlignment.END,
+                ),
+                padding=ft.padding.Padding(left=0, top=0, right=8, bottom=0),
             ),
+            self.table_surface,
         ]
 
     def _close_column_selector(self):
@@ -712,13 +731,27 @@ class LogsView(ft.Column):
                 self._pool_row_data[slot], list(self._pool_visible_columns or [])
             )
 
+
         for slot in range(pool_size):
             # Zebra striping inicial por slot; se sobrescribe en _render_table segun el level.
             row_bg = APP_SURFACE if slot % 2 == 0 else APP_SURFACE_ALT
             cells: list[ft.DataCell] = []
             cell_texts: list[ft.Text] = []
             cell_containers: list = []
-            for column in visible_columns:
+            # Estado de hover por fila
+            is_hovered = {'value': False}
+            def make_on_hover(slot_idx, is_hovered_ref):
+                def _on_hover(e):
+                    hovered = e.data == "true"
+                    is_hovered_ref['value'] = hovered
+                    hover_color = "#1A2D6015"
+                    base_bg = self._pool_row_decorations[slot_idx].bgcolor
+                    for c in self._pool_cell_containers[slot_idx]:
+                        c.bgcolor = hover_color if hovered else base_bg
+                    self._pool_row_decorations[slot_idx].bgcolor = hover_color if hovered else base_bg
+                    self._pool_data_table.update()
+                return _on_hover
+            for column_idx, column in enumerate(visible_columns):
                 is_message = self._is_message_column(column)
                 if is_message:
                     text_ctrl = ft.Text(
@@ -743,6 +776,7 @@ class LogsView(ft.Column):
                         alignment=ft.Alignment(x=-1, y=0),
                         padding=ft.padding.Padding(left=6, top=4, right=6, bottom=4),
                         bgcolor=row_bg,
+                        on_hover=make_on_hover(slot, is_hovered) if column_idx == 0 else None,
                     )
                     cells.append(ft.DataCell(cell_container))
                 else:
@@ -760,6 +794,7 @@ class LogsView(ft.Column):
                         padding=ft.padding.Padding(left=4, top=6, right=4, bottom=6),
                         bgcolor=row_bg,
                         border_radius=ft.BorderRadius(6, 6, 6, 6),
+                        on_hover=make_on_hover(slot, is_hovered) if column_idx == 0 else None,
                     )
                     cells.append(ft.DataCell(cell_container))
                 cell_texts.append(text_ctrl)
@@ -837,15 +872,24 @@ class LogsView(ft.Column):
             # pool al menos del tamano de la pagina; un suelo de 50 cubre el caso normal.
             self._build_table_pool(visible_columns, max(n, 50))
 
+
         # Mutar datos: solo text.value + slot data + bgcolor segun level.
         for slot in range(n):
             row = page_rows[slot]
             self._pool_row_data[slot] = row
             row_bg = self._row_bgcolor(row, slot)
-            self._pool_row_decorations[slot].bgcolor = row_bg
+            # Si la fila está en hover, mantener el color de hover
+            is_hovered = False
+            # Detectar si la fila está en hover (por el primer cell)
+            try:
+                is_hovered = self._pool_cell_containers[slot][0].on_hover and self._pool_cell_containers[slot][0].on_hover.__closure__[1].cell_contents['value']
+            except Exception:
+                is_hovered = False
+            hover_color = "#1A2D6015"
+            self._pool_row_decorations[slot].bgcolor = hover_color if is_hovered else row_bg
             containers = self._pool_cell_containers[slot]
             for c in containers:
-                c.bgcolor = row_bg
+                c.bgcolor = hover_color if is_hovered else row_bg
             texts = self._pool_row_texts[slot]
             for col_idx, column in enumerate(visible_columns):
                 texts[col_idx].value = str(row.get(column, ""))
