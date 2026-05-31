@@ -1,13 +1,19 @@
 from __future__ import annotations
 
 
+import asyncio
+import inspect
+
 import flet as ft
 import flet_datatable2 as fdt
 from dialog import DialogSizer, build_column_selector_dialog
-from ui_tokens import APP_BORDER, APP_OVERLAY, APP_SURFACE, APP_SURFACE_ALT, APP_SURFACE_MUTED, APP_TEXT_MUTED, APP_TEXT_PRIMARY, surface_shadow
+from ui_tokens import APP_BORDER, APP_SURFACE, APP_SURFACE_ALT, APP_SURFACE_MUTED, APP_TEXT_MUTED, APP_TEXT_PRIMARY, surface_shadow
 
 
 class LogsView(ft.Column):
+    _DEFAULT_DATA_ROW_HEIGHT = 42
+    _MESSAGE_DATA_ROW_HEIGHT = 64
+
     _COLUMN_FIXED_WIDTHS: dict[str, int] = {
         "Timestamp": 180,
         "Process": 110,
@@ -19,6 +25,41 @@ class LogsView(ft.Column):
         "Correlation": 140,
         "Message": 640,
     }
+
+    # Mapa nivel -> color de fondo (pastel suave). None => usa zebra striping.
+    _LEVEL_BG_COLORS: dict[str, str | None] = {
+        "CRITICAL": "#FDECEA",
+        "ERROR": "#FDECEA",
+        "HIGH": "#FFF1E6",
+        "WARNING": "#FFF8E1",
+        "MEDIUM": "#FFF8E1",
+        "UNEXPECTED": "#F3E8FD",
+        "MONITORABLE": "#E8F8F0",
+        "INFO": None,
+        "INFORMATION": None,
+        "VERBOSE": None,
+        "VERBOSEEX": None,
+    }
+
+    _LEVEL_COLUMN_CANDIDATES: tuple[str, ...] = ("Level", "Nivel", "LogLevel", "Severity")
+
+    def _row_level(self, row: dict[str, str]) -> str:
+        for key in self._LEVEL_COLUMN_CANDIDATES:
+            value = row.get(key)
+            if value:
+                return str(value).strip().upper()
+        # Fallback case-insensitive si el header viene con otro casing.
+        for key, value in row.items():
+            if isinstance(key, str) and key.strip().lower() == "level" and value:
+                return str(value).strip().upper()
+        return ""
+
+    def _row_bgcolor(self, row: dict[str, str], idx: int) -> str:
+        level = self._row_level(row)
+        base = self._LEVEL_BG_COLORS.get(level)
+        if base is not None:
+            return base
+        return APP_SURFACE if idx % 2 == 0 else APP_SURFACE_ALT
 
     def _column_width(self, column_name: str) -> int:
         """Ancho fijo por columna, con override persistido en logs_prefs.json."""
@@ -35,6 +76,16 @@ class LogsView(ft.Column):
     def _is_message_column(self, column_name: str) -> bool:
         """Devuelve True si la columna es 'Message' (insensible a mayúsculas/minúsculas)."""
         return column_name.strip().lower() == "message"
+
+    def _scroll_to_top(self) -> None:
+        result = self.scroll_to(offset=0, duration=0)
+        if not inspect.isawaitable(result):
+            return
+        try:
+            asyncio.get_running_loop().create_task(result)
+        except RuntimeError:
+            if inspect.iscoroutine(result):
+                result.close()
     
     def __init__(self, app):
         super().__init__(
@@ -222,22 +273,8 @@ class LogsView(ft.Column):
         self.table_content_container = ft.Container(
             padding=ft.padding.Padding(left=8, top=8, right=8, bottom=8),
         )
-        self.loading_overlay = ft.Container(
-            visible=False,
-            expand=True,
-            bgcolor=APP_OVERLAY,
-            alignment=ft.Alignment(x=0, y=0),
-            content=ft.ProgressRing(width=44, height=44, stroke_width=4, color=ft.Colors.WHITE),
-        )
-
-        self.table_container = ft.Stack(
-            [
-                self.table_content_container,
-                self.loading_overlay,
-            ],
-        )
         self.table_surface = ft.Container(
-            content=self.table_container,
+            content=self.table_content_container,
             bgcolor=APP_SURFACE,
             border=ft.Border.all(1, APP_BORDER),
             border_radius=ft.BorderRadius(16, 16, 16, 16),
@@ -349,9 +386,9 @@ class LogsView(ft.Column):
         current_page = state.get("current_page", 1)
         total_pages = state.get("total_pages", 1)
         self.page_info_text.value = f"Pagina {current_page} / {total_pages}"
-        self.prev_page_button.disabled = current_page <= 1
-        self.next_page_button.disabled = current_page >= total_pages
-        self.loading_overlay.visible = bool(state.get("is_loading", False))
+        is_loading = bool(state.get("is_loading", False))
+        self.prev_page_button.disabled = is_loading or current_page <= 1
+        self.next_page_button.disabled = is_loading or current_page >= total_pages
 
         # --- watcher ---
         is_watching = bool(state.get("is_watching", False))
@@ -462,14 +499,13 @@ class LogsView(ft.Column):
             self.update()
 
     def refresh_loading_state(self, state: dict):
-        # Refresco ligero para mostrar overlay/estado de paginacion sin reconstruir la tabla.
+        # Refresco ligero para estado de paginacion sin reconstruir la tabla.
         current_page = state.get("current_page", 1)
         total_pages = state.get("total_pages", 1)
         self.page_info_text.value = f"Pagina {current_page} / {total_pages}"
         is_loading = bool(state.get("is_loading", False))
         self.prev_page_button.disabled = is_loading or current_page <= 1
         self.next_page_button.disabled = is_loading or current_page >= total_pages
-        self.loading_overlay.visible = is_loading
         if getattr(self, "page", None) is not None:
             self.update()
 
@@ -543,6 +579,7 @@ class LogsView(ft.Column):
                             weight=ft.FontWeight.W_600,
                             color=APP_TEXT_MUTED,
                         ),
+                        alignment=ft.Alignment(x=-1, y=0),
                         padding=ft.padding.Padding(left=4, top=10, right=4, bottom=10),
                     ),
                     fixed_width=self._column_width(column),
@@ -562,7 +599,7 @@ class LogsView(ft.Column):
             visible_horizontal_scroll_bar=True,
             visible_vertical_scroll_bar=False,
             # Altura uniforme para layout/scroll predecibles.
-            data_row_height=42,
+            data_row_height=self._DEFAULT_DATA_ROW_HEIGHT,
             horizontal_margin=18,
             column_spacing=24,
             show_heading_checkbox=False,
@@ -576,7 +613,7 @@ class LogsView(ft.Column):
 
         self.table_content_container.content = data_table
         # Volver al inicio de la vista al cambiar de página.
-        self.scroll_to(offset=0, duration=0)
+        self._scroll_to_top()
 
     def _build_row(self, idx: int, row: dict[str, str], visible_columns: list[str]) -> fdt.DataRow2:
         """Construye una DataRow2 con zebra striping y handlers de tap/doble-tap/clic-derecho.
@@ -587,24 +624,28 @@ class LogsView(ft.Column):
         NOTA: para que estos eventos del row se disparen, las celdas NO deben tener
         sus propios handlers de tap (ver `_build_cell`).
         """
-        decoration = ft.BoxDecoration(
-            bgcolor=APP_SURFACE if idx % 2 == 0 else APP_SURFACE_ALT,
-        )
+        row_bg = self._row_bgcolor(row, idx)
+        decoration = ft.BoxDecoration(bgcolor=row_bg)
 
         return fdt.DataRow2(
-            cells=[self._build_cell(column, row, idx) for column in visible_columns],
+            cells=[self._build_cell(column, row, idx, row_bg) for column in visible_columns],
             decoration=decoration,
+            specific_row_height=(
+                self._MESSAGE_DATA_ROW_HEIGHT
+                if any(self._is_message_column(column) for column in visible_columns)
+                else None
+            ),
             on_double_tap=lambda e, r=row, cols=visible_columns: self.app.on_logs_open_message_detail(r, cols),
             on_secondary_tap=lambda e, r=row, cols=visible_columns: self.app.on_logs_copy_row(r, cols),
         )
 
-    def _build_cell(self, column_name: str, row: dict[str, str], row_index: int) -> ft.DataCell:
+    def _build_cell(self, column_name: str, row: dict[str, str], row_index: int, row_bgcolor: str | None = None) -> ft.DataCell:
         value = str(row.get(column_name, ""))
         is_message = self._is_message_column(column_name)
-        cell_bgcolor = APP_SURFACE if row_index % 2 == 0 else APP_SURFACE_ALT
+        cell_bgcolor = row_bgcolor if row_bgcolor is not None else (
+            APP_SURFACE if row_index % 2 == 0 else APP_SURFACE_ALT
+        )
         if is_message:
-            preview = value.replace("\n", " ").strip()
-            tooltip_text = preview if preview else "Mensaje vacio"
             # NOTA: sin GestureDetector — los handlers van en DataRow2 (on_double_tap / on_secondary_tap).
             # El icono OPEN_IN_FULL queda como pista visual de que la fila es interactiva.
             content = ft.Container(
@@ -617,6 +658,7 @@ class LogsView(ft.Column):
                                 overflow=ft.TextOverflow.ELLIPSIS,
                                 no_wrap=False,
                             ),
+                            alignment=ft.Alignment(x=-1, y=0),
                             expand=True,
                         ),
                         ft.Icon(ft.Icons.OPEN_IN_FULL, size=16, color=APP_TEXT_MUTED),
@@ -624,11 +666,9 @@ class LogsView(ft.Column):
                     spacing=8,
                     vertical_alignment=ft.CrossAxisAlignment.CENTER,
                 ),
+                alignment=ft.Alignment(x=-1, y=0),
                 padding=ft.padding.Padding(left=6, top=4, right=6, bottom=4),
-                border_radius=ft.BorderRadius(6, 6, 6, 6),
                 bgcolor=cell_bgcolor,
-                border=ft.Border.all(1, APP_BORDER),
-                tooltip=f"Doble clic para ver completo · Clic derecho para copiar fila — {tooltip_text}",
             )
             return ft.DataCell(content)
         else:
@@ -641,6 +681,7 @@ class LogsView(ft.Column):
                         overflow=ft.TextOverflow.ELLIPSIS,
                         color=APP_TEXT_PRIMARY,
                     ),
+                    alignment=ft.Alignment(x=-1, y=0),
                     padding=ft.padding.Padding(left=4, top=6, right=4, bottom=6),
                     bgcolor=cell_bgcolor,
                     border_radius=ft.BorderRadius(6, 6, 6, 6),

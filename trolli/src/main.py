@@ -31,7 +31,7 @@ from log_service import (
 )
 from log_buffer import LifoLogBuffer
 from log_watcher import LogWatcher
-from ui_tokens import APP_OVERLAY, APP_SHELL_ACCENT, APP_SHELL_BG, APP_SURFACE_MUTED, APP_TEXT_ON_ACCENT, APP_TEXT_PRIMARY
+from ui_tokens import APP_APP_LOADING_OVERLAY, APP_BORDER, APP_SHELL_ACCENT, APP_SHELL_BG, APP_SURFACE, APP_SURFACE_MUTED, APP_TEXT_ON_ACCENT, APP_TEXT_PRIMARY, surface_shadow
 
 
 logger = logging.getLogger("trolli")
@@ -143,14 +143,32 @@ class TrelloApp(AppLayout):
         )
         self.global_loading_overlay = ft.Container(
             visible=False,
-            width=max(0, int(getattr(self._page, "width", 0) or 0)),
-            height=max(0, int(getattr(self._page, "height", 0) or 0)),
-            bgcolor=APP_OVERLAY,
+            expand=True,
+            bgcolor=APP_APP_LOADING_OVERLAY,
             alignment=ft.Alignment(x=0, y=0),
-            content=ft.ProgressRing(width=52, height=52, stroke_width=4, color=ft.Colors.WHITE),
+            content=ft.Container(
+                width=140,
+                height=140,
+                bgcolor=APP_SURFACE,
+                border=ft.Border.all(1, APP_BORDER),
+                border_radius=ft.BorderRadius(24, 24, 24, 24),
+                shadow=surface_shadow(offset_y=10, blur_radius=28),
+                alignment=ft.Alignment(x=0, y=0),
+                content=ft.Column(
+                    [
+                        ft.ProgressRing(width=56, height=56, stroke_width=5, color=APP_SHELL_ACCENT),
+                        ft.Text("Cargando", size=14, weight=ft.FontWeight.W_600, color=APP_TEXT_PRIMARY),
+                    ],
+                    tight=True,
+                    spacing=14,
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                    alignment=ft.MainAxisAlignment.CENTER,
+                ),
+            ),
         )
         self._global_loading_counter = 0
         self._global_loading_registered = False
+        self._root_stack: ft.Stack | None = None
         self._restore_logs_preferences()
         self.logs_view = LogsView(self)
 
@@ -362,10 +380,13 @@ class TrelloApp(AppLayout):
 
     def initialize(self):
         if not self._global_loading_registered:
-            self._page.overlay.append(self.global_loading_overlay)
+            self._root_stack = ft.Stack(
+                controls=[self, self.global_loading_overlay],
+                expand=True,
+            )
             self._global_loading_registered = True
-        if self not in self._page.controls:
-            self._page.add(self)
+        if self._root_stack is not None and self._root_stack not in self._page.controls:
+            self._page.add(self._root_stack)
         self._page.update()
         # Restaura las preferencias de los logs al inicializar
         self._restore_logs_preferences()
@@ -531,18 +552,12 @@ class TrelloApp(AppLayout):
     def on_log_file_selected(self, e):
         self._handle_selected_log_files(getattr(e, "files", None))
 
-    def _sync_global_loading_overlay_size(self):
-        self.global_loading_overlay.width = max(0, int(getattr(self._page, "width", 0) or 0))
-        self.global_loading_overlay.height = max(0, int(getattr(self._page, "height", 0) or 0))
-
     def on_layout_resize(self, e=None):
-        self._sync_global_loading_overlay_size()
         if self.global_loading_overlay.visible:
             self._page.update()
 
     def begin_global_loading(self, label: str = "Cargando archivo..."):
         self._global_loading_counter += 1
-        self._sync_global_loading_overlay_size()
         self.global_loading_overlay.visible = True
 
     def end_global_loading(self):
@@ -728,6 +743,7 @@ class TrelloApp(AppLayout):
                 return
 
             self.logs_state["is_loading"] = True
+            self.begin_global_loading("Cargando...")
             try:
                 self.logs_view.refresh_loading_state(self.logs_state)
             except RuntimeError:
@@ -740,6 +756,7 @@ class TrelloApp(AppLayout):
                 try:
                     self._refresh_logs_view_core(should_render=False)
                 finally:
+                    self.end_global_loading()
                     self.logs_state["is_loading"] = False
                     try:
                         self.logs_view.render(self.logs_state)
@@ -762,6 +779,7 @@ class TrelloApp(AppLayout):
             remaining = min_loading_seconds - (loop.time() - started)
             if remaining > 0:
                 await asyncio.sleep(remaining)
+            self.end_global_loading()
             self.logs_state["is_loading"] = False
             try:
                 self.logs_view.render(self.logs_state)
