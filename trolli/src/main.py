@@ -43,7 +43,7 @@ from log_service import (
 )
 from log_buffer import LifoLogBuffer
 from log_watcher import LogWatcher
-from ui_tokens import APP_APP_LOADING_OVERLAY, APP_BORDER, APP_SHELL_ACCENT, APP_SHELL_BG, APP_SURFACE, APP_SURFACE_MUTED, APP_TEXT_ON_ACCENT, APP_TEXT_PRIMARY, surface_shadow
+from ui_tokens import APP_APP_LOADING_OVERLAY, APP_BORDER, APP_SHELL_ACCENT, APP_SHELL_BG, APP_SURFACE, APP_SURFACE_MUTED, APP_TEXT_ON_ACCENT, APP_TEXT_PRIMARY, CLICK_CURSOR, click_button_style, surface_shadow
 
 
 logger = logging.getLogger("trolli")
@@ -105,6 +105,7 @@ class TrelloApp(AppLayout):
             "buffer_max": 100_000,
             "pending_new_count": 0,
             "lines_per_sec": 0.0,
+            "live_paused": False,
         }
         # Buffer LIFO compartido entre el hilo del watcher y el event loop.
         self._log_buffer = LifoLogBuffer(maxlen=100_000)
@@ -118,11 +119,19 @@ class TrelloApp(AppLayout):
         # esperamos max(REFRESH_MS, X * 1.2) ms antes del siguiente drain para
         # romper la bola de nieve cuando el render satura.
         self._last_render_ms: float = 0.0
-        self.login_profile_button = ft.PopupMenuItem(content="Log in", on_click=self.login)
+        self.login_profile_button = ft.PopupMenuItem(
+            content="Log in",
+            on_click=self.login,
+            mouse_cursor=CLICK_CURSOR,
+        )
         self.appbar_items = [
             self.login_profile_button,
             ft.PopupMenuItem(),  # divider
-            ft.PopupMenuItem(content="Open SharePoint LOG", on_click=self.open_log_file_dialog),
+            ft.PopupMenuItem(
+                content="Open SharePoint LOG",
+                on_click=self.open_log_file_dialog,
+                mouse_cursor=CLICK_CURSOR,
+            ),
             ft.PopupMenuItem(content="Settings"),
         ]
         self.appbar = ft.AppBar(
@@ -140,7 +149,10 @@ class TrelloApp(AppLayout):
             bgcolor=APP_SHELL_ACCENT,
             actions=[
                 ft.Container(
-                    content=ft.PopupMenuButton(items=self.appbar_items),
+                    content=ft.PopupMenuButton(
+                        items=self.appbar_items,
+                        style=click_button_style(),
+                    ),
                     margin=ft.margin.Margin(left=50, right=25),
                 )
             ],
@@ -1070,12 +1082,16 @@ class TrelloApp(AppLayout):
         self._persist_logs_preferences_if_needed()
 
     def _is_view_following_live(self) -> bool:
-        """True si la vista esta en modo 'seguir el flujo': pagina 1 sin filtros activos.
+        """True si la vista esta en modo 'seguir el flujo': pagina 1 sin filtros activos
+        y sin pausa manual activada.
 
         Excepcion: si no hay filas cargadas aun (arranque de modo Vivo o buffer vacio),
         siempre sigue el flujo para que las primeras lineas sean siempre visibles,
         independientemente de filtros restaurados de sesiones anteriores.
         """
+        # Pausa manual explícita: el usuario pidió congelar la vista.
+        if bool(self.logs_state.get("live_paused", False)):
+            return False
         if int(self.logs_state.get("current_page", 1)) != 1:
             return False
         # Sin filas todavia -> no hay nada que 'auto-pausar'; mostrar siempre.
@@ -1206,6 +1222,22 @@ class TrelloApp(AppLayout):
         total = sum(c for _, c in self._watcher_lines_window)
         self.logs_state["lines_per_sec"] = total / 5.0
 
+    def on_logs_toggle_live_pause(self):
+        """Alternar pausa/reanudación manual del empuje Vivo a la vista."""
+        currently_paused = bool(self.logs_state.get("live_paused", False))
+        if currently_paused:
+            # Reanudar: descongelar y mostrar inmediatamente lo acumulado.
+            self.logs_state["live_paused"] = False
+            self.on_logs_show_pending_new()
+        else:
+            # Pausar: congelar la vista; el watcher sigue acumulando en buffer.
+            self.logs_state["live_paused"] = True
+            try:
+                self.logs_view.render(self.logs_state)
+            except RuntimeError:
+                pass
+            self._page.update()
+
     def on_logs_show_pending_new(self):
         """Forzar consumo del buffer y reset de filtros que estan ocultando lo nuevo.
 
@@ -1330,6 +1362,7 @@ class TrelloApp(AppLayout):
             "pending_new_count": 0,
             "buffer_count": 0,
             "lines_per_sec": 0.0,
+            "live_paused": False,
             "current_page": 1,
             "file_label": "Esperando primer fichero...",
         })
@@ -1776,6 +1809,12 @@ def main(page: ft.Page):
     )
     page.theme_mode = ft.ThemeMode.LIGHT
     page.theme.page_transitions.windows = "cupertino" # type: ignore
+    _pointer = click_button_style()
+    page.theme.button_theme = ft.ButtonTheme(style=_pointer)
+    page.theme.filled_button_theme = ft.FilledButtonTheme(style=_pointer)
+    page.theme.text_button_theme = ft.TextButtonTheme(style=_pointer)
+    page.theme.outlined_button_theme = ft.OutlinedButtonTheme(style=_pointer)
+    page.theme.icon_button_theme = ft.IconButtonTheme(style=_pointer)
     page.fonts = {"Pacifico": "Pacifico-Regular.ttf"}
     page.bgcolor = APP_SHELL_BG
     app = TrelloApp(page, InMemoryStore())

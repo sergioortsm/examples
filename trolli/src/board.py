@@ -10,6 +10,7 @@ from ui_tokens import (
     APP_SHELL_ACCENT_HOVER,
     APP_SURFACE,
     APP_SURFACE_ALT,
+    CLICK_CURSOR,
     APP_TEXT_MUTED,
     APP_TEXT_ON_ACCENT,
     APP_TEXT_PRIMARY,
@@ -36,6 +37,7 @@ class Board(ft.Container):
             height=30,
             bgcolor=APP_SHELL_ACCENT,
             foreground_color=APP_TEXT_ON_ACCENT,
+            mouse_cursor=CLICK_CURSOR,
             on_click=self.create_list,
             tooltip="add a list",
         )

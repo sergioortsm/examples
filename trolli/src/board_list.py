@@ -13,8 +13,10 @@ from ui_tokens import (
     APP_SHELL_ACCENT,
     APP_SURFACE,
     APP_SURFACE_ALT,
+    CLICK_CURSOR,
     APP_TEXT_MUTED,
     APP_TEXT_PRIMARY,
+    click_button_style,
     surface_shadow,
 )
 
@@ -95,6 +97,7 @@ class BoardList(ft.Container):
                                     color=self.color or APP_TEXT_MUTED,
                                 ),
                                 on_click=self.edit_title,
+                                mouse_cursor=CLICK_CURSOR,
                             ),
                             ft.PopupMenuItem(),
                             ft.PopupMenuItem(
@@ -105,6 +108,7 @@ class BoardList(ft.Container):
                                     color=self.color or APP_TEXT_MUTED,
                                 ),
                                 on_click=self.delete_list,
+                                mouse_cursor=CLICK_CURSOR,
                             ),
                             ft.PopupMenuItem(),
                             ft.PopupMenuItem(
@@ -116,6 +120,7 @@ class BoardList(ft.Container):
                                 )
                             ),
                         ],
+                        style=click_button_style(),
                     ),
                     padding=ft.padding.Padding(right=-10),
                 ),

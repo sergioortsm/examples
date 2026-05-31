@@ -2,7 +2,7 @@ from board import Board
 from data_store import DataStore
 import flet as ft
 from sidebar import Sidebar
-from ui_tokens import APP_BORDER, APP_SHELL_ACCENT, APP_SHELL_ACCENT_HOVER, APP_SURFACE, APP_TEXT_MUTED, surface_shadow
+from ui_tokens import APP_BORDER, APP_SHELL_ACCENT, APP_SHELL_ACCENT_HOVER, APP_SURFACE, APP_TEXT_MUTED, CLICK_CURSOR, click_button_style, surface_shadow
 
 
 class AppLayout(ft.Row):
@@ -145,10 +145,13 @@ class AppLayout(ft.Row):
                     content=ft.Row(
                         [
                             ft.Container(
-                                content=ft.Text(value=b.name),
-                                data=b,
                                 expand=True,
-                                on_click=self.board_click,
+                                content=ft.GestureDetector(
+                                    content=ft.Text(value=b.name),
+                                    data=b,
+                                    mouse_cursor=CLICK_CURSOR,
+                                    on_tap=self.board_click,
+                                ),
                             ),
                             ft.Container(
                                 content=ft.PopupMenuButton(
@@ -161,6 +164,7 @@ class AppLayout(ft.Row):
                                             ),
                                             on_click=self.app.delete_board,
                                             data=b,
+                                            mouse_cursor=CLICK_CURSOR,
                                         ),
                                         ft.PopupMenuItem(),
                                         ft.PopupMenuItem(
@@ -170,7 +174,8 @@ class AppLayout(ft.Row):
                                                 text_align=ft.TextAlign.CENTER,
                                             ),
                                         ),
-                                    ]
+                                    ],
+                                    style=click_button_style(),
                                 ),
                                 padding=ft.padding.Padding(right=-10),
                                 border_radius=ft.BorderRadius(3, 3, 3, 3),

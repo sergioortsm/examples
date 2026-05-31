@@ -25,6 +25,12 @@ APP_SUCCESS_FG = "#2E7D52"
 APP_ERROR_BG = "#FBE9E9"
 APP_ERROR_FG = "#B24444"
 
+CLICK_CURSOR = ft.MouseCursor.CLICK
+
+
+def click_button_style() -> ft.ButtonStyle:
+    return ft.ButtonStyle(mouse_cursor=CLICK_CURSOR)
+
 
 def surface_shadow(offset_y: int = 6, blur_radius: int = 18) -> list[ft.BoxShadow]:
     return [

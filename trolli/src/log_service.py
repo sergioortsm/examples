@@ -6,7 +6,7 @@ import csv
 import io
 import re
 
-MAX_LOG_SIZE_BYTES = 50 * 1024 * 1024
+MAX_LOG_SIZE_BYTES = 350 * 1024 * 1024
 _ULS_TIMESTAMP_RE = re.compile(r"^\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2}\.\d{2,3}$")
 _VALID_ULS_LEVELS = {
     "CRITICAL",
@@ -132,7 +132,7 @@ def load_sharepoint_log(file_path: str) -> LogLoadResult:
             columns=[],
             rows=[],
             levels=[],
-            error="El archivo supera el limite de 50 MB.",
+            error="El archivo supera el limite de 150 MB.",
         )
 
     text = _read_text_with_fallbacks(file_path)

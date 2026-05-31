@@ -22,7 +22,7 @@ class LogsView(ft.Column):
     #   page.padding vertical (top=0, bottom=0): 0 px
     # Total real: ~301 px → se usa 295 con pequeño margen de seguridad.
     # Subir si aparece scrollbar exterior; bajar si queda espacio en blanco abajo.
-    _TABLE_UI_OVERHEAD_PX: int = 295
+    _TABLE_UI_OVERHEAD_PX: int = 255
 
     _COLUMN_FIXED_WIDTHS: dict[str, int] = {
         "Timestamp": 180,
@@ -191,6 +191,13 @@ class LogsView(ft.Column):
             tooltip="Iniciar vigilancia en vivo",
             on_click=lambda e: self.app.on_logs_toggle_watch(),
         )
+        self.watch_pause_button = ft.IconButton(
+            icon=ft.Icons.PAUSE,
+            icon_color=ft.Colors.AMBER_700,
+            tooltip="Pausar empuje en vivo (el watcher sigue activo)",
+            visible=False,
+            on_click=lambda e: self.app.on_logs_toggle_live_pause(),
+        )
         self.watch_status_text = ft.Text("", size=12, color=APP_TEXT_MUTED)
         # self.watch_row = ft.Row(
         #     [
@@ -358,6 +365,7 @@ class LogsView(ft.Column):
                         self.level_dropdown,
                         self.page_size_dropdown,
                         self.watch_toggle_button,
+                        self.watch_pause_button,
                         self.watch_status_text,
                     ],
                     spacing=8,
@@ -401,13 +409,16 @@ class LogsView(ft.Column):
                 vertical_alignment=ft.CrossAxisAlignment.CENTER,
             ),
             self.filters_row,
-            ft.Row([self.pending_new_button], alignment=ft.MainAxisAlignment.START),
-            ft.Container(
-                content=ft.Row(
-                    [self.prev_page_button, self.page_info_text, self.next_page_button],
-                    alignment=ft.MainAxisAlignment.END,
-                ),
-                padding=ft.padding.Padding(left=0, top=0, right=8, bottom=0),
+            ft.Row(
+                [
+                    ft.Row([self.pending_new_button], expand=True),
+                    ft.Row(
+                        [self.prev_page_button, self.page_info_text, self.next_page_button],
+                        spacing=4,
+                        tight=True,
+                    ),
+                ],
+                vertical_alignment=ft.CrossAxisAlignment.CENTER,
             ),
             self.table_surface,
         ]
@@ -435,8 +446,7 @@ class LogsView(ft.Column):
 
         error = state.get("error", "")
         if error:
-            self.status_text.value = error
-            self.status_text.color = ft.Colors.RED_600
+            self.status_text.value = ""
         else:
             total = state.get("filtered_total", 0)
             self.status_text.value = f"Registros filtrados: {total}"
@@ -474,6 +484,7 @@ class LogsView(ft.Column):
 
         # --- watcher ---
         is_watching = bool(state.get("is_watching", False))
+        live_paused = bool(state.get("live_paused", False))
         # self.watch_folder_field.value = state.get("watch_folder", "")
         # self.watch_pattern_field.value = state.get("watch_pattern", "")
         # self.watch_folder_field.disabled = is_watching
@@ -486,6 +497,17 @@ class LogsView(ft.Column):
             self.watch_toggle_button.icon = ft.Icons.PLAY_ARROW
             self.watch_toggle_button.icon_color = ft.Colors.GREEN_700
             self.watch_toggle_button.tooltip = "Iniciar vigilancia en vivo"
+        # Botón Pausa: solo visible cuando el watcher está activo
+        self.watch_pause_button.visible = is_watching
+        if is_watching:
+            if live_paused:
+                self.watch_pause_button.icon = ft.Icons.PLAY_CIRCLE
+                self.watch_pause_button.icon_color = ft.Colors.GREEN_700
+                self.watch_pause_button.tooltip = "Reanudar empuje en vivo"
+            else:
+                self.watch_pause_button.icon = ft.Icons.PAUSE
+                self.watch_pause_button.icon_color = ft.Colors.AMBER_700
+                self.watch_pause_button.tooltip = "Pausar empuje en vivo (el watcher sigue activo)"
         watch_error = state.get("watch_error", "")
         if watch_error:
             self.watch_status_text.value = watch_error
@@ -494,10 +516,11 @@ class LogsView(ft.Column):
             rate = state.get("lines_per_sec", 0.0)
             buf = state.get("buffer_count", 0)
             buf_max = state.get("buffer_max", 0)
+            paused_label = " ⏸ PAUSADO" if live_paused else ""
             self.watch_status_text.value = (
-                f"En vivo · buffer {buf}/{buf_max} · {rate:.0f} l/s"
+                f"En vivo{paused_label} · buffer {buf}/{buf_max} · {rate:.0f} l/s"
             )
-            self.watch_status_text.color = ft.Colors.GREEN_800
+            self.watch_status_text.color = ft.Colors.AMBER_800 if live_paused else ft.Colors.GREEN_800
         else:
             self.watch_status_text.value = ""
 
@@ -594,6 +617,7 @@ class LogsView(ft.Column):
             self.pending_new_button.visible = False
 
         is_watching = bool(state.get("is_watching", False))
+        live_paused = bool(state.get("live_paused", False))
         watch_error = state.get("watch_error", "")
         if watch_error:
             self.watch_status_text.value = watch_error
@@ -602,18 +626,30 @@ class LogsView(ft.Column):
             rate = state.get("lines_per_sec", 0.0)
             buf = state.get("buffer_count", 0)
             buf_max = state.get("buffer_max", 0)
+            paused_label = " ⏸ PAUSADO" if live_paused else ""
             self.watch_status_text.value = (
-                f"En vivo · buffer {buf}/{buf_max} · {rate:.0f} l/s"
+                f"En vivo{paused_label} · buffer {buf}/{buf_max} · {rate:.0f} l/s"
             )
-            self.watch_status_text.color = ft.Colors.GREEN_800
+            self.watch_status_text.color = ft.Colors.AMBER_800 if live_paused else ft.Colors.GREEN_800
         else:
             self.watch_status_text.value = ""
+        # Sincronizar icono del botón de pausa (puede cambiar sin render completo)
+        if is_watching:
+            if live_paused:
+                self.watch_pause_button.icon = ft.Icons.PLAY_CIRCLE
+                self.watch_pause_button.icon_color = ft.Colors.GREEN_700
+                self.watch_pause_button.tooltip = "Reanudar empuje en vivo"
+            else:
+                self.watch_pause_button.icon = ft.Icons.PAUSE
+                self.watch_pause_button.icon_color = ft.Colors.AMBER_700
+                self.watch_pause_button.tooltip = "Pausar empuje en vivo (el watcher sigue activo)"
 
         if getattr(self, "page", None) is not None:
             # Solo refrescamos los controles afectados para minimizar diffs WS.
             try:
                 self.pending_new_button.update()
                 self.watch_status_text.update()
+                self.watch_pause_button.update()
             except (AssertionError, RuntimeError):
                 pass
 

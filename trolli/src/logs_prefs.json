@@ -3,17 +3,12 @@
   "level_filter": "All",
   "sort_by": "Timestamp",
   "sort_desc": false,
-  "page_size": 250,
+  "page_size": 50,
   "visible_columns": [
     "Timestamp",
-    "Message",
-    "Level",
-    "Category",
     "Process",
-    "Area",
-    "Correlation",
-    "EventID",
-    "TID"
+    "Level",
+    "Message"
   ],
   "column_widths": {
     "Timestamp": 220,
