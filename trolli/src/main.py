@@ -4,6 +4,16 @@ import inspect
 import json
 import logging
 import os
+import ssl
+
+# Entornos corporativos con CA privada (ej. servidores SharePoint):
+# flet_desktop descarga su cliente Flutter en el primer arranque via urllib/https.
+# Si el servidor tiene un proxy SSL con CA no reconocida por Python, esa descarga
+# falla con SSLCertVerificationError. La variable TROLLI_SKIP_SSL_VERIFY=1 parchea
+# ssl antes de que flet_desktop haga la peticion.
+# Solo es necesario en el primer arranque; despues queda cacheado en %LOCALAPPDATA%\flet\bin.
+if os.environ.get("TROLLI_SKIP_SSL_VERIFY", "0") == "1":
+    ssl._create_default_https_context = ssl._create_unverified_context
 
 import flet as ft
 from datetime import datetime
@@ -162,10 +172,13 @@ class TrelloApp(AppLayout):
             content=ft.Container(
                 width=140,
                 height=140,
-                bgcolor=APP_SURFACE,
-                border=ft.Border.all(1, APP_BORDER),
+                bgcolor=ft.Colors.TRANSPARENT,
+                border=None,
+                shadow=None,
+                # bgcolor=APP_SURFACE,
+                # border=ft.Border.all(1, APP_BORDER),
                 border_radius=ft.BorderRadius(24, 24, 24, 24),
-                shadow=surface_shadow(offset_y=10, blur_radius=28),
+                #shadow=surface_shadow(offset_y=10, blur_radius=28),
                 alignment=ft.Alignment(x=0, y=0),
                 content=ft.Column(
                     [
@@ -909,6 +922,15 @@ class TrelloApp(AppLayout):
     def on_logs_sort_column_change(self, value: str | None):
         if value and value in self.logs_state["columns"]:
             self.logs_state["sort_by"] = value
+        self.logs_state["current_page"] = 1
+        self.logs_view.request_scroll_to_top()
+        self.refresh_logs_view()
+
+    def on_logs_sort_by_header(self, col_name: str, ascending: bool):
+        """Llamado desde la cabecera de DataTable2 al hacer clic en una columna."""
+        if col_name in self.logs_state["columns"]:
+            self.logs_state["sort_by"] = col_name
+            self.logs_state["sort_desc"] = not ascending
         self.logs_state["current_page"] = 1
         self.logs_view.request_scroll_to_top()
         self.refresh_logs_view()
@@ -1676,6 +1698,10 @@ class TrelloApp(AppLayout):
             self.set_members_view()
         elif troute.match("/logs"):
             self.set_logs_view()
+            # Recalcular altura de tabla con el viewport real de este momento.
+            # Necesario porque el evento on_resize puede haberse perdido durante
+            # la maximizacion inicial de la ventana.
+            self.logs_view.update_table_height(self._page.height or 768)
             self.refresh_logs_view()
         self._page.update()
 

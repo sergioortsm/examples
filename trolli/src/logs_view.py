@@ -15,10 +15,14 @@ class LogsView(ft.Column):
     _DEFAULT_DATA_ROW_HEIGHT = 42
     _MESSAGE_DATA_ROW_HEIGHT = 64
 
-    # Altura aproximada de los controles UI por encima de la tabla (título, watcher,
-    # filtros, chip de nuevas, paginación y spacings). Calibrar si la tabla queda
-    # cortada o genera scrollbar exterior innecesario.
-    _TABLE_UI_OVERHEAD_PX: int = 360
+    # Altura ocupada por los controles fijos encima de la tabla:
+    #   AppBar: 75 px  |  cabecera (title+metadata): ~58 px
+    #   filters_row: ~48 px  |  chip nuevas: ~40 px  |  paginación: ~40 px
+    #   4 × spacing(10) entre controles: ~40 px
+    #   page.padding vertical (top=0, bottom=0): 0 px
+    # Total real: ~301 px → se usa 295 con pequeño margen de seguridad.
+    # Subir si aparece scrollbar exterior; bajar si queda espacio en blanco abajo.
+    _TABLE_UI_OVERHEAD_PX: int = 295
 
     _COLUMN_FIXED_WIDTHS: dict[str, int] = {
         "Timestamp": 180,
@@ -169,18 +173,18 @@ class LogsView(ft.Column):
         )
 
         # --- Watcher (modo live) ---------------------------------------------
-        self.watch_folder_field = ft.TextField(
-            label="Carpeta a vigilar",
-            hint_text=r"C:\Program Files\Common Files\Microsoft Shared\Web Server Extensions\16\LOGS",
-            expand=True,
-            on_change=lambda e: self.app.on_logs_watch_folder_change(e.control.value),
-        )
-        self.watch_pattern_field = ft.TextField(
-            label="Patron (regex)",
-            hint_text=r".+-\d{8}-\d{4}\.log$",
-            width=240,
-            on_change=lambda e: self.app.on_logs_watch_pattern_change(e.control.value),
-        )
+        # self.watch_folder_field = ft.TextField(
+        #     label="Carpeta a vigilar",
+        #     hint_text=r"C:\Program Files\Common Files\Microsoft Shared\Web Server Extensions\16\LOGS",
+        #     expand=True,
+        #     on_change=lambda e: self.app.on_logs_watch_folder_change(e.control.value),
+        # )
+        # self.watch_pattern_field = ft.TextField(
+        #     label="Patron (regex)",
+        #     hint_text=r".+-\d{8}-\d{4}\.log$",
+        #     width=240,
+        #     on_change=lambda e: self.app.on_logs_watch_pattern_change(e.control.value),
+        # )
         self.watch_toggle_button = ft.IconButton(
             icon=ft.Icons.PLAY_ARROW,
             icon_color=ft.Colors.GREEN_700,
@@ -188,16 +192,16 @@ class LogsView(ft.Column):
             on_click=lambda e: self.app.on_logs_toggle_watch(),
         )
         self.watch_status_text = ft.Text("", size=12, color=APP_TEXT_MUTED)
-        self.watch_row = ft.Row(
-            [
-                self.watch_folder_field,
-                self.watch_pattern_field,
-                self.watch_toggle_button,
-                self.watch_status_text,
-            ],
-            spacing=8,
-            vertical_alignment=ft.CrossAxisAlignment.CENTER,
-        )
+        # self.watch_row = ft.Row(
+        #     [
+        #         self.watch_folder_field,
+        #         self.watch_pattern_field,
+        #         self.watch_toggle_button,
+        #         self.watch_status_text,
+        #     ],
+        #     spacing=8,
+        #     vertical_alignment=ft.CrossAxisAlignment.CENTER,
+        # )
 
         # Chip "N nuevas lineas pendientes" (auto-pausa cuando hay filtros activos)
         self.pending_new_text = ft.Text("Nuevas (0)")
@@ -352,9 +356,9 @@ class LogsView(ft.Column):
                     [
                         self.search_field,
                         self.level_dropdown,
-                        self.sort_dropdown,
-                        self.sort_direction_button,
                         self.page_size_dropdown,
+                        self.watch_toggle_button,
+                        self.watch_status_text,
                     ],
                     spacing=8,
                     expand=True,
@@ -396,7 +400,6 @@ class LogsView(ft.Column):
                 alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                 vertical_alignment=ft.CrossAxisAlignment.CENTER,
             ),
-            self.watch_row,
             self.filters_row,
             ft.Row([self.pending_new_button], alignment=ft.MainAxisAlignment.START),
             ft.Container(
@@ -471,10 +474,10 @@ class LogsView(ft.Column):
 
         # --- watcher ---
         is_watching = bool(state.get("is_watching", False))
-        self.watch_folder_field.value = state.get("watch_folder", "")
-        self.watch_pattern_field.value = state.get("watch_pattern", "")
-        self.watch_folder_field.disabled = is_watching
-        self.watch_pattern_field.disabled = is_watching
+        # self.watch_folder_field.value = state.get("watch_folder", "")
+        # self.watch_pattern_field.value = state.get("watch_pattern", "")
+        # self.watch_folder_field.disabled = is_watching
+        # self.watch_pattern_field.disabled = is_watching
         if is_watching:
             self.watch_toggle_button.icon = ft.Icons.STOP
             self.watch_toggle_button.icon_color = ft.Colors.RED_700
@@ -696,6 +699,11 @@ class LogsView(ft.Column):
         specific_height = None
 
         # Columnas (cabeceras)
+        def _make_sort_handler(col_name: str):
+            def _on_sort(e: ft.DataColumnSortEvent) -> None:
+                self.app.on_logs_sort_by_header(col_name, e.ascending)
+            return _on_sort
+
         data_table_columns = []
         for column in visible_columns:
             data_table_columns.append(
@@ -711,6 +719,7 @@ class LogsView(ft.Column):
                         padding=ft.padding.Padding(left=4, top=10, right=4, bottom=10),
                     ),
                     fixed_width=self._column_width(column),
+                    on_sort=_make_sort_handler(column),
                 )
             )
 
@@ -731,27 +740,13 @@ class LogsView(ft.Column):
                 self._pool_row_data[slot], list(self._pool_visible_columns or [])
             )
 
-
         for slot in range(pool_size):
             # Zebra striping inicial por slot; se sobrescribe en _render_table segun el level.
             row_bg = APP_SURFACE if slot % 2 == 0 else APP_SURFACE_ALT
             cells: list[ft.DataCell] = []
             cell_texts: list[ft.Text] = []
             cell_containers: list = []
-            # Estado de hover por fila
-            is_hovered = {'value': False}
-            def make_on_hover(slot_idx, is_hovered_ref):
-                def _on_hover(e):
-                    hovered = e.data == "true"
-                    is_hovered_ref['value'] = hovered
-                    hover_color = "#1A2D6015"
-                    base_bg = self._pool_row_decorations[slot_idx].bgcolor
-                    for c in self._pool_cell_containers[slot_idx]:
-                        c.bgcolor = hover_color if hovered else base_bg
-                    self._pool_row_decorations[slot_idx].bgcolor = hover_color if hovered else base_bg
-                    self._pool_data_table.update()
-                return _on_hover
-            for column_idx, column in enumerate(visible_columns):
+            for column in visible_columns:
                 is_message = self._is_message_column(column)
                 if is_message:
                     text_ctrl = ft.Text(
@@ -776,7 +771,6 @@ class LogsView(ft.Column):
                         alignment=ft.Alignment(x=-1, y=0),
                         padding=ft.padding.Padding(left=6, top=4, right=6, bottom=4),
                         bgcolor=row_bg,
-                        on_hover=make_on_hover(slot, is_hovered) if column_idx == 0 else None,
                     )
                     cells.append(ft.DataCell(cell_container))
                 else:
@@ -794,7 +788,6 @@ class LogsView(ft.Column):
                         padding=ft.padding.Padding(left=4, top=6, right=4, bottom=6),
                         bgcolor=row_bg,
                         border_radius=ft.BorderRadius(6, 6, 6, 6),
-                        on_hover=make_on_hover(slot, is_hovered) if column_idx == 0 else None,
                     )
                     cells.append(ft.DataCell(cell_container))
                 cell_texts.append(text_ctrl)
@@ -807,6 +800,7 @@ class LogsView(ft.Column):
                 specific_row_height=specific_height,
                 on_double_tap=_make_double_tap(slot),
                 on_secondary_tap=_make_secondary_tap(slot),
+                color={ft.ControlState.HOVERED: "#1A2D6015"},  # azul grisáceo semitransparente
             )
             pool_rows.append(data_row)
             pool_texts.append(cell_texts)
@@ -814,6 +808,14 @@ class LogsView(ft.Column):
             pool_cell_containers.append(cell_containers)
 
         min_table_width = max(600, sum(self._column_width(c) for c in visible_columns))
+        # Calcular indicador inicial de sort para esta construccion del pool.
+        _state = getattr(self.app, "logs_state", {})
+        _sort_by = _state.get("sort_by")
+        _sort_desc = bool(_state.get("sort_desc", False))
+        _sort_col_idx: int | None = None
+        if _sort_by and _sort_by in visible_columns:
+            _sort_col_idx = list(visible_columns).index(_sort_by)
+
         data_table = fdt.DataTable2(
             min_width=min_table_width,
             fixed_top_rows=0,
@@ -827,6 +829,8 @@ class LogsView(ft.Column):
             horizontal_margin=18,
             column_spacing=24,
             show_heading_checkbox=False,
+            sort_column_index=_sort_col_idx,
+            sort_ascending=not _sort_desc,
             columns=data_table_columns,
             rows=[],
             empty=ft.Text("No hay filas para los filtros actuales."),
@@ -872,24 +876,15 @@ class LogsView(ft.Column):
             # pool al menos del tamano de la pagina; un suelo de 50 cubre el caso normal.
             self._build_table_pool(visible_columns, max(n, 50))
 
-
         # Mutar datos: solo text.value + slot data + bgcolor segun level.
         for slot in range(n):
             row = page_rows[slot]
             self._pool_row_data[slot] = row
             row_bg = self._row_bgcolor(row, slot)
-            # Si la fila está en hover, mantener el color de hover
-            is_hovered = False
-            # Detectar si la fila está en hover (por el primer cell)
-            try:
-                is_hovered = self._pool_cell_containers[slot][0].on_hover and self._pool_cell_containers[slot][0].on_hover.__closure__[1].cell_contents['value']
-            except Exception:
-                is_hovered = False
-            hover_color = "#1A2D6015"
-            self._pool_row_decorations[slot].bgcolor = hover_color if is_hovered else row_bg
+            self._pool_row_decorations[slot].bgcolor = row_bg
             containers = self._pool_cell_containers[slot]
             for c in containers:
-                c.bgcolor = hover_color if is_hovered else row_bg
+                c.bgcolor = row_bg
             texts = self._pool_row_texts[slot]
             for col_idx, column in enumerate(visible_columns):
                 texts[col_idx].value = str(row.get(column, ""))
@@ -897,6 +892,15 @@ class LogsView(ft.Column):
         # Slice de filas visibles. Asignar lista nueva fuerza diff en Flet de forma controlada.
         self._pool_data_table.rows = self._pool_rows[:n]
         self._pool_active_n = n
+
+        # Actualizar indicador visual de sort en la cabecera.
+        sort_by = state.get("sort_by")
+        sort_desc = bool(state.get("sort_desc", False))
+        if sort_by and sort_by in visible_columns:
+            self._pool_data_table.sort_column_index = list(visible_columns).index(sort_by)
+        else:
+            self._pool_data_table.sort_column_index = None
+        self._pool_data_table.sort_ascending = not sort_desc
 
         # Solo reasignar el container si cambia la instancia (tras rebuild).
         if self.table_content_container.content is not self._pool_data_table:

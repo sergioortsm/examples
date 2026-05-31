@@ -56,6 +56,57 @@ except Exception as exc:
 	- En una app empaquetada, junto al ejecutable.
 - Si defines la variable de entorno `TROLLI_LOG_DIR`, esa carpeta tiene prioridad y el archivo se crea como `trolli.log` dentro de ella.
 
+## Generar ejecutable Windows (.exe)
+
+Usa el script `scripts/build-windows-exe.ps1` desde la raíz del proyecto (requiere entorno virtual activo):
+
+```powershell
+# Modo PyInstaller (recomendado, no requiere Flutter SDK)
+.\scripts\build-windows-exe.ps1 -UsePyInstaller -OpenOutputDir
+
+# Modo flet build (requiere Flutter SDK instalado)
+.\scripts\build-windows-exe.ps1
+```
+
+El ejecutable queda en `build\pyinstaller\trolli\`. Copia **la carpeta entera** al servidor (no solo el `.exe`).
+
+### Despliegue en servidor SharePoint
+
+1. Copia la carpeta `build\pyinstaller\trolli\` al servidor.
+2. Configura `watch_folder` en `logs_prefs.json` (o desde la UI) a la ruta de logs ULS:
+   ```
+   C:\Program Files\Common Files\Microsoft Shared\Web Server Extensions\16\LOGS
+   ```
+3. Ejecuta `trolli.exe`.
+
+### Entornos con proxy SSL corporativo (CA privada)
+
+En servidores SharePoint con proxy que intercepta SSL, el primer arranque falla con:
+
+```
+ssl.SSLCertVerificationError: certificate verify failed: unable to get local issuer certificate
+```
+
+Esto ocurre porque `flet_desktop` descarga su cliente Flutter (~20 MB) en el primer arranque via HTTPS. Una vez descargado queda cacheado en `%LOCALAPPDATA%\flet\bin\` y el error no vuelve a producirse.
+
+**Solución: generar el ejecutable con `-AllowUntrustedSSL`**
+
+```powershell
+.\scripts\build-windows-exe.ps1 -UsePyInstaller -AllowUntrustedSSL -OpenOutputDir
+```
+
+Esto incluye un `trolli-launcher.bat` junto al `.exe`. En el servidor, ejecuta **`trolli-launcher.bat`** en lugar de `trolli.exe` directamente. El `.bat` activa la variable `TROLLI_SKIP_SSL_VERIFY=1` que parchea el contexto SSL de Python antes de que `flet_desktop` haga la descarga.
+
+**Solución alternativa con CA corporativa (más segura)**
+
+Si tienes el certificado raíz de la CA corporativa (exportado desde `certmgr.msc` → *Entidades de certificación raíz de confianza* → formato `.pem`):
+
+```powershell
+.\scripts\build-windows-exe.ps1 -UsePyInstaller -CACertBundle C:\ruta\ca-bundle.pem -OpenOutputDir
+```
+
+El `.pem` se copia junto al ejecutable y el launcher lo apunta via `SSL_CERT_FILE`. Esta opción mantiene la verificación SSL activa.
+
 ## Demo
 
 Prueba la app en producción: [https://flet-trolli.fly.dev/](https://flet-trolli.fly.dev/)

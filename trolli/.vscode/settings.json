@@ -29,6 +29,7 @@
         "Push-Location": true,
         "Pop-Location": true,
         "Get-Item": true,
-        ".\\scripts\\test-watcher-trickle.ps1": true
+        ".\\scripts\\test-watcher-trickle.ps1": true,
+        ".venv\\Scripts\\pip": true
     }
 }
