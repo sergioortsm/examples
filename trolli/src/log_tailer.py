@@ -181,10 +181,19 @@ class LogTailer:
                 raw = raw[:-1]
             if not raw:
                 continue
-            try:
-                lines.append(raw.decode(enc))
-            except UnicodeDecodeError:
-                lines.append(raw.decode("latin-1", errors="replace"))
+            # Para encodings UTF-8, usar errors="replace" en lugar de caer a
+            # latin-1: asi se preservan los caracteres validos de la linea y
+            # solo los bytes rotos se sustituyen por U+FFFD. El fallback a
+            # latin-1 convertia secuencias UTF-8 validas (ej. C3 A9 = é) en
+            # dos caracteres garbage (Ã©) cuando habia un byte invalido en la
+            # misma linea.
+            if enc in ("utf-8", "utf-8-sig"):
+                lines.append(raw.decode("utf-8", errors="replace"))
+            else:
+                try:
+                    lines.append(raw.decode(enc))
+                except UnicodeDecodeError:
+                    lines.append(raw.decode("latin-1", errors="replace"))
         return lines
 
     @property

@@ -19,15 +19,17 @@ from logs_view import LogsView
 from app_logging import (
     install_asyncio_exception_handler,
     install_global_exception_hooks,
+    perf_timer,
     resolve_app_data_dir,
     setup_logging,
 )
 from log_service import (
-    apply_filters_sort_paginate,
     export_rows_to_csv,
+    filter_rows,
     filter_sort_rows,
     load_sharepoint_log,
     paginate_rows,
+    sort_rows,
 )
 from log_buffer import LifoLogBuffer
 from log_watcher import LogWatcher
@@ -50,8 +52,15 @@ class TrelloApp(AppLayout):
         self._page.on_error = self._on_page_error
         self.boards = self.store.get_boards()
         self.logs_rows: list[dict[str, str]] = []
-        self._logs_query_cache_signature: tuple[object, ...] | None = None
-        self._logs_query_cache_rows: list[dict[str, str]] = []
+        # Cache en dos niveles para evitar recomputo cuando solo cambia paginacion,
+        # tamano de pagina o el sentido del sort:
+        #   - filter_cache: depende de (file, columns, search, level)
+        #   - sort_cache: depende de filter_cache + (sort_by, sort_desc)
+        # Si solo cambia sort_desc, sort_cache se obtiene con reversed() en O(n).
+        self._logs_filter_cache_signature: tuple[object, ...] | None = None
+        self._logs_filter_cache_rows: list[dict[str, str]] = []
+        self._logs_sort_cache_signature: tuple[object, ...] | None = None
+        self._logs_sort_cache_rows: list[dict[str, str]] = []
         self._logs_prefs_signature_last_saved: tuple[object, ...] | None = None
         self._logs_refresh_pending = False
         self.logs_state = {
@@ -95,6 +104,10 @@ class TrelloApp(AppLayout):
         self._watcher_drain_task: asyncio.Task | None = None
         self._watcher_lines_window: list[tuple[float, int]] = []  # (timestamp, count) ultimos 5s
         self._live_cap_logged_for_size: int | None = None  # ultima page_size para la que ya se logueo el cap
+        # Throttle adaptativo del drain loop: si el ultimo render tardo X ms,
+        # esperamos max(REFRESH_MS, X * 1.2) ms antes del siguiente drain para
+        # romper la bola de nieve cuando el render satura.
+        self._last_render_ms: float = 0.0
         self.login_profile_button = ft.PopupMenuItem(content="Log in", on_click=self.login)
         self.appbar_items = [
             self.login_profile_button,
@@ -464,14 +477,26 @@ class TrelloApp(AppLayout):
         self._storage_set("logs_watch_pattern", self.logs_state.get("watch_pattern", ""))
 
     def _logs_query_signature(self) -> tuple[object, ...]:
+        # Firma combinada (filter + sort + page_size) usada por la cache de export
+        # y como conveniencia en logs/diagnostico.
+        return self._logs_filter_signature() + (
+            self.logs_state.get("sort_by", None),
+            bool(self.logs_state.get("sort_desc", False)),
+            int(self.logs_state.get("page_size", 100)),
+        )
+
+    def _logs_filter_signature(self) -> tuple[object, ...]:
         return (
             self.logs_state.get("file_path", ""),
             tuple(self.logs_state.get("columns", [])),
             self.logs_state.get("search_text", ""),
             self.logs_state.get("level_filter", "All"),
+        )
+
+    def _logs_sort_signature(self) -> tuple[object, ...]:
+        return self._logs_filter_signature() + (
             self.logs_state.get("sort_by", None),
             bool(self.logs_state.get("sort_desc", False)),
-            int(self.logs_state.get("page_size", 100)),
         )
 
     def _logs_prefs_signature(self) -> tuple[object, ...]:
@@ -488,25 +513,98 @@ class TrelloApp(AppLayout):
         )
 
     def _invalidate_logs_query_cache(self):
-        self._logs_query_cache_signature = None
-        self._logs_query_cache_rows = []
+        self._logs_filter_cache_signature = None
+        self._logs_filter_cache_rows = []
+        self._logs_sort_cache_signature = None
+        self._logs_sort_cache_rows = []
 
-    async def _rebuild_logs_query_cache_in_thread_if_needed(self):
-        query_signature = self._logs_query_signature()
-        if query_signature == self._logs_query_cache_signature:
+    def _rebuild_filter_cache_sync(self):
+        filter_signature = self._logs_filter_signature()
+        if filter_signature == self._logs_filter_cache_signature:
+            return
+        with perf_timer("filter_rows", rows=len(self.logs_rows)):
+            self._logs_filter_cache_rows = filter_rows(
+                self.logs_rows,
+                self.logs_state["columns"],
+                self.logs_state["search_text"],
+                self.logs_state["level_filter"],
+            )
+        self._logs_filter_cache_signature = filter_signature
+        # Si el filtrado cambia, la cache de sort dejo de ser valida.
+        self._logs_sort_cache_signature = None
+        self._logs_sort_cache_rows = []
+
+    def _rebuild_sort_cache_sync(self):
+        self._rebuild_filter_cache_sync()
+        sort_signature = self._logs_sort_signature()
+        if sort_signature == self._logs_sort_cache_signature:
             return
 
-        rows = await asyncio.to_thread(
-            filter_sort_rows,
-            self.logs_rows,
-            self.logs_state["columns"],
-            self.logs_state["search_text"],
-            self.logs_state["level_filter"],
-            self.logs_state["sort_by"],
-            self.logs_state["sort_desc"],
-        )
-        self._logs_query_cache_rows = rows
-        self._logs_query_cache_signature = query_signature
+        # Sort-skip: si solo cambia el sentido (sort_desc) y la cache previa era
+        # del mismo filtro y misma columna, reaprovechamos reversed() en O(n).
+        prev_sig = self._logs_sort_cache_signature
+        if (
+            prev_sig is not None
+            and prev_sig[:-1] == sort_signature[:-1]
+            and prev_sig[-1] != sort_signature[-1]
+            and self._logs_sort_cache_rows
+        ):
+            with perf_timer("sort_skip_reverse", rows=len(self._logs_sort_cache_rows)):
+                self._logs_sort_cache_rows = list(reversed(self._logs_sort_cache_rows))
+            self._logs_sort_cache_signature = sort_signature
+            return
+
+        with perf_timer("sort_rows", rows=len(self._logs_filter_cache_rows), col=self.logs_state.get("sort_by")):
+            self._logs_sort_cache_rows = sort_rows(
+                self._logs_filter_cache_rows,
+                self.logs_state["columns"],
+                self.logs_state["sort_by"],
+                self.logs_state["sort_desc"],
+            )
+        self._logs_sort_cache_signature = sort_signature
+
+    async def _rebuild_logs_query_cache_in_thread_if_needed(self):
+        # Filtrado: si la firma cambio, lo lanzamos a un thread.
+        filter_signature = self._logs_filter_signature()
+        if filter_signature != self._logs_filter_cache_signature:
+            with perf_timer("filter_rows_async", rows=len(self.logs_rows)):
+                self._logs_filter_cache_rows = await asyncio.to_thread(
+                    filter_rows,
+                    self.logs_rows,
+                    self.logs_state["columns"],
+                    self.logs_state["search_text"],
+                    self.logs_state["level_filter"],
+                )
+            self._logs_filter_cache_signature = filter_signature
+            self._logs_sort_cache_signature = None
+            self._logs_sort_cache_rows = []
+
+        # Sort: sort-skip si solo cambio el sentido.
+        sort_signature = self._logs_sort_signature()
+        if sort_signature == self._logs_sort_cache_signature:
+            return
+
+        prev_sig = self._logs_sort_cache_signature
+        if (
+            prev_sig is not None
+            and prev_sig[:-1] == sort_signature[:-1]
+            and prev_sig[-1] != sort_signature[-1]
+            and self._logs_sort_cache_rows
+        ):
+            with perf_timer("sort_skip_reverse_async", rows=len(self._logs_sort_cache_rows)):
+                self._logs_sort_cache_rows = list(reversed(self._logs_sort_cache_rows))
+            self._logs_sort_cache_signature = sort_signature
+            return
+
+        with perf_timer("sort_rows_async", rows=len(self._logs_filter_cache_rows), col=self.logs_state.get("sort_by")):
+            self._logs_sort_cache_rows = await asyncio.to_thread(
+                sort_rows,
+                self._logs_filter_cache_rows,
+                self.logs_state["columns"],
+                self.logs_state["sort_by"],
+                self.logs_state["sort_desc"],
+            )
+        self._logs_sort_cache_signature = sort_signature
 
     def _persist_logs_preferences_if_needed(self):
         current_signature = self._logs_prefs_signature()
@@ -697,27 +795,20 @@ class TrelloApp(AppLayout):
                 self._page.update()
             return
 
-        query_signature = self._logs_query_signature()
-        if query_signature != self._logs_query_cache_signature:
-            self._logs_query_cache_rows = filter_sort_rows(
-                self.logs_rows,
-                self.logs_state["columns"],
-                self.logs_state["search_text"],
-                self.logs_state["level_filter"],
-                self.logs_state["sort_by"],
-                self.logs_state["sort_desc"],
-            )
-            self._logs_query_cache_signature = query_signature
+        query_signature = self._logs_sort_signature()
+        if query_signature != self._logs_sort_cache_signature:
+            self._rebuild_sort_cache_sync()
 
         effective_page_size = (
             page_size_override if page_size_override is not None
             else int(self.logs_state["page_size"])
         )
-        page_rows, filtered_total, total_pages, safe_page = paginate_rows(
-            self._logs_query_cache_rows,
-            self.logs_state["current_page"],
-            effective_page_size,
-        )
+        with perf_timer("paginate_rows", total=len(self._logs_sort_cache_rows), page_size=effective_page_size):
+            page_rows, filtered_total, total_pages, safe_page = paginate_rows(
+                self._logs_sort_cache_rows,
+                self.logs_state["current_page"],
+                effective_page_size,
+            )
 
         self.logs_state.update(
             {
@@ -793,22 +884,26 @@ class TrelloApp(AppLayout):
     def on_logs_search_change(self, value: str):
         self.logs_state["search_text"] = value or ""
         self.logs_state["current_page"] = 1
+        self.logs_view.request_scroll_to_top()
         self.refresh_logs_view()
 
     def on_logs_level_change(self, value: str | None):
         self.logs_state["level_filter"] = value or "All"
         self.logs_state["current_page"] = 1
+        self.logs_view.request_scroll_to_top()
         self.refresh_logs_view()
 
     def on_logs_sort_column_change(self, value: str | None):
         if value and value in self.logs_state["columns"]:
             self.logs_state["sort_by"] = value
         self.logs_state["current_page"] = 1
+        self.logs_view.request_scroll_to_top()
         self.refresh_logs_view()
 
     def on_logs_toggle_sort_direction(self):
         self.logs_state["sort_desc"] = not self.logs_state["sort_desc"]
         self.logs_state["current_page"] = 1
+        self.logs_view.request_scroll_to_top()
         self.refresh_logs_view()
 
     def on_logs_page_size_change(self, value: str | None):
@@ -817,16 +912,19 @@ class TrelloApp(AppLayout):
         except ValueError:
             self.logs_state["page_size"] = 100
         self.logs_state["current_page"] = 1
+        self.logs_view.request_scroll_to_top()
         self.refresh_logs_view()
 
     def on_logs_prev_page(self):
         self.logs_state["current_page"] = max(1, int(self.logs_state["current_page"]) - 1)
+        self.logs_view.request_scroll_to_top()
         self.refresh_logs_view()
 
     def on_logs_next_page(self):
         self.logs_state["current_page"] = min(
             int(self.logs_state["total_pages"]), int(self.logs_state["current_page"]) + 1
         )
+        self.logs_view.request_scroll_to_top()
         self.refresh_logs_view()
 
     def on_logs_toggle_column(self, column_name: str, is_visible: bool):
@@ -975,9 +1073,16 @@ class TrelloApp(AppLayout):
     async def _watcher_drain_loop(self):
         """Drena los lotes acumulados por el watcher y refresca la UI con coalescing."""
         REFRESH_MS = 250
+        MAX_SLEEP_S = 3.0  # tope para no congelar actualizaciones tras un pico anomalo
         try:
             while self._watcher is not None and self._watcher.is_running():
-                await asyncio.sleep(REFRESH_MS / 1000.0)
+                # Throttle adaptativo: si el ultimo render tardo X ms, espera al menos X*1.2.
+                # Asi rompemos la bola de nieve cuando el render satura bajo super stress,
+                # manteniendo cadencia normal cuando los renders son rapidos.
+                base_s = REFRESH_MS / 1000.0
+                adaptive_s = (self._last_render_ms / 1000.0) * 1.2
+                sleep_s = min(MAX_SLEEP_S, max(base_s, adaptive_s))
+                await asyncio.sleep(sleep_s)
                 with self._watcher_pending_lock:
                     pending = self._watcher_pending_batches
                     self._watcher_pending_batches = []
@@ -1037,14 +1142,20 @@ class TrelloApp(AppLayout):
                             live_cap,
                         )
                         self._live_cap_logged_for_size = current_page_size
+                    # filter+sort sobre snap_rows (hasta 100k) puede ser pesado en super stress:
+                    # lo movemos a un thread para no bloquear el event loop de Flet en cada drain.
+                    # Después _refresh_logs_view_core paginará desde el caché ya precomputado.
+                    await self._rebuild_logs_query_cache_in_thread_if_needed()
                     self._refresh_logs_view_core(should_render=True, page_size_override=live_cap)
                 else:
                     self.logs_state["pending_new_count"] = int(self.logs_state.get("pending_new_count", 0)) + total_new_rows
+                    # Auto-pausa: refresco minimo (chip + status). Evita re-render
+                    # de tabla/columnas en cada drain (cada 250ms) bajo super stress,
+                    # lo cual saturaba el WebSocket y bloqueaba clicks de la UI.
                     try:
-                        self.logs_view.render(self.logs_state)
+                        self.logs_view.refresh_pending_chip_and_status(self.logs_state)
                     except RuntimeError:
                         pass
-                    self._page.update()
         except asyncio.CancelledError:
             return
         except Exception:
@@ -1061,9 +1172,57 @@ class TrelloApp(AppLayout):
         self.logs_state["lines_per_sec"] = total / 5.0
 
     def on_logs_show_pending_new(self):
-        """Forzar consumo del buffer y reset de filtros que estan ocultando lo nuevo."""
+        """Forzar consumo del buffer y reset de filtros que estan ocultando lo nuevo.
+
+        En 'super stress' el snapshot del buffer (hasta 100k filas) y el
+        filter+sort sobre ese snapshot pueden bloquear el event loop varios
+        cientos de ms. Hacemos:
+          1. Feedback inmediato: reset visual del chip + overlay de carga.
+          2. snapshot() y filter+sort en thread (fuera del event loop).
+          3. Render final cuando todo esta listo.
+        """
+        if bool(self.logs_state.get("_pending_new_in_progress", False)):
+            return  # debounce: ignora clicks repetidos durante el proceso
+
+        self.logs_state["_pending_new_in_progress"] = True
+        # Reset visual inmediato del chip y pagina antes de salir del handler.
+        self.logs_state["pending_new_count"] = 0
         self.logs_state["current_page"] = 1
+        self.logs_view.request_scroll_to_top()
+        self.begin_global_loading("Recuperando nuevas...")
+        try:
+            self.logs_view.refresh_pending_chip_and_status(self.logs_state)
+        except RuntimeError:
+            pass
+        self._page.update()
+
+        try:
+            asyncio.get_running_loop().create_task(self._show_pending_new_deferred())
+        except RuntimeError:
+            # Fallback sin loop async: ejecucion sincrona (entornos de test).
+            try:
+                self._show_pending_new_sync()
+            finally:
+                self.end_global_loading()
+                self.logs_state["_pending_new_in_progress"] = False
+                try:
+                    self.logs_view.render(self.logs_state)
+                except RuntimeError:
+                    pass
+                self._page.update()
+
+    def _show_pending_new_sync(self):
         snap_rows, snap_columns, snap_levels, buf_size, _ = self._log_buffer.snapshot()
+        self._apply_pending_new_snapshot(snap_rows, snap_columns, snap_levels, buf_size)
+        self._refresh_logs_view_core(should_render=False)
+
+    def _apply_pending_new_snapshot(
+        self,
+        snap_rows: list,
+        snap_columns: list,
+        snap_levels: list,
+        buf_size: int,
+    ):
         if snap_columns:
             self.logs_state["columns"] = snap_columns
             visible = [c for c in self.logs_state.get("visible_columns", []) if c in snap_columns]
@@ -1073,10 +1232,34 @@ class TrelloApp(AppLayout):
             self.logs_state["visible_columns_pending"] = list(visible)
         self.logs_state["level_options"] = ["All"] + snap_levels
         self.logs_state["buffer_count"] = buf_size
-        self.logs_state["pending_new_count"] = 0
         self.logs_rows = snap_rows
         self._invalidate_logs_query_cache()
-        self.refresh_logs_view()
+
+    async def _show_pending_new_deferred(self, min_loading_seconds: float = 0.15):
+        loop = asyncio.get_running_loop()
+        started = loop.time()
+        await asyncio.sleep(0)  # deja pintar overlay/chip
+        try:
+            # snapshot() copia hasta 100k filas bajo lock: fuera del event loop.
+            snap = await asyncio.to_thread(self._log_buffer.snapshot)
+            snap_rows, snap_columns, snap_levels, buf_size, _ = snap
+            self._apply_pending_new_snapshot(snap_rows, snap_columns, snap_levels, buf_size)
+            # filter+sort sobre snap_rows en thread (helper existente).
+            await self._rebuild_logs_query_cache_in_thread_if_needed()
+            self._refresh_logs_view_core(should_render=False)
+        except Exception:
+            logger.exception("[WATCHER] Error al recuperar nuevas pendientes")
+        finally:
+            remaining = min_loading_seconds - (loop.time() - started)
+            if remaining > 0:
+                await asyncio.sleep(remaining)
+            self.end_global_loading()
+            self.logs_state["_pending_new_in_progress"] = False
+            try:
+                self.logs_view.render(self.logs_state)
+            except RuntimeError:
+                pass
+            self._page.update()
 
     def on_logs_toggle_watch(self):
         if self.logs_state.get("is_watching", False):
@@ -1174,28 +1357,50 @@ class TrelloApp(AppLayout):
                     self.logs_state.get("file_path"),
                     self.logs_state.get("visible_columns"),
                     len(self.logs_rows))
+        if bool(self.logs_state.get("_export_in_progress", False)):
+            return  # debounce
         if not self.logs_state.get("file_path"):
             self.show_error("Carga un archivo antes de exportar.")
             self._page.update()
             return
 
-        visible_columns = self.logs_state.get("visible_columns", [])
+        visible_columns = list(self.logs_state.get("visible_columns", []))
         if not visible_columns:
             self.show_error("No hay columnas visibles para exportar.")
             self._page.update()
             return
 
-        rows_to_export, _, _, _ = apply_filters_sort_paginate(
+        self.logs_state["_export_in_progress"] = True
+        self.begin_global_loading("Exportando CSV...")
+        self._page.update()
+
+        try:
+            asyncio.get_running_loop().create_task(self._export_csv_deferred(visible_columns))
+        except RuntimeError:
+            # Fallback sin loop activo (tests/entornos sync).
+            try:
+                self._export_csv_sync(visible_columns)
+            finally:
+                self.end_global_loading()
+                self.logs_state["_export_in_progress"] = False
+                self._page.update()
+
+    def _compute_export_rows(self) -> list[dict[str, str]]:
+        """Devuelve filas filtradas+ordenadas reutilizando la cache si es valida."""
+        sort_signature = self._logs_sort_signature()
+        if sort_signature == self._logs_sort_cache_signature and self._logs_sort_cache_rows:
+            return list(self._logs_sort_cache_rows)
+        return filter_sort_rows(
             self.logs_rows,
             self.logs_state["columns"],
             self.logs_state["search_text"],
             self.logs_state["level_filter"],
             self.logs_state["sort_by"],
             self.logs_state["sort_desc"],
-            1,
-            max(len(self.logs_rows), 1),
         )
 
+    def _export_csv_sync(self, visible_columns: list[str]):
+        rows_to_export = self._compute_export_rows()
         try:
             source = Path(str(self.logs_state["file_path"]))
             timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -1206,7 +1411,42 @@ class TrelloApp(AppLayout):
         except Exception as exc:
             logger.exception("[CSV] Error al exportar")
             self.show_error(f"Error al exportar: {exc}")
-        self._page.update()
+
+    async def _export_csv_deferred(self, visible_columns: list[str], min_loading_seconds: float = 0.15):
+        loop = asyncio.get_running_loop()
+        started = loop.time()
+        await asyncio.sleep(0)  # deja pintar el overlay
+        try:
+            # Reusa cache si vale; si no, recalcula filter+sort fuera del loop.
+            sort_signature = self._logs_sort_signature()
+            if (
+                sort_signature == self._logs_sort_cache_signature
+                and self._logs_sort_cache_rows
+            ):
+                rows_to_export = list(self._logs_sort_cache_rows)
+            else:
+                await self._rebuild_logs_query_cache_in_thread_if_needed()
+                rows_to_export = list(self._logs_sort_cache_rows)
+
+            source = Path(str(self.logs_state["file_path"]))
+            timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+            export_file = source.with_name(f"{source.stem}-filtered-{timestamp}.csv")
+            with perf_timer("export_csv_write", rows=len(rows_to_export)):
+                output_path = await asyncio.to_thread(
+                    export_rows_to_csv, str(export_file), visible_columns, rows_to_export
+                )
+            logger.info("[CSV] Exportado: %s (%d filas)", output_path, len(rows_to_export))
+            self.show_success(f"CSV exportado: {output_path}")
+        except Exception as exc:
+            logger.exception("[CSV] Error al exportar")
+            self.show_error(f"Error al exportar: {exc}")
+        finally:
+            remaining = min_loading_seconds - (loop.time() - started)
+            if remaining > 0:
+                await asyncio.sleep(remaining)
+            self.end_global_loading()
+            self.logs_state["_export_in_progress"] = False
+            self._page.update()
 
     def on_logs_open_message_detail(self, row: dict, visible_columns: list):
         self.logs_state["message_dialog_open"] = True

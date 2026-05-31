@@ -5,13 +5,40 @@ import logging
 import os
 import sys
 import threading
+import time
 import __main__
+from contextlib import contextmanager
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 
 _LOGGER_NAME = "trolli"
 _LOG_FORMAT = "%(asctime)s %(levelname)s [%(name)s:%(lineno)d] %(message)s"
+
+PERF_ENABLED = os.getenv("TROLLI_PERF", "0").strip() in {"1", "true", "TRUE", "yes"}
+_perf_logger = logging.getLogger("trolli.perf")
+
+
+@contextmanager
+def perf_timer(label: str, min_ms: float = 0.0, **extra):
+    """Context manager para medir y loguear duracion de bloques.
+
+    Solo emite si TROLLI_PERF esta activo y la duracion supera ``min_ms``.
+    """
+    if not PERF_ENABLED:
+        yield
+        return
+    t0 = time.perf_counter()
+    try:
+        yield
+    finally:
+        ms = (time.perf_counter() - t0) * 1000.0
+        if ms >= min_ms:
+            if extra:
+                extra_str = " ".join(f"{k}={v}" for k, v in extra.items())
+                _perf_logger.info("[PERF] %s ms=%.2f %s", label, ms, extra_str)
+            else:
+                _perf_logger.info("[PERF] %s ms=%.2f", label, ms)
 
 
 def _resolve_log_level() -> int:

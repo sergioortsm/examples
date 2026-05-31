@@ -1,10 +1,10 @@
 <#
 .SYNOPSIS
-    Test 2 - Stress: vuelca N líneas de golpe (default 50.000).
+    Test 2 - Stress: vuelca N lÃ­neas de golpe (default 50.000).
 
 .DESCRIPTION
-    Escribe todas las líneas seguidas (un único Flush al final) sobre el
-    fichero .log más reciente. Sirve para validar:
+    Escribe todas las lÃ­neas seguidas (un Ãºnico Flush al final) sobre el
+    fichero .log mÃ¡s reciente. Sirve para validar:
       - buffer_count sube cerca del cap (100.000) sin romper.
       - lines/s pico alto y baja.
       - UI sigue respondiendo (scroll, clic).
@@ -31,7 +31,7 @@ if (-not $LogFile) {
     $LogFile = Resolve-WatcherLogFile -Folder $Folder -Pattern $Pattern
 }
 
-Write-Host "[stress] Volcando $Lines líneas en:" -ForegroundColor Cyan
+Write-Host "[stress] Volcando $Lines lÃ­neas en:" -ForegroundColor Cyan
 Write-Host "         $LogFile" -ForegroundColor Cyan
 
 $sw = [System.Diagnostics.Stopwatch]::StartNew()
@@ -49,5 +49,5 @@ finally {
 $sw.Stop()
 
 $rate = if ($sw.Elapsed.TotalSeconds -gt 0) { [int]($Lines / $sw.Elapsed.TotalSeconds) } else { 0 }
-Write-Host ("[stress] Listo: {0} líneas en {1:N2}s ({2} líneas/s en escritura)" -f `
+Write-Host ("[stress] Listo: {0} lÃ­neas en {1:N2}s ({2} lÃ­neas/s en escritura)" -f `
     $Lines, $sw.Elapsed.TotalSeconds, $rate) -ForegroundColor Green

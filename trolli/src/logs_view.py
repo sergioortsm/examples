@@ -7,6 +7,7 @@ import inspect
 import flet as ft
 import flet_datatable2 as fdt
 from dialog import DialogSizer, build_column_selector_dialog
+from app_logging import perf_timer
 from ui_tokens import APP_BORDER, APP_SURFACE, APP_SURFACE_ALT, APP_SURFACE_MUTED, APP_TEXT_MUTED, APP_TEXT_PRIMARY, surface_shadow
 
 
@@ -77,7 +78,21 @@ class LogsView(ft.Column):
         """Devuelve True si la columna es 'Message' (insensible a mayúsculas/minúsculas)."""
         return column_name.strip().lower() == "message"
 
-    def _scroll_to_top(self) -> None:
+    def _on_scroll(self, e: ft.OnScrollEvent) -> None:
+        try:
+            pixels = float(getattr(e, "pixels", 0) or 0)
+        except (TypeError, ValueError):
+            pixels = 0.0
+        # Si el usuario se aleja del inicio, desactivar el auto-follow.
+        self._auto_follow_scroll = pixels <= 10
+
+    def _scroll_to_top(self, force: bool = False) -> None:
+        # En modo Vivo no robamos el scroll del usuario bajo ninguna circunstancia.
+        app = getattr(self, "app", None)
+        if app is not None and bool(getattr(app, "logs_state", {}).get("is_watching", False)):
+            return
+        if not force and not self._auto_follow_scroll:
+            return
         result = self.scroll_to(offset=0, duration=0)
         if not inspect.isawaitable(result):
             return
@@ -86,16 +101,39 @@ class LogsView(ft.Column):
         except RuntimeError:
             if inspect.iscoroutine(result):
                 result.close()
+
+    def request_scroll_to_top(self) -> None:
+        # En modo Vivo no robamos el scroll del usuario bajo ninguna circunstancia.
+        app = getattr(self, "app", None)
+        if app is not None and bool(getattr(app, "logs_state", {}).get("is_watching", False)):
+            return
+        self._auto_follow_scroll = True
+        self._scroll_to_top(force=True)
     
     def __init__(self, app):
         super().__init__(
             expand=True,
             spacing=10,
             scroll=ft.ScrollMode.AUTO,
+            on_scroll=self._on_scroll,
             horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
         )
         self.app = app
         self.column_selector_visible = False
+        self._auto_follow_scroll = True
+
+        # Row pooling: cacheamos DataTable2 + DataRow2 + handles a los Text internos
+        # para evitar reconstruir 50 filas x N celdas en cada render. Solo mutamos
+        # text.value y los datos referenciados por los handlers (doble tap / clic derecho).
+        # Se invalida cuando cambian visible_columns o crece el numero de filas necesarias.
+        self._pool_data_table: "fdt.DataTable2 | None" = None
+        self._pool_visible_columns: tuple[str, ...] | None = None
+        self._pool_rows: list = []  # list[fdt.DataRow2]
+        self._pool_row_texts: list[list[ft.Text]] = []  # [slot][col_idx] -> Text
+        self._pool_row_data: list[dict[str, str]] = []  # ultima fila asignada a cada slot
+        self._pool_row_decorations: list = []  # [slot] -> BoxDecoration
+        self._pool_cell_containers: list[list] = []  # [slot][col_idx] -> Container
+        self._pool_active_n: int = 0  # filas actualmente en uso
 
         self.title_text = ft.Text(
             "SharePoint ULS Logs",
@@ -349,6 +387,19 @@ class LogsView(ft.Column):
         self.refresh_column_selector(self.app.logs_state)
 
     def render(self, state: dict):
+        page_rows_count = len(state.get("page_rows", []))
+        import time as _time
+        _t0 = _time.perf_counter()
+        with perf_timer("logs_view.render", rows=page_rows_count):
+            self._render_impl(state)
+        elapsed_ms = (_time.perf_counter() - _t0) * 1000.0
+        # Reportar al app para que el drain loop ajuste su cadencia.
+        try:
+            self.app._last_render_ms = elapsed_ms
+        except AttributeError:
+            pass
+
+    def _render_impl(self, state: dict):
         self.file_text.value = state.get("file_label", "Sin archivo cargado")
 
         error = state.get("error", "")
@@ -494,9 +545,46 @@ class LogsView(ft.Column):
 
     def refresh_table_only(self, state: dict):
         # Refresco acotado del area de tabla para evitar re-render global innecesario.
-        self._render_table(state)
+        with perf_timer("logs_view.refresh_table_only", rows=len(state.get("page_rows", []))):
+            self._render_table(state)
+            if getattr(self, "page", None) is not None:
+                self.update()
+
+    def refresh_pending_chip_and_status(self, state: dict):
+        # Refresco ultraligero para auto-pausa del watcher: solo chip y status.
+        # Evita repintar tabla / selector de columnas en cada drain (cada 250ms)
+        # cuando hay filtros activos o el usuario no esta en pagina 1.
+        pending_new = int(state.get("pending_new_count", 0))
+        if pending_new > 0:
+            self.pending_new_text.value = f"Nuevas ({pending_new})"
+            self.pending_new_button.visible = True
+        else:
+            self.pending_new_text.value = "Nuevas (0)"
+            self.pending_new_button.visible = False
+
+        is_watching = bool(state.get("is_watching", False))
+        watch_error = state.get("watch_error", "")
+        if watch_error:
+            self.watch_status_text.value = watch_error
+            self.watch_status_text.color = ft.Colors.RED_600
+        elif is_watching:
+            rate = state.get("lines_per_sec", 0.0)
+            buf = state.get("buffer_count", 0)
+            buf_max = state.get("buffer_max", 0)
+            self.watch_status_text.value = (
+                f"En vivo · buffer {buf}/{buf_max} · {rate:.0f} l/s"
+            )
+            self.watch_status_text.color = ft.Colors.GREEN_800
+        else:
+            self.watch_status_text.value = ""
+
         if getattr(self, "page", None) is not None:
-            self.update()
+            # Solo refrescamos los controles afectados para minimizar diffs WS.
+            try:
+                self.pending_new_button.update()
+                self.watch_status_text.update()
+            except (AssertionError, RuntimeError):
+                pass
 
     def refresh_loading_state(self, state: dict):
         # Refresco ligero para estado de paginacion sin reconstruir la tabla.
@@ -549,25 +637,28 @@ class LogsView(ft.Column):
         self.toggle_column_selector_button.icon = ft.Icons.VIEW_COLUMN
         self.toggle_column_selector_button.tooltip = "Columnas visibles"
 
-    def _render_table(self, state: dict):
-        visible_columns = state.get("visible_columns", [])
-        page_rows = state.get("page_rows", [])
+    def _invalidate_table_pool(self):
+        self._pool_data_table = None
+        self._pool_visible_columns = None
+        self._pool_rows = []
+        self._pool_row_texts = []
+        self._pool_row_data = []
+        self._pool_row_decorations = []
+        self._pool_cell_containers = []
+        self._pool_active_n = 0
 
-        if not visible_columns:
-            self.table_content_container.content = ft.Container(
-                content=ft.Text("No hay columnas visibles para mostrar."),
-                padding=ft.padding.Padding(left=10, top=10, right=10, bottom=10),
-            )
-            return
+    def _build_table_pool(self, visible_columns: list[str], pool_size: int):
+        """Construye una unica vez el DataTable2 con `pool_size` DataRow2 reutilizables.
 
-        if not page_rows:
-            self.table_content_container.content = ft.Container(
-                content=ft.Text("No hay filas para los filtros actuales."),
-                padding=ft.padding.Padding(left=10, top=10, right=10, bottom=10),
-            )
-            return
+        Cada celda contiene un ft.Text cuyo handle guardamos en `_pool_row_texts[slot][col_idx]`.
+        Los handlers de doble tap / clic derecho leen la fila actual desde `_pool_row_data[slot]`,
+        asi no hay que reasignar lambdas en cada render.
+        """
+        cols_tuple = tuple(visible_columns)
+        has_message_col = any(self._is_message_column(c) for c in visible_columns)
+        specific_height = self._MESSAGE_DATA_ROW_HEIGHT if has_message_col else None
 
-
+        # Columnas (cabeceras)
         data_table_columns = []
         for column in visible_columns:
             data_table_columns.append(
@@ -586,9 +677,89 @@ class LogsView(ft.Column):
                 )
             )
 
-        # Priorizar scroll horizontal: la tabla mide la suma real de sus columnas.
-        min_table_width = max(600, sum(self._column_width(column) for column in visible_columns))
+        # Filas (pool)
+        pool_rows: list = []
+        pool_texts: list[list[ft.Text]] = []
+        pool_data: list[dict[str, str]] = [{} for _ in range(pool_size)]
+        pool_decorations: list = []
+        pool_cell_containers: list[list] = []
 
+        def _make_double_tap(slot: int):
+            return lambda e: self.app.on_logs_open_message_detail(
+                self._pool_row_data[slot], list(self._pool_visible_columns or [])
+            )
+
+        def _make_secondary_tap(slot: int):
+            return lambda e: self.app.on_logs_copy_row(
+                self._pool_row_data[slot], list(self._pool_visible_columns or [])
+            )
+
+        for slot in range(pool_size):
+            # Zebra striping inicial por slot; se sobrescribe en _render_table segun el level.
+            row_bg = APP_SURFACE if slot % 2 == 0 else APP_SURFACE_ALT
+            cells: list[ft.DataCell] = []
+            cell_texts: list[ft.Text] = []
+            cell_containers: list = []
+            for column in visible_columns:
+                is_message = self._is_message_column(column)
+                if is_message:
+                    text_ctrl = ft.Text(
+                        "",
+                        max_lines=2,
+                        overflow=ft.TextOverflow.ELLIPSIS,
+                        no_wrap=False,
+                    )
+                    cell_container = ft.Container(
+                        content=ft.Row(
+                            [
+                                ft.Container(
+                                    content=text_ctrl,
+                                    alignment=ft.Alignment(x=-1, y=0),
+                                    expand=True,
+                                ),
+                                ft.Icon(ft.Icons.OPEN_IN_FULL, size=16, color=APP_TEXT_MUTED),
+                            ],
+                            spacing=8,
+                            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                        ),
+                        alignment=ft.Alignment(x=-1, y=0),
+                        padding=ft.padding.Padding(left=6, top=4, right=6, bottom=4),
+                        bgcolor=row_bg,
+                    )
+                    cells.append(ft.DataCell(cell_container))
+                else:
+                    text_ctrl = ft.Text(
+                        "",
+                        selectable=True,
+                        max_lines=2,
+                        overflow=ft.TextOverflow.ELLIPSIS,
+                        color=APP_TEXT_PRIMARY,
+                    )
+                    cell_container = ft.Container(
+                        content=text_ctrl,
+                        alignment=ft.Alignment(x=-1, y=0),
+                        padding=ft.padding.Padding(left=4, top=6, right=4, bottom=6),
+                        bgcolor=row_bg,
+                        border_radius=ft.BorderRadius(6, 6, 6, 6),
+                    )
+                    cells.append(ft.DataCell(cell_container))
+                cell_texts.append(text_ctrl)
+                cell_containers.append(cell_container)
+
+            decoration = ft.BoxDecoration(bgcolor=row_bg)
+            data_row = fdt.DataRow2(
+                cells=cells,
+                decoration=decoration,
+                specific_row_height=specific_height,
+                on_double_tap=_make_double_tap(slot),
+                on_secondary_tap=_make_secondary_tap(slot),
+            )
+            pool_rows.append(data_row)
+            pool_texts.append(cell_texts)
+            pool_decorations.append(decoration)
+            pool_cell_containers.append(cell_containers)
+
+        min_table_width = max(600, sum(self._column_width(c) for c in visible_columns))
         data_table = fdt.DataTable2(
             min_width=min_table_width,
             fixed_top_rows=0,
@@ -598,92 +769,73 @@ class LogsView(ft.Column):
             fixed_columns_color=APP_SURFACE_ALT,
             visible_horizontal_scroll_bar=True,
             visible_vertical_scroll_bar=False,
-            # Altura uniforme para layout/scroll predecibles.
             data_row_height=self._DEFAULT_DATA_ROW_HEIGHT,
             horizontal_margin=18,
             column_spacing=24,
             show_heading_checkbox=False,
             columns=data_table_columns,
-            rows=[
-                self._build_row(idx, row, visible_columns)
-                for idx, row in enumerate(page_rows)
-            ],
+            rows=[],
             empty=ft.Text("No hay filas para los filtros actuales."),
         )
 
-        self.table_content_container.content = data_table
-        # Volver al inicio de la vista al cambiar de página.
-        self._scroll_to_top()
+        self._pool_data_table = data_table
+        self._pool_visible_columns = cols_tuple
+        self._pool_rows = pool_rows
+        self._pool_row_texts = pool_texts
+        self._pool_row_data = pool_data
+        self._pool_row_decorations = pool_decorations
+        self._pool_cell_containers = pool_cell_containers
+        self._pool_active_n = 0
 
-    def _build_row(self, idx: int, row: dict[str, str], visible_columns: list[str]) -> fdt.DataRow2:
-        """Construye una DataRow2 con zebra striping y handlers de tap/doble-tap/clic-derecho.
+    def _render_table(self, state: dict):
+        visible_columns = state.get("visible_columns", [])
+        page_rows = state.get("page_rows", [])
 
-        - Zebra striping con `decoration` (BoxDecoration) en filas impares.
-        - on_double_tap: abre el diálogo de detalle con todas las columnas visibles.
-        - on_secondary_tap (clic derecho): copia la fila como TSV al portapapeles.
-        NOTA: para que estos eventos del row se disparen, las celdas NO deben tener
-        sus propios handlers de tap (ver `_build_cell`).
-        """
-        row_bg = self._row_bgcolor(row, idx)
-        decoration = ft.BoxDecoration(bgcolor=row_bg)
-
-        return fdt.DataRow2(
-            cells=[self._build_cell(column, row, idx, row_bg) for column in visible_columns],
-            decoration=decoration,
-            specific_row_height=(
-                self._MESSAGE_DATA_ROW_HEIGHT
-                if any(self._is_message_column(column) for column in visible_columns)
-                else None
-            ),
-            on_double_tap=lambda e, r=row, cols=visible_columns: self.app.on_logs_open_message_detail(r, cols),
-            on_secondary_tap=lambda e, r=row, cols=visible_columns: self.app.on_logs_copy_row(r, cols),
-        )
-
-    def _build_cell(self, column_name: str, row: dict[str, str], row_index: int, row_bgcolor: str | None = None) -> ft.DataCell:
-        value = str(row.get(column_name, ""))
-        is_message = self._is_message_column(column_name)
-        cell_bgcolor = row_bgcolor if row_bgcolor is not None else (
-            APP_SURFACE if row_index % 2 == 0 else APP_SURFACE_ALT
-        )
-        if is_message:
-            # NOTA: sin GestureDetector — los handlers van en DataRow2 (on_double_tap / on_secondary_tap).
-            # El icono OPEN_IN_FULL queda como pista visual de que la fila es interactiva.
-            content = ft.Container(
-                content=ft.Row(
-                    [
-                        ft.Container(
-                            content=ft.Text(
-                                value,
-                                max_lines=2,
-                                overflow=ft.TextOverflow.ELLIPSIS,
-                                no_wrap=False,
-                            ),
-                            alignment=ft.Alignment(x=-1, y=0),
-                            expand=True,
-                        ),
-                        ft.Icon(ft.Icons.OPEN_IN_FULL, size=16, color=APP_TEXT_MUTED),
-                    ],
-                    spacing=8,
-                    vertical_alignment=ft.CrossAxisAlignment.CENTER,
-                ),
-                alignment=ft.Alignment(x=-1, y=0),
-                padding=ft.padding.Padding(left=6, top=4, right=6, bottom=4),
-                bgcolor=cell_bgcolor,
+        if not visible_columns:
+            self._invalidate_table_pool()
+            self.table_content_container.content = ft.Container(
+                content=ft.Text("No hay columnas visibles para mostrar."),
+                padding=ft.padding.Padding(left=10, top=10, right=10, bottom=10),
             )
-            return ft.DataCell(content)
-        else:
-            return ft.DataCell(
-                ft.Container(
-                    content=ft.Text(
-                        value,
-                        selectable=True,
-                        max_lines=2,
-                        overflow=ft.TextOverflow.ELLIPSIS,
-                        color=APP_TEXT_PRIMARY,
-                    ),
-                    alignment=ft.Alignment(x=-1, y=0),
-                    padding=ft.padding.Padding(left=4, top=6, right=4, bottom=6),
-                    bgcolor=cell_bgcolor,
-                    border_radius=ft.BorderRadius(6, 6, 6, 6),
-                )
+            return
+
+        if not page_rows:
+            # No invalidamos el pool (las columnas no han cambiado): solo mostramos placeholder.
+            self.table_content_container.content = ft.Container(
+                content=ft.Text("No hay filas para los filtros actuales."),
+                padding=ft.padding.Padding(left=10, top=10, right=10, bottom=10),
             )
+            return
+
+        cols_tuple = tuple(visible_columns)
+        n = len(page_rows)
+        needs_rebuild = (
+            self._pool_data_table is None
+            or self._pool_visible_columns != cols_tuple
+            or len(self._pool_rows) < n
+        )
+        if needs_rebuild:
+            # pool al menos del tamano de la pagina; un suelo de 50 cubre el caso normal.
+            self._build_table_pool(visible_columns, max(n, 50))
+
+        # Mutar datos: solo text.value + slot data + bgcolor segun level.
+        for slot in range(n):
+            row = page_rows[slot]
+            self._pool_row_data[slot] = row
+            row_bg = self._row_bgcolor(row, slot)
+            self._pool_row_decorations[slot].bgcolor = row_bg
+            containers = self._pool_cell_containers[slot]
+            for c in containers:
+                c.bgcolor = row_bg
+            texts = self._pool_row_texts[slot]
+            for col_idx, column in enumerate(visible_columns):
+                texts[col_idx].value = str(row.get(column, ""))
+
+        # Slice de filas visibles. Asignar lista nueva fuerza diff en Flet de forma controlada.
+        self._pool_data_table.rows = self._pool_rows[:n]
+        self._pool_active_n = n
+
+        # Solo reasignar el container si cambia la instancia (tras rebuild).
+        if self.table_content_container.content is not self._pool_data_table:
+            self.table_content_container.content = self._pool_data_table
+            self._scroll_to_top()

@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Test bonus - Simula rotaciÛn creando un nuevo .log m·s reciente.
+    Test bonus - Simula rotaci√≥n creando un nuevo .log m√°s reciente.
 
 .DESCRIPTION
     Copia el .log actual a un nombre nuevo con timestamp posterior, de modo
@@ -10,7 +10,7 @@
     Esperado:
       - file_label cambia al nuevo fichero.
       - En src/trolli.log: "Abre <nuevo>.log (offset inicial=0)".
-      - Sin perder lÌneas previas del buffer LIFO.
+      - Sin perder l√≠neas previas del buffer LIFO.
 
 .EXAMPLE
     .\test-watcher-rotate.ps1
@@ -40,7 +40,7 @@ if (Test-Path -LiteralPath $target) {
 }
 
 Copy-Item -LiteralPath $SourceFile -Destination $target -Force
-# Forzar mtime "ahora" para que el watcher lo elija como m·s reciente.
+# Forzar mtime "ahora" para que el watcher lo elija como m√°s reciente.
 (Get-Item -LiteralPath $target).LastWriteTime = Get-Date
 
 Write-Host "[rotate] Copiado:" -ForegroundColor Cyan

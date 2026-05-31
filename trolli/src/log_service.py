@@ -4,8 +4,22 @@ from dataclasses import dataclass
 from pathlib import Path
 import csv
 import io
+import re
 
 MAX_LOG_SIZE_BYTES = 50 * 1024 * 1024
+_ULS_TIMESTAMP_RE = re.compile(r"^\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2}\.\d{2,3}$")
+_VALID_ULS_LEVELS = {
+    "CRITICAL",
+    "ERROR",
+    "WARNING",
+    "HIGH",
+    "MEDIUM",
+    "MONITORABLE",
+    "INFORMATION",
+    "VERBOSE",
+    "VERBOSEEX",
+    "UNEXPECTED",
+}
 
 
 @dataclass
@@ -19,7 +33,12 @@ class LogLoadResult:
 
 def _read_text_with_fallbacks(file_path: str) -> str:
     raw = Path(file_path).read_bytes()
-    for encoding in ("utf-8-sig", "cp1252", "latin-1"):
+    # Si hay BOM UTF-8, el fichero declara su encoding. En ese caso no debemos
+    # degradar todo el contenido a cp1252 por un byte invalido aislado: es mejor
+    # mantener UTF-8 y reemplazar solo la secuencia rota.
+    if raw.startswith(b"\xef\xbb\xbf"):
+        return raw.decode("utf-8-sig", errors="replace")
+    for encoding in ("utf-8", "cp1252", "latin-1"):
         try:
             return raw.decode(encoding)
         except UnicodeDecodeError:
@@ -37,11 +56,36 @@ def _split_row(line: str, expected_columns: int) -> list[str]:
     return parts
 
 
+def _is_valid_uls_row(
+    line: str,
+    row_values: list[str],
+    expected_columns: int,
+    level_col_idx: int,
+) -> bool:
+    if expected_columns <= 0:
+        return False
+
+    # Si faltan tabs estructurales, la línea ya llegó truncada/intercalada.
+    if line.count("\t") < expected_columns - 1:
+        return False
+
+    timestamp = row_values[0].strip() if row_values else ""
+    if not _ULS_TIMESTAMP_RE.match(timestamp):
+        return False
+
+    if 0 <= level_col_idx < len(row_values):
+        level = row_values[level_col_idx].strip().upper()
+        if level and level not in _VALID_ULS_LEVELS:
+            return False
+
+    return True
+
+
 def build_row_from_line(
     line: str,
     columns: list[str],
     level_col_idx: int = -1,
-) -> tuple[dict[str, str], str]:
+) -> tuple[dict[str, str] | None, str]:
     """Parsea una linea ULS y devuelve (row_dict_con_search_key, nivel_o_vacio).
 
     Reutilizable por el tailer en modo streaming. No hace I/O. Eficiente:
@@ -50,6 +94,8 @@ def build_row_from_line(
     """
     n_cols = len(columns)
     row_values = _split_row(line, n_cols)
+    if not _is_valid_uls_row(line, row_values, n_cols, level_col_idx):
+        return None, ""
     search_key = "\t".join(row_values).lower()
     row = dict(zip(columns, row_values))
     row["_search_key"] = search_key
@@ -133,6 +179,8 @@ def load_sharepoint_log(file_path: str) -> LogLoadResult:
         if not line.strip():
             continue
         row, level = build_row_from_line(line, columns, level_col_idx)
+        if row is None:
+            continue
         rows.append(row)
         if level:
             level_values.add(level)
@@ -175,6 +223,16 @@ def filter_sort_rows(
     sort_by: str | None,
     sort_desc: bool,
 ) -> list[dict[str, str]]:
+    filtered = filter_rows(rows, columns, search_text, level_filter)
+    return sort_rows(filtered, columns, sort_by, sort_desc)
+
+
+def filter_rows(
+    rows: list[dict[str, str]],
+    columns: list[str],
+    search_text: str,
+    level_filter: str,
+) -> list[dict[str, str]]:
     search = (search_text or "").strip().lower()
     level_filter_normalized = (level_filter or "All").strip()
 
@@ -195,10 +253,21 @@ def filter_sort_rows(
                 if any(search in r.get(column, "").lower() for column in columns)
             ]
 
-    if sort_by and sort_by in columns:
-        filtered = sorted(filtered, key=lambda row: row.get(sort_by, ""), reverse=sort_desc)
+    # Devolvemos siempre una lista nueva para que callers puedan mutar/cachear
+    # sin riesgo de alterar `rows` original.
+    return list(filtered) if filtered is rows else filtered
 
-    return filtered
+
+def sort_rows(
+    filtered_rows: list[dict[str, str]],
+    columns: list[str],
+    sort_by: str | None,
+    sort_desc: bool,
+) -> list[dict[str, str]]:
+    if sort_by and sort_by in columns:
+        return sorted(filtered_rows, key=lambda row: row.get(sort_by, ""), reverse=sort_desc)
+    # Sin sort efectivo devolvemos una copia para no exponer la lista original.
+    return list(filtered_rows)
 
 
 def paginate_rows(

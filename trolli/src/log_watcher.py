@@ -124,14 +124,17 @@ class LogWatcher:
             logger.warning("[WATCHER] No se pudo leer cabecera de %s: %s", path, e)
             return []
         # Decodificar best-effort
-        for enc in ("utf-8-sig", "utf-8", "cp1252", "latin-1"):
-            try:
-                text = chunk.decode(enc)
-                break
-            except UnicodeDecodeError:
-                continue
+        if chunk.startswith(b"\xef\xbb\xbf"):
+            text = chunk.decode("utf-8-sig", errors="replace")
         else:
-            text = chunk.decode("latin-1", errors="replace")
+            for enc in ("utf-8", "cp1252", "latin-1"):
+                try:
+                    text = chunk.decode(enc)
+                    break
+                except UnicodeDecodeError:
+                    continue
+            else:
+                text = chunk.decode("latin-1", errors="replace")
         for line in text.splitlines():
             stripped = line.strip()
             if stripped:
@@ -223,6 +226,8 @@ class LogWatcher:
                     if first_cell == self._columns[0]:
                         continue
                 row, level = build_row_from_line(line, self._columns, self._level_col_idx)
+                if row is None:
+                    continue
                 rows.append(row)
                 if level:
                     levels.append(level)

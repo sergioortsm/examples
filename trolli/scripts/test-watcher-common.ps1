@@ -3,9 +3,9 @@
     Helpers compartidos por los scripts de test del watcher en vivo.
 
 .DESCRIPTION
-    - Resuelve el fichero .log "en vivo" (más reciente por LastWriteTime) en una carpeta y patrón.
+    - Resuelve el fichero .log "en vivo" (mÃ¡s reciente por LastWriteTime) en una carpeta y patrÃ³n.
     - Abre un FileStream en modo Append con FileShare.ReadWrite|Delete para
-      emular cómo SharePoint OnPrem escribe sobre sus .log (compartiendo lectura).
+      emular cÃ³mo SharePoint OnPrem escribe sobre sus .log (compartiendo lectura).
     - Devuelve un objeto con .Writer (StreamWriter) y .Dispose() para cierre limpio.
 
     NO ejecutar como script suelto: usar Dot-source desde los otros tests.
@@ -27,7 +27,7 @@ function Resolve-WatcherLogFile {
         Select-Object -First 1
 
     if (-not $candidate) {
-        throw "No se encontró ningún fichero que coincida con '$Pattern' en '$Folder'."
+        throw "No se encontrÃ³ ningÃºn fichero que coincida con '$Pattern' en '$Folder'."
     }
 
     return $candidate.FullName
@@ -61,7 +61,7 @@ function Open-WatcherAppender {
     }
 }
 
-# --- Datos realistas extraídos del log real SAPCOL03-20260529-1249.log ---
+# --- Datos realistas extraÃ­dos del log real SAPCOL03-20260529-1249.log ---
 
 $script:UlsProcesses = @(
     'w3wp.exe (0x12F0)',
@@ -77,7 +77,7 @@ $script:UlsTids = @(
 )
 
 # Mezcla de (Area, Category, EventID, Level, plantilla mensaje).
-# Niveles repartidos para que filtrar por Level dé resultados variados.
+# Niveles repartidos para que filtrar por Level dÃ© resultados variados.
 $script:UlsTemplates = @(
     @{ Area='SharePoint Foundation'; Category='DistributedCache';         EventId='a4kcq'; Level='Unexpected';  Msg='SPDistributedCachePointerWrapper::InitializeDataCacheFactory - No cache hosts are present or running in the farm.' },
     @{ Area='SharePoint Foundation'; Category='DistributedCache';         EventId='ah24w'; Level='Unexpected';  Msg="Unexpected Exception in SPDistributedCachePointerWrapper::InitializeDataCacheFactory for usage 'DistributedLogonTokenCache'." },
@@ -91,11 +91,11 @@ $script:UlsTemplates = @(
     @{ Area='SharePoint Foundation'; Category='Timer';                    EventId='apm55'; Level='Medium';      Msg='Successfully completed with result 2 timer running job {7F68A2EA-E365-40B0-A34A-B1586822B9C9}.' },
     @{ Area='SharePoint Foundation'; Category='Timer';                    EventId='cb5oc'; Level='Medium';      Msg='[NoLockTypeDBPartitioning]: NoLockTypeDBPartitioningFlight is DISABLED! Reverting to old behavior.' },
     @{ Area='SharePoint Foundation'; Category='Monitoring';               EventId='nasq';  Level='Medium';      Msg='Entering Monitored Scope (Timer Job MySite-Instantiation-Interactive-Request-Queue). Parent=None' },
-    @{ Area='SharePoint Foundation'; Category='Monitoring';               EventId='b4ly';  Level='Medium';      Msg='Leaving Monitored Scope: Tiempo de ejecución=7.0718; CPU Milliseconds=1; Recuento de consultas SQL=6; Parent=None' },
+    @{ Area='SharePoint Foundation'; Category='Monitoring';               EventId='b4ly';  Level='Medium';      Msg='Leaving Monitored Scope: Tiempo de ejecuciÃ³n=7.0718; CPU Milliseconds=1; Recuento de consultas SQL=6; Parent=None' },
     @{ Area='SharePoint Foundation'; Category='Logging Correlation Data'; EventId='xmnv';  Level='Medium';      Msg='Name=Timer Job MySite-Instantiation-Interactive-Request-Queue' },
     @{ Area='SharePoint Foundation'; Category='Topology';                 EventId='a0ebr'; Level='Medium';      Msg="Initializing a site subscription collection for content DB 984d2155-2a61-4b89-971f-13fd8705154e. That's going to be a lot of work." },
-    @{ Area='SharePoint Server';     Category='Site Provisioning';        EventId='aj58q'; Level='Medium';      Msg='<LogTimerJobInstance> Starting timer for web application: Colabora Validación 03. Function: SiteInstantiationJob:Execute' },
-    @{ Area='SharePoint Server';     Category='Site Provisioning';        EventId='aj58r'; Level='Medium';      Msg='<LogTimerJobInstance> Finishing on timer for web application: Colabora Validación 03. Function: SiteInstantiationJob:Execute' },
+    @{ Area='SharePoint Server';     Category='Site Provisioning';        EventId='aj58q'; Level='Medium';      Msg='<LogTimerJobInstance> Starting timer for web application: Colabora ValidaciÃ³n 03. Function: SiteInstantiationJob:Execute' },
+    @{ Area='SharePoint Server';     Category='Site Provisioning';        EventId='aj58r'; Level='Medium';      Msg='<LogTimerJobInstance> Finishing on timer for web application: Colabora ValidaciÃ³n 03. Function: SiteInstantiationJob:Execute' },
     @{ Area='SharePoint Foundation'; Category='General';                  EventId='8e2s';  Level='Information'; Msg='Request handled OK.' },
     @{ Area='SharePoint Foundation'; Category='General';                  EventId='8sl1';  Level='Verbose';     Msg='Detailed trace event for diagnostics.' }
 )

@@ -1,0 +1,1207 @@
+2026-05-31 05:49:20,733 INFO [trolli.perf:39] [PERF] logs_view.render ms=0.10 rows=0
+2026-05-31 05:49:20,764 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.49 rows=0
+2026-05-31 05:49:20,765 INFO [trolli.perf:39] [PERF] sort_rows_async ms=0.32 rows=0 col=Timestamp
+2026-05-31 05:49:20,918 INFO [trolli.perf:39] [PERF] logs_view.render ms=2.80 rows=0
+2026-05-31 05:49:24,918 INFO [trolli.perf:39] [PERF] logs_view.render ms=7.03 rows=0
+2026-05-31 05:51:00,192 INFO [trolli.perf:39] [PERF] logs_view.render ms=0.10 rows=0
+2026-05-31 05:51:00,213 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.52 rows=0
+2026-05-31 05:51:00,214 INFO [trolli.perf:39] [PERF] sort_rows_async ms=0.63 rows=0 col=Timestamp
+2026-05-31 05:51:00,369 INFO [trolli.perf:39] [PERF] logs_view.render ms=6.18 rows=0
+2026-05-31 05:51:04,995 INFO [trolli.perf:39] [PERF] logs_view.render ms=7.79 rows=0
+2026-05-31 05:51:19,029 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.41 rows=987
+2026-05-31 05:51:19,030 INFO [trolli.perf:39] [PERF] sort_rows_async ms=0.66 rows=987 col=Timestamp
+2026-05-31 05:51:19,031 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=987 page_size=50
+2026-05-31 05:51:19,246 INFO [trolli.perf:39] [PERF] logs_view.render ms=214.64 rows=50
+2026-05-31 05:51:19,284 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.72 rows=1446
+2026-05-31 05:51:19,285 INFO [trolli.perf:39] [PERF] sort_rows_async ms=0.56 rows=1446 col=Timestamp
+2026-05-31 05:51:19,285 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=1446 page_size=50
+2026-05-31 05:51:19,461 INFO [trolli.perf:39] [PERF] logs_view.render ms=175.25 rows=50
+2026-05-31 05:51:19,553 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.42 rows=2170
+2026-05-31 05:51:19,556 INFO [trolli.perf:39] [PERF] sort_rows_async ms=0.83 rows=2170 col=Timestamp
+2026-05-31 05:51:19,557 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=2170 page_size=50
+2026-05-31 05:51:19,807 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.43 rows=2744
+2026-05-31 05:51:19,808 INFO [trolli.perf:39] [PERF] sort_rows_async ms=0.85 rows=2744 col=Timestamp
+2026-05-31 05:51:19,808 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=2744 page_size=50
+2026-05-31 05:51:20,998 INFO [trolli.perf:39] [PERF] logs_view.render ms=1190.21 rows=50
+2026-05-31 05:51:21,068 INFO [trolli.perf:39] [PERF] logs_view.render ms=1509.83 rows=50
+2026-05-31 05:51:21,301 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.55 rows=6361
+2026-05-31 05:51:21,303 INFO [trolli.perf:39] [PERF] sort_rows_async ms=1.76 rows=6361 col=Timestamp
+2026-05-31 05:51:21,304 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=6361 page_size=50
+2026-05-31 05:51:21,396 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.46 rows=6585
+2026-05-31 05:51:21,399 INFO [trolli.perf:39] [PERF] sort_rows_async ms=1.79 rows=6585 col=Timestamp
+2026-05-31 05:51:21,399 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=6585 page_size=50
+2026-05-31 05:51:22,605 INFO [trolli.perf:39] [PERF] logs_view.render ms=1300.70 rows=50
+2026-05-31 05:51:22,887 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.82 rows=11554
+2026-05-31 05:51:22,891 INFO [trolli.perf:39] [PERF] sort_rows_async ms=3.00 rows=11554 col=Timestamp
+2026-05-31 05:51:22,891 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=11554 page_size=50
+2026-05-31 05:51:23,048 INFO [trolli.perf:39] [PERF] logs_view.render ms=1648.49 rows=50
+2026-05-31 05:51:23,395 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.63 rows=13662
+2026-05-31 05:51:23,399 INFO [trolli.perf:39] [PERF] sort_rows_async ms=3.46 rows=13662 col=Timestamp
+2026-05-31 05:51:23,399 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=13662 page_size=50
+2026-05-31 05:51:23,793 INFO [trolli.perf:39] [PERF] logs_view.render ms=902.00 rows=50
+2026-05-31 05:51:24,076 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.64 rows=14438
+2026-05-31 05:51:24,080 INFO [trolli.perf:39] [PERF] sort_rows_async ms=2.99 rows=14438 col=Timestamp
+2026-05-31 05:51:24,080 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=14438 page_size=50
+2026-05-31 05:51:24,562 INFO [trolli.perf:39] [PERF] logs_view.render ms=1162.43 rows=50
+2026-05-31 05:51:24,866 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.82 rows=18764
+2026-05-31 05:51:24,869 INFO [trolli.perf:39] [PERF] sort_rows_async ms=2.92 rows=18764 col=Timestamp
+2026-05-31 05:51:24,869 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=18764 page_size=50
+2026-05-31 05:51:25,018 INFO [trolli.perf:39] [PERF] logs_view.render ms=938.23 rows=50
+2026-05-31 05:51:25,301 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.67 rows=18770
+2026-05-31 05:51:25,305 INFO [trolli.perf:39] [PERF] sort_rows_async ms=3.63 rows=18770 col=Timestamp
+2026-05-31 05:51:25,306 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=18770 page_size=50
+2026-05-31 05:51:26,062 INFO [trolli.perf:39] [PERF] logs_view.render ms=1192.06 rows=50
+2026-05-31 05:51:26,335 INFO [trolli.perf:39] [PERF] logs_view.render ms=1029.22 rows=50
+2026-05-31 05:51:26,373 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.52 rows=22258
+2026-05-31 05:51:26,377 INFO [trolli.perf:39] [PERF] sort_rows_async ms=3.73 rows=22258 col=Timestamp
+2026-05-31 05:51:26,377 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.00 total=22258 page_size=50
+2026-05-31 05:51:26,630 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.74 rows=23128
+2026-05-31 05:51:26,636 INFO [trolli.perf:39] [PERF] sort_rows_async ms=5.78 rows=23128 col=Timestamp
+2026-05-31 05:51:26,636 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=23128 page_size=50
+2026-05-31 05:51:27,542 INFO [trolli.perf:39] [PERF] logs_view.render ms=1165.27 rows=50
+2026-05-31 05:51:27,573 INFO [trolli.perf:39] [PERF] logs_view.render ms=937.02 rows=50
+2026-05-31 05:51:27,865 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.92 rows=24317
+2026-05-31 05:51:27,865 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.58 rows=24055
+2026-05-31 05:51:27,870 INFO [trolli.perf:39] [PERF] sort_rows_async ms=5.31 rows=24317 col=Timestamp
+2026-05-31 05:51:27,870 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=24317 page_size=50
+2026-05-31 05:51:27,872 INFO [trolli.perf:39] [PERF] sort_rows_async ms=6.89 rows=24055 col=Timestamp
+2026-05-31 05:51:27,872 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=24055 page_size=50
+2026-05-31 05:51:28,859 INFO [trolli.perf:39] [PERF] logs_view.render ms=988.86 rows=50
+2026-05-31 05:51:29,146 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.87 rows=31363
+2026-05-31 05:51:29,153 INFO [trolli.perf:39] [PERF] sort_rows_async ms=7.06 rows=31363 col=Timestamp
+2026-05-31 05:51:29,154 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=31363 page_size=50
+2026-05-31 05:51:29,257 INFO [trolli.perf:39] [PERF] logs_view.render ms=1384.54 rows=50
+2026-05-31 05:51:29,578 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.44 rows=32863
+2026-05-31 05:51:29,591 INFO [trolli.perf:39] [PERF] sort_rows_async ms=12.43 rows=32863 col=Timestamp
+2026-05-31 05:51:29,594 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=32863 page_size=50
+2026-05-31 05:51:30,184 INFO [trolli.perf:39] [PERF] logs_view.render ms=1030.07 rows=50
+2026-05-31 05:51:30,482 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.76 rows=38964
+2026-05-31 05:51:30,488 INFO [trolli.perf:39] [PERF] sort_rows_async ms=5.67 rows=38964 col=Timestamp
+2026-05-31 05:51:30,488 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=38964 page_size=50
+2026-05-31 05:51:30,950 INFO [trolli.perf:39] [PERF] logs_view.render ms=1352.61 rows=50
+2026-05-31 05:51:31,264 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.88 rows=38972
+2026-05-31 05:51:31,276 INFO [trolli.perf:39] [PERF] sort_rows_async ms=11.67 rows=38972 col=Timestamp
+2026-05-31 05:51:31,277 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=38972 page_size=50
+2026-05-31 05:51:31,365 INFO [trolli.perf:39] [PERF] logs_view.render ms=876.79 rows=50
+2026-05-31 05:51:32,166 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.66 rows=41867
+2026-05-31 05:51:32,173 INFO [trolli.perf:39] [PERF] sort_rows_async ms=6.62 rows=41867 col=Timestamp
+2026-05-31 05:51:32,173 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=41867 page_size=50
+2026-05-31 05:51:32,360 INFO [trolli.perf:39] [PERF] logs_view.render ms=1082.44 rows=50
+2026-05-31 05:51:32,678 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.03 rows=43775
+2026-05-31 05:51:32,687 INFO [trolli.perf:39] [PERF] sort_rows_async ms=8.83 rows=43775 col=Timestamp
+2026-05-31 05:51:32,687 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=43775 page_size=50
+2026-05-31 05:51:33,134 INFO [trolli.perf:39] [PERF] logs_view.render ms=960.35 rows=50
+2026-05-31 05:51:33,449 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.87 rows=45553
+2026-05-31 05:51:33,466 INFO [trolli.perf:39] [PERF] sort_rows_async ms=16.62 rows=45553 col=Timestamp
+2026-05-31 05:51:33,466 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=45553 page_size=50
+2026-05-31 05:51:34,035 INFO [trolli.perf:39] [PERF] logs_view.render ms=1347.82 rows=50
+2026-05-31 05:51:34,341 INFO [trolli.perf:39] [PERF] filter_rows_async ms=0.94 rows=49225
+2026-05-31 05:51:34,348 INFO [trolli.perf:39] [PERF] logs_view.render ms=881.52 rows=50
+2026-05-31 05:51:34,353 INFO [trolli.perf:39] [PERF] sort_rows_async ms=11.61 rows=49225 col=Timestamp
+2026-05-31 05:51:34,354 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=49225 page_size=50
+2026-05-31 05:51:34,649 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.47 rows=52638
+2026-05-31 05:51:34,662 INFO [trolli.perf:39] [PERF] sort_rows_async ms=12.97 rows=52638 col=Timestamp
+2026-05-31 05:51:34,663 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=52638 page_size=50
+2026-05-31 05:51:35,804 INFO [trolli.perf:39] [PERF] logs_view.render ms=1140.71 rows=50
+2026-05-31 05:51:35,855 INFO [trolli.perf:39] [PERF] logs_view.render ms=1501.78 rows=50
+2026-05-31 05:51:36,097 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.37 rows=57298
+2026-05-31 05:51:36,111 INFO [trolli.perf:39] [PERF] sort_rows_async ms=13.76 rows=57298 col=Timestamp
+2026-05-31 05:51:36,111 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=57298 page_size=50
+2026-05-31 05:51:36,145 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.54 rows=57812
+2026-05-31 05:51:36,158 INFO [trolli.perf:39] [PERF] sort_rows_async ms=12.73 rows=57812 col=Timestamp
+2026-05-31 05:51:36,159 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=57812 page_size=50
+2026-05-31 05:51:37,001 INFO [trolli.perf:39] [PERF] logs_view.render ms=889.80 rows=50
+2026-05-31 05:51:37,297 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.18 rows=59241
+2026-05-31 05:51:37,306 INFO [trolli.perf:39] [PERF] sort_rows_async ms=8.22 rows=59241 col=Timestamp
+2026-05-31 05:51:37,306 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=59241 page_size=50
+2026-05-31 05:51:37,389 INFO [trolli.perf:39] [PERF] logs_view.render ms=1229.58 rows=50
+2026-05-31 05:51:37,689 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.29 rows=62283
+2026-05-31 05:51:37,704 INFO [trolli.perf:39] [PERF] sort_rows_async ms=14.83 rows=62283 col=Timestamp
+2026-05-31 05:51:37,705 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=62283 page_size=50
+2026-05-31 05:51:38,360 INFO [trolli.perf:39] [PERF] logs_view.render ms=1054.06 rows=50
+2026-05-31 05:51:38,664 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.42 rows=66845
+2026-05-31 05:51:38,678 INFO [trolli.perf:39] [PERF] sort_rows_async ms=13.91 rows=66845 col=Timestamp
+2026-05-31 05:51:38,678 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=66845 page_size=50
+2026-05-31 05:51:38,906 INFO [trolli.perf:39] [PERF] logs_view.render ms=1200.73 rows=50
+2026-05-31 05:51:39,200 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.65 rows=67454
+2026-05-31 05:51:39,217 INFO [trolli.perf:39] [PERF] sort_rows_async ms=15.98 rows=67454 col=Timestamp
+2026-05-31 05:51:39,218 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=67454 page_size=50
+2026-05-31 05:51:39,710 INFO [trolli.perf:39] [PERF] logs_view.render ms=1031.02 rows=50
+2026-05-31 05:51:40,029 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.35 rows=72448
+2026-05-31 05:51:40,040 INFO [trolli.perf:39] [PERF] sort_rows_async ms=10.41 rows=72448 col=Timestamp
+2026-05-31 05:51:40,040 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.00 total=72448 page_size=50
+2026-05-31 05:51:40,397 INFO [trolli.perf:39] [PERF] logs_view.render ms=1179.10 rows=50
+2026-05-31 05:51:40,698 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.48 rows=75779
+2026-05-31 05:51:40,711 INFO [trolli.perf:39] [PERF] sort_rows_async ms=12.55 rows=75779 col=Timestamp
+2026-05-31 05:51:40,711 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=75779 page_size=50
+2026-05-31 05:51:41,141 INFO [trolli.perf:39] [PERF] logs_view.render ms=1100.33 rows=50
+2026-05-31 05:51:41,431 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.61 rows=79418
+2026-05-31 05:51:41,459 INFO [trolli.perf:39] [PERF] sort_rows_async ms=28.31 rows=79418 col=Timestamp
+2026-05-31 05:51:41,460 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=79418 page_size=50
+2026-05-31 05:51:42,078 INFO [trolli.perf:39] [PERF] logs_view.render ms=1365.80 rows=50
+2026-05-31 05:51:42,430 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.78 rows=84976
+2026-05-31 05:51:42,446 INFO [trolli.perf:39] [PERF] sort_rows_async ms=15.30 rows=84976 col=Timestamp
+2026-05-31 05:51:42,446 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=84976 page_size=50
+2026-05-31 05:51:42,450 INFO [trolli.perf:39] [PERF] logs_view.render ms=989.69 rows=50
+2026-05-31 05:51:42,775 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.84 rows=84941
+2026-05-31 05:51:42,802 INFO [trolli.perf:39] [PERF] sort_rows_async ms=26.78 rows=84941 col=Timestamp
+2026-05-31 05:51:42,803 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=84941 page_size=50
+2026-05-31 05:51:43,690 INFO [trolli.perf:39] [PERF] logs_view.render ms=1243.80 rows=50
+2026-05-31 05:51:43,759 INFO [trolli.perf:39] [PERF] logs_view.render ms=956.34 rows=50
+2026-05-31 05:51:43,984 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.25 rows=87096
+2026-05-31 05:51:44,002 INFO [trolli.perf:39] [PERF] sort_rows_async ms=17.03 rows=87096 col=Timestamp
+2026-05-31 05:51:44,002 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=87096 page_size=50
+2026-05-31 05:51:44,098 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.67 rows=87618
+2026-05-31 05:51:44,122 INFO [trolli.perf:39] [PERF] sort_rows_async ms=23.37 rows=87618 col=Timestamp
+2026-05-31 05:51:44,122 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=87618 page_size=50
+2026-05-31 05:51:45,218 INFO [trolli.perf:39] [PERF] logs_view.render ms=1094.95 rows=50
+2026-05-31 05:51:45,383 INFO [trolli.perf:39] [PERF] logs_view.render ms=1380.75 rows=50
+2026-05-31 05:51:45,525 INFO [trolli.perf:39] [PERF] filter_rows_async ms=5.57 rows=92551
+2026-05-31 05:51:45,562 INFO [trolli.perf:39] [PERF] sort_rows_async ms=36.83 rows=92551 col=Timestamp
+2026-05-31 05:51:45,563 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=92551 page_size=50
+2026-05-31 05:51:45,672 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.69 rows=92609
+2026-05-31 05:51:45,710 INFO [trolli.perf:39] [PERF] sort_rows_async ms=37.74 rows=92609 col=Timestamp
+2026-05-31 05:51:45,711 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=92609 page_size=50
+2026-05-31 05:51:46,702 INFO [trolli.perf:39] [PERF] logs_view.render ms=1139.34 rows=50
+2026-05-31 05:51:46,988 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.92 rows=95916
+2026-05-31 05:51:47,004 INFO [trolli.perf:39] [PERF] sort_rows_async ms=15.21 rows=95916 col=Timestamp
+2026-05-31 05:51:47,004 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=95916 page_size=50
+2026-05-31 05:51:47,298 INFO [trolli.perf:39] [PERF] logs_view.render ms=1586.15 rows=50
+2026-05-31 05:51:47,600 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.61 rows=98325
+2026-05-31 05:51:47,625 INFO [trolli.perf:39] [PERF] sort_rows_async ms=24.55 rows=98325 col=Timestamp
+2026-05-31 05:51:47,625 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=98325 page_size=50
+2026-05-31 05:51:48,075 INFO [trolli.perf:39] [PERF] logs_view.render ms=1070.19 rows=50
+2026-05-31 05:51:48,382 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.95 rows=100000
+2026-05-31 05:51:48,402 INFO [trolli.perf:39] [PERF] sort_rows_async ms=18.94 rows=100000 col=Timestamp
+2026-05-31 05:51:48,402 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:51:48,867 INFO [trolli.perf:39] [PERF] logs_view.render ms=1241.49 rows=50
+2026-05-31 05:51:49,178 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.84 rows=100000
+2026-05-31 05:51:49,210 INFO [trolli.perf:39] [PERF] sort_rows_async ms=31.84 rows=100000 col=Timestamp
+2026-05-31 05:51:49,211 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:51:49,443 INFO [trolli.perf:39] [PERF] logs_view.render ms=1041.33 rows=50
+2026-05-31 05:51:49,747 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.71 rows=100000
+2026-05-31 05:51:49,774 INFO [trolli.perf:39] [PERF] sort_rows_async ms=26.88 rows=100000 col=Timestamp
+2026-05-31 05:51:49,774 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:51:50,499 INFO [trolli.perf:39] [PERF] logs_view.render ms=1287.72 rows=50
+2026-05-31 05:51:50,820 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.83 rows=100000
+2026-05-31 05:51:50,839 INFO [trolli.perf:39] [PERF] sort_rows_async ms=18.55 rows=100000 col=Timestamp
+2026-05-31 05:51:50,839 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:51:50,870 INFO [trolli.perf:39] [PERF] logs_view.render ms=1095.90 rows=50
+2026-05-31 05:51:51,163 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.91 rows=100000
+2026-05-31 05:51:51,181 INFO [trolli.perf:39] [PERF] sort_rows_async ms=17.65 rows=100000 col=Timestamp
+2026-05-31 05:51:51,182 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:51:52,170 INFO [trolli.perf:39] [PERF] logs_view.render ms=987.84 rows=50
+2026-05-31 05:51:52,330 INFO [trolli.perf:39] [PERF] logs_view.render ms=1490.59 rows=50
+2026-05-31 05:51:52,466 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.73 rows=100000
+2026-05-31 05:51:52,485 INFO [trolli.perf:39] [PERF] sort_rows_async ms=18.72 rows=100000 col=Timestamp
+2026-05-31 05:51:52,485 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:51:52,637 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.88 rows=100000
+2026-05-31 05:51:52,662 INFO [trolli.perf:39] [PERF] sort_rows_async ms=24.39 rows=100000 col=Timestamp
+2026-05-31 05:51:52,662 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:51:53,789 INFO [trolli.perf:39] [PERF] logs_view.render ms=1303.35 rows=50
+2026-05-31 05:51:54,096 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.12 rows=100000
+2026-05-31 05:51:54,118 INFO [trolli.perf:39] [PERF] sort_rows_async ms=22.04 rows=100000 col=Timestamp
+2026-05-31 05:51:54,118 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:51:54,331 INFO [trolli.perf:39] [PERF] logs_view.render ms=1668.55 rows=50
+2026-05-31 05:51:54,635 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.66 rows=100000
+2026-05-31 05:51:54,652 INFO [trolli.perf:39] [PERF] sort_rows_async ms=16.07 rows=100000 col=Timestamp
+2026-05-31 05:51:54,652 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:51:55,072 INFO [trolli.perf:39] [PERF] logs_view.render ms=953.18 rows=50
+2026-05-31 05:51:55,398 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.78 rows=100000
+2026-05-31 05:51:55,419 INFO [trolli.perf:39] [PERF] sort_rows_async ms=20.69 rows=100000 col=Timestamp
+2026-05-31 05:51:55,419 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:51:56,202 INFO [trolli.perf:39] [PERF] logs_view.render ms=1549.38 rows=50
+2026-05-31 05:51:56,353 INFO [trolli.perf:39] [PERF] logs_view.render ms=933.76 rows=50
+2026-05-31 05:51:56,523 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.05 rows=100000
+2026-05-31 05:51:56,546 INFO [trolli.perf:39] [PERF] sort_rows_async ms=22.04 rows=100000 col=Timestamp
+2026-05-31 05:51:56,546 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:51:56,644 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.90 rows=100000
+2026-05-31 05:51:56,672 INFO [trolli.perf:39] [PERF] sort_rows_async ms=28.42 rows=100000 col=Timestamp
+2026-05-31 05:51:56,673 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:51:57,765 INFO [trolli.perf:39] [PERF] logs_view.render ms=1092.26 rows=50
+2026-05-31 05:51:58,053 INFO [trolli.perf:39] [PERF] logs_view.render ms=1506.51 rows=50
+2026-05-31 05:51:58,075 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.80 rows=100000
+2026-05-31 05:51:58,091 INFO [trolli.perf:39] [PERF] sort_rows_async ms=15.72 rows=100000 col=Timestamp
+2026-05-31 05:51:58,091 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:51:58,388 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.79 rows=100000
+2026-05-31 05:51:58,408 INFO [trolli.perf:39] [PERF] sort_rows_async ms=19.74 rows=100000 col=Timestamp
+2026-05-31 05:51:58,408 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:51:59,045 INFO [trolli.perf:39] [PERF] logs_view.render ms=954.11 rows=50
+2026-05-31 05:51:59,352 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.88 rows=100000
+2026-05-31 05:51:59,387 INFO [trolli.perf:39] [PERF] sort_rows_async ms=34.76 rows=100000 col=Timestamp
+2026-05-31 05:51:59,388 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:51:59,939 INFO [trolli.perf:39] [PERF] logs_view.render ms=1529.48 rows=50
+2026-05-31 05:52:00,272 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.78 rows=100000
+2026-05-31 05:52:00,303 INFO [trolli.perf:39] [PERF] sort_rows_async ms=30.38 rows=100000 col=Timestamp
+2026-05-31 05:52:00,304 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:00,476 INFO [trolli.perf:39] [PERF] logs_view.render ms=1087.65 rows=50
+2026-05-31 05:52:00,765 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.79 rows=100000
+2026-05-31 05:52:00,782 INFO [trolli.perf:39] [PERF] sort_rows_async ms=16.09 rows=100000 col=Timestamp
+2026-05-31 05:52:00,782 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:01,641 INFO [trolli.perf:39] [PERF] logs_view.render ms=1337.20 rows=50
+2026-05-31 05:52:01,838 INFO [trolli.perf:39] [PERF] logs_view.render ms=1056.05 rows=50
+2026-05-31 05:52:01,958 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.85 rows=100000
+2026-05-31 05:52:01,977 INFO [trolli.perf:39] [PERF] sort_rows_async ms=18.33 rows=100000 col=Timestamp
+2026-05-31 05:52:01,977 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:02,144 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.57 rows=100000
+2026-05-31 05:52:02,162 INFO [trolli.perf:39] [PERF] sort_rows_async ms=18.27 rows=100000 col=Timestamp
+2026-05-31 05:52:02,162 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:03,245 INFO [trolli.perf:39] [PERF] logs_view.render ms=1082.54 rows=50
+2026-05-31 05:52:03,424 INFO [trolli.perf:39] [PERF] logs_view.render ms=1446.09 rows=50
+2026-05-31 05:52:03,547 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.17 rows=100000
+2026-05-31 05:52:03,570 INFO [trolli.perf:39] [PERF] sort_rows_async ms=22.24 rows=100000 col=Timestamp
+2026-05-31 05:52:03,570 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:03,730 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.99 rows=100000
+2026-05-31 05:52:03,747 INFO [trolli.perf:39] [PERF] sort_rows_async ms=16.50 rows=100000 col=Timestamp
+2026-05-31 05:52:03,748 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:04,695 INFO [trolli.perf:39] [PERF] logs_view.render ms=1124.60 rows=50
+2026-05-31 05:52:04,995 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.87 rows=100000
+2026-05-31 05:52:05,022 INFO [trolli.perf:39] [PERF] sort_rows_async ms=26.19 rows=100000 col=Timestamp
+2026-05-31 05:52:05,022 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:05,211 INFO [trolli.perf:39] [PERF] logs_view.render ms=1462.78 rows=50
+2026-05-31 05:52:05,542 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.24 rows=100000
+2026-05-31 05:52:05,566 INFO [trolli.perf:39] [PERF] sort_rows_async ms=22.77 rows=100000 col=Timestamp
+2026-05-31 05:52:05,567 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:06,025 INFO [trolli.perf:39] [PERF] logs_view.render ms=1002.91 rows=50
+2026-05-31 05:52:06,324 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.59 rows=100000
+2026-05-31 05:52:06,340 INFO [trolli.perf:39] [PERF] sort_rows_async ms=15.72 rows=100000 col=Timestamp
+2026-05-31 05:52:06,340 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:06,769 INFO [trolli.perf:39] [PERF] logs_view.render ms=1201.74 rows=50
+2026-05-31 05:52:07,073 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.28 rows=100000
+2026-05-31 05:52:07,093 INFO [trolli.perf:39] [PERF] sort_rows_async ms=19.97 rows=100000 col=Timestamp
+2026-05-31 05:52:07,093 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:07,310 INFO [trolli.perf:39] [PERF] logs_view.render ms=969.66 rows=50
+2026-05-31 05:52:07,618 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.58 rows=100000
+2026-05-31 05:52:07,652 INFO [trolli.perf:39] [PERF] sort_rows_async ms=33.11 rows=100000 col=Timestamp
+2026-05-31 05:52:07,652 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:08,675 INFO [trolli.perf:39] [PERF] logs_view.render ms=1022.34 rows=50
+2026-05-31 05:52:08,705 INFO [trolli.perf:39] [PERF] logs_view.render ms=1610.78 rows=50
+2026-05-31 05:52:08,989 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.24 rows=100000
+2026-05-31 05:52:09,011 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.43 rows=100000 col=Timestamp
+2026-05-31 05:52:09,011 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:09,039 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.86 rows=100000
+2026-05-31 05:52:09,106 INFO [trolli.perf:39] [PERF] sort_rows_async ms=66.00 rows=100000 col=Timestamp
+2026-05-31 05:52:09,106 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:10,071 INFO [trolli.perf:39] [PERF] logs_view.render ms=1059.28 rows=50
+2026-05-31 05:52:10,376 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.86 rows=100000
+2026-05-31 05:52:10,397 INFO [trolli.perf:39] [PERF] sort_rows_async ms=20.88 rows=100000 col=Timestamp
+2026-05-31 05:52:10,397 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:10,411 INFO [trolli.perf:39] [PERF] logs_view.render ms=1304.21 rows=50
+2026-05-31 05:52:10,709 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.04 rows=100000
+2026-05-31 05:52:10,729 INFO [trolli.perf:39] [PERF] sort_rows_async ms=19.43 rows=100000 col=Timestamp
+2026-05-31 05:52:10,730 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:11,465 INFO [trolli.perf:39] [PERF] logs_view.render ms=1067.54 rows=50
+2026-05-31 05:52:11,777 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.07 rows=100000
+2026-05-31 05:52:11,810 INFO [trolli.perf:39] [PERF] sort_rows_async ms=32.55 rows=100000 col=Timestamp
+2026-05-31 05:52:11,811 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:12,286 INFO [trolli.perf:39] [PERF] logs_view.render ms=1556.03 rows=50
+2026-05-31 05:52:12,604 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.55 rows=100000
+2026-05-31 05:52:12,619 INFO [trolli.perf:39] [PERF] sort_rows_async ms=14.59 rows=100000 col=Timestamp
+2026-05-31 05:52:12,619 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:12,661 INFO [trolli.perf:39] [PERF] logs_view.render ms=850.19 rows=50
+2026-05-31 05:52:12,951 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.52 rows=100000
+2026-05-31 05:52:12,978 INFO [trolli.perf:39] [PERF] sort_rows_async ms=26.00 rows=100000 col=Timestamp
+2026-05-31 05:52:12,978 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:14,096 INFO [trolli.perf:39] [PERF] logs_view.render ms=1118.25 rows=50
+2026-05-31 05:52:14,135 INFO [trolli.perf:39] [PERF] logs_view.render ms=1515.48 rows=50
+2026-05-31 05:52:14,391 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.50 rows=100000
+2026-05-31 05:52:14,427 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.85 rows=100000
+2026-05-31 05:52:14,431 INFO [trolli.perf:39] [PERF] sort_rows_async ms=39.03 rows=100000 col=Timestamp
+2026-05-31 05:52:14,431 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:14,460 INFO [trolli.perf:39] [PERF] sort_rows_async ms=32.41 rows=100000 col=Timestamp
+2026-05-31 05:52:14,461 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:15,561 INFO [trolli.perf:39] [PERF] logs_view.render ms=1129.49 rows=50
+2026-05-31 05:52:15,778 INFO [trolli.perf:39] [PERF] logs_view.render ms=1316.47 rows=50
+2026-05-31 05:52:15,852 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.33 rows=100000
+2026-05-31 05:52:15,867 INFO [trolli.perf:39] [PERF] sort_rows_async ms=14.96 rows=100000 col=Timestamp
+2026-05-31 05:52:15,867 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:16,074 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.55 rows=100000
+2026-05-31 05:52:16,092 INFO [trolli.perf:39] [PERF] sort_rows_async ms=17.35 rows=100000 col=Timestamp
+2026-05-31 05:52:16,093 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:16,697 INFO [trolli.perf:39] [PERF] logs_view.render ms=829.43 rows=50
+2026-05-31 05:52:16,998 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.98 rows=100000
+2026-05-31 05:52:17,030 INFO [trolli.perf:39] [PERF] sort_rows_async ms=32.10 rows=100000 col=Timestamp
+2026-05-31 05:52:17,030 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:17,254 INFO [trolli.perf:39] [PERF] logs_view.render ms=1161.33 rows=50
+2026-05-31 05:52:17,592 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.02 rows=100000
+2026-05-31 05:52:17,617 INFO [trolli.perf:39] [PERF] sort_rows_async ms=24.96 rows=100000 col=Timestamp
+2026-05-31 05:52:17,618 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:18,031 INFO [trolli.perf:39] [PERF] logs_view.render ms=1000.88 rows=50
+2026-05-31 05:52:18,321 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.52 rows=100000
+2026-05-31 05:52:18,340 INFO [trolli.perf:39] [PERF] sort_rows_async ms=17.98 rows=100000 col=Timestamp
+2026-05-31 05:52:18,340 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:18,987 INFO [trolli.perf:39] [PERF] logs_view.render ms=1368.42 rows=50
+2026-05-31 05:52:19,245 INFO [trolli.perf:39] [PERF] logs_view.render ms=905.04 rows=50
+2026-05-31 05:52:19,291 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.24 rows=100000
+2026-05-31 05:52:19,313 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.75 rows=100000 col=Timestamp
+2026-05-31 05:52:19,314 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:19,544 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.87 rows=100000
+2026-05-31 05:52:19,563 INFO [trolli.perf:39] [PERF] sort_rows_async ms=18.22 rows=100000 col=Timestamp
+2026-05-31 05:52:19,563 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:20,556 INFO [trolli.perf:39] [PERF] logs_view.render ms=993.09 rows=50
+2026-05-31 05:52:20,624 INFO [trolli.perf:39] [PERF] logs_view.render ms=1310.29 rows=50
+2026-05-31 05:52:20,851 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.37 rows=100000
+2026-05-31 05:52:20,869 INFO [trolli.perf:39] [PERF] sort_rows_async ms=17.79 rows=100000 col=Timestamp
+2026-05-31 05:52:20,869 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:20,923 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.92 rows=100000
+2026-05-31 05:52:20,947 INFO [trolli.perf:39] [PERF] sort_rows_async ms=23.51 rows=100000 col=Timestamp
+2026-05-31 05:52:20,947 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:21,843 INFO [trolli.perf:39] [PERF] logs_view.render ms=973.47 rows=50
+2026-05-31 05:52:22,154 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.82 rows=100000
+2026-05-31 05:52:22,177 INFO [trolli.perf:39] [PERF] sort_rows_async ms=22.75 rows=100000 col=Timestamp
+2026-05-31 05:52:22,177 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:22,306 INFO [trolli.perf:39] [PERF] logs_view.render ms=1357.92 rows=50
+2026-05-31 05:52:22,609 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.01 rows=100000
+2026-05-31 05:52:22,630 INFO [trolli.perf:39] [PERF] sort_rows_async ms=20.24 rows=100000 col=Timestamp
+2026-05-31 05:52:22,630 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:23,249 INFO [trolli.perf:39] [PERF] logs_view.render ms=1072.13 rows=50
+2026-05-31 05:52:23,539 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.20 rows=100000
+2026-05-31 05:52:23,559 INFO [trolli.perf:39] [PERF] sort_rows_async ms=19.16 rows=100000 col=Timestamp
+2026-05-31 05:52:23,560 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:24,180 INFO [trolli.perf:39] [PERF] logs_view.render ms=1550.22 rows=50
+2026-05-31 05:52:24,505 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.96 rows=100000
+2026-05-31 05:52:24,532 INFO [trolli.perf:39] [PERF] sort_rows_async ms=26.92 rows=100000 col=Timestamp
+2026-05-31 05:52:24,533 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:24,620 INFO [trolli.perf:39] [PERF] logs_view.render ms=1060.22 rows=50
+2026-05-31 05:52:24,918 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.79 rows=100000
+2026-05-31 05:52:24,942 INFO [trolli.perf:39] [PERF] sort_rows_async ms=23.56 rows=100000 col=Timestamp
+2026-05-31 05:52:24,942 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:25,895 INFO [trolli.perf:39] [PERF] logs_view.render ms=1361.52 rows=50
+2026-05-31 05:52:26,164 INFO [trolli.perf:39] [PERF] logs_view.render ms=1220.92 rows=50
+2026-05-31 05:52:26,188 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.96 rows=100000
+2026-05-31 05:52:26,219 INFO [trolli.perf:39] [PERF] sort_rows_async ms=31.11 rows=100000 col=Timestamp
+2026-05-31 05:52:26,220 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:26,488 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.68 rows=100000
+2026-05-31 05:52:26,506 INFO [trolli.perf:39] [PERF] sort_rows_async ms=17.36 rows=100000 col=Timestamp
+2026-05-31 05:52:26,506 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:27,564 INFO [trolli.perf:39] [PERF] logs_view.render ms=1057.62 rows=50
+2026-05-31 05:52:27,709 INFO [trolli.perf:39] [PERF] logs_view.render ms=1488.05 rows=50
+2026-05-31 05:52:27,868 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.63 rows=100000
+2026-05-31 05:52:27,894 INFO [trolli.perf:39] [PERF] sort_rows_async ms=26.18 rows=100000 col=Timestamp
+2026-05-31 05:52:27,894 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:28,015 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.45 rows=100000
+2026-05-31 05:52:28,045 INFO [trolli.perf:39] [PERF] sort_rows_async ms=29.14 rows=100000 col=Timestamp
+2026-05-31 05:52:28,046 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:29,026 INFO [trolli.perf:39] [PERF] logs_view.render ms=1131.54 rows=50
+2026-05-31 05:52:29,332 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.03 rows=100000
+2026-05-31 05:52:29,352 INFO [trolli.perf:39] [PERF] sort_rows_async ms=19.36 rows=100000 col=Timestamp
+2026-05-31 05:52:29,352 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:29,620 INFO [trolli.perf:39] [PERF] logs_view.render ms=1573.21 rows=50
+2026-05-31 05:52:29,916 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.84 rows=100000
+2026-05-31 05:52:29,933 INFO [trolli.perf:39] [PERF] sort_rows_async ms=16.93 rows=100000 col=Timestamp
+2026-05-31 05:52:29,934 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:30,289 INFO [trolli.perf:39] [PERF] logs_view.render ms=936.63 rows=50
+2026-05-31 05:52:30,619 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.30 rows=100000
+2026-05-31 05:52:30,644 INFO [trolli.perf:39] [PERF] sort_rows_async ms=25.33 rows=100000 col=Timestamp
+2026-05-31 05:52:30,645 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:31,455 INFO [trolli.perf:39] [PERF] logs_view.render ms=1521.02 rows=50
+2026-05-31 05:52:31,582 INFO [trolli.perf:39] [PERF] logs_view.render ms=937.44 rows=50
+2026-05-31 05:52:31,782 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.25 rows=100000
+2026-05-31 05:52:31,798 INFO [trolli.perf:39] [PERF] sort_rows_async ms=15.07 rows=100000 col=Timestamp
+2026-05-31 05:52:31,798 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:31,882 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.20 rows=100000
+2026-05-31 05:52:31,901 INFO [trolli.perf:39] [PERF] sort_rows_async ms=18.78 rows=100000 col=Timestamp
+2026-05-31 05:52:31,901 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:32,936 INFO [trolli.perf:39] [PERF] logs_view.render ms=1034.24 rows=50
+2026-05-31 05:52:33,267 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.99 rows=100000
+2026-05-31 05:52:33,286 INFO [trolli.perf:39] [PERF] sort_rows_async ms=18.60 rows=100000 col=Timestamp
+2026-05-31 05:52:33,287 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:33,287 INFO [trolli.perf:39] [PERF] logs_view.render ms=1487.97 rows=50
+2026-05-31 05:52:33,597 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.23 rows=100000
+2026-05-31 05:52:33,620 INFO [trolli.perf:39] [PERF] sort_rows_async ms=22.07 rows=100000 col=Timestamp
+2026-05-31 05:52:33,620 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:34,378 INFO [trolli.perf:39] [PERF] logs_view.render ms=1091.16 rows=50
+2026-05-31 05:52:34,699 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.96 rows=100000
+2026-05-31 05:52:34,718 INFO [trolli.perf:39] [PERF] sort_rows_async ms=18.48 rows=100000 col=Timestamp
+2026-05-31 05:52:34,718 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:35,053 INFO [trolli.perf:39] [PERF] logs_view.render ms=1431.71 rows=50
+2026-05-31 05:52:35,366 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.33 rows=100000
+2026-05-31 05:52:35,387 INFO [trolli.perf:39] [PERF] sort_rows_async ms=20.29 rows=100000 col=Timestamp
+2026-05-31 05:52:35,387 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:35,810 INFO [trolli.perf:39] [PERF] logs_view.render ms=1091.46 rows=50
+2026-05-31 05:52:36,106 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.15 rows=100000
+2026-05-31 05:52:36,123 INFO [trolli.perf:39] [PERF] sort_rows_async ms=16.87 rows=100000 col=Timestamp
+2026-05-31 05:52:36,123 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:36,705 INFO [trolli.perf:39] [PERF] logs_view.render ms=1317.99 rows=50
+2026-05-31 05:52:37,013 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.88 rows=100000
+2026-05-31 05:52:37,034 INFO [trolli.perf:39] [PERF] sort_rows_async ms=20.17 rows=100000 col=Timestamp
+2026-05-31 05:52:37,035 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:37,131 INFO [trolli.perf:39] [PERF] logs_view.render ms=1007.93 rows=50
+2026-05-31 05:52:37,455 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.30 rows=100000
+2026-05-31 05:52:37,474 INFO [trolli.perf:39] [PERF] sort_rows_async ms=18.65 rows=100000 col=Timestamp
+2026-05-31 05:52:37,474 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:38,365 INFO [trolli.perf:39] [PERF] logs_view.render ms=1329.29 rows=50
+2026-05-31 05:52:38,471 INFO [trolli.perf:39] [PERF] logs_view.render ms=996.50 rows=50
+2026-05-31 05:52:38,664 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.25 rows=100000
+2026-05-31 05:52:38,687 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.95 rows=100000 col=Timestamp
+2026-05-31 05:52:38,687 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:38,761 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.28 rows=100000
+2026-05-31 05:52:38,784 INFO [trolli.perf:39] [PERF] sort_rows_async ms=22.37 rows=100000 col=Timestamp
+2026-05-31 05:52:38,784 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:39,913 INFO [trolli.perf:39] [PERF] logs_view.render ms=1128.18 rows=50
+2026-05-31 05:52:40,217 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.88 rows=100000
+2026-05-31 05:52:40,233 INFO [trolli.perf:39] [PERF] sort_rows_async ms=15.72 rows=100000 col=Timestamp
+2026-05-31 05:52:40,233 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:40,239 INFO [trolli.perf:39] [PERF] logs_view.render ms=1549.53 rows=50
+2026-05-31 05:52:40,552 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.10 rows=100000
+2026-05-31 05:52:40,569 INFO [trolli.perf:39] [PERF] sort_rows_async ms=15.98 rows=100000 col=Timestamp
+2026-05-31 05:52:40,569 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:41,542 INFO [trolli.perf:39] [PERF] logs_view.render ms=1308.44 rows=50
+2026-05-31 05:52:41,895 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.79 rows=100000
+2026-05-31 05:52:41,910 INFO [trolli.perf:39] [PERF] sort_rows_async ms=14.73 rows=100000 col=Timestamp
+2026-05-31 05:52:41,910 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:42,141 INFO [trolli.perf:39] [PERF] logs_view.render ms=1571.37 rows=50
+2026-05-31 05:52:42,453 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.17 rows=100000
+2026-05-31 05:52:42,472 INFO [trolli.perf:39] [PERF] sort_rows_async ms=18.54 rows=100000 col=Timestamp
+2026-05-31 05:52:42,473 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:42,923 INFO [trolli.perf:39] [PERF] logs_view.render ms=1012.82 rows=50
+2026-05-31 05:52:43,254 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.27 rows=100000
+2026-05-31 05:52:43,275 INFO [trolli.perf:39] [PERF] sort_rows_async ms=19.99 rows=100000 col=Timestamp
+2026-05-31 05:52:43,275 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:43,959 INFO [trolli.perf:39] [PERF] logs_view.render ms=1485.72 rows=50
+2026-05-31 05:52:44,251 INFO [trolli.perf:39] [PERF] logs_view.render ms=975.64 rows=50
+2026-05-31 05:52:44,260 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.83 rows=100000
+2026-05-31 05:52:44,289 INFO [trolli.perf:39] [PERF] sort_rows_async ms=27.91 rows=100000 col=Timestamp
+2026-05-31 05:52:44,289 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:44,560 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.77 rows=100000
+2026-05-31 05:52:44,582 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.36 rows=100000 col=Timestamp
+2026-05-31 05:52:44,582 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:45,544 INFO [trolli.perf:39] [PERF] logs_view.render ms=961.85 rows=50
+2026-05-31 05:52:45,635 INFO [trolli.perf:39] [PERF] logs_view.render ms=1345.62 rows=50
+2026-05-31 05:52:45,846 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.09 rows=100000
+2026-05-31 05:52:45,868 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.88 rows=100000 col=Timestamp
+2026-05-31 05:52:45,868 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:45,948 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.98 rows=100000
+2026-05-31 05:52:45,967 INFO [trolli.perf:39] [PERF] sort_rows_async ms=19.11 rows=100000 col=Timestamp
+2026-05-31 05:52:45,968 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:46,871 INFO [trolli.perf:39] [PERF] logs_view.render ms=1002.89 rows=50
+2026-05-31 05:52:47,181 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.88 rows=100000
+2026-05-31 05:52:47,205 INFO [trolli.perf:39] [PERF] sort_rows_async ms=24.13 rows=100000 col=Timestamp
+2026-05-31 05:52:47,206 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:47,363 INFO [trolli.perf:39] [PERF] logs_view.render ms=1394.65 rows=50
+2026-05-31 05:52:47,680 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.90 rows=100000
+2026-05-31 05:52:47,703 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.64 rows=100000 col=Timestamp
+2026-05-31 05:52:47,703 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:48,477 INFO [trolli.perf:39] [PERF] logs_view.render ms=1270.72 rows=50
+2026-05-31 05:52:48,777 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.12 rows=100000
+2026-05-31 05:52:48,808 INFO [trolli.perf:39] [PERF] sort_rows_async ms=30.52 rows=100000 col=Timestamp
+2026-05-31 05:52:48,808 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:49,272 INFO [trolli.perf:39] [PERF] logs_view.render ms=1569.26 rows=50
+2026-05-31 05:52:49,594 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.08 rows=100000
+2026-05-31 05:52:49,614 INFO [trolli.perf:39] [PERF] sort_rows_async ms=18.95 rows=100000 col=Timestamp
+2026-05-31 05:52:49,614 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:49,782 INFO [trolli.perf:39] [PERF] logs_view.render ms=973.85 rows=50
+2026-05-31 05:52:50,092 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.52 rows=100000
+2026-05-31 05:52:50,108 INFO [trolli.perf:39] [PERF] sort_rows_async ms=15.99 rows=100000 col=Timestamp
+2026-05-31 05:52:50,108 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:51,021 INFO [trolli.perf:39] [PERF] logs_view.render ms=1406.23 rows=50
+2026-05-31 05:52:51,054 INFO [trolli.perf:39] [PERF] logs_view.render ms=945.62 rows=50
+2026-05-31 05:52:51,326 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.72 rows=100000
+2026-05-31 05:52:51,348 INFO [trolli.perf:39] [PERF] sort_rows_async ms=20.53 rows=100000 col=Timestamp
+2026-05-31 05:52:51,349 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:51,360 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.07 rows=100000
+2026-05-31 05:52:51,386 INFO [trolli.perf:39] [PERF] sort_rows_async ms=25.17 rows=100000 col=Timestamp
+2026-05-31 05:52:51,386 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:52,368 INFO [trolli.perf:39] [PERF] logs_view.render ms=981.06 rows=50
+2026-05-31 05:52:52,672 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.52 rows=100000
+2026-05-31 05:52:52,694 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.37 rows=100000 col=Timestamp
+2026-05-31 05:52:52,694 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:52,861 INFO [trolli.perf:39] [PERF] logs_view.render ms=1511.44 rows=50
+2026-05-31 05:52:53,166 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.44 rows=100000
+2026-05-31 05:52:53,191 INFO [trolli.perf:39] [PERF] sort_rows_async ms=22.87 rows=100000 col=Timestamp
+2026-05-31 05:52:53,191 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:54,041 INFO [trolli.perf:39] [PERF] logs_view.render ms=1346.32 rows=50
+2026-05-31 05:52:54,358 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.82 rows=100000
+2026-05-31 05:52:54,378 INFO [trolli.perf:39] [PERF] sort_rows_async ms=19.62 rows=100000 col=Timestamp
+2026-05-31 05:52:54,379 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:54,775 INFO [trolli.perf:39] [PERF] logs_view.render ms=1583.14 rows=50
+2026-05-31 05:52:55,082 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.23 rows=100000
+2026-05-31 05:52:55,119 INFO [trolli.perf:39] [PERF] sort_rows_async ms=35.84 rows=100000 col=Timestamp
+2026-05-31 05:52:55,119 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:55,341 INFO [trolli.perf:39] [PERF] logs_view.render ms=962.32 rows=50
+2026-05-31 05:52:55,668 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.32 rows=100000
+2026-05-31 05:52:55,693 INFO [trolli.perf:39] [PERF] sort_rows_async ms=25.06 rows=100000 col=Timestamp
+2026-05-31 05:52:55,694 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:56,714 INFO [trolli.perf:39] [PERF] logs_view.render ms=1595.09 rows=50
+2026-05-31 05:52:56,800 INFO [trolli.perf:39] [PERF] logs_view.render ms=1106.34 rows=50
+2026-05-31 05:52:57,025 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.22 rows=100000
+2026-05-31 05:52:57,048 INFO [trolli.perf:39] [PERF] sort_rows_async ms=22.68 rows=100000 col=Timestamp
+2026-05-31 05:52:57,049 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:57,093 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.98 rows=100000
+2026-05-31 05:52:57,109 INFO [trolli.perf:39] [PERF] sort_rows_async ms=15.92 rows=100000 col=Timestamp
+2026-05-31 05:52:57,110 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:58,103 INFO [trolli.perf:39] [PERF] logs_view.render ms=993.49 rows=50
+2026-05-31 05:52:58,405 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.00 rows=100000
+2026-05-31 05:52:58,418 INFO [trolli.perf:39] [PERF] logs_view.render ms=1368.74 rows=50
+2026-05-31 05:52:58,421 INFO [trolli.perf:39] [PERF] sort_rows_async ms=15.33 rows=100000 col=Timestamp
+2026-05-31 05:52:58,421 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:52:58,752 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.84 rows=100000
+2026-05-31 05:52:58,784 INFO [trolli.perf:39] [PERF] sort_rows_async ms=31.15 rows=100000 col=Timestamp
+2026-05-31 05:52:58,784 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.02 total=100000 page_size=50
+2026-05-31 05:52:59,441 INFO [trolli.perf:39] [PERF] logs_view.render ms=1019.20 rows=50
+2026-05-31 05:52:59,733 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.46 rows=100000
+2026-05-31 05:52:59,759 INFO [trolli.perf:39] [PERF] sort_rows_async ms=26.09 rows=100000 col=Timestamp
+2026-05-31 05:52:59,759 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:00,070 INFO [trolli.perf:39] [PERF] logs_view.render ms=1284.85 rows=50
+2026-05-31 05:53:00,369 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.06 rows=100000
+2026-05-31 05:53:00,385 INFO [trolli.perf:39] [PERF] sort_rows_async ms=16.20 rows=100000 col=Timestamp
+2026-05-31 05:53:00,386 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:00,743 INFO [trolli.perf:39] [PERF] logs_view.render ms=983.82 rows=50
+2026-05-31 05:53:01,053 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.80 rows=100000
+2026-05-31 05:53:01,091 INFO [trolli.perf:39] [PERF] sort_rows_async ms=37.36 rows=100000 col=Timestamp
+2026-05-31 05:53:01,091 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:01,836 INFO [trolli.perf:39] [PERF] logs_view.render ms=1450.18 rows=50
+2026-05-31 05:53:02,014 INFO [trolli.perf:39] [PERF] logs_view.render ms=922.86 rows=50
+2026-05-31 05:53:02,136 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.40 rows=100000
+2026-05-31 05:53:02,159 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.81 rows=100000 col=Timestamp
+2026-05-31 05:53:02,159 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:02,305 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.83 rows=100000
+2026-05-31 05:53:02,327 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.79 rows=100000 col=Timestamp
+2026-05-31 05:53:02,327 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:03,303 INFO [trolli.perf:39] [PERF] logs_view.render ms=975.97 rows=50
+2026-05-31 05:53:03,418 INFO [trolli.perf:39] [PERF] logs_view.render ms=1258.18 rows=50
+2026-05-31 05:53:03,599 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.63 rows=100000
+2026-05-31 05:53:03,614 INFO [trolli.perf:39] [PERF] sort_rows_async ms=14.71 rows=100000 col=Timestamp
+2026-05-31 05:53:03,614 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:03,738 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.89 rows=100000
+2026-05-31 05:53:03,763 INFO [trolli.perf:39] [PERF] sort_rows_async ms=23.41 rows=100000 col=Timestamp
+2026-05-31 05:53:03,763 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.02 total=100000 page_size=50
+2026-05-31 05:53:04,844 INFO [trolli.perf:39] [PERF] logs_view.render ms=1229.05 rows=50
+2026-05-31 05:53:05,175 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.06 rows=100000
+2026-05-31 05:53:05,203 INFO [trolli.perf:39] [PERF] sort_rows_async ms=27.65 rows=100000 col=Timestamp
+2026-05-31 05:53:05,203 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:05,258 INFO [trolli.perf:39] [PERF] logs_view.render ms=1493.38 rows=50
+2026-05-31 05:53:05,560 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.48 rows=100000
+2026-05-31 05:53:05,582 INFO [trolli.perf:39] [PERF] sort_rows_async ms=20.65 rows=100000 col=Timestamp
+2026-05-31 05:53:05,582 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:06,200 INFO [trolli.perf:39] [PERF] logs_view.render ms=996.92 rows=50
+2026-05-31 05:53:06,513 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.85 rows=100000
+2026-05-31 05:53:06,534 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.15 rows=100000 col=Timestamp
+2026-05-31 05:53:06,535 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:07,031 INFO [trolli.perf:39] [PERF] logs_view.render ms=1448.66 rows=50
+2026-05-31 05:53:07,337 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.70 rows=100000
+2026-05-31 05:53:07,351 INFO [trolli.perf:39] [PERF] sort_rows_async ms=14.16 rows=100000 col=Timestamp
+2026-05-31 05:53:07,352 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:07,487 INFO [trolli.perf:39] [PERF] logs_view.render ms=952.53 rows=50
+2026-05-31 05:53:07,780 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.46 rows=100000
+2026-05-31 05:53:07,817 INFO [trolli.perf:39] [PERF] sort_rows_async ms=36.16 rows=100000 col=Timestamp
+2026-05-31 05:53:07,817 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:08,635 INFO [trolli.perf:39] [PERF] logs_view.render ms=1282.88 rows=50
+2026-05-31 05:53:08,826 INFO [trolli.perf:39] [PERF] logs_view.render ms=1008.57 rows=50
+2026-05-31 05:53:08,955 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.83 rows=100000
+2026-05-31 05:53:08,976 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.27 rows=100000 col=Timestamp
+2026-05-31 05:53:08,977 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:09,119 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.22 rows=100000
+2026-05-31 05:53:09,141 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.38 rows=100000 col=Timestamp
+2026-05-31 05:53:09,141 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:10,231 INFO [trolli.perf:39] [PERF] logs_view.render ms=1089.54 rows=50
+2026-05-31 05:53:10,474 INFO [trolli.perf:39] [PERF] logs_view.render ms=1496.83 rows=50
+2026-05-31 05:53:10,522 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.60 rows=100000
+2026-05-31 05:53:10,541 INFO [trolli.perf:39] [PERF] sort_rows_async ms=18.10 rows=100000 col=Timestamp
+2026-05-31 05:53:10,541 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:10,772 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.73 rows=100000
+2026-05-31 05:53:10,789 INFO [trolli.perf:39] [PERF] sort_rows_async ms=16.60 rows=100000 col=Timestamp
+2026-05-31 05:53:10,789 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:11,747 INFO [trolli.perf:39] [PERF] logs_view.render ms=1205.41 rows=50
+2026-05-31 05:53:12,093 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.25 rows=100000
+2026-05-31 05:53:12,113 INFO [trolli.perf:39] [PERF] sort_rows_async ms=19.13 rows=100000 col=Timestamp
+2026-05-31 05:53:12,113 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:12,431 INFO [trolli.perf:39] [PERF] logs_view.render ms=1641.51 rows=50
+2026-05-31 05:53:12,752 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.95 rows=100000
+2026-05-31 05:53:12,780 INFO [trolli.perf:39] [PERF] sort_rows_async ms=28.25 rows=100000 col=Timestamp
+2026-05-31 05:53:12,781 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:13,162 INFO [trolli.perf:39] [PERF] logs_view.render ms=1048.62 rows=50
+2026-05-31 05:53:13,450 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.25 rows=100000
+2026-05-31 05:53:13,484 INFO [trolli.perf:39] [PERF] sort_rows_async ms=34.22 rows=100000 col=Timestamp
+2026-05-31 05:53:13,484 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:14,188 INFO [trolli.perf:39] [PERF] logs_view.render ms=1406.79 rows=50
+2026-05-31 05:53:14,444 INFO [trolli.perf:39] [PERF] logs_view.render ms=959.42 rows=50
+2026-05-31 05:53:14,485 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.70 rows=100000
+2026-05-31 05:53:14,504 INFO [trolli.perf:39] [PERF] sort_rows_async ms=18.54 rows=100000 col=Timestamp
+2026-05-31 05:53:14,505 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:14,762 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.80 rows=100000
+2026-05-31 05:53:14,783 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.18 rows=100000 col=Timestamp
+2026-05-31 05:53:14,784 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:15,862 INFO [trolli.perf:39] [PERF] logs_view.render ms=1078.56 rows=50
+2026-05-31 05:53:15,992 INFO [trolli.perf:39] [PERF] logs_view.render ms=1486.45 rows=50
+2026-05-31 05:53:16,169 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.29 rows=100000
+2026-05-31 05:53:16,206 INFO [trolli.perf:39] [PERF] sort_rows_async ms=37.56 rows=100000 col=Timestamp
+2026-05-31 05:53:16,207 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:16,300 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.96 rows=100000
+2026-05-31 05:53:16,328 INFO [trolli.perf:39] [PERF] sort_rows_async ms=27.34 rows=100000 col=Timestamp
+2026-05-31 05:53:16,329 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:17,565 INFO [trolli.perf:39] [PERF] logs_view.render ms=1357.58 rows=50
+2026-05-31 05:53:17,859 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.85 rows=100000
+2026-05-31 05:53:17,882 INFO [trolli.perf:39] [PERF] sort_rows_async ms=22.90 rows=100000 col=Timestamp
+2026-05-31 05:53:17,882 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:18,144 INFO [trolli.perf:39] [PERF] logs_view.render ms=1814.55 rows=50
+2026-05-31 05:53:18,469 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.17 rows=100000
+2026-05-31 05:53:18,486 INFO [trolli.perf:39] [PERF] sort_rows_async ms=17.38 rows=100000 col=Timestamp
+2026-05-31 05:53:18,487 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:18,997 INFO [trolli.perf:39] [PERF] logs_view.render ms=1114.79 rows=50
+2026-05-31 05:53:19,311 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.87 rows=100000
+2026-05-31 05:53:19,326 INFO [trolli.perf:39] [PERF] sort_rows_async ms=14.65 rows=100000 col=Timestamp
+2026-05-31 05:53:19,326 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:19,842 INFO [trolli.perf:39] [PERF] logs_view.render ms=1354.22 rows=50
+2026-05-31 05:53:20,146 INFO [trolli.perf:39] [PERF] logs_view.render ms=820.20 rows=50
+2026-05-31 05:53:20,158 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.92 rows=100000
+2026-05-31 05:53:20,179 INFO [trolli.perf:39] [PERF] sort_rows_async ms=20.67 rows=100000 col=Timestamp
+2026-05-31 05:53:20,179 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:20,448 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.96 rows=100000
+2026-05-31 05:53:20,464 INFO [trolli.perf:39] [PERF] sort_rows_async ms=15.87 rows=100000 col=Timestamp
+2026-05-31 05:53:20,464 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:21,511 INFO [trolli.perf:39] [PERF] logs_view.render ms=1046.93 rows=50
+2026-05-31 05:53:21,510 INFO [trolli.perf:39] [PERF] logs_view.render ms=1330.51 rows=50
+2026-05-31 05:53:21,806 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.17 rows=100000
+2026-05-31 05:53:21,824 INFO [trolli.perf:39] [PERF] sort_rows_async ms=17.70 rows=100000 col=Timestamp
+2026-05-31 05:53:21,824 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:21,852 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.02 rows=100000
+2026-05-31 05:53:21,871 INFO [trolli.perf:39] [PERF] sort_rows_async ms=19.35 rows=100000 col=Timestamp
+2026-05-31 05:53:21,872 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:22,793 INFO [trolli.perf:39] [PERF] logs_view.render ms=968.54 rows=50
+2026-05-31 05:53:23,098 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.64 rows=100000
+2026-05-31 05:53:23,100 INFO [trolli.perf:39] [PERF] logs_view.render ms=1227.69 rows=50
+2026-05-31 05:53:23,115 INFO [trolli.perf:39] [PERF] sort_rows_async ms=17.08 rows=100000 col=Timestamp
+2026-05-31 05:53:23,116 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:23,403 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.05 rows=100000
+2026-05-31 05:53:23,419 INFO [trolli.perf:39] [PERF] sort_rows_async ms=15.79 rows=100000 col=Timestamp
+2026-05-31 05:53:23,420 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:24,150 INFO [trolli.perf:39] [PERF] logs_view.render ms=1034.72 rows=50
+2026-05-31 05:53:24,438 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.73 rows=100000
+2026-05-31 05:53:24,455 INFO [trolli.perf:39] [PERF] sort_rows_async ms=17.08 rows=100000 col=Timestamp
+2026-05-31 05:53:24,456 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:24,835 INFO [trolli.perf:39] [PERF] logs_view.render ms=1414.95 rows=50
+2026-05-31 05:53:25,149 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.69 rows=100000
+2026-05-31 05:53:25,167 INFO [trolli.perf:39] [PERF] sort_rows_async ms=17.04 rows=100000 col=Timestamp
+2026-05-31 05:53:25,167 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:25,452 INFO [trolli.perf:39] [PERF] logs_view.render ms=996.31 rows=50
+2026-05-31 05:53:25,748 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.52 rows=100000
+2026-05-31 05:53:25,785 INFO [trolli.perf:39] [PERF] sort_rows_async ms=36.90 rows=100000 col=Timestamp
+2026-05-31 05:53:25,786 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:26,718 INFO [trolli.perf:39] [PERF] logs_view.render ms=1549.99 rows=50
+2026-05-31 05:53:26,800 INFO [trolli.perf:39] [PERF] logs_view.render ms=1014.44 rows=50
+2026-05-31 05:53:27,032 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.94 rows=100000
+2026-05-31 05:53:27,056 INFO [trolli.perf:39] [PERF] sort_rows_async ms=23.36 rows=100000 col=Timestamp
+2026-05-31 05:53:27,056 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:27,101 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.10 rows=100000
+2026-05-31 05:53:27,133 INFO [trolli.perf:39] [PERF] sort_rows_async ms=31.36 rows=100000 col=Timestamp
+2026-05-31 05:53:27,133 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:28,148 INFO [trolli.perf:39] [PERF] logs_view.render ms=1013.95 rows=50
+2026-05-31 05:53:28,451 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.22 rows=100000
+2026-05-31 05:53:28,473 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.73 rows=100000 col=Timestamp
+2026-05-31 05:53:28,473 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:28,554 INFO [trolli.perf:39] [PERF] logs_view.render ms=1497.24 rows=50
+2026-05-31 05:53:28,856 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.20 rows=100000
+2026-05-31 05:53:28,876 INFO [trolli.perf:39] [PERF] sort_rows_async ms=19.47 rows=100000 col=Timestamp
+2026-05-31 05:53:28,876 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:29,618 INFO [trolli.perf:39] [PERF] logs_view.render ms=1144.29 rows=50
+2026-05-31 05:53:29,917 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.55 rows=100000
+2026-05-31 05:53:29,936 INFO [trolli.perf:39] [PERF] sort_rows_async ms=17.45 rows=100000 col=Timestamp
+2026-05-31 05:53:29,936 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:30,162 INFO [trolli.perf:39] [PERF] logs_view.render ms=1286.11 rows=50
+2026-05-31 05:53:30,480 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.29 rows=100000
+2026-05-31 05:53:30,497 INFO [trolli.perf:39] [PERF] sort_rows_async ms=16.97 rows=100000 col=Timestamp
+2026-05-31 05:53:30,498 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:30,969 INFO [trolli.perf:39] [PERF] logs_view.render ms=1033.26 rows=50
+2026-05-31 05:53:31,254 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.71 rows=100000
+2026-05-31 05:53:31,277 INFO [trolli.perf:39] [PERF] sort_rows_async ms=22.32 rows=100000 col=Timestamp
+2026-05-31 05:53:31,278 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:31,877 INFO [trolli.perf:39] [PERF] logs_view.render ms=1379.30 rows=50
+2026-05-31 05:53:32,185 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.18 rows=100000
+2026-05-31 05:53:32,207 INFO [trolli.perf:39] [PERF] logs_view.render ms=929.22 rows=50
+2026-05-31 05:53:32,207 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.79 rows=100000 col=Timestamp
+2026-05-31 05:53:32,208 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:32,533 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.66 rows=100000
+2026-05-31 05:53:32,558 INFO [trolli.perf:39] [PERF] sort_rows_async ms=24.92 rows=100000 col=Timestamp
+2026-05-31 05:53:32,559 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:33,658 INFO [trolli.perf:39] [PERF] logs_view.render ms=1098.68 rows=50
+2026-05-31 05:53:33,887 INFO [trolli.perf:39] [PERF] logs_view.render ms=1678.09 rows=50
+2026-05-31 05:53:33,971 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.80 rows=100000
+2026-05-31 05:53:33,992 INFO [trolli.perf:39] [PERF] sort_rows_async ms=20.78 rows=100000 col=Timestamp
+2026-05-31 05:53:33,993 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:34,177 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.12 rows=100000
+2026-05-31 05:53:34,194 INFO [trolli.perf:39] [PERF] sort_rows_async ms=16.10 rows=100000 col=Timestamp
+2026-05-31 05:53:34,194 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:35,079 INFO [trolli.perf:39] [PERF] logs_view.render ms=1086.29 rows=50
+2026-05-31 05:53:35,376 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.00 rows=100000
+2026-05-31 05:53:35,402 INFO [trolli.perf:39] [PERF] sort_rows_async ms=26.46 rows=100000 col=Timestamp
+2026-05-31 05:53:35,403 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:35,596 INFO [trolli.perf:39] [PERF] logs_view.render ms=1400.88 rows=50
+2026-05-31 05:53:35,901 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.70 rows=100000
+2026-05-31 05:53:35,919 INFO [trolli.perf:39] [PERF] sort_rows_async ms=16.84 rows=100000 col=Timestamp
+2026-05-31 05:53:35,919 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:36,428 INFO [trolli.perf:39] [PERF] logs_view.render ms=1025.32 rows=50
+2026-05-31 05:53:36,732 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.83 rows=100000
+2026-05-31 05:53:36,756 INFO [trolli.perf:39] [PERF] sort_rows_async ms=23.34 rows=100000 col=Timestamp
+2026-05-31 05:53:36,756 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:37,216 INFO [trolli.perf:39] [PERF] logs_view.render ms=1296.78 rows=50
+2026-05-31 05:53:37,544 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.83 rows=100000
+2026-05-31 05:53:37,558 INFO [trolli.perf:39] [PERF] sort_rows_async ms=13.96 rows=100000 col=Timestamp
+2026-05-31 05:53:37,558 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:37,715 INFO [trolli.perf:39] [PERF] logs_view.render ms=958.40 rows=50
+2026-05-31 05:53:38,029 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.97 rows=100000
+2026-05-31 05:53:38,048 INFO [trolli.perf:39] [PERF] sort_rows_async ms=18.19 rows=100000 col=Timestamp
+2026-05-31 05:53:38,048 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:38,877 INFO [trolli.perf:39] [PERF] logs_view.render ms=1318.69 rows=50
+2026-05-31 05:53:38,896 INFO [trolli.perf:39] [PERF] logs_view.render ms=848.09 rows=50
+2026-05-31 05:53:39,191 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.37 rows=100000
+2026-05-31 05:53:39,195 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.73 rows=100000
+2026-05-31 05:53:39,219 INFO [trolli.perf:39] [PERF] sort_rows_async ms=26.66 rows=100000 col=Timestamp
+2026-05-31 05:53:39,219 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:39,223 INFO [trolli.perf:39] [PERF] sort_rows_async ms=28.12 rows=100000 col=Timestamp
+2026-05-31 05:53:39,223 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:40,256 INFO [trolli.perf:39] [PERF] logs_view.render ms=1032.43 rows=50
+2026-05-31 05:53:40,560 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.69 rows=100000
+2026-05-31 05:53:40,575 INFO [trolli.perf:39] [PERF] logs_view.render ms=1355.92 rows=50
+2026-05-31 05:53:40,582 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.65 rows=100000 col=Timestamp
+2026-05-31 05:53:40,582 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:40,891 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.35 rows=100000
+2026-05-31 05:53:40,915 INFO [trolli.perf:39] [PERF] sort_rows_async ms=23.64 rows=100000 col=Timestamp
+2026-05-31 05:53:40,916 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:41,699 INFO [trolli.perf:39] [PERF] logs_view.render ms=1116.03 rows=50
+2026-05-31 05:53:41,991 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.87 rows=100000
+2026-05-31 05:53:42,028 INFO [trolli.perf:39] [PERF] sort_rows_async ms=35.85 rows=100000 col=Timestamp
+2026-05-31 05:53:42,028 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:42,335 INFO [trolli.perf:39] [PERF] logs_view.render ms=1419.03 rows=50
+2026-05-31 05:53:42,655 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.06 rows=100000
+2026-05-31 05:53:42,677 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.26 rows=100000 col=Timestamp
+2026-05-31 05:53:42,677 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:42,954 INFO [trolli.perf:39] [PERF] logs_view.render ms=925.73 rows=50
+2026-05-31 05:53:43,257 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.73 rows=100000
+2026-05-31 05:53:43,293 INFO [trolli.perf:39] [PERF] sort_rows_async ms=35.57 rows=100000 col=Timestamp
+2026-05-31 05:53:43,294 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:44,495 INFO [trolli.perf:39] [PERF] logs_view.render ms=1817.28 rows=50
+2026-05-31 05:53:44,505 INFO [trolli.perf:39] [PERF] logs_view.render ms=1210.72 rows=50
+2026-05-31 05:53:44,794 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.59 rows=100000
+2026-05-31 05:53:44,812 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.82 rows=100000
+2026-05-31 05:53:44,822 INFO [trolli.perf:39] [PERF] sort_rows_async ms=27.56 rows=100000 col=Timestamp
+2026-05-31 05:53:44,823 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:44,838 INFO [trolli.perf:39] [PERF] sort_rows_async ms=25.53 rows=100000 col=Timestamp
+2026-05-31 05:53:44,838 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:46,053 INFO [trolli.perf:39] [PERF] logs_view.render ms=1214.12 rows=50
+2026-05-31 05:53:46,357 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.14 rows=100000
+2026-05-31 05:53:46,393 INFO [trolli.perf:39] [PERF] sort_rows_async ms=35.88 rows=100000 col=Timestamp
+2026-05-31 05:53:46,393 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:46,432 INFO [trolli.perf:39] [PERF] logs_view.render ms=1609.23 rows=50
+2026-05-31 05:53:46,756 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.87 rows=100000
+2026-05-31 05:53:46,778 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.01 rows=100000 col=Timestamp
+2026-05-31 05:53:46,778 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:47,461 INFO [trolli.perf:39] [PERF] logs_view.render ms=1067.29 rows=50
+2026-05-31 05:53:47,775 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.77 rows=100000
+2026-05-31 05:53:47,807 INFO [trolli.perf:39] [PERF] sort_rows_async ms=31.16 rows=100000 col=Timestamp
+2026-05-31 05:53:47,807 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:48,389 INFO [trolli.perf:39] [PERF] logs_view.render ms=1610.67 rows=50
+2026-05-31 05:53:48,691 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.88 rows=100000
+2026-05-31 05:53:48,717 INFO [trolli.perf:39] [PERF] sort_rows_async ms=25.16 rows=100000 col=Timestamp
+2026-05-31 05:53:48,718 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:48,830 INFO [trolli.perf:39] [PERF] logs_view.render ms=1023.41 rows=50
+2026-05-31 05:53:49,124 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.44 rows=100000
+2026-05-31 05:53:49,150 INFO [trolli.perf:39] [PERF] sort_rows_async ms=25.72 rows=100000 col=Timestamp
+2026-05-31 05:53:49,150 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:50,258 INFO [trolli.perf:39] [PERF] logs_view.render ms=1107.72 rows=50
+2026-05-31 05:53:50,292 INFO [trolli.perf:39] [PERF] logs_view.render ms=1574.02 rows=50
+2026-05-31 05:53:50,551 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.94 rows=100000
+2026-05-31 05:53:50,575 INFO [trolli.perf:39] [PERF] sort_rows_async ms=23.68 rows=100000 col=Timestamp
+2026-05-31 05:53:50,576 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:50,597 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.05 rows=100000
+2026-05-31 05:53:50,623 INFO [trolli.perf:39] [PERF] sort_rows_async ms=24.62 rows=100000 col=Timestamp
+2026-05-31 05:53:50,624 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:51,569 INFO [trolli.perf:39] [PERF] logs_view.render ms=993.45 rows=50
+2026-05-31 05:53:51,868 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.85 rows=100000
+2026-05-31 05:53:51,891 INFO [trolli.perf:39] [PERF] sort_rows_async ms=22.59 rows=100000 col=Timestamp
+2026-05-31 05:53:51,891 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:51,996 INFO [trolli.perf:39] [PERF] logs_view.render ms=1371.89 rows=50
+2026-05-31 05:53:52,308 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.85 rows=100000
+2026-05-31 05:53:52,331 INFO [trolli.perf:39] [PERF] sort_rows_async ms=22.28 rows=100000 col=Timestamp
+2026-05-31 05:53:52,331 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:53,048 INFO [trolli.perf:39] [PERF] logs_view.render ms=1156.83 rows=50
+2026-05-31 05:53:53,339 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.67 rows=100000
+2026-05-31 05:53:53,362 INFO [trolli.perf:39] [PERF] sort_rows_async ms=22.83 rows=100000 col=Timestamp
+2026-05-31 05:53:53,363 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:54,055 INFO [trolli.perf:39] [PERF] logs_view.render ms=1723.66 rows=50
+2026-05-31 05:53:54,393 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.00 rows=100000
+2026-05-31 05:53:54,422 INFO [trolli.perf:39] [PERF] sort_rows_async ms=29.05 rows=100000 col=Timestamp
+2026-05-31 05:53:54,423 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:54,460 INFO [trolli.perf:39] [PERF] logs_view.render ms=1096.54 rows=50
+2026-05-31 05:53:54,774 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.21 rows=100000
+2026-05-31 05:53:54,793 INFO [trolli.perf:39] [PERF] sort_rows_async ms=18.30 rows=100000 col=Timestamp
+2026-05-31 05:53:54,793 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:55,959 INFO [trolli.perf:39] [PERF] logs_view.render ms=1165.62 rows=50
+2026-05-31 05:53:56,000 INFO [trolli.perf:39] [PERF] logs_view.render ms=1577.03 rows=50
+2026-05-31 05:53:56,251 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.58 rows=100000
+2026-05-31 05:53:56,268 INFO [trolli.perf:39] [PERF] sort_rows_async ms=16.48 rows=100000 col=Timestamp
+2026-05-31 05:53:56,268 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:56,306 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.87 rows=100000
+2026-05-31 05:53:56,327 INFO [trolli.perf:39] [PERF] sort_rows_async ms=20.24 rows=100000 col=Timestamp
+2026-05-31 05:53:56,327 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:57,276 INFO [trolli.perf:39] [PERF] logs_view.render ms=1007.13 rows=50
+2026-05-31 05:53:57,571 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.80 rows=100000
+2026-05-31 05:53:57,589 INFO [trolli.perf:39] [PERF] sort_rows_async ms=17.35 rows=100000 col=Timestamp
+2026-05-31 05:53:57,589 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:57,663 INFO [trolli.perf:39] [PERF] logs_view.render ms=1334.92 rows=50
+2026-05-31 05:53:57,982 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.73 rows=100000
+2026-05-31 05:53:58,007 INFO [trolli.perf:39] [PERF] sort_rows_async ms=24.42 rows=100000 col=Timestamp
+2026-05-31 05:53:58,007 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:58,604 INFO [trolli.perf:39] [PERF] logs_view.render ms=1014.22 rows=50
+2026-05-31 05:53:58,902 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.90 rows=100000
+2026-05-31 05:53:58,931 INFO [trolli.perf:39] [PERF] sort_rows_async ms=28.88 rows=100000 col=Timestamp
+2026-05-31 05:53:58,931 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:53:59,454 INFO [trolli.perf:39] [PERF] logs_view.render ms=1446.32 rows=50
+2026-05-31 05:53:59,796 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.30 rows=100000
+2026-05-31 05:53:59,824 INFO [trolli.perf:39] [PERF] sort_rows_async ms=27.72 rows=100000 col=Timestamp
+2026-05-31 05:53:59,824 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:00,077 INFO [trolli.perf:39] [PERF] logs_view.render ms=1145.54 rows=50
+2026-05-31 05:54:00,383 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.37 rows=100000
+2026-05-31 05:54:00,408 INFO [trolli.perf:39] [PERF] sort_rows_async ms=24.33 rows=100000 col=Timestamp
+2026-05-31 05:54:00,408 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:01,633 INFO [trolli.perf:39] [PERF] logs_view.render ms=1808.59 rows=50
+2026-05-31 05:54:01,711 INFO [trolli.perf:39] [PERF] logs_view.render ms=1302.36 rows=50
+2026-05-31 05:54:01,939 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.37 rows=100000
+2026-05-31 05:54:01,956 INFO [trolli.perf:39] [PERF] sort_rows_async ms=16.21 rows=100000 col=Timestamp
+2026-05-31 05:54:01,957 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:02,019 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.91 rows=100000
+2026-05-31 05:54:02,050 INFO [trolli.perf:39] [PERF] sort_rows_async ms=30.37 rows=100000 col=Timestamp
+2026-05-31 05:54:02,050 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:03,303 INFO [trolli.perf:39] [PERF] logs_view.render ms=1253.22 rows=50
+2026-05-31 05:54:03,521 INFO [trolli.perf:39] [PERF] logs_view.render ms=1563.67 rows=50
+2026-05-31 05:54:03,607 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.12 rows=100000
+2026-05-31 05:54:03,640 INFO [trolli.perf:39] [PERF] sort_rows_async ms=32.47 rows=100000 col=Timestamp
+2026-05-31 05:54:03,640 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:03,822 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.40 rows=100000
+2026-05-31 05:54:03,853 INFO [trolli.perf:39] [PERF] sort_rows_async ms=30.36 rows=100000 col=Timestamp
+2026-05-31 05:54:03,853 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:04,974 INFO [trolli.perf:39] [PERF] logs_view.render ms=1333.17 rows=50
+2026-05-31 05:54:05,284 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.38 rows=100000
+2026-05-31 05:54:05,318 INFO [trolli.perf:39] [PERF] sort_rows_async ms=34.16 rows=100000 col=Timestamp
+2026-05-31 05:54:05,318 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:05,816 INFO [trolli.perf:39] [PERF] logs_view.render ms=1962.33 rows=50
+2026-05-31 05:54:06,121 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.92 rows=100000
+2026-05-31 05:54:06,150 INFO [trolli.perf:39] [PERF] sort_rows_async ms=28.96 rows=100000 col=Timestamp
+2026-05-31 05:54:06,151 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:06,706 INFO [trolli.perf:39] [PERF] logs_view.render ms=1387.21 rows=50
+2026-05-31 05:54:07,023 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.19 rows=100000
+2026-05-31 05:54:07,042 INFO [trolli.perf:39] [PERF] sort_rows_async ms=18.77 rows=100000 col=Timestamp
+2026-05-31 05:54:07,042 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:07,677 INFO [trolli.perf:39] [PERF] logs_view.render ms=1525.61 rows=50
+2026-05-31 05:54:07,972 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.87 rows=100000
+2026-05-31 05:54:07,997 INFO [trolli.perf:39] [PERF] sort_rows_async ms=23.99 rows=100000 col=Timestamp
+2026-05-31 05:54:07,997 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:08,247 INFO [trolli.perf:39] [PERF] logs_view.render ms=1204.12 rows=50
+2026-05-31 05:54:08,556 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.98 rows=100000
+2026-05-31 05:54:08,585 INFO [trolli.perf:39] [PERF] sort_rows_async ms=28.85 rows=100000 col=Timestamp
+2026-05-31 05:54:08,585 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:09,924 INFO [trolli.perf:39] [PERF] logs_view.render ms=1926.41 rows=50
+2026-05-31 05:54:09,944 INFO [trolli.perf:39] [PERF] logs_view.render ms=1358.97 rows=50
+2026-05-31 05:54:10,248 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.44 rows=100000
+2026-05-31 05:54:10,268 INFO [trolli.perf:39] [PERF] sort_rows_async ms=20.28 rows=100000 col=Timestamp
+2026-05-31 05:54:10,269 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:10,276 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.42 rows=100000
+2026-05-31 05:54:10,304 INFO [trolli.perf:39] [PERF] sort_rows_async ms=27.29 rows=100000 col=Timestamp
+2026-05-31 05:54:10,304 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:11,527 INFO [trolli.perf:39] [PERF] logs_view.render ms=1222.74 rows=50
+2026-05-31 05:54:11,833 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.21 rows=100000
+2026-05-31 05:54:11,848 INFO [trolli.perf:39] [PERF] logs_view.render ms=1578.34 rows=50
+2026-05-31 05:54:11,865 INFO [trolli.perf:39] [PERF] sort_rows_async ms=31.27 rows=100000 col=Timestamp
+2026-05-31 05:54:11,865 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:12,184 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.93 rows=100000
+2026-05-31 05:54:12,206 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.40 rows=100000 col=Timestamp
+2026-05-31 05:54:12,206 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:13,422 INFO [trolli.perf:39] [PERF] logs_view.render ms=1556.15 rows=50
+2026-05-31 05:54:13,735 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.13 rows=100000
+2026-05-31 05:54:13,752 INFO [trolli.perf:39] [PERF] sort_rows_async ms=17.16 rows=100000 col=Timestamp
+2026-05-31 05:54:13,752 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:14,107 INFO [trolli.perf:39] [PERF] logs_view.render ms=1899.99 rows=50
+2026-05-31 05:54:14,437 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.90 rows=100000
+2026-05-31 05:54:14,465 INFO [trolli.perf:39] [PERF] sort_rows_async ms=27.56 rows=100000 col=Timestamp
+2026-05-31 05:54:14,465 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:15,185 INFO [trolli.perf:39] [PERF] logs_view.render ms=1432.73 rows=50
+2026-05-31 05:54:15,519 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.17 rows=100000
+2026-05-31 05:54:15,545 INFO [trolli.perf:39] [PERF] sort_rows_async ms=26.27 rows=100000 col=Timestamp
+2026-05-31 05:54:15,546 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:16,448 INFO [trolli.perf:39] [PERF] logs_view.render ms=1981.98 rows=50
+2026-05-31 05:54:16,750 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.55 rows=100000
+2026-05-31 05:54:16,786 INFO [trolli.perf:39] [PERF] sort_rows_async ms=35.42 rows=100000 col=Timestamp
+2026-05-31 05:54:16,786 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:16,841 INFO [trolli.perf:39] [PERF] logs_view.render ms=1294.65 rows=50
+2026-05-31 05:54:17,152 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.26 rows=100000
+2026-05-31 05:54:17,178 INFO [trolli.perf:39] [PERF] sort_rows_async ms=25.78 rows=100000 col=Timestamp
+2026-05-31 05:54:17,178 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:18,554 INFO [trolli.perf:39] [PERF] logs_view.render ms=1375.11 rows=50
+2026-05-31 05:54:18,638 INFO [trolli.perf:39] [PERF] logs_view.render ms=1851.07 rows=50
+2026-05-31 05:54:18,864 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.92 rows=100000
+2026-05-31 05:54:18,889 INFO [trolli.perf:39] [PERF] sort_rows_async ms=24.25 rows=100000 col=Timestamp
+2026-05-31 05:54:18,889 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:18,953 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.20 rows=100000
+2026-05-31 05:54:18,970 INFO [trolli.perf:39] [PERF] sort_rows_async ms=16.34 rows=100000 col=Timestamp
+2026-05-31 05:54:18,971 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:20,178 INFO [trolli.perf:39] [PERF] logs_view.render ms=1288.79 rows=50
+2026-05-31 05:54:20,465 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.75 rows=100000
+2026-05-31 05:54:20,481 INFO [trolli.perf:39] [PERF] sort_rows_async ms=16.11 rows=100000 col=Timestamp
+2026-05-31 05:54:20,482 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:20,635 INFO [trolli.perf:39] [PERF] logs_view.render ms=1664.04 rows=50
+2026-05-31 05:54:20,954 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.35 rows=100000
+2026-05-31 05:54:20,981 INFO [trolli.perf:39] [PERF] sort_rows_async ms=25.65 rows=100000 col=Timestamp
+2026-05-31 05:54:20,982 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:21,793 INFO [trolli.perf:39] [PERF] logs_view.render ms=1311.07 rows=50
+2026-05-31 05:54:22,113 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.07 rows=100000
+2026-05-31 05:54:22,129 INFO [trolli.perf:39] [PERF] sort_rows_async ms=16.21 rows=100000 col=Timestamp
+2026-05-31 05:54:22,130 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:22,284 INFO [trolli.perf:39] [PERF] logs_view.render ms=1302.41 rows=50
+2026-05-31 05:54:22,604 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.37 rows=100000
+2026-05-31 05:54:22,628 INFO [trolli.perf:39] [PERF] sort_rows_async ms=23.57 rows=100000 col=Timestamp
+2026-05-31 05:54:22,630 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:23,366 INFO [trolli.perf:39] [PERF] logs_view.render ms=1236.39 rows=50
+2026-05-31 05:54:23,696 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.28 rows=100000
+2026-05-31 05:54:23,733 INFO [trolli.perf:39] [PERF] sort_rows_async ms=36.74 rows=100000 col=Timestamp
+2026-05-31 05:54:23,733 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:24,327 INFO [trolli.perf:39] [PERF] logs_view.render ms=1696.73 rows=50
+2026-05-31 05:54:24,628 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.32 rows=100000
+2026-05-31 05:54:24,646 INFO [trolli.perf:39] [PERF] sort_rows_async ms=16.63 rows=100000 col=Timestamp
+2026-05-31 05:54:24,646 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:24,721 INFO [trolli.perf:39] [PERF] logs_view.render ms=987.19 rows=50
+2026-05-31 05:54:25,013 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.07 rows=100000
+2026-05-31 05:54:25,045 INFO [trolli.perf:39] [PERF] sort_rows_async ms=32.06 rows=100000 col=Timestamp
+2026-05-31 05:54:25,045 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:26,177 INFO [trolli.perf:39] [PERF] logs_view.render ms=1131.72 rows=50
+2026-05-31 05:54:26,188 INFO [trolli.perf:39] [PERF] logs_view.render ms=1540.58 rows=50
+2026-05-31 05:54:26,478 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.79 rows=100000
+2026-05-31 05:54:26,480 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.21 rows=100000
+2026-05-31 05:54:26,508 INFO [trolli.perf:39] [PERF] sort_rows_async ms=29.49 rows=100000 col=Timestamp
+2026-05-31 05:54:26,508 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:26,510 INFO [trolli.perf:39] [PERF] sort_rows_async ms=28.97 rows=100000 col=Timestamp
+2026-05-31 05:54:26,511 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:27,608 INFO [trolli.perf:39] [PERF] logs_view.render ms=1099.67 rows=50
+2026-05-31 05:54:27,911 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.08 rows=100000
+2026-05-31 05:54:27,939 INFO [trolli.perf:39] [PERF] sort_rows_async ms=27.54 rows=100000 col=Timestamp
+2026-05-31 05:54:27,940 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:28,207 INFO [trolli.perf:39] [PERF] logs_view.render ms=1695.31 rows=50
+2026-05-31 05:54:28,510 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.83 rows=100000
+2026-05-31 05:54:28,531 INFO [trolli.perf:39] [PERF] sort_rows_async ms=20.10 rows=100000 col=Timestamp
+2026-05-31 05:54:28,532 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:28,960 INFO [trolli.perf:39] [PERF] logs_view.render ms=1020.08 rows=50
+2026-05-31 05:54:29,263 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.95 rows=100000
+2026-05-31 05:54:29,291 INFO [trolli.perf:39] [PERF] sort_rows_async ms=27.96 rows=100000 col=Timestamp
+2026-05-31 05:54:29,292 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:30,168 INFO [trolli.perf:39] [PERF] logs_view.render ms=1635.99 rows=50
+2026-05-31 05:54:30,355 INFO [trolli.perf:39] [PERF] logs_view.render ms=1063.53 rows=50
+2026-05-31 05:54:30,492 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.79 rows=100000
+2026-05-31 05:54:30,523 INFO [trolli.perf:39] [PERF] sort_rows_async ms=30.37 rows=100000 col=Timestamp
+2026-05-31 05:54:30,523 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:30,663 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.95 rows=100000
+2026-05-31 05:54:30,707 INFO [trolli.perf:39] [PERF] sort_rows_async ms=43.06 rows=100000 col=Timestamp
+2026-05-31 05:54:30,707 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:31,899 INFO [trolli.perf:39] [PERF] logs_view.render ms=1191.98 rows=50
+2026-05-31 05:54:32,080 INFO [trolli.perf:39] [PERF] logs_view.render ms=1556.43 rows=50
+2026-05-31 05:54:32,230 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.87 rows=100000
+2026-05-31 05:54:32,247 INFO [trolli.perf:39] [PERF] sort_rows_async ms=16.91 rows=100000 col=Timestamp
+2026-05-31 05:54:32,247 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:32,375 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.46 rows=100000
+2026-05-31 05:54:32,391 INFO [trolli.perf:39] [PERF] sort_rows_async ms=16.15 rows=100000 col=Timestamp
+2026-05-31 05:54:32,392 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:33,508 INFO [trolli.perf:39] [PERF] logs_view.render ms=1260.92 rows=50
+2026-05-31 05:54:33,817 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.03 rows=100000
+2026-05-31 05:54:33,840 INFO [trolli.perf:39] [PERF] sort_rows_async ms=22.76 rows=100000 col=Timestamp
+2026-05-31 05:54:33,840 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:33,970 INFO [trolli.perf:39] [PERF] logs_view.render ms=1578.35 rows=50
+2026-05-31 05:54:34,263 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.62 rows=100000
+2026-05-31 05:54:34,289 INFO [trolli.perf:39] [PERF] sort_rows_async ms=24.81 rows=100000 col=Timestamp
+2026-05-31 05:54:34,289 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:35,060 INFO [trolli.perf:39] [PERF] logs_view.render ms=1220.19 rows=50
+2026-05-31 05:54:35,375 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.71 rows=100000
+2026-05-31 05:54:35,396 INFO [trolli.perf:39] [PERF] sort_rows_async ms=20.82 rows=100000 col=Timestamp
+2026-05-31 05:54:35,396 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:36,090 INFO [trolli.perf:39] [PERF] logs_view.render ms=1800.17 rows=50
+2026-05-31 05:54:36,391 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.86 rows=100000
+2026-05-31 05:54:36,410 INFO [trolli.perf:39] [PERF] sort_rows_async ms=17.89 rows=100000 col=Timestamp
+2026-05-31 05:54:36,410 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:36,647 INFO [trolli.perf:39] [PERF] logs_view.render ms=1250.85 rows=50
+2026-05-31 05:54:36,960 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.66 rows=100000
+2026-05-31 05:54:36,986 INFO [trolli.perf:39] [PERF] sort_rows_async ms=25.42 rows=100000 col=Timestamp
+2026-05-31 05:54:36,986 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:37,923 INFO [trolli.perf:39] [PERF] logs_view.render ms=1512.63 rows=50
+2026-05-31 05:54:38,038 INFO [trolli.perf:39] [PERF] logs_view.render ms=1051.91 rows=50
+2026-05-31 05:54:38,255 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.96 rows=100000
+2026-05-31 05:54:38,283 INFO [trolli.perf:39] [PERF] sort_rows_async ms=26.86 rows=100000 col=Timestamp
+2026-05-31 05:54:38,284 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:38,346 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.51 rows=100000
+2026-05-31 05:54:38,379 INFO [trolli.perf:39] [PERF] sort_rows_async ms=32.26 rows=100000 col=Timestamp
+2026-05-31 05:54:38,379 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:39,629 INFO [trolli.perf:39] [PERF] logs_view.render ms=1249.74 rows=50
+2026-05-31 05:54:39,913 INFO [trolli.perf:39] [PERF] logs_view.render ms=1628.11 rows=50
+2026-05-31 05:54:39,942 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.78 rows=100000
+2026-05-31 05:54:39,982 INFO [trolli.perf:39] [PERF] sort_rows_async ms=40.29 rows=100000 col=Timestamp
+2026-05-31 05:54:39,983 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:40,219 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.25 rows=100000
+2026-05-31 05:54:40,245 INFO [trolli.perf:39] [PERF] sort_rows_async ms=26.08 rows=100000 col=Timestamp
+2026-05-31 05:54:40,246 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:41,391 INFO [trolli.perf:39] [PERF] logs_view.render ms=1408.11 rows=50
+2026-05-31 05:54:41,688 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.97 rows=100000
+2026-05-31 05:54:41,711 INFO [trolli.perf:39] [PERF] sort_rows_async ms=22.69 rows=100000 col=Timestamp
+2026-05-31 05:54:41,712 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:41,857 INFO [trolli.perf:39] [PERF] logs_view.render ms=1610.63 rows=50
+2026-05-31 05:54:42,166 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.82 rows=100000
+2026-05-31 05:54:42,191 INFO [trolli.perf:39] [PERF] sort_rows_async ms=23.80 rows=100000 col=Timestamp
+2026-05-31 05:54:42,192 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:43,499 INFO [trolli.perf:39] [PERF] logs_view.render ms=1787.28 rows=50
+2026-05-31 05:54:43,846 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.85 rows=100000
+2026-05-31 05:54:43,888 INFO [trolli.perf:39] [PERF] sort_rows_async ms=41.73 rows=100000 col=Timestamp
+2026-05-31 05:54:43,888 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:45,261 INFO [trolli.perf:39] [PERF] logs_view.render ms=3069.45 rows=50
+2026-05-31 05:54:45,605 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.82 rows=100000
+2026-05-31 05:54:45,645 INFO [trolli.perf:39] [PERF] sort_rows_async ms=38.83 rows=100000 col=Timestamp
+2026-05-31 05:54:45,645 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:46,772 INFO [trolli.perf:39] [PERF] logs_view.render ms=2883.95 rows=50
+2026-05-31 05:54:47,144 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.84 rows=100000
+2026-05-31 05:54:47,205 INFO [trolli.perf:39] [PERF] sort_rows_async ms=60.34 rows=100000 col=Timestamp
+2026-05-31 05:54:47,205 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:49,256 INFO [trolli.perf:39] [PERF] logs_view.render ms=3610.18 rows=50
+2026-05-31 05:54:49,545 INFO [trolli.perf:39] [PERF] filter_rows_async ms=22.94 rows=100000
+2026-05-31 05:54:49,559 INFO [trolli.perf:39] [PERF] sort_rows_async ms=10.89 rows=16812 col=Timestamp
+2026-05-31 05:54:49,559 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=16812 page_size=50
+2026-05-31 05:54:49,951 INFO [trolli.perf:39] [PERF] logs_view.render ms=2745.59 rows=50
+2026-05-31 05:54:50,312 INFO [trolli.perf:39] [PERF] filter_rows_async ms=3.41 rows=100000
+2026-05-31 05:54:50,374 INFO [trolli.perf:39] [PERF] sort_rows_async ms=62.17 rows=100000 col=Timestamp
+2026-05-31 05:54:50,375 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:53,159 INFO [trolli.perf:39] [PERF] logs_view.render ms=3484.64 rows=50
+2026-05-31 05:54:53,191 INFO [trolli.perf:39] [PERF] logs_view.render ms=2815.62 rows=50
+2026-05-31 05:54:53,551 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.64 rows=100000
+2026-05-31 05:54:53,595 INFO [trolli.perf:39] [PERF] sort_rows_async ms=44.13 rows=100000 col=Timestamp
+2026-05-31 05:54:53,596 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:56,278 INFO [trolli.perf:39] [PERF] logs_view.render ms=2681.69 rows=50
+2026-05-31 05:54:56,669 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.47 rows=100000
+2026-05-31 05:54:56,720 INFO [trolli.perf:39] [PERF] sort_rows_async ms=50.01 rows=100000 col=Timestamp
+2026-05-31 05:54:56,720 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:54:57,848 INFO [trolli.perf:39] [PERF] filter_rows_async ms=27.06 rows=100000
+2026-05-31 05:54:57,862 INFO [trolli.perf:39] [PERF] sort_rows_async ms=13.11 rows=16771 col=Timestamp
+2026-05-31 05:54:57,864 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=16771 page_size=50
+2026-05-31 05:54:59,573 INFO [trolli.perf:39] [PERF] logs_view.render ms=2852.18 rows=50
+2026-05-31 05:54:59,942 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.79 rows=100000
+2026-05-31 05:55:00,003 INFO [trolli.perf:39] [PERF] sort_rows_async ms=60.19 rows=100000 col=Timestamp
+2026-05-31 05:55:00,003 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:01,429 INFO [trolli.perf:39] [PERF] logs_view.render ms=3469.44 rows=50
+2026-05-31 05:55:02,763 INFO [trolli.perf:39] [PERF] logs_view.render ms=2759.45 rows=50
+2026-05-31 05:55:03,128 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.32 rows=100000
+2026-05-31 05:55:03,174 INFO [trolli.perf:39] [PERF] sort_rows_async ms=45.56 rows=100000 col=Timestamp
+2026-05-31 05:55:03,174 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:05,819 INFO [trolli.perf:39] [PERF] logs_view.render ms=2644.60 rows=50
+2026-05-31 05:55:06,228 INFO [trolli.perf:39] [PERF] filter_rows_async ms=3.08 rows=100000
+2026-05-31 05:55:06,282 INFO [trolli.perf:39] [PERF] sort_rows_async ms=53.57 rows=100000 col=Timestamp
+2026-05-31 05:55:06,282 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:08,264 INFO [trolli.perf:39] [PERF] filter_rows_async ms=3.40 rows=100000
+2026-05-31 05:55:08,307 INFO [trolli.perf:39] [PERF] sort_rows_async ms=42.19 rows=100000 col=Timestamp
+2026-05-31 05:55:08,308 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:08,938 INFO [trolli.perf:39] [PERF] logs_view.render ms=2655.15 rows=50
+2026-05-31 05:55:09,336 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.50 rows=100000
+2026-05-31 05:55:09,396 INFO [trolli.perf:39] [PERF] sort_rows_async ms=59.65 rows=100000 col=Timestamp
+2026-05-31 05:55:09,396 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:10,808 INFO [trolli.perf:39] [PERF] logs_view.render ms=1411.13 rows=50
+2026-05-31 05:55:11,009 INFO [trolli.perf:39] [PERF] logs_view.render ms=2597.10 rows=50
+2026-05-31 05:55:11,117 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.90 rows=100000
+2026-05-31 05:55:11,140 INFO [trolli.perf:39] [PERF] sort_rows_async ms=22.43 rows=100000 col=Timestamp
+2026-05-31 05:55:11,140 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:11,167 INFO [trolli.perf:39] [PERF] filter_rows_async ms=50.58 rows=100000
+2026-05-31 05:55:11,192 INFO [trolli.perf:39] [PERF] sort_rows_async ms=25.23 rows=100000 col=Timestamp
+2026-05-31 05:55:11,193 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:12,328 INFO [trolli.perf:39] [PERF] logs_view.render ms=1187.13 rows=50
+2026-05-31 05:55:12,636 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.74 rows=100000
+2026-05-31 05:55:12,662 INFO [trolli.perf:39] [PERF] sort_rows_async ms=25.82 rows=100000 col=Timestamp
+2026-05-31 05:55:12,662 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:12,745 INFO [trolli.perf:39] [PERF] logs_view.render ms=1551.27 rows=50
+2026-05-31 05:55:13,048 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.29 rows=100000
+2026-05-31 05:55:13,080 INFO [trolli.perf:39] [PERF] sort_rows_async ms=31.25 rows=100000 col=Timestamp
+2026-05-31 05:55:13,081 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:13,916 INFO [trolli.perf:39] [PERF] logs_view.render ms=1252.98 rows=50
+2026-05-31 05:55:14,211 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.96 rows=100000
+2026-05-31 05:55:14,235 INFO [trolli.perf:39] [PERF] sort_rows_async ms=23.42 rows=100000 col=Timestamp
+2026-05-31 05:55:14,235 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:14,410 INFO [trolli.perf:39] [PERF] logs_view.render ms=1329.07 rows=50
+2026-05-31 05:55:14,744 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.98 rows=100000
+2026-05-31 05:55:14,773 INFO [trolli.perf:39] [PERF] sort_rows_async ms=28.86 rows=100000 col=Timestamp
+2026-05-31 05:55:14,774 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:15,236 INFO [trolli.perf:39] [PERF] logs_view.render ms=1001.12 rows=50
+2026-05-31 05:55:15,546 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.33 rows=100000
+2026-05-31 05:55:15,580 INFO [trolli.perf:39] [PERF] sort_rows_async ms=33.98 rows=100000 col=Timestamp
+2026-05-31 05:55:15,580 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:16,234 INFO [trolli.perf:39] [PERF] logs_view.render ms=1460.41 rows=50
+2026-05-31 05:55:16,467 INFO [trolli.perf:39] [PERF] logs_view.render ms=886.82 rows=50
+2026-05-31 05:55:16,525 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.29 rows=100000
+2026-05-31 05:55:16,545 INFO [trolli.perf:39] [PERF] sort_rows_async ms=18.73 rows=100000 col=Timestamp
+2026-05-31 05:55:16,545 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:16,783 INFO [trolli.perf:39] [PERF] filter_rows_async ms=3.00 rows=100000
+2026-05-31 05:55:16,808 INFO [trolli.perf:39] [PERF] sort_rows_async ms=24.64 rows=100000 col=Timestamp
+2026-05-31 05:55:16,808 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:18,080 INFO [trolli.perf:39] [PERF] logs_view.render ms=1271.58 rows=50
+2026-05-31 05:55:18,137 INFO [trolli.perf:39] [PERF] logs_view.render ms=1591.26 rows=50
+2026-05-31 05:55:18,379 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.55 rows=100000
+2026-05-31 05:55:18,415 INFO [trolli.perf:39] [PERF] sort_rows_async ms=35.07 rows=100000 col=Timestamp
+2026-05-31 05:55:18,415 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:18,461 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.05 rows=100000
+2026-05-31 05:55:18,492 INFO [trolli.perf:39] [PERF] sort_rows_async ms=30.62 rows=100000 col=Timestamp
+2026-05-31 05:55:18,492 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:19,664 INFO [trolli.perf:39] [PERF] logs_view.render ms=1248.31 rows=50
+2026-05-31 05:55:19,927 INFO [trolli.perf:39] [PERF] logs_view.render ms=1433.69 rows=50
+2026-05-31 05:55:19,978 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.16 rows=100000
+2026-05-31 05:55:20,002 INFO [trolli.perf:39] [PERF] sort_rows_async ms=23.67 rows=100000 col=Timestamp
+2026-05-31 05:55:20,002 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:20,216 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.45 rows=100000
+2026-05-31 05:55:20,239 INFO [trolli.perf:39] [PERF] sort_rows_async ms=22.49 rows=100000 col=Timestamp
+2026-05-31 05:55:20,240 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:21,059 INFO [trolli.perf:39] [PERF] logs_view.render ms=1057.02 rows=50
+2026-05-31 05:55:21,360 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.75 rows=100000
+2026-05-31 05:55:21,395 INFO [trolli.perf:39] [PERF] sort_rows_async ms=35.13 rows=100000 col=Timestamp
+2026-05-31 05:55:21,395 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:21,724 INFO [trolli.perf:39] [PERF] logs_view.render ms=1483.26 rows=50
+2026-05-31 05:55:22,046 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.90 rows=100000
+2026-05-31 05:55:22,080 INFO [trolli.perf:39] [PERF] sort_rows_async ms=33.11 rows=100000 col=Timestamp
+2026-05-31 05:55:22,081 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:22,422 INFO [trolli.perf:39] [PERF] logs_view.render ms=1026.30 rows=50
+2026-05-31 05:55:22,709 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.18 rows=100000
+2026-05-31 05:55:22,729 INFO [trolli.perf:39] [PERF] sort_rows_async ms=19.52 rows=100000 col=Timestamp
+2026-05-31 05:55:22,729 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:23,493 INFO [trolli.perf:39] [PERF] logs_view.render ms=1411.26 rows=50
+2026-05-31 05:55:23,728 INFO [trolli.perf:39] [PERF] logs_view.render ms=998.62 rows=50
+2026-05-31 05:55:23,832 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.34 rows=100000
+2026-05-31 05:55:23,853 INFO [trolli.perf:39] [PERF] sort_rows_async ms=20.47 rows=100000 col=Timestamp
+2026-05-31 05:55:23,853 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:24,043 INFO [trolli.perf:39] [PERF] filter_rows_async ms=1.79 rows=100000
+2026-05-31 05:55:24,068 INFO [trolli.perf:39] [PERF] sort_rows_async ms=24.98 rows=100000 col=Timestamp
+2026-05-31 05:55:24,068 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:25,194 INFO [trolli.perf:39] [PERF] logs_view.render ms=1124.99 rows=50
+2026-05-31 05:55:25,493 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.00 rows=100000
+2026-05-31 05:55:25,515 INFO [trolli.perf:39] [PERF] sort_rows_async ms=21.61 rows=100000 col=Timestamp
+2026-05-31 05:55:25,516 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:25,547 INFO [trolli.perf:39] [PERF] logs_view.render ms=1693.08 rows=50
+2026-05-31 05:55:25,879 INFO [trolli.perf:39] [PERF] filter_rows_async ms=3.07 rows=100000
+2026-05-31 05:55:25,912 INFO [trolli.perf:39] [PERF] sort_rows_async ms=31.67 rows=100000 col=Timestamp
+2026-05-31 05:55:25,912 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:27,996 INFO [trolli.perf:39] [PERF] logs_view.render ms=2480.66 rows=50
+2026-05-31 05:55:28,359 INFO [trolli.perf:39] [PERF] filter_rows_async ms=3.84 rows=100000
+2026-05-31 05:55:28,434 INFO [trolli.perf:39] [PERF] sort_rows_async ms=73.40 rows=100000 col=Timestamp
+2026-05-31 05:55:28,434 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.02 total=100000 page_size=50
+2026-05-31 05:55:29,557 INFO [trolli.perf:39] [PERF] logs_view.render ms=3644.00 rows=50
+2026-05-31 05:55:29,912 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2.63 rows=100000
+2026-05-31 05:55:29,951 INFO [trolli.perf:39] [PERF] sort_rows_async ms=38.25 rows=100000 col=Timestamp
+2026-05-31 05:55:29,952 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:31,111 INFO [trolli.perf:39] [PERF] logs_view.render ms=2676.11 rows=50
+2026-05-31 05:55:33,372 INFO [trolli.perf:39] [PERF] logs_view.render ms=3420.20 rows=50
+2026-05-31 05:55:43,847 INFO [trolli.perf:39] [PERF] filter_rows_async ms=2399.74 rows=100000
+2026-05-31 05:55:43,910 INFO [trolli.perf:39] [PERF] sort_rows_async ms=62.32 rows=100000 col=Timestamp
+2026-05-31 05:55:43,945 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=100000 page_size=50
+2026-05-31 05:55:47,447 INFO [trolli.perf:39] [PERF] logs_view.render ms=3491.93 rows=50
+2026-05-31 05:55:47,536 INFO [trolli.perf:39] [PERF] filter_rows_async ms=3668.29 rows=100000
+2026-05-31 05:55:47,558 INFO [trolli.perf:39] [PERF] sort_rows_async ms=19.30 rows=24734 col=Timestamp
+2026-05-31 05:55:47,558 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=24734 page_size=50
+2026-05-31 05:55:51,063 INFO [trolli.perf:39] [PERF] logs_view.render ms=3504.37 rows=50
+2026-05-31 05:55:51,310 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=24734 page_size=50
+2026-05-31 05:55:55,024 INFO [trolli.perf:39] [PERF] logs_view.render ms=3556.62 rows=50
+2026-05-31 05:56:13,646 INFO [trolli.perf:39] [PERF] filter_rows_async ms=61.16 rows=100000
+2026-05-31 05:56:13,682 INFO [trolli.perf:39] [PERF] sort_rows_async ms=35.34 rows=24897 col=Timestamp
+2026-05-31 05:56:13,685 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.02 total=24897 page_size=50
+2026-05-31 05:56:17,366 INFO [trolli.perf:39] [PERF] logs_view.render ms=3643.12 rows=50
+2026-05-31 05:56:19,985 INFO [trolli.perf:39] [PERF] filter_rows_async ms=57.45 rows=100000
+2026-05-31 05:56:19,999 INFO [trolli.perf:39] [PERF] sort_rows_async ms=12.73 rows=24876 col=Timestamp
+2026-05-31 05:56:20,000 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.02 total=24876 page_size=50
+2026-05-31 05:56:23,517 INFO [trolli.perf:39] [PERF] logs_view.render ms=3440.74 rows=50
+2026-05-31 05:56:25,824 INFO [trolli.perf:39] [PERF] sort_skip_reverse_async ms=1.53 rows=24876
+2026-05-31 05:56:25,825 INFO [trolli.perf:39] [PERF] paginate_rows ms=0.01 total=24876 page_size=50
+2026-05-31 05:56:29,116 INFO [trolli.perf:39] [PERF] logs_view.render ms=3134.96 rows=50

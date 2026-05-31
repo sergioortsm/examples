@@ -3,7 +3,7 @@
     Test 1 - Append en vivo emulando SharePoint OnPrem (FileShare.ReadWrite).
 
 .DESCRIPTION
-    Escribe N lÌneas, una por intervalo, sobre el fichero .log m·s reciente
+    Escribe N l√≠neas, una por intervalo, sobre el fichero .log m√°s reciente
     de la carpeta. Mantiene el handle abierto (no rota).
 
     Esperado en la UI de Trolli (watcher ON):
@@ -34,7 +34,7 @@ if (-not $LogFile) {
     $LogFile = Resolve-WatcherLogFile -Folder $Folder -Pattern $Pattern
 }
 
-Write-Host "[append] Escribiendo $Lines lÌneas (cada ${IntervalSeconds}s) en:" -ForegroundColor Cyan
+Write-Host "[append] Escribiendo $Lines l√≠neas (cada ${IntervalSeconds}s) en:" -ForegroundColor Cyan
 Write-Host "         $LogFile" -ForegroundColor Cyan
 
 $appender = Open-WatcherAppender -Path $LogFile

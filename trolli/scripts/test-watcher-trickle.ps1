@@ -1,24 +1,24 @@
 <#
 .SYNOPSIS
-    Test 3/4 helper - Trickle continuo de líneas para ejercitar auto-pausa,
+    Test 3/4 helper - Trickle continuo de lÃ­neas para ejercitar auto-pausa,
     chip "N nuevas" y ciclos Stop/Start del watcher.
 
 .DESCRIPTION
-    Escribe 1 línea cada N segundos durante DurationSeconds (default 5 min).
-    Pensado para correr en paralelo mientras se interactúa con la UI:
+    Escribe 1 lÃ­nea cada N segundos durante DurationSeconds (default 5 min).
+    Pensado para correr en paralelo mientras se interactÃºa con la UI:
 
     Test 3 - Auto-pausa con filtros:
       1. Arrancar este script.
       2. Con watcher ON, escribir algo en "Buscar" o cambiar "Nivel".
       3. Verificar que pending_new_count sube y aparece chip "N nuevas - clic para ver".
       4. Las nuevas filas NO se inyectan en la tabla mientras hay filtro.
-      5. Clic en el chip -> resetea filtros/página, vuelca buffer, chip desaparece.
+      5. Clic en el chip -> resetea filtros/pÃ¡gina, vuelca buffer, chip desaparece.
 
     Test 4 - Stop/Start cycle (mientras el trickle sigue corriendo):
-      1. Botón rojo Stop: watch_status_text vacío, is_watching=False.
-      2. Cambiar carpeta o patrón.
-      3. Botón verde Play: arranca limpio, abre fichero más reciente desde EOF.
-         (Las líneas del trickle escritas mientras estuvo OFF NO deben aparecer:
+      1. BotÃ³n rojo Stop: watch_status_text vacÃ­o, is_watching=False.
+      2. Cambiar carpeta o patrÃ³n.
+      3. BotÃ³n verde Play: arranca limpio, abre fichero mÃ¡s reciente desde EOF.
+         (Las lÃ­neas del trickle escritas mientras estuvo OFF NO deben aparecer:
          se arranca con start_from_end=True.)
       4. Cerrar app, reabrir -> watch_folder y watch_pattern recordados.
 
@@ -64,4 +64,4 @@ finally {
     & $appender.Dispose $appender
 }
 
-Write-Host "[trickle] Listo: $i líneas escritas." -ForegroundColor Green
+Write-Host "[trickle] Listo: $i lÃ­neas escritas." -ForegroundColor Green
