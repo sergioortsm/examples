@@ -1,6 +1,6 @@
 {
   "search_text": "",
-  "level_filter": "All",
+  "level_filter": "Monitorable",
   "sort_by": "Timestamp",
   "sort_desc": false,
   "page_size": 50,

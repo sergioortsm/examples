@@ -31,6 +31,26 @@ pip install -r requirements.txt
 flet run src/main.py
 ```
 
+## Estructura del código fuente
+
+`TrelloApp` usa **herencia múltiple por mixins** para mantener cada área funcional en su propio fichero. El orden de resolución (MRO) es:
+
+```
+TrelloApp(
+    LogsWatcherMixin,      # _logs_watcher_mixin.py  — live tailing, ciclo de vida del watcher
+    LogsExportMixin,       # _logs_export_mixin.py   — exportación a CSV
+    LogsDetailMixin,       # _logs_detail_mixin.py   — diálogo de detalle + portapapeles
+    LogsEventsMixin,       # _logs_events_mixin.py   — handlers de búsqueda, sort, paginación, columnas
+    LogsLoadMixin,         # _logs_load_mixin.py     — carga de archivo, refresco paginado
+    LogsCacheMixin,        # _logs_cache_mixin.py    — firmas e invalidación de caché
+    LogsPreferencesMixin,  # _logs_prefs_mixin.py    — preferencias y almacenamiento persistente
+    AppLayout,             # app_layout.py           — layout base con sidebar y área principal
+)
+```
+
+`src/main.py` retiene únicamente `__init__`, helpers de UI, login/boards/routing y `main()` (~530 líneas).
+Los ficheros de servicio (`log_service.py`, `log_buffer.py`, `log_watcher.py`, `logs_view.py`) permanecen sin cambios.
+
 ## Notificaciones de aplicación
 
 La app incluye un componente reutilizable basado en `ft.Banner` para mostrar mensajes de estado en la parte superior de la pantalla, justo debajo del `AppBar`.
