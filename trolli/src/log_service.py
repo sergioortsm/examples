@@ -9,6 +9,29 @@ import re
 MAX_LOG_SIZE_BYTES = 350 * 1024 * 1024
 _ULS_TIMESTAMP_RE = re.compile(r"^\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2}\.\d{2,3}$")
 
+# Columnas que nunca tienen filtro de valor por diseño (demasiados valores únicos
+# o columna de texto libre). Se usa tanto en la vista como en la migración de prefs.
+DEFAULT_NO_FILTER_COLUMNS: frozenset[str] = frozenset({"Timestamp", "TimeSpan", "Message"})
+
+
+def col_spec_name(spec: "str | dict") -> str:
+    """Extrae el nombre de un ColumnSpec (acepta str o dict para backward compat)."""
+    if isinstance(spec, dict):
+        return str(spec.get("name", ""))
+    return str(spec)
+
+
+def col_names(specs: list) -> list[str]:
+    """Devuelve lista de nombres a partir de una lista de ColumnSpecs o strings."""
+    return [col_spec_name(s) for s in specs]
+
+
+def make_col_spec(name: str, filter_on: bool | None = None) -> dict:
+    """Construye un ColumnSpec. filter_on=None deduce el valor según DEFAULT_NO_FILTER_COLUMNS."""
+    if filter_on is None:
+        filter_on = name not in DEFAULT_NO_FILTER_COLUMNS
+    return {"name": name, "filter": filter_on}
+
 # Presets de filtro temporal (key → label para la UI)
 TIMESTAMP_PRESETS: dict[str, str] = {
     "all":       "Todas",
@@ -254,7 +277,7 @@ def apply_filters_sort_paginate(
     rows: list[dict[str, str]],
     columns: list[str],
     search_text: str,
-    level_filter: str,
+    level_filters: list[str],
     sort_by: str | None,
     sort_desc: bool,
     page: int,
@@ -264,7 +287,7 @@ def apply_filters_sort_paginate(
         rows,
         columns,
         search_text,
-        level_filter,
+        level_filters,
         sort_by,
         sort_desc,
     )
@@ -275,12 +298,12 @@ def filter_sort_rows(
     rows: list[dict[str, str]],
     columns: list[str],
     search_text: str,
-    level_filter: str,
+    level_filters: list[str],
     sort_by: str | None,
     sort_desc: bool,
     column_filters: dict[str, str] | None = None,
 ) -> list[dict[str, str]]:
-    filtered = filter_rows(rows, columns, search_text, level_filter, column_filters)
+    filtered = filter_rows(rows, columns, search_text, level_filters, column_filters)
     return sort_rows(filtered, columns, sort_by, sort_desc)
 
 
@@ -288,13 +311,13 @@ def filter_rows(
     rows: list[dict[str, str]],
     columns: list[str],
     search_text: str,
-    level_filter: str,
+    level_filters: list[str],
     column_filters: dict[str, str] | None = None,
     timestamp_preset: str = "all",
     timestamp_ref: tuple | None = None,
 ) -> list[dict[str, str]]:
     search = (search_text or "").strip().lower()
-    level_filter_normalized = (level_filter or "All").strip()
+    level_filter_set: set[str] = set(level_filters) if level_filters else set()
 
     filtered = rows
 
@@ -347,10 +370,10 @@ def filter_rows(
                 )
             ]
 
-    if level_filter_normalized and level_filter_normalized != "All":
+    if level_filter_set:
         level_column = next((c for c in columns if c.lower() == "level"), None)
         if level_column:
-            filtered = [r for r in filtered if r.get(level_column, "") == level_filter_normalized]
+            filtered = [r for r in filtered if r.get(level_column, "") in level_filter_set]
 
     if search:
         # Usar _search_key pre-computado evita hacer lowercase × columna en cada fila.

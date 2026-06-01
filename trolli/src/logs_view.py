@@ -5,7 +5,7 @@ import flet as ft
 import flet_datatable2 as fdt
 from dialog import DialogSizer, build_column_selector_dialog
 from app_logging import perf_timer
-from log_service import TIMESTAMP_PRESETS
+from log_service import TIMESTAMP_PRESETS, col_spec_name, col_names
 from ui_tokens import APP_BORDER, APP_SURFACE, APP_SURFACE_ALT, APP_SURFACE_MUTED, APP_TEXT_MUTED, APP_TEXT_PRIMARY, surface_shadow, DROPDOWN_MENU_HEIGHT, DROPDOWN_MENU_WIDTH
 
 
@@ -48,6 +48,7 @@ class LogsView(ft.Column):
     }
 
     _LEVEL_COLUMN_CANDIDATES: tuple[str, ...] = ("Level", "Nivel", "LogLevel", "Severity")
+    _NO_FILTER_COLUMNS: tuple[str, ...] = ("Timestamp", "TimeSpan", "Message")
     COLUMN_FILTER_DROPDOWN_THRESHOLD: int = 20
 
     def _row_level(self, row: dict[str, str]) -> str:
@@ -123,7 +124,7 @@ class LogsView(ft.Column):
         self._filter_rebuild_pending_state: dict | None = None
 
         self.title_text = ft.Text(
-            "SharePoint ULS Logs",
+            "",
             size=28,
             weight=ft.FontWeight.W_600,
             color=APP_TEXT_PRIMARY,
@@ -231,6 +232,7 @@ class LogsView(ft.Column):
             options=[ft.dropdown.Option("50"), ft.dropdown.Option("100"), ft.dropdown.Option("250")],
             menu_height=DROPDOWN_MENU_HEIGHT,
             menu_width=DROPDOWN_MENU_WIDTH,
+            margin=ft.Margin(left=0, top=8, right=0, bottom=0),
             on_select=lambda e: self.app.on_logs_page_size_change(e.control.value),
         )
 
@@ -276,6 +278,15 @@ class LogsView(ft.Column):
             tooltip="Columnas visibles",
             mouse_cursor=ft.MouseCursor.CLICK,
             on_click=lambda e: self.app.on_logs_toggle_column_selector(),
+        )
+        # Botón icono de filtro por Level (visible solo cuando la columna Level está activa)
+        self._level_filter_dialog: ft.AlertDialog | None = None
+        self.level_filter_button = ft.IconButton(
+            icon=ft.Icons.FILTER_ALT,
+            tooltip="Filtrar por nivel",
+            visible=False,
+            mouse_cursor=ft.MouseCursor.CLICK,
+            on_click=lambda e: self._on_level_filter_btn_click(e),
         )
         self.open_log_button = ft.IconButton(
             icon=ft.Icons.FOLDER_OPEN,
@@ -336,35 +347,30 @@ class LogsView(ft.Column):
             shadow=surface_shadow(),
         )
 
-        # Fila de filtros + boton columnas alineado a la derecha
+        # Botón de filtro de periodo (popup de presets de tiempo)
+        self._timestamp_preset_key: str = "all"
+        self.timestamp_preset_button = ft.PopupMenuButton(
+            icon=ft.Icons.SCHEDULE,
+            tooltip="Periodo",
+            items=[
+                ft.PopupMenuItem(
+                    content=ft.Text(v),
+                    on_click=lambda e, k=k: self.app.on_logs_timestamp_preset_change(k),
+                )
+                for k, v in TIMESTAMP_PRESETS.items()
+            ],
+        )
+
+        # Fila de busqueda y controles de watcher (ocupa todo el ancho)
         self.filters_row = ft.Row(
             [
-                ft.Row(
-                    [
-                        self.search_field,
-                        self.watch_toggle_button,
-                        self.watch_pause_button,
-                        self.watch_status_text,
-                    ],
-                    spacing=8,
-                    expand=True,
-                    vertical_alignment=ft.CrossAxisAlignment.CENTER,
-                ),
-                ft.Row(
-                    [
-                        ft.Container(
-                            content=self.toggle_column_selector_button,
-                            alignment=ft.Alignment(1, 0),
-                            padding=ft.padding.Padding(left=12),
-                        ),
-                    ],
-                    spacing=0,
-                    vertical_alignment=ft.CrossAxisAlignment.CENTER,
-                ),
+                self.search_field,
+                self.watch_toggle_button,
+                self.watch_pause_button,
+                self.watch_status_text,
             ],
-            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+            spacing=8,
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
-            wrap=False,
         )
 
         self.column_filters_row = ft.Row(
@@ -374,47 +380,16 @@ class LogsView(ft.Column):
             run_spacing=4,
             visible=False,
         )
-        self.timestamp_preset_dropdown = ft.Dropdown(
-            label="Periodo",
-            width=140,
-            options=[
-                ft.dropdown.Option(key=k, text=v)
-                for k, v in TIMESTAMP_PRESETS.items()
-            ],
-            value="all",
-            menu_height=DROPDOWN_MENU_HEIGHT,
-            menu_width=DROPDOWN_MENU_WIDTH,
-            on_select=lambda e: self.app.on_logs_timestamp_preset_change(
-                e.control.value or "all"
-            ),
-            on_focus=self._on_filter_focus,
-            on_blur=self._on_filter_blur,
-        )
 
         self.controls = [
             ft.Row(
                 [
-                    ft.Column([self.title_text, self.metadata_row], spacing=2, expand=True),
-                    ft.Container(
-                        content=ft.Row(
-                            [
-                                self.open_log_button,
-                                self.export_csv_button,
-                            ],
-                            spacing=4,
-                            tight=True,
-                        ),
-                        padding=ft.padding.Padding(top=6, right=8),
-                    ),
-                ],
-                alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
-                vertical_alignment=ft.CrossAxisAlignment.CENTER,
-            ),
-            self.filters_row,
-            self.column_filters_row,
-            ft.Row(
-                [
-                    ft.Row([self.pending_new_button], expand=True),
+                    self.timestamp_preset_button,
+                    self.level_filter_button,
+                    self.toggle_column_selector_button,
+                    self.open_log_button,
+                    self.export_csv_button,
+                    ft.Row([], expand=True),
                     self.page_size_dropdown,
                     ft.Row(
                         [self.prev_page_button, self.page_info_text, self.next_page_button],
@@ -422,6 +397,13 @@ class LogsView(ft.Column):
                         tight=True,
                     ),
                 ],
+                spacing=4,
+                vertical_alignment=ft.CrossAxisAlignment.CENTER,
+            ),
+            self.filters_row,
+            self.column_filters_row,
+            ft.Row(
+                [self.pending_new_button],
                 vertical_alignment=ft.CrossAxisAlignment.CENTER,
             ),
             self.table_surface,
@@ -446,15 +428,27 @@ class LogsView(ft.Column):
             pass
 
     def _render_impl(self, state: dict):
-        self.file_text.value = state.get("file_label", "Sin archivo cargado")
+        file_label = state.get("file_label", "")
+        self.file_text.value = file_label
 
         error = state.get("error", "")
         if error:
             self.status_text.value = ""
+            _info = file_label or "Sin archivo cargado"
         else:
             total = state.get("filtered_total", 0)
             self.status_text.value = f"Registros filtrados: {total}"
             self.status_text.color = ft.Colors.GREEN_800
+            if file_label:
+                import os as _os
+                _info = f"Archivo: {_os.path.basename(file_label)}  ·  Registros filtrados: {total}"
+            else:
+                _info = "Sin archivo cargado"
+
+        try:
+            self.app.appbar_info_text.value = _info
+        except AttributeError:
+            pass
 
         self.search_field.value = state.get("search_text", "")
 
@@ -505,6 +499,8 @@ class LogsView(ft.Column):
                 self.watch_pause_button.icon = ft.Icons.PAUSE
                 self.watch_pause_button.icon_color = ft.Colors.AMBER_700
                 self.watch_pause_button.tooltip = "Pausar empuje en vivo (el watcher sigue activo)"
+        self.open_log_button.disabled = is_watching
+        self.export_csv_button.disabled = is_watching and not live_paused
         watch_error = state.get("watch_error", "")
         if watch_error:
             self.watch_status_text.value = watch_error
@@ -540,23 +536,52 @@ class LogsView(ft.Column):
 
     def _render_column_selector(self, state: dict):
         columns = state.get("columns", [])
-        pending_list = list(state.get("visible_columns_pending", state.get("visible_columns", [])))
-        pending_columns = set(pending_list)
-        applied_columns = list(state.get("visible_columns", []))
+        pending_specs: list[dict] = list(state.get("visible_columns_pending", state.get("visible_columns", [])))
+        # Normalizar: si hay strings antiguos los tratamos como specs con filter=True
+        pending_specs = [s if isinstance(s, dict) else {"name": s, "filter": True} for s in pending_specs]
+        pending_names = set(col_spec_name(s) for s in pending_specs)
+        # Mapa name -> spec para consultas rápidas
+        pending_map: dict[str, dict] = {col_spec_name(s): s for s in pending_specs}
+        applied_columns = col_names(list(state.get("visible_columns", [])))
         self.column_selector_visible = bool(state.get("column_selector_expanded", False))
         is_applying = bool(state.get("is_applying_columns", False))
         is_busy = bool(state.get("is_loading", False)) or is_applying
 
+        def _filter_icon(col_name: str) -> str:
+            spec = pending_map.get(col_name)
+            if spec is None:
+                return ft.Icons.FILTER_ALT_OFF
+            return ft.Icons.FILTER_ALT if spec.get("filter", True) else ft.Icons.FILTER_ALT_OFF
+
+        def _filter_color(col_name: str):
+            spec = pending_map.get(col_name)
+            if spec and spec.get("filter", True):
+                return ft.Colors.PRIMARY
+            return ft.Colors.BLUE_GREY_300
+
         self.column_selector.controls = [
             ft.Container(
-                width=150,
+                width=178,
                 padding=ft.padding.Padding(left=0, top=0, right=0, bottom=0),
                 content=ft.Row(
                     [
+                        ft.IconButton(
+                            icon=_filter_icon(column),
+                            icon_size=16,
+                            icon_color=_filter_color(column),
+                            tooltip="Mostrar en barra de filtros" if (pending_map.get(column) or {}).get("filter", True) is False else "Ocultar de barra de filtros",
+                            disabled=is_busy or column not in pending_names,
+                            style=ft.ButtonStyle(
+                                padding=ft.padding.Padding(left=2, top=0, right=2, bottom=0),
+                            ),
+                            on_click=lambda e, col=column: self.app.on_logs_toggle_column_filter(
+                                col, not (pending_map.get(col) or {}).get("filter", True)
+                            ),
+                        ),
                         ft.GestureDetector(
                             mouse_cursor=ft.MouseCursor.CLICK,
                             content=ft.Checkbox(
-                                value=column in pending_columns,
+                                value=column in pending_names,
                                 disabled=is_busy,
                                 scale=0.9,
                                 on_change=lambda e, col=column: self.app.on_logs_toggle_column(col, bool(e.control.value)),
@@ -583,7 +608,7 @@ class LogsView(ft.Column):
 
         has_columns = len(columns) > 0
         self.toggle_column_selector_button.disabled = (not has_columns) or is_busy
-        self.apply_columns_button.disabled = (not has_columns) or is_busy or (pending_list == applied_columns)
+        self.apply_columns_button.disabled = (not has_columns) or is_busy or (pending_specs == [s if isinstance(s, dict) else {"name": s, "filter": True} for s in state.get("visible_columns", [])])
         self._apply_btn_ring.visible = is_applying
         self._apply_btn_icon.visible = not is_applying
         self.apply_columns_status.visible = False
@@ -604,6 +629,22 @@ class LogsView(ft.Column):
             if getattr(self, "page", None) is not None:
                 self.update()
 
+    def _on_level_filter_btn_click(self, e) -> None:
+        """Abre el diálogo de selección múltiple de niveles."""
+        if self._level_filter_dialog is not None:
+            self.app._open_control(self._level_filter_dialog)
+            _p = getattr(self, "page", None)
+            if _p is not None:
+                _p.update()
+
+    def _on_level_filter_dlg_close(self) -> None:
+        """Cierra el diálogo de filtro de nivel."""
+        if self._level_filter_dialog is not None:
+            self.app._close_control(self._level_filter_dialog)
+        _p = getattr(self, "page", None)
+        if _p is not None:
+            _p.update()
+
     def _build_column_filters_row(self, state: dict) -> list[ft.Control]:
         """Construye la lista de controles de filtro para cada columna visible.
 
@@ -612,13 +653,80 @@ class LogsView(ft.Column):
         drain del watcher. Esto evita que el control se cierre/pierda el foco mientras
         el usuario interactua con el en modo Vivo.
         """
-        visible_columns = state.get("visible_columns", [])
+        visible_specs = state.get("visible_columns", [])
         col_values = state.get("col_values", {}) or {}
         column_filters = state.get("column_filters", {}) or {}
-        controls: list[ft.Control] = [self.timestamp_preset_dropdown]
-        visible_set = set(visible_columns)
-        for col in visible_columns:
+        controls: list[ft.Control] = []
+        visible_set = set(col_spec_name(s) for s in visible_specs)
+        for spec in visible_specs:
+            col = col_spec_name(spec)
+            filter_on = spec.get("filter", True) if isinstance(spec, dict) else True
             vals = col_values.get(col, []) if isinstance(col_values, dict) else []
+
+            # --- Columnas sin filtro por diseño: Timestamp, TimeSpan, Message ---
+            if col in self._NO_FILTER_COLUMNS:
+                continue
+
+            # --- Columnas marcadas explícitamente como sin filtro por el usuario ---
+            if not filter_on:
+                # Columna marcada sin filtro: ocultar botón de Level si aplica y saltar.
+                if col in self._LEVEL_COLUMN_CANDIDATES:
+                    self.level_filter_button.visible = False
+                continue
+
+            # --- Caso especial: columna Level → botón icono en filters_row + diálogo ---
+            # Level NUNCA cae al bloque general (evita Dropdown vacío al arrancar watcher
+            # cuando col_values aún está vacío pero visible_columns ya tiene Level).
+            if col in self._LEVEL_COLUMN_CANDIDATES:
+                if isinstance(vals, list) and vals:
+                    level_filters_set = set(state.get("level_filters") or [])
+                    current_vals_key = frozenset(vals)
+                    existing = self._filter_controls_by_col.get(col)
+                    if (existing is not None
+                            and existing[0] == "cb_level_dd"
+                            and len(existing) >= 3
+                            and existing[2] == current_vals_key):
+                        # ── REUTILIZAR: actualizar checkboxes in-place ──
+                        for cb in existing[1]:
+                            if hasattr(cb, "data"):
+                                cb.value = cb.data in level_filters_set
+                    else:
+                        # ── CREAR: cerrar diálogo anterior si existía ──
+                        if self._level_filter_dialog is not None:
+                            self.app._close_control(self._level_filter_dialog)
+                            _p = getattr(self, "page", None)
+                            if _p is not None and self._level_filter_dialog in _p.overlay:
+                                _p.overlay.remove(self._level_filter_dialog)
+                        checkboxes = [
+                            ft.Checkbox(
+                                label=v,
+                                value=v in level_filters_set,
+                                data=v,
+                                on_change=lambda e, lv=v: self.app.on_logs_level_toggle(lv, bool(e.control.value)),
+                            )
+                            for v in vals
+                        ]
+                        self._level_filter_dialog = ft.AlertDialog(
+                            title=ft.Row(
+                                [ft.Icon(ft.Icons.FILTER_LIST, size=18), ft.Text("Filtrar por nivel")],
+                                spacing=8,
+                                vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                            ),
+                            content=ft.Column(controls=checkboxes, tight=True, spacing=4),
+                            actions=[ft.TextButton("Cerrar", on_click=lambda e: self._on_level_filter_dlg_close())],
+                            actions_alignment=ft.MainAxisAlignment.END,
+                            on_dismiss=lambda e: None,
+                        )
+                        self._filter_controls_by_col[col] = ("cb_level_dd", checkboxes, current_vals_key)
+                    # Actualizar visibilidad y color del botón según filter_on
+                    self.level_filter_button.visible = filter_on
+                    self.level_filter_button.icon_color = ft.Colors.PRIMARY if level_filters_set else None
+                else:
+                    # Level en visible_columns pero sin valores aún (watcher arrancando)
+                    self.level_filter_button.visible = False
+                continue  # Level NUNCA cae al bloque general de columnas
+
+            # --- Resto de columnas: Dropdown o TextField ---
             current_val = column_filters.get(col, "") or ""
             required_type = "dd" if isinstance(vals, list) and len(vals) <= self.COLUMN_FILTER_DROPDOWN_THRESHOLD else "tf"
             existing = self._filter_controls_by_col.get(col)
@@ -666,7 +774,23 @@ class LogsView(ft.Column):
         # Limpiar referencias a columnas que ya no son visibles
         stale = [c for c in self._filter_controls_by_col if c not in visible_set]
         for c in stale:
+            entry = self._filter_controls_by_col[c]
+            if entry[0] == "cb_level_dd":
+                if self._level_filter_dialog is not None:
+                    self.app._close_control(self._level_filter_dialog)
+                    _p = getattr(self, "page", None)
+                    if _p is not None and self._level_filter_dialog in _p.overlay:
+                        _p.overlay.remove(self._level_filter_dialog)
+                    self._level_filter_dialog = None
+                self.level_filter_button.visible = False
             del self._filter_controls_by_col[c]
+        # Si ningún spec de Level tiene filter=True, ocultar el botón
+        has_active_level_filter = any(
+            col_spec_name(s) in self._LEVEL_COLUMN_CANDIDATES and (s.get("filter", True) if isinstance(s, dict) else True)
+            for s in visible_specs
+        )
+        if not has_active_level_filter:
+            self.level_filter_button.visible = False
         return controls
 
     def _on_filter_focus(self, e) -> None:
@@ -691,9 +815,11 @@ class LogsView(ft.Column):
             return
         visible_columns = state.get("visible_columns", [])
         has_columns = bool(state.get("columns", []))
-        self.timestamp_preset_dropdown.value = state.get("timestamp_preset", "all") or "all"
+        _preset = state.get("timestamp_preset", "all") or "all"
+        self._timestamp_preset_key = _preset
+        self.timestamp_preset_button.icon_color = ft.Colors.PRIMARY if _preset != "all" else None
         self.column_filters_row.controls = self._build_column_filters_row(state)
-        self.column_filters_row.visible = has_columns
+        self.column_filters_row.visible = bool(self.column_filters_row.controls)
 
     def refresh_column_filters(self, state: dict) -> None:
         """Reconstruye controles de filtros por columna y refresca la UI."""
@@ -982,7 +1108,8 @@ class LogsView(ft.Column):
         self._pool_active_n = 0
 
     def _render_table(self, state: dict):
-        visible_columns = state.get("visible_columns", [])
+        visible_specs = state.get("visible_columns", [])
+        visible_columns = col_names(visible_specs)
         page_rows = state.get("page_rows", [])
 
         if not visible_columns:

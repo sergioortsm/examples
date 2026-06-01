@@ -10,6 +10,8 @@ import json
 import logging
 import os
 
+from log_service import DEFAULT_NO_FILTER_COLUMNS, col_spec_name, make_col_spec
+
 logger = logging.getLogger("trolli")
 
 
@@ -80,7 +82,7 @@ class LogsPreferencesMixin:
     def _default_logs_preferences(self) -> dict[str, object]:
         return {
             "search_text": "",
-            "level_filter": "All",
+            "level_filters": [],
             "sort_by": None,
             "sort_desc": False,
             "page_size": 100,
@@ -140,9 +142,25 @@ class LogsPreferencesMixin:
 
         if not isinstance(self.logs_state.get("visible_columns"), list):
             self.logs_state["visible_columns"] = []
+        # Migración: convertir entradas str antiguas a ColumnSpec {name, filter}
+        migrated: list[dict] = []
+        for item in self.logs_state["visible_columns"]:
+            if isinstance(item, str):
+                migrated.append(make_col_spec(item))
+            elif isinstance(item, dict) and "name" in item:
+                migrated.append(item)
+            # entradas inválidas se descartan
+        self.logs_state["visible_columns"] = migrated
         if not isinstance(self.logs_state.get("column_widths"), dict):
             self.logs_state["column_widths"] = {}
-        self.logs_state["visible_columns_pending"] = list(self.logs_state.get("visible_columns", []))
+        # Migración: si venía como string "All" o "Error" del formato antiguo, convertir a lista
+        level_filters = self.logs_state.get("level_filters", [])
+        if isinstance(level_filters, str):
+            level_filters = [] if level_filters in ("", "All") else [level_filters]
+            self.logs_state["level_filters"] = level_filters
+        elif not isinstance(level_filters, list):
+            self.logs_state["level_filters"] = []
+        self.logs_state["visible_columns_pending"] = [dict(s) for s in self.logs_state.get("visible_columns", [])]
 
         normalized_widths: dict[str, int] = {}
         for key, value in dict(self.logs_state.get("column_widths", {})).items():
@@ -165,7 +183,7 @@ class LogsPreferencesMixin:
     def _persist_logs_preferences(self):
         prefs_to_persist: dict[str, object] = {
             "search_text": self.logs_state["search_text"],
-            "level_filter": self.logs_state["level_filter"],
+            "level_filters": self.logs_state.get("level_filters") or [],
             "sort_by": self.logs_state["sort_by"],
             "sort_desc": self.logs_state["sort_desc"],
             "page_size": self.logs_state["page_size"],
@@ -178,7 +196,7 @@ class LogsPreferencesMixin:
         self._write_prefs_file_atomic(prefs_to_persist)
 
         self._storage_set("logs_search_text", self.logs_state["search_text"])
-        self._storage_set("logs_level_filter", self.logs_state["level_filter"])
+        self._storage_set("logs_level_filters", self.logs_state.get("level_filters") or [])
         self._storage_set("logs_sort_by", self.logs_state["sort_by"] or "")
         self._storage_set("logs_sort_desc", self.logs_state["sort_desc"])
         self._storage_set("logs_page_size", self.logs_state["page_size"])

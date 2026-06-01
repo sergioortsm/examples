@@ -28,7 +28,7 @@ class LogsCacheMixin:
             self.logs_state.get("file_path", ""),
             tuple(self.logs_state.get("columns", [])),
             self.logs_state.get("search_text", ""),
-            self.logs_state.get("level_filter", "All"),
+            frozenset(self.logs_state.get("level_filters") or []),
             tuple(sorted(self.logs_state.get("column_filters", {}).items())),
             self.logs_state.get("timestamp_preset", "all"),
         )
@@ -42,11 +42,14 @@ class LogsCacheMixin:
     def _logs_prefs_signature(self) -> tuple[object, ...]:
         return (
             self.logs_state.get("search_text", ""),
-            self.logs_state.get("level_filter", "All"),
+            frozenset(self.logs_state.get("level_filters") or []),
             self.logs_state.get("sort_by", None),
             bool(self.logs_state.get("sort_desc", False)),
             int(self.logs_state.get("page_size", 100)),
-            tuple(self.logs_state.get("visible_columns", [])),
+            tuple(
+                frozenset(s.items()) if isinstance(s, dict) else s
+                for s in self.logs_state.get("visible_columns", [])
+            ),
             tuple(sorted(dict(self.logs_state.get("column_widths", {})).items())),
             self.logs_state.get("watch_folder", ""),
             self.logs_state.get("watch_pattern", ""),
@@ -74,7 +77,7 @@ class LogsCacheMixin:
                 self.logs_rows,
                 self.logs_state["columns"],
                 self.logs_state["search_text"],
-                self.logs_state["level_filter"],
+                self.logs_state.get("level_filters") or [],
                 self.logs_state.get("column_filters") or None,
                 timestamp_preset=preset,
                 timestamp_ref=timestamp_ref,
@@ -123,7 +126,7 @@ class LogsCacheMixin:
                     self.logs_rows,
                     self.logs_state["columns"],
                     self.logs_state["search_text"],
-                    self.logs_state["level_filter"],
+                    self.logs_state.get("level_filters") or [],
                     self.logs_state.get("column_filters") or None,
                 )
             self._logs_filter_cache_signature = filter_signature

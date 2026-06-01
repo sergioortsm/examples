@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 
 from app_logging import perf_timer
-from log_service import export_rows_to_csv, filter_sort_rows
+from log_service import export_rows_to_csv, filter_sort_rows, col_names
 
 logger = logging.getLogger("trolli")
 
@@ -27,7 +27,7 @@ class LogsExportMixin:
             self._page.update()
             return
 
-        visible_columns = list(self.logs_state.get("visible_columns", []))
+        visible_columns = col_names(list(self.logs_state.get("visible_columns", [])))
         if not visible_columns:
             self.show_error("No hay columnas visibles para exportar.")
             self._page.update()
@@ -57,7 +57,7 @@ class LogsExportMixin:
             self.logs_rows,
             self.logs_state["columns"],
             self.logs_state["search_text"],
-            self.logs_state["level_filter"],
+            self.logs_state.get("level_filters") or [],
             self.logs_state["sort_by"],
             self.logs_state["sort_desc"],
         )

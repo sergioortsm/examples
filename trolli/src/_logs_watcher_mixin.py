@@ -10,6 +10,7 @@ from pathlib import Path
 
 from log_buffer import LifoLogBuffer
 from log_watcher import LogWatcher
+from log_service import col_spec_name, make_col_spec
 
 logger = logging.getLogger("trolli")
 
@@ -72,7 +73,7 @@ class LogsWatcherMixin:
             return True
         if (self.logs_state.get("search_text") or "").strip():
             return False
-        if (self.logs_state.get("level_filter") or "All") != "All":
+        if self.logs_state.get("level_filters"):
             return False
         return True
 
@@ -93,6 +94,14 @@ class LogsWatcherMixin:
     def _watcher_on_status_threadsafe(self, status: dict):
         with self._watcher_pending_lock:
             self._watcher_pending_batches.append(("__status__", status))  # type: ignore[arg-type]
+        # Si el status incluye las columnas del header (watch_columns), las primamos
+        # en el buffer ahora mismo (thread-safe) para que snapshot() las devuelva
+        # incluso antes del primer lote de filas. Esto re-habilita el botón de
+        # columnas en cuanto el watcher detecta la cabecera del fichero.
+        if isinstance(status, dict):
+            cols = status.get("watch_columns")
+            if isinstance(cols, list) and cols:
+                self._log_buffer.set_columns(cols)
 
     def _watcher_on_file_changed_threadsafe(self, file_path: str):
         with self._watcher_pending_lock:
@@ -148,13 +157,16 @@ class LogsWatcherMixin:
                     self.logs_state["file_label"] = f"En vivo: {Path(file_changed).name}"
 
                 snap_rows, snap_columns, snap_levels, snap_col_values, buf_size, _total = self._log_buffer.snapshot()
+                columns_changed = False
                 if snap_columns and self.logs_state.get("columns") != snap_columns:
+                    columns_changed = True
                     self.logs_state["columns"] = snap_columns
-                    visible = [c for c in self.logs_state.get("visible_columns", []) if c in snap_columns]
+                    snap_col_set = set(snap_columns)
+                    visible = [s for s in self.logs_state.get("visible_columns", []) if col_spec_name(s) in snap_col_set]
                     if not visible:
-                        visible = list(snap_columns)
+                        visible = [make_col_spec(c) for c in snap_columns]
                     self.logs_state["visible_columns"] = visible
-                    self.logs_state["visible_columns_pending"] = list(visible)
+                    self.logs_state["visible_columns_pending"] = [dict(s) for s in visible]
                 self.logs_state["col_values"] = snap_col_values
                 self.logs_state["level_options"] = ["All"] + snap_col_values.get("Level", snap_levels)
                 self.logs_state["buffer_count"] = buf_size
@@ -185,10 +197,20 @@ class LogsWatcherMixin:
                     # Auto-pausa: refresco minimo (chip + status). Evita re-render
                     # de tabla/columnas en cada drain (cada 250ms) bajo super stress,
                     # lo cual saturaba el WebSocket y bloqueaba clicks de la UI.
-                    try:
-                        self.logs_view.refresh_pending_chip_and_status(self.logs_state)
-                    except RuntimeError:
-                        pass
+                    # Excepción: si las columnas cambiaron (primera recepción de datos),
+                    # refrescar selector y fila de filtros para habilitar el botón.
+                    if columns_changed:
+                        try:
+                            self.logs_view.refresh_column_selector(self.logs_state)
+                            self.logs_view.refresh_column_filters(self.logs_state)
+                        except RuntimeError:
+                            pass
+                        self._page.update()
+                    else:
+                        try:
+                            self.logs_view.refresh_pending_chip_and_status(self.logs_state)
+                        except RuntimeError:
+                            pass
         except asyncio.CancelledError:
             return
         except Exception:
@@ -279,11 +301,12 @@ class LogsWatcherMixin:
     ):
         if snap_columns:
             self.logs_state["columns"] = snap_columns
-            visible = [c for c in self.logs_state.get("visible_columns", []) if c in snap_columns]
+            snap_col_set = set(snap_columns)
+            visible = [s for s in self.logs_state.get("visible_columns", []) if col_spec_name(s) in snap_col_set]
             if not visible:
-                visible = list(snap_columns)
+                visible = [make_col_spec(c) for c in snap_columns]
             self.logs_state["visible_columns"] = visible
-            self.logs_state["visible_columns_pending"] = list(visible)
+            self.logs_state["visible_columns_pending"] = [dict(s) for s in visible]
         self.logs_state["col_values"] = snap_col_values
         self.logs_state["level_options"] = ["All"] + snap_col_values.get("Level", snap_levels)
         self.logs_state["buffer_count"] = buf_size

@@ -9,6 +9,7 @@ import logging
 import flet as ft
 
 from dialog import DialogSizer
+from log_service import col_names
 
 logger = logging.getLogger("trolli")
 
@@ -29,6 +30,8 @@ class LogsDetailMixin:
         self.logs_state["message_dialog_open"] = True
         self.logs_state["message_dialog_row"] = row
         self.logs_state["message_dialog_columns"] = visible_columns
+        # visible_columns puede ser list[ColumnSpec] o list[str]; normalizar
+        col_name_list = col_names(visible_columns)
 
         DialogSizer.fit_container(
             self._page,
@@ -48,7 +51,7 @@ class LogsDetailMixin:
 
         # Reconstruir el contenido dinámico: un bloque por cada columna visible.
         self.logs_message_dialog_content.controls.clear()
-        for col in visible_columns:
+        for col in col_name_list:
             value = str(row.get(col, ""))
             is_message = col.strip().lower() == "message"
             self.logs_message_dialog_content.controls.append(

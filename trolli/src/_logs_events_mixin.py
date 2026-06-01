@@ -5,6 +5,7 @@ y selector de columnas visibles.
 """
 import asyncio
 
+from log_service import col_spec_name, col_names, make_col_spec
 
 class LogsEventsMixin:
     # ------------------------------------------------------------------
@@ -30,6 +31,22 @@ class LogsEventsMixin:
         else:
             cf.pop(col, None)
         self.logs_state["column_filters"] = cf
+        self.logs_state["current_page"] = 1
+        self.logs_view.request_scroll_to_top()
+        self.refresh_logs_view()
+
+    def on_logs_level_toggle(self, level: str, checked: bool):
+        """Activa/desactiva un nivel del filtro multi-selección de Level."""
+        current: list[str] = list(self.logs_state.get("level_filters") or [])
+        if checked:
+            if level not in current:
+                current.append(level)
+        else:
+            try:
+                current.remove(level)
+            except ValueError:
+                pass
+        self.logs_state["level_filters"] = current
         self.logs_state["current_page"] = 1
         self.logs_view.request_scroll_to_top()
         self.refresh_logs_view()
@@ -90,16 +107,40 @@ class LogsEventsMixin:
     # ------------------------------------------------------------------
 
     def on_logs_toggle_column(self, column_name: str, is_visible: bool):
-        current = list(self.logs_state.get("visible_columns_pending", []))
-        if is_visible and column_name not in current:
-            current.append(column_name)
-        if not is_visible and column_name in current:
-            current.remove(column_name)
+        current: list[dict] = list(self.logs_state.get("visible_columns_pending", []))
+        if is_visible:
+            # Añadir solo si no existe ya; insertar en la posición correcta según el orden del fichero.
+            if not any(col_spec_name(s) == column_name for s in current):
+                all_columns = self.logs_state.get("columns", [])
+                col_pos = all_columns.index(column_name) if column_name in all_columns else len(all_columns)
+                insert_at = len(current)
+                for i, s in enumerate(current):
+                    name = col_spec_name(s)
+                    pos = all_columns.index(name) if name in all_columns else len(all_columns)
+                    if pos > col_pos:
+                        insert_at = i
+                        break
+                current.insert(insert_at, make_col_spec(column_name))
+        else:
+            current = [s for s in current if col_spec_name(s) != column_name]
 
         if not current and self.logs_state["columns"]:
-            current = [self.logs_state["columns"][0]]
+            current = [make_col_spec(self.logs_state["columns"][0])]
 
         self.logs_state["visible_columns_pending"] = current
+        try:
+            self.logs_view.refresh_column_selector(self.logs_state)
+        except RuntimeError:
+            pass
+
+    def on_logs_toggle_column_filter(self, column_name: str, filter_on: bool):
+        """Activa/desactiva la propiedad `filter` de una columna en pending."""
+        pending: list[dict] = list(self.logs_state.get("visible_columns_pending", []))
+        for spec in pending:
+            if col_spec_name(spec) == column_name:
+                spec["filter"] = filter_on
+                break
+        self.logs_state["visible_columns_pending"] = pending
         try:
             self.logs_view.refresh_column_selector(self.logs_state)
         except RuntimeError:
@@ -115,7 +156,7 @@ class LogsEventsMixin:
         next_state = not current
         self.logs_state["column_selector_expanded"] = next_state
         if next_state:
-            self.logs_state["visible_columns_pending"] = list(self.logs_state.get("visible_columns", []))
+            self.logs_state["visible_columns_pending"] = [dict(s) for s in self.logs_state.get("visible_columns", [])]
         try:
             self.logs_view.refresh_column_selector(self.logs_state)
         except RuntimeError:
@@ -128,9 +169,9 @@ class LogsEventsMixin:
         if bool(self.logs_state.get("is_applying_columns", False)):
             return
 
-        pending = [c for c in self.logs_state.get("visible_columns_pending", []) if c in columns]
+        pending = [s for s in self.logs_state.get("visible_columns_pending", []) if col_spec_name(s) in columns]
         if not pending:
-            pending = [columns[0]]
+            pending = [make_col_spec(columns[0])]
 
         self.logs_state["visible_columns_pending"] = pending
         self.logs_state["is_applying_columns"] = True
@@ -151,12 +192,12 @@ class LogsEventsMixin:
         await asyncio.sleep(0)
         self._apply_columns_sync(pending)
 
-    def _apply_columns_sync(self, pending: list[str]):
+    def _apply_columns_sync(self, pending: list):
         try:
             self.logs_state["visible_columns"] = list(pending)
             # Limpiar filtros de columnas que ya no son visibles.
             cf = dict(self.logs_state.get("column_filters", {}))
-            pending_set = set(pending)
+            pending_set = set(col_names(pending))
             cleaned_cf = {col: val for col, val in cf.items() if col in pending_set}
             filters_changed = cleaned_cf != cf
             self.logs_state["column_filters"] = cleaned_cf

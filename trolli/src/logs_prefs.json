@@ -1,13 +1,24 @@
 {
   "search_text": "",
-  "level_filter": "All",
+  "level_filters": [
+    "Medium"
+  ],
   "sort_by": "Timestamp",
   "sort_desc": true,
   "page_size": 100,
   "visible_columns": [
-    "Timestamp",
-    "Level",
-    "Message"
+    {
+      "name": "Timestamp",
+      "filter": true
+    },
+    {
+      "name": "Level",
+      "filter": true
+    },
+    {
+      "name": "Message",
+      "filter": true
+    }
   ],
   "column_widths": {
     "Timestamp": 220,
@@ -18,5 +29,5 @@
   },
   "watch_folder": "C:\\Temp\\LOGS",
   "watch_pattern": ".+\\.log$",
-  "timestamp_preset": "all"
+  "timestamp_preset": "15m"
 }

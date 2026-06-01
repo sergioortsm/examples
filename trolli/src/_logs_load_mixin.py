@@ -11,7 +11,7 @@ from pathlib import Path
 import flet as ft
 
 from app_logging import perf_timer
-from log_service import load_sharepoint_log, paginate_rows
+from log_service import load_sharepoint_log, paginate_rows, col_spec_name, col_names, make_col_spec
 
 logger = logging.getLogger("trolli")
 
@@ -99,23 +99,28 @@ class LogsLoadMixin:
 
         self.logs_rows = result.rows
         visible_columns = self.logs_state.get("visible_columns", [])
-        valid_visible = [c for c in visible_columns if c in result.columns]
+        col_set = set(result.columns)
+        # Preservar qué columnas están visibles (y su spec) pero respetando el orden del fichero.
+        col_to_spec = {col_spec_name(s): s for s in visible_columns if col_spec_name(s) in col_set}
+        valid_visible = [col_to_spec[c] for c in result.columns if c in col_to_spec]
         if not valid_visible:
-            valid_visible = list(result.columns)
+            valid_visible = [make_col_spec(c) for c in result.columns]
 
         pending_columns = self.logs_state.get("visible_columns_pending", [])
-        valid_pending = [c for c in pending_columns if c in result.columns]
+        col_to_pending = {col_spec_name(s): s for s in pending_columns if col_spec_name(s) in col_set}
+        valid_pending = [col_to_pending[c] for c in result.columns if c in col_to_pending]
         if not valid_pending:
-            valid_pending = list(valid_visible)
+            valid_pending = [dict(s) for s in valid_visible]
 
         sort_by = self.logs_state.get("sort_by")
         if sort_by not in result.columns:
             sort_by = result.columns[0] if result.columns else None
 
-        level_filter = self.logs_state.get("level_filter", "All")
+        level_filters = list(self.logs_state.get("level_filters") or [])
         level_options = ["All"] + result.col_values.get("Level", result.levels)
-        if level_filter not in level_options:
-            level_filter = "All"
+        available_levels = set(result.col_values.get("Level", result.levels))
+        # Descartar niveles seleccionados que ya no existan en el nuevo archivo
+        level_filters = [lf for lf in level_filters if lf in available_levels]
 
         self.logs_state.update(
             {
@@ -128,7 +133,7 @@ class LogsLoadMixin:
                 "col_values": result.col_values,
                 "level_options": level_options,
                 "sort_by": sort_by,
-                "level_filter": level_filter,
+                "level_filters": level_filters,
                 "current_page": 1,
                 "error": "",
             }

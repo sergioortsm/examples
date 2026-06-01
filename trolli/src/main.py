@@ -99,7 +99,7 @@ class TrelloApp(
             "column_selector_expanded": False,
             "level_options": ["All"],
             "search_text": "",
-            "level_filter": "All",
+            "level_filters": [],
             "sort_by": None,
             "sort_desc": False,
             "page_size": 100,
@@ -151,15 +151,32 @@ class TrelloApp(
             ),
             ft.PopupMenuItem(content="Settings"),
         ]
+        self.appbar_info_text = ft.Text(
+            "",
+            size=12,
+            color=APP_TEXT_ON_ACCENT,
+            opacity=0.75,
+            text_align=ft.TextAlign.START,
+            no_wrap=True,
+            overflow=ft.TextOverflow.ELLIPSIS,
+        )
         self.appbar = ft.AppBar(
             leading=ft.Icon(ft.Icons.GRID_GOLDENRATIO_ROUNDED, color=APP_TEXT_ON_ACCENT),
             leading_width=100,
-            title=ft.Text(
-                f"Trolli",
-                font_family="Pacifico",
-                size=32,
-                color=APP_TEXT_ON_ACCENT,
-                text_align=ft.TextAlign.START,
+            title=ft.Column(
+                [
+                    ft.Text(
+                        "SharePoint ULS Log Viewer",
+                        font_family="Outfit",
+                        size=26,
+                        color=APP_TEXT_ON_ACCENT,
+                        text_align=ft.TextAlign.START,
+                        no_wrap=True,
+                    ),
+                    self.appbar_info_text,
+                ],
+                spacing=0,
+                tight=True,
             ),
             center_title=False,
             toolbar_height=75,
@@ -477,7 +494,7 @@ def main(page: ft.Page):
     page.window.maximized = True  # Configura la ventana maximizada
     install_asyncio_exception_handler(logger)
 
-    page.title = "Sharepoint ULS Log Viewer"
+    page.title = "Log Viewer"
     page.padding = ft.padding.Padding(left=0, top=0, right=16, bottom=0)
     page.theme = ft.Theme(font_family="Verdana")
     page.theme.tooltip_theme = ft.TooltipTheme(
