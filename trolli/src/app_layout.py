@@ -25,6 +25,8 @@ class AppLayout(ft.Row):
         self.members_view = ft.Text("members view")
         if not hasattr(self, "logs_view"):
             self.logs_view = ft.Text("logs view")
+        if not hasattr(self, "settings_view"):
+            self.settings_view = ft.Text("settings view")
         self.all_boards_view = ft.Column(
             [
                 ft.Row(
@@ -123,6 +125,12 @@ class AppLayout(ft.Row):
     def set_logs_view(self):
         self.active_view = self.logs_view
         self.sidebar.top_nav_rail.selected_index = 2
+        self.sidebar.bottom_nav_rail.selected_index = None
+        self._page.update()
+
+    def set_settings_view(self):
+        self.active_view = self.settings_view
+        self.sidebar.top_nav_rail.selected_index = 3
         self.sidebar.bottom_nav_rail.selected_index = None
         self._page.update()
 

@@ -25,6 +25,11 @@ class Sidebar(ft.Container):
                 icon=ft.Icons.DESCRIPTION_OUTLINED,
                 selected_icon=ft.Icons.DESCRIPTION,
             ),
+            ft.NavigationRailDestination(
+                label="Settings",
+                icon=ft.Icons.SETTINGS_OUTLINED,
+                selected_icon=ft.Icons.SETTINGS,
+            ),
         ]
 
         self.top_nav_rail = ft.NavigationRail(
@@ -34,7 +39,7 @@ class Sidebar(ft.Container):
             destinations=self.top_nav_items,
             bgcolor=APP_SIDEBAR_BG,
             extended=True,
-            height=165,
+            height=210,
         )
 
         self.bottom_nav_rail = ft.NavigationRail(
@@ -126,6 +131,8 @@ class Sidebar(ft.Container):
             self.page.navigate("/members")
         elif index == 2:
             self.page.navigate("/logs")
+        elif index == 3:
+            self.page.navigate("/settings")
 
     def bottom_nav_change(self, e):
         index = e if (type(e) == int) else e.control.selected_index

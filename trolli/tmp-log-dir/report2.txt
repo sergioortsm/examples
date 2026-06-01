@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "C:\repositorio\examples\trolli\scripts\analyze_logs.py", line 491, in <module>
+    main()
+    ~~~~^^
+  File "C:\repositorio\examples\trolli\scripts\analyze_logs.py", line 430, in main
+    print(f"Reglas cargadas: {n_rules} total, {n_active} activas  \u2190 {rules_path}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3568.0_x64__qbz5n2kfra8p0\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2190' in position 39: character maps to <undefined>

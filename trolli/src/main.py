@@ -49,12 +49,16 @@ from _logs_events_mixin import LogsEventsMixin
 from _logs_watcher_mixin import LogsWatcherMixin
 from _logs_export_mixin import LogsExportMixin
 from _logs_detail_mixin import LogsDetailMixin
+from _logs_rules_mixin import LogsRulesMixin
+from settings_view import SettingsView
+from smart_rules import rules_engine as _rules_engine
 
 
 logger = logging.getLogger("trolli")
 
 
 class TrelloApp(
+    LogsRulesMixin,
     LogsWatcherMixin,
     LogsExportMixin,
     LogsDetailMixin,
@@ -72,6 +76,9 @@ class TrelloApp(
         self._shared_preferences = ft.SharedPreferences()
         self._prefs_path = resolve_app_data_dir() / "logs_prefs.json"
         logger.info("[PREFS] logs_prefs.json path: %s", self._prefs_path)
+        # Cargar reglas inteligentes desde JSON si existe
+        _rules_path = resolve_app_data_dir() / "smart_rules.json"
+        _rules_engine.load(_rules_path)
         self._page.on_route_change = self.route_change
         self._page.on_error = self._on_page_error
         self.boards = self.store.get_boards()
@@ -123,6 +130,10 @@ class TrelloApp(
             "live_paused": False,
             "column_filters": {},
             "timestamp_preset": "all",
+            # --- motor de reglas inteligentes ---
+            "active_domain": None,
+            "rule_matches": {},
+            "analysis_panel_open": False,
         }
         # Buffer LIFO compartido entre el hilo del watcher y el event loop.
         self._log_buffer = LifoLogBuffer(maxlen=100_000)
@@ -243,6 +254,7 @@ class TrelloApp(
         self._root_stack: ft.Stack | None = None
         self._restore_logs_preferences()
         self.logs_view = LogsView(self)
+        self.settings_view = SettingsView(self)
 
         self._page.update()
         super().__init__(
@@ -435,6 +447,8 @@ class TrelloApp(
         elif troute.match("/logs"):
             self.set_logs_view()
             self.refresh_logs_view()
+        elif troute.match("/settings"):
+            self.set_settings_view()
         self._page.update()
 
     def add_board(self, e):

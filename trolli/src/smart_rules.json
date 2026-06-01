@@ -1,0 +1,587 @@
+[
+  {
+    "id": "c2f65cfd93deb340",
+    "name": "SPFx: Failed to load component",
+    "domain": "SPFx",
+    "field": "*",
+    "pattern": "failed to load component",
+    "is_regex": false,
+    "highlight_color": "#7B52AB",
+    "enabled": true
+  },
+  {
+    "id": "724a02c4ed790d38",
+    "name": "SPFx: Could not find component",
+    "domain": "SPFx",
+    "field": "*",
+    "pattern": "could not find component",
+    "is_regex": false,
+    "highlight_color": "#7B52AB",
+    "enabled": true
+  },
+  {
+    "id": "1eda5a35d46352c5",
+    "name": "SPFx: ClientSideAssets error",
+    "domain": "SPFx",
+    "field": "*",
+    "pattern": "clientsideassets",
+    "is_regex": false,
+    "highlight_color": "#7B52AB",
+    "enabled": true
+  },
+  {
+    "id": "fe9626b2070c2ebf",
+    "name": "SPFx: Component manifest error",
+    "domain": "SPFx",
+    "field": "*",
+    "pattern": "component manifest",
+    "is_regex": false,
+    "highlight_color": "#7B52AB",
+    "enabled": true
+  },
+  {
+    "id": "7769c42381cae90a",
+    "name": "SPFx: ClientSideComponent error",
+    "domain": "SPFx",
+    "field": "*",
+    "pattern": "clientsidecomponent",
+    "is_regex": false,
+    "highlight_color": "#7B52AB",
+    "enabled": true
+  },
+  {
+    "id": "4656286372b27bc9",
+    "name": "SPFx: Script failed to load",
+    "domain": "SPFx",
+    "field": "Message",
+    "pattern": "script.*failed to load",
+    "is_regex": true,
+    "highlight_color": "#7B52AB",
+    "enabled": true
+  },
+  {
+    "id": "bdce036bd60d440f",
+    "name": "SPFx: CORS / Access-Control",
+    "domain": "SPFx",
+    "field": "*",
+    "pattern": "access-control-allow-origin",
+    "is_regex": false,
+    "highlight_color": "#7B52AB",
+    "enabled": true
+  },
+  {
+    "id": "878e4ff162b2034b",
+    "name": "SPFx: REST 401 Unauthorized",
+    "domain": "SPFx",
+    "field": "*",
+    "pattern": "401 unauthorized",
+    "is_regex": false,
+    "highlight_color": "#7B52AB",
+    "enabled": true
+  },
+  {
+    "id": "0e6785f88b581fa0",
+    "name": "SPFx: REST 403 Forbidden",
+    "domain": "SPFx",
+    "field": "*",
+    "pattern": "403 forbidden",
+    "is_regex": false,
+    "highlight_color": "#7B52AB",
+    "enabled": true
+  },
+  {
+    "id": "12f7e30553c98ffb",
+    "name": "SPFx: WebPart exception",
+    "domain": "SPFx",
+    "field": "*",
+    "pattern": "webpart.*exception|exception.*webpart",
+    "is_regex": true,
+    "highlight_color": "#7B52AB",
+    "enabled": true
+  },
+  {
+    "id": "fc5b4ad42c850949",
+    "name": "SPFx: RequestDigest / token error",
+    "domain": "SPFx",
+    "field": "*",
+    "pattern": "requestdigest|xrequestdigest",
+    "is_regex": false,
+    "highlight_color": "#7B52AB",
+    "enabled": true
+  },
+  {
+    "id": "4084cd05a454a3a2",
+    "name": "Jobs: Job failed",
+    "domain": "Timer Jobs",
+    "field": "*",
+    "pattern": "job.*failed|failed.*job",
+    "is_regex": true,
+    "highlight_color": "#1565C0",
+    "enabled": true
+  },
+  {
+    "id": "b68ade68953dc7f9",
+    "name": "Jobs: Job definition not found",
+    "domain": "Timer Jobs",
+    "field": "Message",
+    "pattern": "job definition.*was not found",
+    "is_regex": false,
+    "highlight_color": "#1565C0",
+    "enabled": true
+  },
+  {
+    "id": "1118848a8deb7432",
+    "name": "Jobs: Job time limit exceeded",
+    "domain": "Timer Jobs",
+    "field": "Message",
+    "pattern": "exceeded.*time limit|time limit.*exceeded",
+    "is_regex": true,
+    "highlight_color": "#1565C0",
+    "enabled": true
+  },
+  {
+    "id": "859da9a08e1fe4cc",
+    "name": "Jobs: SPTimerJob error",
+    "domain": "Timer Jobs",
+    "field": "*",
+    "pattern": "sptimerjob",
+    "is_regex": false,
+    "highlight_color": "#1565C0",
+    "enabled": true
+  },
+  {
+    "id": "d53953d09d61af8e",
+    "name": "Jobs: SPJobDefinition error",
+    "domain": "Timer Jobs",
+    "field": "*",
+    "pattern": "spjobdefinition",
+    "is_regex": false,
+    "highlight_color": "#1565C0",
+    "enabled": true
+  },
+  {
+    "id": "bcff669dc6dc5ee5",
+    "name": "Jobs: OWSTIMER critical",
+    "domain": "Timer Jobs",
+    "field": "Process",
+    "pattern": "owstimer",
+    "is_regex": false,
+    "highlight_color": "#1565C0",
+    "enabled": true
+  },
+  {
+    "id": "f138b4db94206fc3",
+    "name": "Jobs: Timer job exception",
+    "domain": "Timer Jobs",
+    "field": "*",
+    "pattern": "timer.*job.*exception|job.*exception.*timer",
+    "is_regex": true,
+    "highlight_color": "#1565C0",
+    "enabled": true
+  },
+  {
+    "id": "b651c19a7d6edb4c",
+    "name": "Jobs: Health Analyzer error",
+    "domain": "Timer Jobs",
+    "field": "*",
+    "pattern": "health analyzer",
+    "is_regex": false,
+    "highlight_color": "#1565C0",
+    "enabled": true
+  },
+  {
+    "id": "35043813838cb43d",
+    "name": "Jobs: Job throttled / blocked",
+    "domain": "Timer Jobs",
+    "field": "*",
+    "pattern": "job.*throttl|throttl.*job",
+    "is_regex": true,
+    "highlight_color": "#1565C0",
+    "enabled": true
+  },
+  {
+    "id": "4043529c3991b670",
+    "name": "WSP: Solution deployment failed",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "solution deployment.*failed|failed.*solution deployment",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "1295ef04de762d3c",
+    "name": "WSP: Feature receiver error",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "spfeaturereceiver|feature.*receiver.*error",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "ccb538518086186b",
+    "name": "WSP: Assembly not found",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "assembly.*not found|could not load.*assembly",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "2fe48e35f327b5dd",
+    "name": "WSP: Feature activation failed",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "feature activation.*failed|failed.*feature activation",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "51199547acdb13e3",
+    "name": "WSP: SafeControl error",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "safecontrol",
+    "is_regex": false,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "201d337efc3c1e3b",
+    "name": "WSP: Solution retract error",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "solution.*retract|retract.*solution",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "980198976f47e479",
+    "name": "WSP: Solution cannot be deployed",
+    "domain": "wsps / Paquetes",
+    "field": "Message",
+    "pattern": "solution.*cannot be deployed",
+    "is_regex": false,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "daea6b9edea23d71",
+    "name": "WSP: Feature already activated",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "feature.*already activated|already exists in the solution",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "74b66f169ae6f281",
+    "name": "WSP: Assembly version conflict",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "strong name.*validation|assembly.*version.*conflict",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "86876c3e2fae5ab3",
+    "name": "PS: Access is denied",
+    "domain": "PowerShell / Deploy",
+    "field": "*",
+    "pattern": "access is denied|access denied",
+    "is_regex": true,
+    "highlight_color": "#B71C1C",
+    "enabled": true
+  },
+  {
+    "id": "514c2a3d895e9deb",
+    "name": "PS: Unauthorized",
+    "domain": "PowerShell / Deploy",
+    "field": "*",
+    "pattern": "unauthorized",
+    "is_regex": false,
+    "highlight_color": "#B71C1C",
+    "enabled": true
+  },
+  {
+    "id": "51d2901ec94258bb",
+    "name": "PS: Execution policy blocked",
+    "domain": "PowerShell / Deploy",
+    "field": "*",
+    "pattern": "execution policy",
+    "is_regex": false,
+    "highlight_color": "#B71C1C",
+    "enabled": true
+  },
+  {
+    "id": "f8065e30e050ec5c",
+    "name": "PS: Scripts disabled",
+    "domain": "PowerShell / Deploy",
+    "field": "*",
+    "pattern": "running scripts is disabled",
+    "is_regex": false,
+    "highlight_color": "#B71C1C",
+    "enabled": true
+  },
+  {
+    "id": "4014acb9454be063",
+    "name": "PS: UnauthorizedAccessException",
+    "domain": "PowerShell / Deploy",
+    "field": "*",
+    "pattern": "unauthorizedaccessexception",
+    "is_regex": false,
+    "highlight_color": "#B71C1C",
+    "enabled": true
+  },
+  {
+    "id": "e866df3a5b76483e",
+    "name": "PS: HTTP 401/403/500 error",
+    "domain": "PowerShell / Deploy",
+    "field": "*",
+    "pattern": "the remote server returned.*\\(401\\)|\\(403\\)|\\(500\\)",
+    "is_regex": true,
+    "highlight_color": "#B71C1C",
+    "enabled": true
+  },
+  {
+    "id": "8811838e99b21be9",
+    "name": "PS: Cannot load module",
+    "domain": "PowerShell / Deploy",
+    "field": "Message",
+    "pattern": "cannot be loaded because",
+    "is_regex": false,
+    "highlight_color": "#B71C1C",
+    "enabled": true
+  },
+  {
+    "id": "988c10ec7287fb90",
+    "name": "PS: AppPool identity error",
+    "domain": "PowerShell / Deploy",
+    "field": "*",
+    "pattern": "apppool.*identity|identity.*apppool",
+    "is_regex": true,
+    "highlight_color": "#B71C1C",
+    "enabled": true
+  },
+  {
+    "id": "748d9b1a644a8ee9",
+    "name": "PS: Security token expired",
+    "domain": "PowerShell / Deploy",
+    "field": "*",
+    "pattern": "token.*expired|expired.*token|security token",
+    "is_regex": true,
+    "highlight_color": "#B71C1C",
+    "enabled": true
+  },
+
+  {
+    "id": "67b7283d7837f571",
+    "name": "Cache: SPDistributedCachePointerWrapper",
+    "domain": "Distributed Cache",
+    "field": "*",
+    "pattern": "spdistributedcachepointerwrapper",
+    "is_regex": false,
+    "highlight_color": "#BF360C",
+    "enabled": true
+  },
+  {
+    "id": "6dfec4ab52c932fc",
+    "name": "Cache: Token Cache failed to initialize",
+    "domain": "Distributed Cache",
+    "field": "*",
+    "pattern": "token cache.*failed to initialize",
+    "is_regex": true,
+    "highlight_color": "#BF360C",
+    "enabled": true
+  },
+  {
+    "id": "b4bb2525d9b77674",
+    "name": "Cache: Token Cache failed to get token",
+    "domain": "Distributed Cache",
+    "field": "*",
+    "pattern": "token cache.*failed to get token",
+    "is_regex": true,
+    "highlight_color": "#BF360C",
+    "enabled": true
+  },
+  {
+    "id": "5f43eb6a28e59353",
+    "name": "Cache: Token Cache reverting to local",
+    "domain": "Distributed Cache",
+    "field": "*",
+    "pattern": "reverting to local cache",
+    "is_regex": false,
+    "highlight_color": "#BF360C",
+    "enabled": true
+  },
+  {
+    "id": "b39b2037c142685c",
+    "name": "Cache: FeedCacheImplementation error",
+    "domain": "Distributed Cache",
+    "field": "*",
+    "pattern": "feedcacheimplementation",
+    "is_regex": false,
+    "highlight_color": "#BF360C",
+    "enabled": true
+  },
+  {
+    "id": "d0383612fcb28435",
+    "name": "Cache: SPDistributedCache probably down",
+    "domain": "Distributed Cache",
+    "field": "*",
+    "pattern": "spdistributedcache is probably down",
+    "is_regex": false,
+    "highlight_color": "#BF360C",
+    "enabled": true
+  },
+  {
+    "id": "d43e94a876487bbc",
+    "name": "Cache: FeedCacheService excepcion (ES)",
+    "domain": "Distributed Cache",
+    "field": "*",
+    "pattern": "feedcacheservice.isrepopulationneeded",
+    "is_regex": false,
+    "highlight_color": "#BF360C",
+    "enabled": true
+  },
+
+  {
+    "id": "94b94eecf036cdb7",
+    "name": "Config: RefreshDirtyCollections",
+    "domain": "Config / Object Cache",
+    "field": "*",
+    "pattern": "sppersistedobjectcollectioncache.refreshdirtycollections",
+    "is_regex": false,
+    "highlight_color": "#4527A0",
+    "enabled": true
+  },
+  {
+    "id": "3cfe226e2e68b6b9",
+    "name": "Config: SPPersistedObject OnDeserialization slow",
+    "domain": "Config / Object Cache",
+    "field": "*",
+    "pattern": "sppersistedobject.ondeserialization",
+    "is_regex": false,
+    "highlight_color": "#4527A0",
+    "enabled": true
+  },
+  {
+    "id": "806751f4c656f9c5",
+    "name": "Config: Duplicate content type definition",
+    "domain": "Config / Object Cache",
+    "field": "*",
+    "pattern": "duplicate content type definition",
+    "is_regex": false,
+    "highlight_color": "#4527A0",
+    "enabled": true
+  },
+  {
+    "id": "10cbbbba458b6db7",
+    "name": "Config: Forced due to logging gap",
+    "domain": "Config / Object Cache",
+    "field": "*",
+    "pattern": "forced due to logging gap",
+    "is_regex": false,
+    "highlight_color": "#4527A0",
+    "enabled": true
+  },
+  {
+    "id": "cd155c99439991da",
+    "name": "Config: LookupHostHeaderSite not found",
+    "domain": "Config / Object Cache",
+    "field": "*",
+    "pattern": "could not find spsite",
+    "is_regex": false,
+    "highlight_color": "#4527A0",
+    "enabled": true
+  },
+  {
+    "id": "51d5807042cb6a98",
+    "name": "Config: Taxonomy cache miss expired",
+    "domain": "Config / Object Cache",
+    "field": "*",
+    "pattern": "taxonomy database change cache miss",
+    "is_regex": false,
+    "highlight_color": "#4527A0",
+    "enabled": true
+  },
+  {
+    "id": "b677d69186741e1b",
+    "name": "Config: Flushing SQL connection pool",
+    "domain": "Config / Object Cache",
+    "field": "*",
+    "pattern": "flushing connection pool",
+    "is_regex": false,
+    "highlight_color": "#4527A0",
+    "enabled": true
+  },
+  {
+    "id": "408aebe947dd57bb",
+    "name": "Config: ScriptType duplicated (CSOM)",
+    "domain": "Config / Object Cache",
+    "field": "*",
+    "pattern": "scripttype.*is duplicated",
+    "is_regex": true,
+    "highlight_color": "#4527A0",
+    "enabled": true
+  },
+
+  {
+    "id": "368e06002999c89d",
+    "name": "Jobs: UsageManager is null",
+    "domain": "Timer Jobs",
+    "field": "*",
+    "pattern": "usagemanager is null",
+    "is_regex": false,
+    "highlight_color": "#1565C0",
+    "enabled": true
+  },
+  {
+    "id": "f3a1c22b4d9e7801",
+    "name": "Jobs: SharePoint Foundation Upgrade (diario)",
+    "domain": "Timer Jobs",
+    "field": "Category",
+    "pattern": "upgrade",
+    "is_regex": false,
+    "highlight_color": "#1565C0",
+    "enabled": true
+  },
+
+  {
+    "id": "a9f2b15c3e4d6f70",
+    "name": "PS: Could not get super user token",
+    "domain": "PowerShell / Deploy",
+    "field": "*",
+    "pattern": "could not get token super user",
+    "is_regex": false,
+    "highlight_color": "#B71C1C",
+    "enabled": true
+  },
+  {
+    "id": "c8e3d74b2f1a9052",
+    "name": "PS: Claim in token is null",
+    "domain": "PowerShell / Deploy",
+    "field": "*",
+    "pattern": "claim in token.*null|claim.*null",
+    "is_regex": true,
+    "highlight_color": "#B71C1C",
+    "enabled": true
+  },
+
+  {
+    "id": "7f4e9a1b5c2d8e63",
+    "name": "WSP: Failed to open resource file",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "failed to (open|read) (the file|resource file)",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  }
+]

@@ -381,6 +381,44 @@ class LogsView(ft.Column):
             visible=False,
         )
 
+        # ── Perfil de detección inteligente ─────────────────────────────────
+        from smart_rules import ALL_DOMAINS
+        self.profile_dropdown = ft.Dropdown(
+            width=170,
+            hint_text="Perfil",
+            value="",
+            options=[ft.dropdown.Option(key="", text="Sin perfil")]
+            + [ft.dropdown.Option(key=d, text=d) for d in ALL_DOMAINS],
+            menu_height=DROPDOWN_MENU_HEIGHT,
+            menu_width=DROPDOWN_MENU_WIDTH,
+            margin=ft.Margin(left=0, top=8, right=0, bottom=0),
+            on_select=lambda e: self.app.on_profile_change(e.control.value or None),
+        )
+        self.analysis_toggle_button = ft.IconButton(
+            icon=ft.Icons.ANALYTICS_OUTLINED,
+            tooltip="Mostrar / ocultar panel de análisis",
+            mouse_cursor=ft.MouseCursor.CLICK,
+            visible=False,
+            on_click=lambda e: self.app.on_logs_toggle_analysis_panel(),
+        )
+        # Panel de análisis de reglas (colapsable; visible cuando hay matches)
+        self.analysis_chips_row = ft.Row([], wrap=True, spacing=6, run_spacing=4)
+        self.analysis_total_text = ft.Text(
+            "", size=11, weight=ft.FontWeight.W_600, color=APP_TEXT_PRIMARY
+        )
+        self.analysis_panel = ft.Container(
+            visible=False,
+            bgcolor=APP_SURFACE_MUTED,
+            border=ft.Border.all(1, APP_BORDER),
+            border_radius=ft.BorderRadius(8, 8, 8, 8),
+            padding=ft.padding.Padding(left=12, top=8, right=12, bottom=8),
+            content=ft.Column(
+                [self.analysis_total_text, self.analysis_chips_row],
+                spacing=6,
+                tight=True,
+            ),
+        )
+
         self.controls = [
             ft.Row(
                 [
@@ -389,6 +427,8 @@ class LogsView(ft.Column):
                     self.toggle_column_selector_button,
                     self.open_log_button,
                     self.export_csv_button,
+                    self.profile_dropdown,
+                    self.analysis_toggle_button,
                     ft.Row([], expand=True),
                     self.page_size_dropdown,
                     ft.Row(
@@ -402,6 +442,7 @@ class LogsView(ft.Column):
             ),
             self.filters_row,
             self.column_filters_row,
+            self.analysis_panel,
             ft.Row(
                 [self.pending_new_button],
                 vertical_alignment=ft.CrossAxisAlignment.CENTER,
@@ -524,6 +565,15 @@ class LogsView(ft.Column):
         else:
             self.pending_new_text.value = "Nuevas (0)"
             self.pending_new_button.visible = False
+
+        # ── Perfil de reglas inteligentes ────────────────────────────────────
+        active_domain = state.get("active_domain")
+        self.profile_dropdown.value = active_domain or ""
+        self.analysis_toggle_button.visible = bool(active_domain)
+        self.analysis_toggle_button.icon_color = (
+            ft.Colors.PRIMARY if state.get("analysis_panel_open") else None
+        )
+        self._render_analysis_panel(state)
 
         self._render_column_selector(state)
         self._refresh_column_filters_controls(state)
@@ -1139,6 +1189,10 @@ class LogsView(ft.Column):
             # pool al menos del tamano de la pagina; un suelo de 50 cubre el caso normal.
             self._build_table_pool(visible_columns, max(n, 50))
 
+        rule_matches = state.get("rule_matches", {})
+        current_page = state.get("current_page", 1)
+        page_size = state.get("page_size", 100)
+
         # Mutar datos: solo text.value + slot data + bgcolor segun level.
         for slot in range(n):
             row = page_rows[slot]
@@ -1151,6 +1205,18 @@ class LogsView(ft.Column):
             texts = self._pool_row_texts[slot]
             for col_idx, column in enumerate(visible_columns):
                 texts[col_idx].value = str(row.get(column, ""))
+            # ── Borde izquierdo por regla coincidente ─────────────────────
+            if rule_matches:
+                global_idx = (current_page - 1) * page_size + slot
+                matched = rule_matches.get(global_idx)
+                if matched:
+                    self._pool_row_decorations[slot].border = ft.Border(
+                        left=ft.BorderSide(4, matched[0].highlight_color)
+                    )
+                else:
+                    self._pool_row_decorations[slot].border = None
+            else:
+                self._pool_row_decorations[slot].border = None
 
         # Slice de filas visibles. Asignar lista nueva fuerza diff en Flet de forma controlada.
         self._pool_data_table.rows = self._pool_rows[:n]
@@ -1169,3 +1235,68 @@ class LogsView(ft.Column):
         if self.table_content_container.content is not self._pool_data_table:
             self.table_content_container.content = self._pool_data_table
             self._scroll_to_top()
+
+    def _render_analysis_panel(self, state: dict) -> None:
+        """Actualiza el panel de análisis de reglas inteligentes."""
+        active_domain = state.get("active_domain")
+        panel_open = bool(state.get("analysis_panel_open", False))
+        rule_matches = state.get("rule_matches", {})
+
+        self.analysis_panel.visible = bool(active_domain and panel_open)
+        if not self.analysis_panel.visible:
+            return
+
+        total = len(rule_matches)
+        self.analysis_total_text.value = (
+            f"Dominio: {active_domain}  ·  Filas con coincidencias: {total}"
+            if total else f"Dominio: {active_domain}  ·  Sin coincidencias en los datos actuales."
+        )
+
+        if not rule_matches:
+            self.analysis_chips_row.controls = []
+            return
+
+        # Contar hits por regla
+        counts: dict[str, int] = {}
+        names: dict[str, str] = {}
+        colors: dict[str, str] = {}
+        for matches in rule_matches.values():
+            seen: set[str] = set()
+            for r in matches:
+                if r.id not in seen:
+                    seen.add(r.id)
+                    counts[r.id] = counts.get(r.id, 0) + 1
+                    names[r.id] = r.name
+                    colors[r.id] = r.highlight_color
+
+        sorted_ids = sorted(counts, key=lambda rid: -counts[rid])
+        chips = []
+        for rid in sorted_ids:
+            count = counts[rid]
+            color = colors[rid]
+            # Nombre corto: quitar prefijo "XX: "
+            raw_name = names[rid]
+            short = raw_name.split(": ", 1)[-1] if ": " in raw_name else raw_name
+            chips.append(
+                ft.Container(
+                    content=ft.Row(
+                        [
+                            ft.Container(
+                                width=10,
+                                height=10,
+                                bgcolor=color,
+                                border_radius=ft.BorderRadius(5, 5, 5, 5),
+                            ),
+                            ft.Text(f"{short}  ({count})", size=11, color=APP_TEXT_PRIMARY),
+                        ],
+                        spacing=6,
+                        tight=True,
+                        vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                    ),
+                    bgcolor=APP_SURFACE,
+                    border=ft.Border.all(1, APP_BORDER),
+                    border_radius=ft.BorderRadius(14, 14, 14, 14),
+                    padding=ft.padding.Padding(left=10, top=3, right=10, bottom=3),
+                )
+            )
+        self.analysis_chips_row.controls = chips

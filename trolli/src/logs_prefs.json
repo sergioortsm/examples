@@ -1,8 +1,6 @@
 {
   "search_text": "",
-  "level_filters": [
-    "Medium"
-  ],
+  "level_filters": [],
   "sort_by": "Timestamp",
   "sort_desc": true,
   "page_size": 100,
