@@ -17,8 +17,19 @@ class LogsEventsMixin:
         self.logs_view.request_scroll_to_top()
         self.refresh_logs_view()
 
-    def on_logs_level_change(self, value: str | None):
-        self.logs_state["level_filter"] = value or "All"
+    def on_logs_timestamp_preset_change(self, preset: str):
+        self.logs_state["timestamp_preset"] = preset or "all"
+        self.logs_state["current_page"] = 1
+        self.logs_view.request_scroll_to_top()
+        self.refresh_logs_view()
+
+    def on_logs_column_filter_change(self, col: str, value: str):
+        cf = dict(self.logs_state.get("column_filters", {}))
+        if value and value.strip():
+            cf[col] = value.strip()
+        else:
+            cf.pop(col, None)
+        self.logs_state["column_filters"] = cf
         self.logs_state["current_page"] = 1
         self.logs_view.request_scroll_to_top()
         self.refresh_logs_view()
@@ -143,15 +154,28 @@ class LogsEventsMixin:
     def _apply_columns_sync(self, pending: list[str]):
         try:
             self.logs_state["visible_columns"] = list(pending)
-            # Cambiar columnas visibles no altera filtros, orden ni pagina.
-            # Evitamos recomputo pesado y solo repintamos la tabla actual.
+            # Limpiar filtros de columnas que ya no son visibles.
+            cf = dict(self.logs_state.get("column_filters", {}))
+            pending_set = set(pending)
+            cleaned_cf = {col: val for col, val in cf.items() if col in pending_set}
+            filters_changed = cleaned_cf != cf
+            self.logs_state["column_filters"] = cleaned_cf
             self._persist_logs_preferences_if_needed()
-            self.logs_view.refresh_table_only(self.logs_state)
+            if filters_changed:
+                # Columnas eliminadas tenían filtros activos; recomputar.
+                self.refresh_logs_view()
+            else:
+                # Solo cambió el render de columnas; repintar sin recomputo pesado.
+                self.logs_view.refresh_table_only(self.logs_state)
         finally:
             self.logs_state["is_applying_columns"] = False
             # Colapsar al finalizar para que el usuario vea el estado "Aplicando..." mientras corre.
             self.logs_state["column_selector_expanded"] = False
             try:
                 self.logs_view.refresh_column_selector(self.logs_state)
+            except RuntimeError:
+                pass
+            try:
+                self.logs_view.refresh_column_filters(self.logs_state)
             except RuntimeError:
                 pass

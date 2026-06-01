@@ -1,29 +1,25 @@
 from __future__ import annotations
 
 
-import asyncio
-import inspect
-
 import flet as ft
 import flet_datatable2 as fdt
 from dialog import DialogSizer, build_column_selector_dialog
 from app_logging import perf_timer
-from ui_tokens import APP_BORDER, APP_SURFACE, APP_SURFACE_ALT, APP_SURFACE_MUTED, APP_TEXT_MUTED, APP_TEXT_PRIMARY, surface_shadow
+from log_service import TIMESTAMP_PRESETS
+from ui_tokens import APP_BORDER, APP_SURFACE, APP_SURFACE_ALT, APP_SURFACE_MUTED, APP_TEXT_MUTED, APP_TEXT_PRIMARY, surface_shadow, DROPDOWN_MENU_HEIGHT, DROPDOWN_MENU_WIDTH
 
 
 class LogsView(ft.Column):
-    _DEFAULT_DATA_ROW_HEIGHT = 42
+    _DEFAULT_DATA_ROW_HEIGHT = 28
     _MESSAGE_DATA_ROW_HEIGHT = 64
 
     # Altura ocupada por los controles fijos encima de la tabla:
     #   AppBar: 75 px  |  cabecera (title+metadata): ~58 px
     #   filters_row: ~48 px  |  chip nuevas: ~40 px  |  paginación: ~40 px
-    #   4 × spacing(10) entre controles: ~40 px
+    #   4 × spacing(10) entre controles base: ~40 px
     #   page.padding vertical (top=0, bottom=0): 0 px
-    # Total real: ~301 px → se usa 295 con pequeño margen de seguridad.
+    # Total base (sin archivo cargado): ~301 px → 305 con margen.
     # Subir si aparece scrollbar exterior; bajar si queda espacio en blanco abajo.
-    _TABLE_UI_OVERHEAD_PX: int = 255
-
     _COLUMN_FIXED_WIDTHS: dict[str, int] = {
         "Timestamp": 180,
         "Process": 110,
@@ -31,20 +27,20 @@ class LogsView(ft.Column):
         "Area": 150,
         "Category": 150,
         "EventID": 75,
-        "Level": 90,
+        "Level": 110,
         "Correlation": 140,
         "Message": 640,
     }
 
-    # Mapa nivel -> color de fondo (pastel suave). None => usa zebra striping.
+    # Mapa nivel -> color de fondo (pastel medio). None => usa zebra striping.
     _LEVEL_BG_COLORS: dict[str, str | None] = {
-        "CRITICAL": "#FDECEA",
-        "ERROR": "#FDECEA",
-        "HIGH": "#FFF1E6",
-        "WARNING": "#FFF8E1",
-        "MEDIUM": "#FFF8E1",
-        "UNEXPECTED": "#FDECEA",
-        "MONITORABLE": "#E8F8F0",
+        "CRITICAL": "#F5C0BC",
+        "ERROR": "#F5C0BC",
+        "HIGH": "#FAD4A8",
+        "WARNING": "#FDE99A",
+        "MEDIUM": "#FDE99A",
+        "UNEXPECTED": "#F5C0BC",
+        "MONITORABLE": "#AEDFC8",
         "INFO": None,
         "INFORMATION": None,
         "VERBOSE": None,
@@ -52,6 +48,7 @@ class LogsView(ft.Column):
     }
 
     _LEVEL_COLUMN_CANDIDATES: tuple[str, ...] = ("Level", "Nivel", "LogLevel", "Severity")
+    COLUMN_FILTER_DROPDOWN_THRESHOLD: int = 20
 
     def _row_level(self, row: dict[str, str]) -> str:
         for key in self._LEVEL_COLUMN_CANDIDATES:
@@ -87,44 +84,18 @@ class LogsView(ft.Column):
         """Devuelve True si la columna es 'Message' (insensible a mayúsculas/minúsculas)."""
         return column_name.strip().lower() == "message"
 
-    def _on_scroll(self, e: ft.OnScrollEvent) -> None:
-        try:
-            pixels = float(getattr(e, "pixels", 0) or 0)
-        except (TypeError, ValueError):
-            pixels = 0.0
-        # Si el usuario se aleja del inicio, desactivar el auto-follow.
-        self._auto_follow_scroll = pixels <= 10
-
     def _scroll_to_top(self, force: bool = False) -> None:
-        # En modo Vivo no robamos el scroll del usuario bajo ninguna circunstancia.
-        app = getattr(self, "app", None)
-        if app is not None and bool(getattr(app, "logs_state", {}).get("is_watching", False)):
-            return
-        if not force and not self._auto_follow_scroll:
-            return
-        result = self.scroll_to(offset=0, duration=0)
-        if not inspect.isawaitable(result):
-            return
-        try:
-            asyncio.get_running_loop().create_task(result)
-        except RuntimeError:
-            if inspect.iscoroutine(result):
-                result.close()
+        # El scroll del DataTable2 es interno; este método queda como no-op.
+        pass
 
     def request_scroll_to_top(self) -> None:
-        # En modo Vivo no robamos el scroll del usuario bajo ninguna circunstancia.
-        app = getattr(self, "app", None)
-        if app is not None and bool(getattr(app, "logs_state", {}).get("is_watching", False)):
-            return
-        self._auto_follow_scroll = True
-        self._scroll_to_top(force=True)
+        # El scroll del DataTable2 es interno; este método queda como no-op.
+        pass
     
     def __init__(self, app):
         super().__init__(
             expand=True,
             spacing=10,
-            scroll=ft.ScrollMode.AUTO,
-            on_scroll=self._on_scroll,
             horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
         )
         self.app = app
@@ -143,6 +114,13 @@ class LogsView(ft.Column):
         self._pool_row_decorations: list = []  # [slot] -> BoxDecoration
         self._pool_cell_containers: list[list] = []  # [slot][col_idx] -> Container
         self._pool_active_n: int = 0  # filas actualmente en uso
+
+        # Interaction guard para filtros por columna en modo live.
+        # Evita que el drain loop destruya y recree los Dropdown/TextField
+        # mientras el usuario los está usando (foco activo).
+        self._filter_controls_by_col: dict[str, tuple[str, ft.Control]] = {}  # col -> ("dd"|"tf", ctrl)
+        self._filter_focus_count: int = 0
+        self._filter_rebuild_pending_state: dict | None = None
 
         self.title_text = ft.Text(
             "SharePoint ULS Logs",
@@ -232,17 +210,12 @@ class LogsView(ft.Column):
             width=320,
             on_change=lambda e: self.app.on_logs_search_change(e.control.value),
         )
-        self.level_dropdown = ft.Dropdown(
-            width=220,
-            label="Nivel",
-            options=[ft.dropdown.Option("All")],
-            value="All",
-            on_select=lambda e: self.app.on_logs_level_change(e.control.value),
-        )
         self.sort_dropdown = ft.Dropdown(
             width=240,
             label="Ordenar por",
             options=[],
+            menu_height=DROPDOWN_MENU_HEIGHT,
+            menu_width=DROPDOWN_MENU_WIDTH,
             on_select=lambda e: self.app.on_logs_sort_column_change(e.control.value),
         )
         self.sort_direction_button = ft.IconButton(
@@ -256,6 +229,8 @@ class LogsView(ft.Column):
             label="Filas por pagina",
             value="100",
             options=[ft.dropdown.Option("50"), ft.dropdown.Option("100"), ft.dropdown.Option("250")],
+            menu_height=DROPDOWN_MENU_HEIGHT,
+            menu_width=DROPDOWN_MENU_WIDTH,
             on_select=lambda e: self.app.on_logs_page_size_change(e.control.value),
         )
 
@@ -314,16 +289,20 @@ class LogsView(ft.Column):
             mouse_cursor=ft.MouseCursor.CLICK,
             on_click=lambda e: self.app.on_logs_export_click(),
         )
+        self._apply_btn_icon = ft.Icon(ft.Icons.CHECK_CIRCLE, size=18)
+        self._apply_btn_ring = ft.ProgressRing(width=14, height=14, stroke_width=2, visible=False)
         self.apply_columns_button = ft.Button(
-            "Aplicar",
-            icon=ft.Icons.CHECK_CIRCLE,
+            content=ft.Row(
+                [self._apply_btn_ring, self._apply_btn_icon, ft.Text("Aplicar")],
+                tight=True,
+                spacing=6,
+                vertical_alignment=ft.CrossAxisAlignment.CENTER,
+            ),
             on_click=lambda e: self.app.on_logs_apply_columns(),
             disabled=True,
         )
         self.apply_columns_status = ft.Row(
-            [
-                ft.ProgressRing(width=14, height=14, stroke_width=2, color=ft.Colors.BLUE_GREY_700),
-            ],
+            [],
             spacing=6,
             visible=False,
             vertical_alignment=ft.CrossAxisAlignment.CENTER,
@@ -344,11 +323,12 @@ class LogsView(ft.Column):
         # la página notifica su altura real (on_resize y al montar la vista).
         self.table_content_container = ft.Container(
             padding=ft.padding.Padding(left=8, top=8, right=8, bottom=8),
-            height=600,
+            expand=True,
             clip_behavior=ft.ClipBehavior.ANTI_ALIAS,
         )
         self.table_surface = ft.Container(
             content=self.table_content_container,
+            expand=True,
             bgcolor=APP_SURFACE,
             border=ft.Border.all(1, APP_BORDER),
             border_radius=ft.BorderRadius(16, 16, 16, 16),
@@ -362,8 +342,6 @@ class LogsView(ft.Column):
                 ft.Row(
                     [
                         self.search_field,
-                        self.level_dropdown,
-                        self.page_size_dropdown,
                         self.watch_toggle_button,
                         self.watch_pause_button,
                         self.watch_status_text,
@@ -389,6 +367,30 @@ class LogsView(ft.Column):
             wrap=False,
         )
 
+        self.column_filters_row = ft.Row(
+            [],
+            spacing=8,
+            wrap=True,
+            run_spacing=4,
+            visible=False,
+        )
+        self.timestamp_preset_dropdown = ft.Dropdown(
+            label="Periodo",
+            width=140,
+            options=[
+                ft.dropdown.Option(key=k, text=v)
+                for k, v in TIMESTAMP_PRESETS.items()
+            ],
+            value="all",
+            menu_height=DROPDOWN_MENU_HEIGHT,
+            menu_width=DROPDOWN_MENU_WIDTH,
+            on_select=lambda e: self.app.on_logs_timestamp_preset_change(
+                e.control.value or "all"
+            ),
+            on_focus=self._on_filter_focus,
+            on_blur=self._on_filter_blur,
+        )
+
         self.controls = [
             ft.Row(
                 [
@@ -409,9 +411,11 @@ class LogsView(ft.Column):
                 vertical_alignment=ft.CrossAxisAlignment.CENTER,
             ),
             self.filters_row,
+            self.column_filters_row,
             ft.Row(
                 [
                     ft.Row([self.pending_new_button], expand=True),
+                    self.page_size_dropdown,
                     ft.Row(
                         [self.prev_page_button, self.page_info_text, self.next_page_button],
                         spacing=4,
@@ -453,13 +457,6 @@ class LogsView(ft.Column):
             self.status_text.color = ft.Colors.GREEN_800
 
         self.search_field.value = state.get("search_text", "")
-
-        level_options = state.get("level_options", ["All"])
-        self.level_dropdown.options = [ft.dropdown.Option(level) for level in level_options]
-        selected_level = state.get("level_filter", "All")
-        if selected_level not in level_options:
-            selected_level = "All"
-        self.level_dropdown.value = selected_level
 
         columns = state.get("columns", [])
         sort_options = [ft.dropdown.Option(column) for column in columns]
@@ -533,6 +530,7 @@ class LogsView(ft.Column):
             self.pending_new_button.visible = False
 
         self._render_column_selector(state)
+        self._refresh_column_filters_controls(state)
         self._render_table(state)
 
         # El refresco global lo hace la app con page.update().
@@ -586,7 +584,9 @@ class LogsView(ft.Column):
         has_columns = len(columns) > 0
         self.toggle_column_selector_button.disabled = (not has_columns) or is_busy
         self.apply_columns_button.disabled = (not has_columns) or is_busy or (pending_list == applied_columns)
-        self.apply_columns_status.visible = is_applying
+        self._apply_btn_ring.visible = is_applying
+        self._apply_btn_icon.visible = not is_applying
+        self.apply_columns_status.visible = False
         if not has_columns:
             self.column_selector_visible = False
         self._sync_column_selector_visibility()
@@ -603,6 +603,112 @@ class LogsView(ft.Column):
             self._render_table(state)
             if getattr(self, "page", None) is not None:
                 self.update()
+
+    def _build_column_filters_row(self, state: dict) -> list[ft.Control]:
+        """Construye la lista de controles de filtro para cada columna visible.
+
+        Reutiliza los mismos objetos ft.Dropdown/ft.TextField por columna para que
+        Flutter los actualice in-place en lugar de destruirlos y recrearlos en cada
+        drain del watcher. Esto evita que el control se cierre/pierda el foco mientras
+        el usuario interactua con el en modo Vivo.
+        """
+        visible_columns = state.get("visible_columns", [])
+        col_values = state.get("col_values", {}) or {}
+        column_filters = state.get("column_filters", {}) or {}
+        controls: list[ft.Control] = [self.timestamp_preset_dropdown]
+        visible_set = set(visible_columns)
+        for col in visible_columns:
+            vals = col_values.get(col, []) if isinstance(col_values, dict) else []
+            current_val = column_filters.get(col, "") or ""
+            required_type = "dd" if isinstance(vals, list) and len(vals) <= self.COLUMN_FILTER_DROPDOWN_THRESHOLD else "tf"
+            existing = self._filter_controls_by_col.get(col)
+            if existing is not None and existing[0] == required_type:
+                # Reusar el control existente: solo mutar propiedades, no recrear
+                ctrl = existing[1]
+                if required_type == "dd":
+                    ctrl.options = [ft.dropdown.Option(key="", text="(todos)")] + [
+                        ft.dropdown.Option(v) for v in vals
+                    ]  # type: ignore[union-attr]
+                    ctrl.value = current_val
+                else:
+                    ctrl.value = current_val  # type: ignore[union-attr]
+            else:
+                # Crear control nuevo (primera vez o cambio de tipo dd<->tf)
+                if required_type == "dd":
+                    ctrl = ft.Dropdown(
+                        label=col,
+                        width=160,
+                        options=[ft.dropdown.Option(key="", text="(todos)")] + [
+                            ft.dropdown.Option(v) for v in vals
+                        ],
+                        value=current_val,
+                        menu_height=DROPDOWN_MENU_HEIGHT,
+                        menu_width=DROPDOWN_MENU_WIDTH,
+                        on_select=lambda e, c=col: self.app.on_logs_column_filter_change(
+                            c, e.control.value or ""
+                        ),
+                        on_focus=self._on_filter_focus,
+                        on_blur=self._on_filter_blur,
+                    )
+                else:
+                    ctrl = ft.TextField(
+                        label=col,
+                        width=160,
+                        value=current_val,
+                        on_change=lambda e, c=col: self.app.on_logs_column_filter_change(
+                            c, e.control.value or ""
+                        ),
+                        on_focus=self._on_filter_focus,
+                        on_blur=self._on_filter_blur,
+                    )
+                self._filter_controls_by_col[col] = (required_type, ctrl)
+            controls.append(ctrl)
+        # Limpiar referencias a columnas que ya no son visibles
+        stale = [c for c in self._filter_controls_by_col if c not in visible_set]
+        for c in stale:
+            del self._filter_controls_by_col[c]
+        return controls
+
+    def _on_filter_focus(self, e) -> None:
+        """Incrementa el contador de filtros con foco activo."""
+        self._filter_focus_count += 1
+
+    def _on_filter_blur(self, e) -> None:
+        """Decrementa el contador de foco; si llega a 0 aplica rebuild diferido."""
+        self._filter_focus_count = max(0, self._filter_focus_count - 1)
+        if self._filter_focus_count == 0 and self._filter_rebuild_pending_state is not None:
+            pending = self._filter_rebuild_pending_state
+            self._filter_rebuild_pending_state = None
+            self._refresh_column_filters_controls(pending)
+            if getattr(self, "page", None) is not None:
+                self.column_filters_row.update()
+
+    def _refresh_column_filters_controls(self, state: dict) -> None:
+        """Reconstruye controles de filtros por columna sin llamar a update()."""
+        if self._filter_focus_count > 0:
+            # Un filtro tiene el foco: diferir el rebuild para no interrumpir la interaccion
+            self._filter_rebuild_pending_state = state
+            return
+        visible_columns = state.get("visible_columns", [])
+        has_columns = bool(state.get("columns", []))
+        self.timestamp_preset_dropdown.value = state.get("timestamp_preset", "all") or "all"
+        self.column_filters_row.controls = self._build_column_filters_row(state)
+        self.column_filters_row.visible = has_columns
+
+    def refresh_column_filters(self, state: dict) -> None:
+        """Reconstruye controles de filtros por columna y refresca la UI."""
+        self._refresh_column_filters_controls(state)
+        if getattr(self, "page", None) is not None:
+            self.update()
+
+    def _level_options_from_state(self, state: dict) -> list[str]:
+        col_values = state.get("col_values", {}) or {}
+        if isinstance(col_values, dict):
+            level_values = col_values.get("Level")
+            if isinstance(level_values, list) and level_values:
+                return ["All"] + level_values
+        level_options = state.get("level_options", ["All"])
+        return level_options if isinstance(level_options, list) and level_options else ["All"]
 
     def refresh_pending_chip_and_status(self, state: dict):
         # Refresco ultraligero para auto-pausa del watcher: solo chip y status.
@@ -633,6 +739,7 @@ class LogsView(ft.Column):
             self.watch_status_text.color = ft.Colors.AMBER_800 if live_paused else ft.Colors.GREEN_800
         else:
             self.watch_status_text.value = ""
+
         # Sincronizar icono del botón de pausa (puede cambiar sin render completo)
         if is_watching:
             if live_paused:
@@ -704,16 +811,6 @@ class LogsView(ft.Column):
         self.toggle_column_selector_button.icon = ft.Icons.VIEW_COLUMN
         self.toggle_column_selector_button.tooltip = "Columnas visibles"
 
-    def update_table_height(self, viewport_height: float) -> None:
-        """Ajusta la altura de la tabla al viewport disponible.
-
-        Debe llamarse cada vez que cambia el tamaño de la ventana (on_resize)
-        y al montar la vista de Logs por primera vez.
-        El llamador es responsable de invocar page.update() si es necesario.
-        """
-        h = max(300, int(viewport_height) - self._TABLE_UI_OVERHEAD_PX)
-        self.table_content_container.height = h
-
     def _invalidate_table_pool(self):
         self._pool_data_table = None
         self._pool_visible_columns = None
@@ -741,7 +838,9 @@ class LogsView(ft.Column):
             return _on_sort
 
         data_table_columns = []
-        for column in visible_columns:
+        last_col_idx = len(visible_columns) - 1
+        for idx, column in enumerate(visible_columns):
+            is_last = idx == last_col_idx
             data_table_columns.append(
                 fdt.DataColumn2(
                     label=ft.Container(
@@ -754,7 +853,8 @@ class LogsView(ft.Column):
                         alignment=ft.Alignment(x=-1, y=0),
                         padding=ft.padding.Padding(left=4, top=10, right=4, bottom=10),
                     ),
-                    fixed_width=self._column_width(column),
+                    fixed_width=None if is_last else self._column_width(column),
+                    size=fdt.DataColumnSize.L if is_last else None,
                     on_sort=_make_sort_handler(column),
                 )
             )

@@ -20,6 +20,7 @@ class LifoLogBuffer:
         self._lock = threading.Lock()
         self._columns: list[str] = []
         self._levels: set[str] = set()
+        self._col_values: dict[str, set[str]] = {}
         self._total_ingested: int = 0
         self._maxlen = maxlen
 
@@ -32,11 +33,17 @@ class LifoLogBuffer:
             self._rows.clear()
             self._levels.clear()
             self._columns = list(columns)
+            self._col_values = {column: set() for column in columns}
             self._total_ingested = 0
 
     def set_columns(self, columns: list[str]) -> None:
         with self._lock:
             self._columns = list(columns)
+            for column in columns:
+                self._col_values.setdefault(column, set())
+            stale_columns = [column for column in self._col_values if column not in columns]
+            for column in stale_columns:
+                del self._col_values[column]
 
     def extend(
         self,
@@ -48,6 +55,10 @@ class LifoLogBuffer:
         with self._lock:
             for row in new_rows:
                 self._rows.appendleft(row)
+                for column in self._columns:
+                    value = row.get(column, "").strip()
+                    if value:
+                        self._col_values.setdefault(column, set()).add(value)
                 count += 1
             for lvl in new_levels:
                 if lvl:
@@ -55,8 +66,8 @@ class LifoLogBuffer:
             self._total_ingested += count
         return count
 
-    def snapshot(self) -> tuple[list[dict[str, str]], list[str], list[str], int, int]:
-        """Devuelve (rows, columns, levels_sorted, current_size, total_ingested).
+    def snapshot(self) -> tuple[list[dict[str, str]], list[str], list[str], dict[str, list[str]], int, int]:
+        """Devuelve (rows, columns, levels_sorted, col_values, current_size, total_ingested).
 
         rows es una nueva lista (LIFO order) cuyas filas son referencias a dicts
         compartidos: el caller no debe mutarlas en sitio.
@@ -66,6 +77,7 @@ class LifoLogBuffer:
                 list(self._rows),
                 list(self._columns),
                 sorted(self._levels),
+                {column: sorted(values) for column, values in self._col_values.items()},
                 len(self._rows),
                 self._total_ingested,
             )

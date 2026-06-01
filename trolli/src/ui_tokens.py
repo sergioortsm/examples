@@ -26,6 +26,8 @@ APP_ERROR_BG = "#FBE9E9"
 APP_ERROR_FG = "#B24444"
 
 CLICK_CURSOR = ft.MouseCursor.CLICK
+DROPDOWN_MENU_HEIGHT: int = 800  # altura máxima del callout en px (cap; sin efecto si caben menos ítems)
+DROPDOWN_MENU_WIDTH: int = 280   # ancho del popup independiente del ancho del control
 
 
 def click_button_style() -> ft.ButtonStyle:

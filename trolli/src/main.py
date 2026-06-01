@@ -93,6 +93,7 @@ class TrelloApp(
             "is_loading": False,
             "is_applying_columns": False,
             "columns": [],
+            "col_values": {},
             "visible_columns": [],
             "visible_columns_pending": [],
             "column_selector_expanded": False,
@@ -120,6 +121,8 @@ class TrelloApp(
             "pending_new_count": 0,
             "lines_per_sec": 0.0,
             "live_paused": False,
+            "column_filters": {},
+            "timestamp_preset": "all",
         }
         # Buffer LIFO compartido entre el hilo del watcher y el event loop.
         self._log_buffer = LifoLogBuffer(maxlen=100_000)
@@ -331,9 +334,6 @@ class TrelloApp(
         if self._root_stack is not None and self._root_stack not in self._page.controls:
             self._page.add(self._root_stack)
         self._page.update()
-        # Ajustar altura de tabla al viewport real antes del primer render.
-        self._page.on_resize = self._on_page_resize
-        self.logs_view.update_table_height(self._page.height or 768)
         # Restaura las preferencias de los logs al inicializar
         self._restore_logs_preferences()
         # create an initial board for demonstration if no boards
@@ -348,16 +348,6 @@ class TrelloApp(
             self._page.navigate("/logs")
         else:
             self.set_logs_view()
-
-    def _on_page_resize(self, e=None) -> None:
-        """Reajusta la altura de la tabla cuando la ventana cambia de tamaño."""
-        h = getattr(e, "height", None) or getattr(self._page, "height", None) or 768
-        try:
-            self.logs_view.update_table_height(float(h))
-            if getattr(self.logs_view, "page", None) is not None:
-                self.logs_view.update()
-        except Exception:
-            pass
 
     def on_layout_resize(self, e=None):
         if self.global_loading_overlay.visible:
@@ -427,10 +417,6 @@ class TrelloApp(
             self.set_members_view()
         elif troute.match("/logs"):
             self.set_logs_view()
-            # Recalcular altura de tabla con el viewport real de este momento.
-            # Necesario porque el evento on_resize puede haberse perdido durante
-            # la maximizacion inicial de la ventana.
-            self.logs_view.update_table_height(self._page.height or 768)
             self.refresh_logs_view()
         self._page.update()
 

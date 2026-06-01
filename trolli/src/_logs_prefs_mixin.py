@@ -88,6 +88,7 @@ class LogsPreferencesMixin:
             "column_widths": {},
             "watch_folder": "",
             "watch_pattern": r".+\.log$",
+            "timestamp_preset": "all",
         }
 
     def _ensure_logs_preferences_file(self) -> dict[str, object]:
@@ -172,6 +173,7 @@ class LogsPreferencesMixin:
             "column_widths": self.logs_state.get("column_widths", {}),
             "watch_folder": self.logs_state.get("watch_folder", ""),
             "watch_pattern": self.logs_state.get("watch_pattern", ""),
+            "timestamp_preset": self.logs_state.get("timestamp_preset", "all"),
         }
         self._write_prefs_file_atomic(prefs_to_persist)
 
@@ -184,6 +186,7 @@ class LogsPreferencesMixin:
         self._storage_set("logs_column_widths", self.logs_state.get("column_widths", {}))
         self._storage_set("logs_watch_folder", self.logs_state.get("watch_folder", ""))
         self._storage_set("logs_watch_pattern", self.logs_state.get("watch_pattern", ""))
+        self._storage_set("logs_timestamp_preset", self.logs_state.get("timestamp_preset", "all"))
 
     def _persist_logs_preferences_if_needed(self):
         current_signature = self._logs_prefs_signature()

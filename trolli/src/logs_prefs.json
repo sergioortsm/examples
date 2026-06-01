@@ -1,12 +1,11 @@
 {
   "search_text": "",
-  "level_filter": "Monitorable",
+  "level_filter": "All",
   "sort_by": "Timestamp",
-  "sort_desc": false,
-  "page_size": 50,
+  "sort_desc": true,
+  "page_size": 100,
   "visible_columns": [
     "Timestamp",
-    "Process",
     "Level",
     "Message"
   ],
@@ -18,5 +17,6 @@
     "Message": 1300
   },
   "watch_folder": "C:\\Temp\\LOGS",
-  "watch_pattern": ".+\\.log$"
+  "watch_pattern": ".+\\.log$",
+  "timestamp_preset": "all"
 }

@@ -82,6 +82,7 @@ class LogsLoadMixin:
                     "file_path": file_path,
                     "file_label": f"Archivo: {Path(file_path).name}",
                     "columns": [],
+                    "col_values": {},
                     "visible_columns": [],
                     "visible_columns_pending": [],
                     "column_selector_expanded": False,
@@ -112,7 +113,7 @@ class LogsLoadMixin:
             sort_by = result.columns[0] if result.columns else None
 
         level_filter = self.logs_state.get("level_filter", "All")
-        level_options = ["All"] + result.levels
+        level_options = ["All"] + result.col_values.get("Level", result.levels)
         if level_filter not in level_options:
             level_filter = "All"
 
@@ -124,6 +125,7 @@ class LogsLoadMixin:
                 "visible_columns": valid_visible,
                 "visible_columns_pending": valid_pending,
                 "column_selector_expanded": False,
+                "col_values": result.col_values,
                 "level_options": level_options,
                 "sort_by": sort_by,
                 "level_filter": level_filter,

@@ -147,7 +147,7 @@ class LogsWatcherMixin:
                     self.logs_state["file_path"] = file_changed
                     self.logs_state["file_label"] = f"En vivo: {Path(file_changed).name}"
 
-                snap_rows, snap_columns, snap_levels, buf_size, _total = self._log_buffer.snapshot()
+                snap_rows, snap_columns, snap_levels, snap_col_values, buf_size, _total = self._log_buffer.snapshot()
                 if snap_columns and self.logs_state.get("columns") != snap_columns:
                     self.logs_state["columns"] = snap_columns
                     visible = [c for c in self.logs_state.get("visible_columns", []) if c in snap_columns]
@@ -155,7 +155,8 @@ class LogsWatcherMixin:
                         visible = list(snap_columns)
                     self.logs_state["visible_columns"] = visible
                     self.logs_state["visible_columns_pending"] = list(visible)
-                self.logs_state["level_options"] = ["All"] + snap_levels
+                self.logs_state["col_values"] = snap_col_values
+                self.logs_state["level_options"] = ["All"] + snap_col_values.get("Level", snap_levels)
                 self.logs_state["buffer_count"] = buf_size
                 self.logs_state["buffer_max"] = self._log_buffer.maxlen
                 self._update_lines_per_sec(total_new_rows)
@@ -264,8 +265,8 @@ class LogsWatcherMixin:
                 self._page.update()
 
     def _show_pending_new_sync(self):
-        snap_rows, snap_columns, snap_levels, buf_size, _ = self._log_buffer.snapshot()
-        self._apply_pending_new_snapshot(snap_rows, snap_columns, snap_levels, buf_size)
+        snap_rows, snap_columns, snap_levels, snap_col_values, buf_size, _ = self._log_buffer.snapshot()
+        self._apply_pending_new_snapshot(snap_rows, snap_columns, snap_levels, snap_col_values, buf_size)
         self._refresh_logs_view_core(should_render=False)
 
     def _apply_pending_new_snapshot(
@@ -273,6 +274,7 @@ class LogsWatcherMixin:
         snap_rows: list,
         snap_columns: list,
         snap_levels: list,
+        snap_col_values: dict,
         buf_size: int,
     ):
         if snap_columns:
@@ -282,7 +284,8 @@ class LogsWatcherMixin:
                 visible = list(snap_columns)
             self.logs_state["visible_columns"] = visible
             self.logs_state["visible_columns_pending"] = list(visible)
-        self.logs_state["level_options"] = ["All"] + snap_levels
+        self.logs_state["col_values"] = snap_col_values
+        self.logs_state["level_options"] = ["All"] + snap_col_values.get("Level", snap_levels)
         self.logs_state["buffer_count"] = buf_size
         self.logs_rows = snap_rows
         self._invalidate_logs_query_cache()
@@ -294,8 +297,8 @@ class LogsWatcherMixin:
         try:
             # snapshot() copia hasta 100k filas bajo lock: fuera del event loop.
             snap = await asyncio.to_thread(self._log_buffer.snapshot)
-            snap_rows, snap_columns, snap_levels, buf_size, _ = snap
-            self._apply_pending_new_snapshot(snap_rows, snap_columns, snap_levels, buf_size)
+            snap_rows, snap_columns, snap_levels, snap_col_values, buf_size, _ = snap
+            self._apply_pending_new_snapshot(snap_rows, snap_columns, snap_levels, snap_col_values, buf_size)
             # filter+sort sobre snap_rows en thread (helper existente).
             await self._rebuild_logs_query_cache_in_thread_if_needed()
             self._refresh_logs_view_core(should_render=False)
@@ -348,6 +351,9 @@ class LogsWatcherMixin:
         self.logs_state.update({
             "is_watching": True,
             "watch_error": "",
+            "columns": [],
+            "col_values": {},
+            "level_options": ["All"],
             "pending_new_count": 0,
             "buffer_count": 0,
             "lines_per_sec": 0.0,

@@ -6,7 +6,7 @@ self._logs_filter_cache_* y self._logs_sort_cache_* definidos en __init__.
 import asyncio
 
 from app_logging import perf_timer
-from log_service import filter_rows, sort_rows
+from log_service import compute_max_timestamp, filter_rows, sort_rows
 
 
 class LogsCacheMixin:
@@ -29,6 +29,8 @@ class LogsCacheMixin:
             tuple(self.logs_state.get("columns", [])),
             self.logs_state.get("search_text", ""),
             self.logs_state.get("level_filter", "All"),
+            tuple(sorted(self.logs_state.get("column_filters", {}).items())),
+            self.logs_state.get("timestamp_preset", "all"),
         )
 
     def _logs_sort_signature(self) -> tuple[object, ...]:
@@ -48,6 +50,7 @@ class LogsCacheMixin:
             tuple(sorted(dict(self.logs_state.get("column_widths", {})).items())),
             self.logs_state.get("watch_folder", ""),
             self.logs_state.get("watch_pattern", ""),
+            self.logs_state.get("timestamp_preset", "all"),
         )
 
     # ------------------------------------------------------------------
@@ -64,12 +67,17 @@ class LogsCacheMixin:
         filter_signature = self._logs_filter_signature()
         if filter_signature == self._logs_filter_cache_signature:
             return
+        preset = self.logs_state.get("timestamp_preset", "all") or "all"
+        timestamp_ref = compute_max_timestamp(self.logs_rows) if preset != "all" else None
         with perf_timer("filter_rows", rows=len(self.logs_rows)):
             self._logs_filter_cache_rows = filter_rows(
                 self.logs_rows,
                 self.logs_state["columns"],
                 self.logs_state["search_text"],
                 self.logs_state["level_filter"],
+                self.logs_state.get("column_filters") or None,
+                timestamp_preset=preset,
+                timestamp_ref=timestamp_ref,
             )
         self._logs_filter_cache_signature = filter_signature
         # Si el filtrado cambia, la cache de sort dejo de ser valida.
@@ -116,6 +124,7 @@ class LogsCacheMixin:
                     self.logs_state["columns"],
                     self.logs_state["search_text"],
                     self.logs_state["level_filter"],
+                    self.logs_state.get("column_filters") or None,
                 )
             self._logs_filter_cache_signature = filter_signature
             self._logs_sort_cache_signature = None
