@@ -1,9 +1,12 @@
 {
   "search_text": "",
-  "level_filters": [],
+  "level_filters": [
+    "Unexpected",
+    "Critical"
+  ],
   "sort_by": "Timestamp",
   "sort_desc": true,
-  "page_size": 100,
+  "page_size": 250,
   "visible_columns": [
     {
       "name": "Timestamp",
@@ -21,7 +24,7 @@
   "column_widths": {
     "Timestamp": 220,
     "Process": 110,
-    "Level": 90,
+    "Level": 120,
     "Correlation": 140,
     "Message": 1300
   },

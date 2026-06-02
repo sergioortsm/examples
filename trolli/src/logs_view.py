@@ -109,6 +109,7 @@ class LogsView(ft.Column):
         # Se invalida cuando cambian visible_columns o crece el numero de filas necesarias.
         self._pool_data_table: "fdt.DataTable2 | None" = None
         self._pool_visible_columns: tuple[str, ...] | None = None
+        self._pool_column_widths: dict[str, int] = {}  # anchos usados al construir el pool
         self._pool_rows: list = []  # list[fdt.DataRow2]
         self._pool_row_texts: list[list[ft.Text]] = []  # [slot][col_idx] -> Text
         self._pool_row_data: list[dict[str, str]] = []  # ultima fila asignada a cada slot
@@ -990,6 +991,7 @@ class LogsView(ft.Column):
     def _invalidate_table_pool(self):
         self._pool_data_table = None
         self._pool_visible_columns = None
+        self._pool_column_widths = {}
         self._pool_rows = []
         self._pool_row_texts = []
         self._pool_row_data = []
@@ -1150,6 +1152,7 @@ class LogsView(ft.Column):
 
         self._pool_data_table = data_table
         self._pool_visible_columns = cols_tuple
+        self._pool_column_widths = {c: self._column_width(c) for c in visible_columns}
         self._pool_rows = pool_rows
         self._pool_row_texts = pool_texts
         self._pool_row_data = pool_data
@@ -1180,10 +1183,12 @@ class LogsView(ft.Column):
 
         cols_tuple = tuple(visible_columns)
         n = len(page_rows)
+        current_widths = {c: self._column_width(c) for c in visible_columns}
         needs_rebuild = (
             self._pool_data_table is None
             or self._pool_visible_columns != cols_tuple
             or len(self._pool_rows) < n
+            or current_widths != self._pool_column_widths
         )
         if needs_rebuild:
             # pool al menos del tamano de la pagina; un suelo de 50 cubre el caso normal.
