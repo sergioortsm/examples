@@ -134,6 +134,8 @@ class TrelloApp(
             "active_domain": None,
             "rule_matches": {},
             "analysis_panel_open": False,
+            "active_rule_id": None,  # filtro de tabla por regla concreta o "__ANY__"
+            "page_global_indices": [],  # indices originales (sort cache) por slot de la pagina actual
         }
         # Buffer LIFO compartido entre el hilo del watcher y el event loop.
         self._log_buffer = LifoLogBuffer(maxlen=100_000)
@@ -207,6 +209,8 @@ class TrelloApp(
         if hasattr(self.file_picker, "on_result"):
             self.file_picker.on_result = self.on_log_file_selected
         self._page.services.append(self.file_picker)
+        self.dir_picker = ft.FilePicker()
+        self._page.services.append(self.dir_picker)
         self._page.services.append(self._shared_preferences)
         # Servicio de portapapeles (Flet 0.80+): debe estar registrado en
         # `page.services` para poder usar `page.clipboard.set(...)`.

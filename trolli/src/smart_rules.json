@@ -379,7 +379,6 @@
     "highlight_color": "#B71C1C",
     "enabled": true
   },
-
   {
     "id": "67b7283d7837f571",
     "name": "Cache: SPDistributedCachePointerWrapper",
@@ -450,7 +449,6 @@
     "highlight_color": "#BF360C",
     "enabled": true
   },
-
   {
     "id": "94b94eecf036cdb7",
     "name": "Config: RefreshDirtyCollections",
@@ -531,7 +529,6 @@
     "highlight_color": "#4527A0",
     "enabled": true
   },
-
   {
     "id": "368e06002999c89d",
     "name": "Jobs: UsageManager is null",
@@ -552,7 +549,6 @@
     "highlight_color": "#1565C0",
     "enabled": true
   },
-
   {
     "id": "a9f2b15c3e4d6f70",
     "name": "PS: Could not get super user token",
@@ -573,7 +569,6 @@
     "highlight_color": "#B71C1C",
     "enabled": true
   },
-
   {
     "id": "7f4e9a1b5c2d8e63",
     "name": "WSP: Failed to open resource file",
@@ -582,6 +577,86 @@
     "pattern": "failed to (open|read) (the file|resource file)",
     "is_regex": true,
     "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "33fcc510328b7e84",
+    "name": "[CANDIDATO] ruta acceso especificada existe",
+    "domain": "SPFx",
+    "field": "*",
+    "pattern": "ruta acceso especificada existe",
+    "is_regex": false,
+    "highlight_color": "#7B52AB",
+    "enabled": true
+  },
+  {
+    "id": "355b1ae663e0ad62",
+    "name": "[CANDIDATO] failed open file",
+    "domain": "SPFx",
+    "field": "*",
+    "pattern": "failed open file",
+    "is_regex": false,
+    "highlight_color": "#7B52AB",
+    "enabled": true
+  },
+  {
+    "id": "06b3ee50fe411a59",
+    "name": "[CANDIDATO] spdistributedcachepointerwrapper::initializedatacachefa",
+    "domain": "Distributed Cache",
+    "field": "*",
+    "pattern": "spdistributedcachepointerwrapper::initializedatacachefactory cache hosts present",
+    "is_regex": false,
+    "highlight_color": "#BF360C",
+    "enabled": true
+  },
+  {
+    "id": "893e3c16ae43e9a1",
+    "name": "[CANDIDATO] unexpected exception spdistributedcachepointerwrapper::",
+    "domain": "Distributed Cache",
+    "field": "*",
+    "pattern": "unexpected exception spdistributedcachepointerwrapper::initializedatacachefactory usage",
+    "is_regex": false,
+    "highlight_color": "#BF360C",
+    "enabled": true
+  },
+  {
+    "id": "1e0f1f84f1a97036",
+    "name": "[CANDIDATO] token cache failed initialize",
+    "domain": "Distributed Cache",
+    "field": "*",
+    "pattern": "token cache failed initialize",
+    "is_regex": false,
+    "highlight_color": "#BF360C",
+    "enabled": true
+  },
+  {
+    "id": "4bbe0121e2d54af8",
+    "name": "[CANDIDATO] certificate validation policy domain",
+    "domain": "SPFx",
+    "field": "*",
+    "pattern": "certificate validation policy domain",
+    "is_regex": false,
+    "highlight_color": "#7B52AB",
+    "enabled": true
+  },
+  {
+    "id": "40d0a1b8ff019d38",
+    "name": "[CANDIDATO] token cache failed token",
+    "domain": "Distributed Cache",
+    "field": "*",
+    "pattern": "token cache failed token",
+    "is_regex": false,
+    "highlight_color": "#BF360C",
+    "enabled": true
+  },
+  {
+    "id": "69f1e4e94f1b905e",
+    "name": "[CANDIDATO] token cache reverting local",
+    "domain": "SPFx",
+    "field": "*",
+    "pattern": "token cache reverting local",
+    "is_regex": false,
+    "highlight_color": "#7B52AB",
     "enabled": true
   }
 ]

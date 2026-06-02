@@ -19,11 +19,12 @@ class LogsRulesMixin:
         """Llamado cuando el usuario cambia el perfil activo en el dropdown."""
         self.logs_state["active_domain"] = domain
         self.logs_state["rule_matches"] = {}
+        self.logs_state["active_rule_id"] = None
         self.logs_state["analysis_panel_open"] = bool(domain)
         if domain:
             self.page.run_task(self._run_rules_async)
         else:
-            # Perfil desactivado: refrescar para limpiar bordes
+            # Perfil desactivado: refrescar para limpiar bordes y filtro
             self.refresh_logs_view()
 
     def on_logs_toggle_analysis_panel(self) -> None:
@@ -31,6 +32,19 @@ class LogsRulesMixin:
         self.logs_state["analysis_panel_open"] = not self.logs_state.get(
             "analysis_panel_open", False
         )
+        self.refresh_logs_view()
+
+    def on_logs_toggle_rule_filter(self, rule_id: str | None) -> None:
+        """Activa/desactiva el filtro de tabla por una regla concreta o "__ANY__"."""
+        current = self.logs_state.get("active_rule_id")
+        new_value: str | None
+        if rule_id is None or current == rule_id:
+            new_value = None
+        else:
+            new_value = rule_id
+        self.logs_state["active_rule_id"] = new_value
+        # Reset paginacion para que el usuario vea desde la primera pagina del subset
+        self.logs_state["current_page"] = 1
         self.refresh_logs_view()
 
     def rerun_rules_if_active(self) -> None:
@@ -77,4 +91,17 @@ class LogsRulesMixin:
             return
 
         self.logs_state["rule_matches"] = matches
+
+        # Sanear active_rule_id: si la regla ya no aparece en los nuevos matches, limpiarlo.
+        active_rid = self.logs_state.get("active_rule_id")
+        if active_rid and active_rid != "__ANY__":
+            still_present = any(
+                any(r.id == active_rid for r in rule_list)
+                for rule_list in matches.values()
+            )
+            if not still_present:
+                self.logs_state["active_rule_id"] = None
+        elif active_rid == "__ANY__" and not matches:
+            self.logs_state["active_rule_id"] = None
+
         self.refresh_logs_view()

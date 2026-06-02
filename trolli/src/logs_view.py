@@ -1192,6 +1192,7 @@ class LogsView(ft.Column):
         rule_matches = state.get("rule_matches", {})
         current_page = state.get("current_page", 1)
         page_size = state.get("page_size", 100)
+        page_global_indices = state.get("page_global_indices") or []
 
         # Mutar datos: solo text.value + slot data + bgcolor segun level.
         for slot in range(n):
@@ -1207,7 +1208,10 @@ class LogsView(ft.Column):
                 texts[col_idx].value = str(row.get(column, ""))
             # ── Borde izquierdo por regla coincidente ─────────────────────
             if rule_matches:
-                global_idx = (current_page - 1) * page_size + slot
+                if slot < len(page_global_indices):
+                    global_idx = page_global_indices[slot]
+                else:
+                    global_idx = (current_page - 1) * page_size + slot
                 matched = rule_matches.get(global_idx)
                 if matched:
                     self._pool_row_decorations[slot].border = ft.Border(
@@ -1241,16 +1245,37 @@ class LogsView(ft.Column):
         active_domain = state.get("active_domain")
         panel_open = bool(state.get("analysis_panel_open", False))
         rule_matches = state.get("rule_matches", {})
+        active_rid = state.get("active_rule_id")
 
         self.analysis_panel.visible = bool(active_domain and panel_open)
         if not self.analysis_panel.visible:
             return
 
         total = len(rule_matches)
-        self.analysis_total_text.value = (
-            f"Dominio: {active_domain}  ·  Filas con coincidencias: {total}"
-            if total else f"Dominio: {active_domain}  ·  Sin coincidencias en los datos actuales."
-        )
+        filtered_total = state.get("filtered_total", 0)
+        if active_rid and rule_matches:
+            if active_rid == "__ANY__":
+                label_rule = "Todas las reglas del dominio"
+            else:
+                # Buscar nombre desde algun match
+                label_rule = active_rid
+                for matches in rule_matches.values():
+                    for r in matches:
+                        if r.id == active_rid:
+                            raw = r.name
+                            label_rule = raw.split(": ", 1)[-1] if ": " in raw else raw
+                            break
+                    else:
+                        continue
+                    break
+            self.analysis_total_text.value = (
+                f"Dominio: {active_domain}  ·  Filtrando por: {label_rule}  ·  Filas visibles: {filtered_total}"
+            )
+        else:
+            self.analysis_total_text.value = (
+                f"Dominio: {active_domain}  ·  Filas con coincidencias: {total}"
+                if total else f"Dominio: {active_domain}  ·  Sin coincidencias en los datos actuales."
+            )
 
         if not rule_matches:
             self.analysis_chips_row.controls = []
@@ -1270,33 +1295,69 @@ class LogsView(ft.Column):
                     colors[r.id] = r.highlight_color
 
         sorted_ids = sorted(counts, key=lambda rid: -counts[rid])
-        chips = []
+
+        def _make_chip(rid: str, label: str, color: str, count: int) -> ft.Container:
+            is_active = active_rid == rid
+            return ft.Container(
+                content=ft.Row(
+                    [
+                        ft.Container(
+                            width=10,
+                            height=10,
+                            bgcolor=color,
+                            border_radius=ft.BorderRadius(5, 5, 5, 5),
+                        ),
+                        ft.Text(
+                            f"{label}  ({count})",
+                            size=11,
+                            color=APP_TEXT_PRIMARY,
+                            weight=ft.FontWeight.W_700 if is_active else ft.FontWeight.NORMAL,
+                        ),
+                    ],
+                    spacing=6,
+                    tight=True,
+                    vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                ),
+                bgcolor=APP_SURFACE_MUTED if is_active else APP_SURFACE,
+                border=ft.Border.all(2 if is_active else 1, color if is_active else APP_BORDER),
+                border_radius=ft.BorderRadius(14, 14, 14, 14),
+                padding=ft.padding.Padding(left=10, top=3, right=10, bottom=3),
+                tooltip=("Quitar filtro" if is_active else f"Filtrar por: {label}"),
+                on_click=(lambda e, _rid=rid: self.app.on_logs_toggle_rule_filter(_rid)),
+                ink=True,
+            )
+
+        chips: list[ft.Control] = []
+        # Chip "Todas" (cualquier regla del dominio coincide)
+        chips.append(_make_chip("__ANY__", "Todas", APP_TEXT_MUTED, total))
         for rid in sorted_ids:
             count = counts[rid]
             color = colors[rid]
-            # Nombre corto: quitar prefijo "XX: "
             raw_name = names[rid]
             short = raw_name.split(": ", 1)[-1] if ": " in raw_name else raw_name
+            chips.append(_make_chip(rid, short, color, count))
+
+        # Boton para quitar filtro cuando hay uno activo
+        if active_rid:
             chips.append(
                 ft.Container(
                     content=ft.Row(
                         [
-                            ft.Container(
-                                width=10,
-                                height=10,
-                                bgcolor=color,
-                                border_radius=ft.BorderRadius(5, 5, 5, 5),
-                            ),
-                            ft.Text(f"{short}  ({count})", size=11, color=APP_TEXT_PRIMARY),
+                            ft.Icon(ft.Icons.CLOSE, size=12, color=APP_TEXT_PRIMARY),
+                            ft.Text("Quitar filtro", size=11, color=APP_TEXT_PRIMARY),
                         ],
-                        spacing=6,
+                        spacing=4,
                         tight=True,
                         vertical_alignment=ft.CrossAxisAlignment.CENTER,
                     ),
                     bgcolor=APP_SURFACE,
                     border=ft.Border.all(1, APP_BORDER),
                     border_radius=ft.BorderRadius(14, 14, 14, 14),
-                    padding=ft.padding.Padding(left=10, top=3, right=10, bottom=3),
+                    padding=ft.padding.Padding(left=8, top=3, right=10, bottom=3),
+                    tooltip="Quitar el filtro de regla activo",
+                    on_click=lambda e: self.app.on_logs_toggle_rule_filter(None),
+                    ink=True,
                 )
             )
+
         self.analysis_chips_row.controls = chips

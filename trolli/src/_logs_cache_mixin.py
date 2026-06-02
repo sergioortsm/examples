@@ -120,6 +120,8 @@ class LogsCacheMixin:
         # Filtrado: si la firma cambio, lo lanzamos a un thread.
         filter_signature = self._logs_filter_signature()
         if filter_signature != self._logs_filter_cache_signature:
+            preset = self.logs_state.get("timestamp_preset", "all") or "all"
+            timestamp_ref = compute_max_timestamp(self.logs_rows) if preset != "all" else None
             with perf_timer("filter_rows_async", rows=len(self.logs_rows)):
                 self._logs_filter_cache_rows = await asyncio.to_thread(
                     filter_rows,
@@ -128,6 +130,8 @@ class LogsCacheMixin:
                     self.logs_state["search_text"],
                     self.logs_state.get("level_filters") or [],
                     self.logs_state.get("column_filters") or None,
+                    preset,
+                    timestamp_ref,
                 )
             self._logs_filter_cache_signature = filter_signature
             self._logs_sort_cache_signature = None

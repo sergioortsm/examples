@@ -1,0 +1,1939 @@
+{
+  "watched_dir": "C:\\Temp\\LOGS\\SERVIDOR",
+  "processed": [
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\AdminService.log",
+      "size": 957,
+      "mtime": 1779682260.3078306,
+      "processed_at": "2026-06-02T01:18:49",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\PSCDiagnostics_5_29_2026_12_29_6_614_1926673093.log",
+      "size": 421562,
+      "mtime": 1780050550.592331,
+      "processed_at": "2026-06-02T01:18:49",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260523-2143.log",
+      "size": 6120197,
+      "mtime": 1779567186.17265,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260523-2213.log",
+      "size": 5743307,
+      "mtime": 1779568986.1724503,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260523-2243.log",
+      "size": 6142148,
+      "mtime": 1779570786.1452684,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260523-2313.log",
+      "size": 5664635,
+      "mtime": 1779572586.1441338,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260523-2343.log",
+      "size": 7589601,
+      "mtime": 1779574386.1290007,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0013.log",
+      "size": 9022935,
+      "mtime": 1779576186.1119597,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0043.log",
+      "size": 6876147,
+      "mtime": 1779577986.0999608,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0113.log",
+      "size": 5675980,
+      "mtime": 1779579786.0880086,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0143.log",
+      "size": 6098082,
+      "mtime": 1779581586.066258,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0213.log",
+      "size": 5635570,
+      "mtime": 1779583386.058422,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0243.log",
+      "size": 6510525,
+      "mtime": 1779585186.0422359,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0313.log",
+      "size": 5649389,
+      "mtime": 1779586986.0326602,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0343.log",
+      "size": 6096487,
+      "mtime": 1779588786.0101893,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0413.log",
+      "size": 5744173,
+      "mtime": 1779590585.996873,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0443.log",
+      "size": 6109146,
+      "mtime": 1779592385.978738,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0513.log",
+      "size": 5658177,
+      "mtime": 1779594186.5431073,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0543.log",
+      "size": 4339018,
+      "mtime": 1779595985.9577038,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0613.log",
+      "size": 5686972,
+      "mtime": 1779597785.9425752,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0643.log",
+      "size": 5995126,
+      "mtime": 1779599585.9180691,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0713.log",
+      "size": 5579479,
+      "mtime": 1779601385.9178474,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0743.log",
+      "size": 6020003,
+      "mtime": 1779603185.8949604,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0813.log",
+      "size": 5550920,
+      "mtime": 1779604985.878875,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0843.log",
+      "size": 6002819,
+      "mtime": 1779606786.5098133,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0913.log",
+      "size": 5553682,
+      "mtime": 1779608585.8550775,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-0943.log",
+      "size": 5991824,
+      "mtime": 1779610385.8403754,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1013.log",
+      "size": 5627841,
+      "mtime": 1779612186.4854922,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1043.log",
+      "size": 6004801,
+      "mtime": 1779613985.8050225,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1113.log",
+      "size": 5567219,
+      "mtime": 1779615785.8038247,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1143.log",
+      "size": 5974298,
+      "mtime": 1779617586.4904082,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1213.log",
+      "size": 5559182,
+      "mtime": 1779619386.483897,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1243.log",
+      "size": 6000296,
+      "mtime": 1779621185.7482903,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1313.log",
+      "size": 5554531,
+      "mtime": 1779622985.7450354,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1343.log",
+      "size": 6005174,
+      "mtime": 1779624786.474944,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1413.log",
+      "size": 5610817,
+      "mtime": 1779626585.717741,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1443.log",
+      "size": 6080702,
+      "mtime": 1779628385.6933098,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1513.log",
+      "size": 5648896,
+      "mtime": 1779630185.693489,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1543.log",
+      "size": 6091304,
+      "mtime": 1779631985.6769907,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1613.log",
+      "size": 5723803,
+      "mtime": 1779633785.651567,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1643.log",
+      "size": 6102857,
+      "mtime": 1779635585.638405,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1713.log",
+      "size": 5743045,
+      "mtime": 1779637386.4205174,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1743.log",
+      "size": 6088731,
+      "mtime": 1779639186.4186673,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1813.log",
+      "size": 5642459,
+      "mtime": 1779640985.5957408,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1843.log",
+      "size": 6086421,
+      "mtime": 1779642785.590655,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1913.log",
+      "size": 5654657,
+      "mtime": 1779644585.5735211,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-1943.log",
+      "size": 6098311,
+      "mtime": 1779646386.3899984,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-2013.log",
+      "size": 5647488,
+      "mtime": 1779648185.550426,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-2043.log",
+      "size": 6072052,
+      "mtime": 1779649985.5326226,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-2113.log",
+      "size": 5655191,
+      "mtime": 1779651786.3684394,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-2143.log",
+      "size": 6099200,
+      "mtime": 1779653585.5071597,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-2213.log",
+      "size": 5736492,
+      "mtime": 1779655386.3610313,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-2243.log",
+      "size": 6127899,
+      "mtime": 1779657186.3548245,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-2313.log",
+      "size": 5668576,
+      "mtime": 1779658985.4546869,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260524-2343.log",
+      "size": 7364008,
+      "mtime": 1779660785.4549406,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260525-0013.log",
+      "size": 9040391,
+      "mtime": 1779662586.3237274,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260525-0043.log",
+      "size": 6902704,
+      "mtime": 1779664386.3172772,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260525-0113.log",
+      "size": 5689878,
+      "mtime": 1779666185.3986714,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260525-0143.log",
+      "size": 6143409,
+      "mtime": 1779667986.3055305,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260525-0213.log",
+      "size": 5647202,
+      "mtime": 1779669786.3046448,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260525-0243.log",
+      "size": 6543568,
+      "mtime": 1779671586.3041296,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260525-0313.log",
+      "size": 5715049,
+      "mtime": 1779673386.3006477,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260525-0343.log",
+      "size": 6135515,
+      "mtime": 1779675185.3296432,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260525-0413.log",
+      "size": 5753564,
+      "mtime": 1779676985.325388,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260525-0443.log",
+      "size": 6148484,
+      "mtime": 1779678786.2888732,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260525-0513.log",
+      "size": 5674986,
+      "mtime": 1779680585.2933357,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260525-0543.log",
+      "size": 4355260,
+      "mtime": 1779682385.2973657,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260525-0613.log",
+      "size": 5649505,
+      "mtime": 1779684185.2596488,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260525-0643.log",
+      "size": 5996096,
+      "mtime": 1779685985.2580929,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260525-0713.log",
+      "size": 5573552,
+      "mtime": 1779687785.2284365,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260525-0743.log",
+      "size": 6023711,
+      "mtime": 1779689586.2542586,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260525-0813.log",
+      "size": 185436,
+      "mtime": 1779689670.2176626,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-1219.log",
+      "size": 20381204,
+      "mtime": 1780051773.620088,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-1249.log",
+      "size": 10400325,
+      "mtime": 1780053573.6262357,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-1319.log",
+      "size": 9185299,
+      "mtime": 1780055373.6271617,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-1349.log",
+      "size": 9458530,
+      "mtime": 1780057173.640426,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-1419.log",
+      "size": 9151539,
+      "mtime": 1780058973.642515,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-1449.log",
+      "size": 9453836,
+      "mtime": 1780060773.697912,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-1519.log",
+      "size": 9137826,
+      "mtime": 1780062573.6413724,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-1549.log",
+      "size": 9457437,
+      "mtime": 1780064373.6569824,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-1619.log",
+      "size": 9158242,
+      "mtime": 1780066173.7547305,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-1649.log",
+      "size": 9456023,
+      "mtime": 1780067973.668469,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-1719.log",
+      "size": 9139232,
+      "mtime": 1780069773.658913,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-1749.log",
+      "size": 9439237,
+      "mtime": 1780071573.6701443,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-1819.log",
+      "size": 9149986,
+      "mtime": 1780073373.6746175,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-1849.log",
+      "size": 9445320,
+      "mtime": 1780075173.6865284,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-1919.log",
+      "size": 9146285,
+      "mtime": 1780076973.6925137,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-1949.log",
+      "size": 9442056,
+      "mtime": 1780078773.6929524,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-2019.log",
+      "size": 9152369,
+      "mtime": 1780080573.6986036,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-2049.log",
+      "size": 9446078,
+      "mtime": 1780082373.7039328,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-2119.log",
+      "size": 9143452,
+      "mtime": 1780084173.709477,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-2149.log",
+      "size": 9461994,
+      "mtime": 1780085973.7124145,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-2219.log",
+      "size": 9185694,
+      "mtime": 1780087773.7094233,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-2249.log",
+      "size": 9564955,
+      "mtime": 1780089573.7219512,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-2319.log",
+      "size": 9203558,
+      "mtime": 1780091373.7300265,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260529-2349.log",
+      "size": 9617519,
+      "mtime": 1780093173.721602,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0019.log",
+      "size": 9174203,
+      "mtime": 1780094973.9330342,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0049.log",
+      "size": 7462801,
+      "mtime": 1780096773.7400587,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0119.log",
+      "size": 6051956,
+      "mtime": 1780098573.7355242,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0149.log",
+      "size": 6293860,
+      "mtime": 1780100373.7518084,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0219.log",
+      "size": 5987423,
+      "mtime": 1780102173.7512605,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0249.log",
+      "size": 6740721,
+      "mtime": 1780103973.762794,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0319.log",
+      "size": 6027501,
+      "mtime": 1780105773.762933,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0349.log",
+      "size": 6286013,
+      "mtime": 1780107573.7703598,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0419.log",
+      "size": 6022018,
+      "mtime": 1780109373.9811473,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0449.log",
+      "size": 6310729,
+      "mtime": 1780111173.9711716,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0519.log",
+      "size": 6003388,
+      "mtime": 1780112973.9542818,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0549.log",
+      "size": 6277434,
+      "mtime": 1780114773.9361367,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0619.log",
+      "size": 6004107,
+      "mtime": 1780116573.9217117,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0649.log",
+      "size": 6277691,
+      "mtime": 1780118373.909482,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0719.log",
+      "size": 6006155,
+      "mtime": 1780120173.8959253,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0749.log",
+      "size": 6310427,
+      "mtime": 1780121973.8739383,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0819.log",
+      "size": 6000623,
+      "mtime": 1780123773.854889,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0849.log",
+      "size": 6275848,
+      "mtime": 1780125573.8501415,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0919.log",
+      "size": 5990876,
+      "mtime": 1780127373.839856,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-0949.log",
+      "size": 6259117,
+      "mtime": 1780129173.8255992,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1019.log",
+      "size": 6000870,
+      "mtime": 1780130973.802969,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1049.log",
+      "size": 6264648,
+      "mtime": 1780132773.7867258,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1119.log",
+      "size": 6003695,
+      "mtime": 1780134573.784117,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1149.log",
+      "size": 6278648,
+      "mtime": 1780136373.7643676,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1219.log",
+      "size": 5997121,
+      "mtime": 1780138173.7508695,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1249.log",
+      "size": 6267123,
+      "mtime": 1780139973.7315092,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1319.log",
+      "size": 6008811,
+      "mtime": 1780141773.7151203,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1349.log",
+      "size": 6280395,
+      "mtime": 1780143573.700075,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1419.log",
+      "size": 5988163,
+      "mtime": 1780145373.6850271,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1449.log",
+      "size": 6263187,
+      "mtime": 1780147173.6797318,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1519.log",
+      "size": 6000513,
+      "mtime": 1780148973.668309,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1549.log",
+      "size": 6280220,
+      "mtime": 1780150773.652374,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1619.log",
+      "size": 6007470,
+      "mtime": 1780152573.635915,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1649.log",
+      "size": 6270983,
+      "mtime": 1780154373.6227074,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1719.log",
+      "size": 5996972,
+      "mtime": 1780156173.6044931,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1749.log",
+      "size": 6280069,
+      "mtime": 1780157973.5960896,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1819.log",
+      "size": 5985895,
+      "mtime": 1780159773.5711493,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1849.log",
+      "size": 6262161,
+      "mtime": 1780161573.5580924,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1919.log",
+      "size": 5984852,
+      "mtime": 1780163373.5385222,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-1949.log",
+      "size": 6264654,
+      "mtime": 1780165173.527583,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-2019.log",
+      "size": 5993090,
+      "mtime": 1780166973.52238,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-2049.log",
+      "size": 6266514,
+      "mtime": 1780168773.4962704,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-2119.log",
+      "size": 6002004,
+      "mtime": 1780170573.4836812,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-2149.log",
+      "size": 6294866,
+      "mtime": 1780172373.4803083,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-2219.log",
+      "size": 6038565,
+      "mtime": 1780174173.465236,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-2249.log",
+      "size": 6353957,
+      "mtime": 1780175973.4476864,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-2319.log",
+      "size": 6054857,
+      "mtime": 1780177773.4304566,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260530-2349.log",
+      "size": 6627782,
+      "mtime": 1780179573.4124076,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0019.log",
+      "size": 6033573,
+      "mtime": 1780181373.4043748,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0049.log",
+      "size": 6264868,
+      "mtime": 1780183173.393331,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0119.log",
+      "size": 6022267,
+      "mtime": 1780184973.3644538,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0149.log",
+      "size": 6304045,
+      "mtime": 1780186773.350881,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0219.log",
+      "size": 5962586,
+      "mtime": 1780188573.3456602,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0249.log",
+      "size": 6719597,
+      "mtime": 1780190373.32146,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0319.log",
+      "size": 6007315,
+      "mtime": 1780192173.315881,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0349.log",
+      "size": 6322443,
+      "mtime": 1780193973.3078153,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0419.log",
+      "size": 5999547,
+      "mtime": 1780195773.2775934,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0449.log",
+      "size": 6285064,
+      "mtime": 1780197573.2687788,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0519.log",
+      "size": 6006373,
+      "mtime": 1780199373.2619748,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0549.log",
+      "size": 6267832,
+      "mtime": 1780201173.2495413,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0619.log",
+      "size": 5990850,
+      "mtime": 1780202973.2195475,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0649.log",
+      "size": 6269966,
+      "mtime": 1780204773.217592,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0719.log",
+      "size": 5993439,
+      "mtime": 1780206573.1895258,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0749.log",
+      "size": 6272314,
+      "mtime": 1780208373.1896677,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0819.log",
+      "size": 5994809,
+      "mtime": 1780210173.1713045,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0849.log",
+      "size": 6276828,
+      "mtime": 1780211973.1514246,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0919.log",
+      "size": 6008345,
+      "mtime": 1780213773.1447062,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-0949.log",
+      "size": 6273095,
+      "mtime": 1780215573.1256797,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1019.log",
+      "size": 6000986,
+      "mtime": 1780217373.106694,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1049.log",
+      "size": 6272453,
+      "mtime": 1780219173.1012921,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1119.log",
+      "size": 5997859,
+      "mtime": 1780220973.073705,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1149.log",
+      "size": 6268875,
+      "mtime": 1780222773.0707412,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1219.log",
+      "size": 5999522,
+      "mtime": 1780224573.0451658,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1249.log",
+      "size": 6267165,
+      "mtime": 1780226373.041195,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1319.log",
+      "size": 6009555,
+      "mtime": 1780228173.025383,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1349.log",
+      "size": 6281140,
+      "mtime": 1780229973.7625647,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1419.log",
+      "size": 5997113,
+      "mtime": 1780231773.7620783,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1449.log",
+      "size": 6259357,
+      "mtime": 1780233572.977169,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1519.log",
+      "size": 5988177,
+      "mtime": 1780235372.9576924,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1549.log",
+      "size": 6281834,
+      "mtime": 1780237173.7414038,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1619.log",
+      "size": 5994324,
+      "mtime": 1780238972.943938,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1649.log",
+      "size": 6279020,
+      "mtime": 1780240772.9149337,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1719.log",
+      "size": 5997271,
+      "mtime": 1780242572.8998005,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1749.log",
+      "size": 6274838,
+      "mtime": 1780244373.726778,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1819.log",
+      "size": 5987631,
+      "mtime": 1780246172.871519,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1849.log",
+      "size": 6268253,
+      "mtime": 1780247972.8573983,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1919.log",
+      "size": 5996088,
+      "mtime": 1780249772.852184,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-1949.log",
+      "size": 6278161,
+      "mtime": 1780251572.827376,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-2019.log",
+      "size": 6007716,
+      "mtime": 1780253372.825176,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-2049.log",
+      "size": 6272070,
+      "mtime": 1780255172.7994907,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-2119.log",
+      "size": 6012024,
+      "mtime": 1780256972.7842777,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-2149.log",
+      "size": 6289221,
+      "mtime": 1780258773.6525328,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-2219.log",
+      "size": 6035394,
+      "mtime": 1780260572.756268,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-2249.log",
+      "size": 6302994,
+      "mtime": 1780262372.7423038,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-2319.log",
+      "size": 6050564,
+      "mtime": 1780264172.7274363,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260531-2349.log",
+      "size": 6449919,
+      "mtime": 1780265972.713505,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0019.log",
+      "size": 7431311,
+      "mtime": 1780267772.744709,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0049.log",
+      "size": 6356787,
+      "mtime": 1780269573.618286,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0119.log",
+      "size": 6047571,
+      "mtime": 1780271373.6170387,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0149.log",
+      "size": 6280985,
+      "mtime": 1780273172.6555722,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0219.log",
+      "size": 5973148,
+      "mtime": 1780274973.6021295,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0249.log",
+      "size": 6703908,
+      "mtime": 1780276773.5931163,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0319.log",
+      "size": 6003962,
+      "mtime": 1780278572.6128204,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0349.log",
+      "size": 6277095,
+      "mtime": 1780280372.5982625,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0419.log",
+      "size": 6016727,
+      "mtime": 1780282173.5640702,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0449.log",
+      "size": 6270194,
+      "mtime": 1780283973.5558536,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0519.log",
+      "size": 6008459,
+      "mtime": 1780285772.5536306,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0549.log",
+      "size": 6266255,
+      "mtime": 1780287572.5389595,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0619.log",
+      "size": 5991142,
+      "mtime": 1780289373.5256126,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0649.log",
+      "size": 6263410,
+      "mtime": 1780291173.517465,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0719.log",
+      "size": 5999252,
+      "mtime": 1780292972.495266,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0749.log",
+      "size": 6266201,
+      "mtime": 1780294773.4999676,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0819.log",
+      "size": 5997444,
+      "mtime": 1780296573.493241,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0849.log",
+      "size": 6267509,
+      "mtime": 1780298372.4522312,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0919.log",
+      "size": 6004504,
+      "mtime": 1780300173.4745471,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-0949.log",
+      "size": 6335241,
+      "mtime": 1780301972.891883,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1019.log",
+      "size": 6002058,
+      "mtime": 1780303772.991022,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1049.log",
+      "size": 6274871,
+      "mtime": 1780305572.9952567,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1119.log",
+      "size": 6007466,
+      "mtime": 1780307372.998333,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1149.log",
+      "size": 6294555,
+      "mtime": 1780309173.0039582,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1219.log",
+      "size": 6002785,
+      "mtime": 1780310973.0073707,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1249.log",
+      "size": 6283768,
+      "mtime": 1780312773.0107355,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1319.log",
+      "size": 6000038,
+      "mtime": 1780314573.014524,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1349.log",
+      "size": 6281909,
+      "mtime": 1780316373.0186646,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1419.log",
+      "size": 5993577,
+      "mtime": 1780318173.0217843,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1449.log",
+      "size": 6280988,
+      "mtime": 1780319973.0260048,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1519.log",
+      "size": 6004042,
+      "mtime": 1780321773.030535,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1549.log",
+      "size": 6282775,
+      "mtime": 1780323573.0354302,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1619.log",
+      "size": 5999746,
+      "mtime": 1780325373.040661,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1649.log",
+      "size": 6264152,
+      "mtime": 1780327173.0443707,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1719.log",
+      "size": 6012608,
+      "mtime": 1780328973.0483673,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1749.log",
+      "size": 6283782,
+      "mtime": 1780330773.0533817,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1819.log",
+      "size": 6003373,
+      "mtime": 1780332573.648515,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1849.log",
+      "size": 6279253,
+      "mtime": 1780334373.6415942,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1919.log",
+      "size": 6000299,
+      "mtime": 1780336173.6276546,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-1949.log",
+      "size": 6280292,
+      "mtime": 1780337974.1230907,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-2019.log",
+      "size": 5989803,
+      "mtime": 1780339774.1179237,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-2049.log",
+      "size": 6268129,
+      "mtime": 1780341574.1149719,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-2119.log",
+      "size": 6003679,
+      "mtime": 1780343374.1132698,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-2149.log",
+      "size": 6305369,
+      "mtime": 1780345174.1053221,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-2219.log",
+      "size": 6030247,
+      "mtime": 1780346974.098177,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-2249.log",
+      "size": 6301441,
+      "mtime": 1780348774.0944445,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    },
+    {
+      "path": "C:\\Temp\\LOGS\\SERVIDOR\\SAPCOL03-20260601-2319.log",
+      "size": 6064471,
+      "mtime": 1780350574.093771,
+      "processed_at": "2026-06-02T01:27:27",
+      "candidates_found": 0,
+      "rules_added": 0
+    }
+  ],
+  "skipped_ids": [
+    "03b563eb260ffeb5",
+    "050798e72575e2c2",
+    "0d4200e9228e0c76",
+    "1bb1ac391f612ef1",
+    "269af866edd18af9",
+    "281a15917cd925c4",
+    "46482d7cf147c6de",
+    "646b29a594015342",
+    "693f0f4443a6bfaa",
+    "88c65707291ce08d",
+    "8f25046e8862152d",
+    "9a9e8e19ad0f301d",
+    "b29c99d933f6f22d",
+    "b729f9b9cf214166",
+    "d24291ced76ba74d",
+    "db0604fee973f803",
+    "df2a550bc4cb535a",
+    "e920be944aad4e7f",
+    "f33235f7473e742c",
+    "f79c712f6eb0243b"
+  ]
+}

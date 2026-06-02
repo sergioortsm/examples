@@ -1,11 +1,12 @@
 {
   "search_text": "",
-  "level_filter": "All",
+  "level_filters": [],
   "sort_by": null,
   "sort_desc": false,
   "page_size": 100,
   "visible_columns": [],
   "column_widths": {},
   "watch_folder": "",
-  "watch_pattern": ".+\\.log$"
+  "watch_pattern": ".+\\.log$",
+  "timestamp_preset": "all"
 }

@@ -197,6 +197,7 @@ class LogsLoadMixin:
                     "filtered_total": 0,
                     "total_pages": 1,
                     "current_page": 1,
+                    "page_global_indices": [],
                 }
             )
             if should_render:
@@ -215,12 +216,40 @@ class LogsLoadMixin:
             page_size_override if page_size_override is not None
             else int(self.logs_state["page_size"])
         )
-        with perf_timer("paginate_rows", total=len(self._logs_sort_cache_rows), page_size=effective_page_size):
+
+        # Filtro por regla activa: si esta seteado, restringimos las filas que se paginan
+        # a las que coincidan con esa regla (o cualquier regla si "__ANY__"). Mantenemos
+        # un mapping slot -> indice global en sort cache para que el render pinte los bordes.
+        active_rid = self.logs_state.get("active_rule_id")
+        rule_matches = self.logs_state.get("rule_matches") or {}
+        source_rows = self._logs_sort_cache_rows
+        global_indices: list[int] | None = None
+        if active_rid and rule_matches:
+            with perf_timer("rule_filter", total=len(source_rows), rule=active_rid):
+                if active_rid == "__ANY__":
+                    matched_idx = sorted(rule_matches.keys())
+                else:
+                    matched_idx = sorted(
+                        i for i, rules in rule_matches.items()
+                        if any(r.id == active_rid for r in rules)
+                    )
+                source_rows = [self._logs_sort_cache_rows[i] for i in matched_idx]
+                global_indices = matched_idx
+
+        with perf_timer("paginate_rows", total=len(source_rows), page_size=effective_page_size):
             page_rows, filtered_total, total_pages, safe_page = paginate_rows(
-                self._logs_sort_cache_rows,
+                source_rows,
                 self.logs_state["current_page"],
                 effective_page_size,
             )
+
+        # Calcular indices globales por slot para que el render mapee bordes correctamente.
+        if global_indices is not None:
+            start = (safe_page - 1) * effective_page_size
+            page_global_indices = global_indices[start:start + effective_page_size]
+        else:
+            start = (safe_page - 1) * effective_page_size
+            page_global_indices = list(range(start, start + len(page_rows)))
 
         self.logs_state.update(
             {
@@ -228,6 +257,7 @@ class LogsLoadMixin:
                 "filtered_total": filtered_total,
                 "total_pages": total_pages,
                 "current_page": safe_page,
+                "page_global_indices": page_global_indices,
             }
         )
         self._persist_logs_preferences_if_needed()

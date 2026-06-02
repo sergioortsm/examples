@@ -4,11 +4,22 @@ Página de configuración de reglas inteligentes de detección en logs ULS.
 """
 from __future__ import annotations
 
+import asyncio
 import re
 import uuid
 
 import flet as ft
 
+from learn_engine import (
+    LearnProgress,
+    analyze_coverage,
+    analyze_unmatched,
+    enrich_candidates,
+    filter_by_level,
+    guess_domain_from_pattern,
+    load_single_file,
+    suggest_candidates,
+)
 from smart_rules import ALL_DOMAINS, DOMAIN_COLORS, SmartRule, rules_engine
 from ui_tokens import (
     APP_BORDER,
@@ -131,10 +142,19 @@ class SettingsView(ft.Column):
             ),
             on_click=self._on_reset_defaults,
         )
+        self._learn_button = ft.TextButton(
+            content=ft.Row(
+                [ft.Icon(ft.Icons.QUERY_STATS, size=16, color=APP_TEXT_MUTED), ft.Text("Aprender de logs…", color=APP_TEXT_MUTED, size=13)],
+                tight=True,
+                spacing=4,
+                vertical_alignment=ft.CrossAxisAlignment.CENTER,
+            ),
+            on_click=self._on_learn_logs,
+        )
 
         action_bar = ft.Container(
             content=ft.Row(
-                [self._add_button, self._reset_button, ft.Row([], expand=True)],
+                [self._add_button, self._reset_button, self._learn_button, ft.Row([], expand=True)],
                 spacing=4,
                 vertical_alignment=ft.CrossAxisAlignment.CENTER,
             ),
@@ -505,6 +525,593 @@ class SettingsView(ft.Column):
             actions_alignment=ft.MainAxisAlignment.END,
             on_dismiss=lambda e: None,
         )
+        self.app._open_control(dlg)
+        self.app._page.update()
+
+    # ──────────────────────────────────────────────────────────────────────────
+    # Diálogo "Aprender de logs"
+    # ──────────────────────────────────────────────────────────────────────────
+
+    def _on_learn_logs(self, e) -> None:
+        """Abre el diálogo de aprendizaje de reglas desde un directorio de logs."""
+        progress_path = self.app._prefs_path.parent / "learn_progress.json"
+        learn_progress = LearnProgress()
+        learn_progress.load(progress_path)
+
+        # ── Estado del diálogo ────────────────────────────────────────────────
+        _state: dict = {
+            "phase": "config",      # "config" | "analyzing" | "reviewing" | "done"
+            "cancel": False,
+            "new_files": [],
+            "already_count": 0,
+            "all_candidates": [],
+            "by_category": {},
+            "total_rows": 0,
+            "covered_rows": 0,
+            "rules_added": 0,
+            "rules_skipped": 0,
+            "existing_ids": {r.id for r in rules_engine.get_rules()},
+            "pending_cards": [],    # lista de (cand, card) para "Aceptar todos"
+        }
+
+        # ── Controles de la fase CONFIG ───────────────────────────────────────
+        dir_tf = ft.TextField(
+            value=learn_progress.watched_dir or "",
+            label="Directorio de logs",
+            hint_text="C:\\Temp\\LOGS",
+            expand=True,
+            read_only=False,
+            dense=True,
+            text_size=13,
+            border_color=APP_BORDER,
+        )
+        dir_status = ft.Text("", size=12, color=APP_TEXT_MUTED)
+
+        def _do_scan(directory: str) -> None:
+            if not directory:
+                dir_status.value = "Indica un directorio."
+                dlg.content.update() if hasattr(dlg.content, "update") else None
+                self.app._page.update()
+                return
+            learn_progress.watched_dir = directory
+            new_files, already = learn_progress.scan_new_files(directory)
+            _state["new_files"] = new_files
+            _state["already_count"] = already
+            total = len(new_files) + already
+            if total == 0:
+                dir_status.value = "No se encontraron ficheros .log en ese directorio."
+                start_btn.disabled = True
+            else:
+                dir_status.value = (
+                    f"{len(new_files)} nuevos · {already} ya procesados"
+                    + (f"  (de {total} en total)" if already > 0 else "")
+                )
+                start_btn.disabled = len(new_files) == 0
+            self.app._page.update()
+
+        def _on_browse(e) -> None:
+            async def _pick() -> None:
+                path = await self.app.dir_picker.get_directory_path(
+                    dialog_title="Selecciona directorio de logs ULS"
+                )
+                if path:
+                    dir_tf.value = path
+                    _do_scan(path)
+                    self.app._page.update()
+
+            try:
+                asyncio.get_running_loop().create_task(_pick())
+            except RuntimeError:
+                pass
+
+        def _on_dir_submit(e) -> None:
+            _do_scan(dir_tf.value or "")
+
+        browse_btn = ft.TextButton(
+            content=ft.Row(
+                [ft.Icon(ft.Icons.FOLDER_OPEN_OUTLINED, size=15), ft.Text("Examinar…", size=13)],
+                tight=True, spacing=4,
+            ),
+            on_click=_on_browse,
+        )
+        start_btn = ft.ElevatedButton(
+            "Iniciar análisis",
+            icon=ft.Icons.PLAY_ARROW_OUTLINED,
+            disabled=True,
+            on_click=lambda e: asyncio.ensure_future(_run_analysis()),
+        )
+        config_row = ft.Row([dir_tf, browse_btn], spacing=8, vertical_alignment=ft.CrossAxisAlignment.CENTER)
+
+        # ── Picker para importar candidates.json ──────────────────────────────
+        json_picker = ft.FilePicker()
+        self.app._page.services.append(json_picker)
+
+        def _on_import_json(e) -> None:
+            async def _pick() -> None:
+                import json as _json
+                result = await json_picker.pick_files(
+                    dialog_title="Selecciona candidates.json",
+                    file_type=ft.FilePickerFileType.CUSTOM,
+                    allowed_extensions=["json"],
+                    allow_multiple=False,
+                )
+                if not result:
+                    return
+                from pathlib import Path as _Path
+                path = _Path(result[0].path)
+                try:
+                    data = _json.loads(path.read_text(encoding="utf-8"))
+                except Exception:
+                    dir_status.value = f"Error al leer {path.name}."
+                    self.app._page.update()
+                    return
+                if not isinstance(data, list):
+                    dir_status.value = "El JSON no tiene el formato esperado (lista de candidatos)."
+                    self.app._page.update()
+                    return
+                candidates = [c for c in data if isinstance(c, dict) and "id" in c]
+                candidates = [c for c in candidates if c["id"] not in _state["existing_ids"]]
+                candidates = [c for c in candidates if c["id"] not in learn_progress.skipped_ids]
+                # Auto-asignar dominio desde patrón + muestra (los JSON exportados
+                # suelen llevar "SPFx" como valor por defecto en todos los campos).
+                for _c in candidates:
+                    guessed = guess_domain_from_pattern(
+                        _c.get("pattern", ""),
+                        _c.get("_sample", ""),
+                    )
+                    _c["domain"] = guessed
+                    _c["highlight_color"] = DOMAIN_COLORS.get(guessed, "#888888")
+                _populate_reviewing(candidates, f"{len(candidates)} candidatos cargados desde «{path.name}»")
+
+            try:
+                asyncio.get_running_loop().create_task(_pick())
+            except RuntimeError:
+                pass
+
+        import_btn = ft.TextButton(
+            content=ft.Row(
+                [ft.Icon(ft.Icons.UPLOAD_FILE_OUTLINED, size=15), ft.Text("Importar JSON…", size=13)],
+                tight=True, spacing=4,
+            ),
+            on_click=_on_import_json,
+        )
+
+        # ── Controles de la fase ANALYZING ───────────────────────────────────
+        progress_bar  = ft.ProgressBar(value=0, bgcolor=APP_BORDER, color=APP_SHELL_ACCENT, expand=True)
+        progress_lbl  = ft.Text("Preparando…", size=12, color=APP_TEXT_MUTED)
+        stop_btn = ft.TextButton(
+            content=ft.Row(
+                [ft.Icon(ft.Icons.STOP_CIRCLE_OUTLINED, size=15, color=ft.Colors.RED_400),
+                 ft.Text("Detener", size=13, color=ft.Colors.RED_400)],
+                tight=True, spacing=4,
+            ),
+            on_click=lambda e: _set_cancel(),
+        )
+
+        def _set_cancel() -> None:
+            _state["cancel"] = True
+            stop_btn.disabled = True
+            progress_lbl.value = "Deteniendo tras el fichero actual…"
+            self.app._page.update()
+
+        # ── Controles de la fase REVIEWING ────────────────────────────────────
+        coverage_lbl  = ft.Text("", size=13, color=APP_TEXT_MUTED)
+        candidates_col = ft.Column([], spacing=6, scroll=ft.ScrollMode.AUTO)
+        stats_lbl      = ft.Text("0 añadidas · 0 saltadas", size=12, color=APP_TEXT_MUTED, italic=True)
+
+        def _build_candidate_card(cand: dict, card_ref: list) -> ft.Container:
+            """Construye una card para un candidato de regla."""
+            domain_dd = ft.Dropdown(
+                value=cand["domain"],
+                options=[ft.dropdown.Option(d) for d in ALL_DOMAINS],
+                dense=True,
+                text_size=12,
+                width=180,
+                border_color=APP_BORDER,
+                on_select=lambda e, c=cand: c.update({"domain": e.control.value,
+                                                       "highlight_color": DOMAIN_COLORS.get(e.control.value, "#888888")}),
+            )
+            pattern_tf = ft.TextField(
+                value=cand["pattern"],
+                dense=True,
+                text_size=12,
+                expand=True,
+                border_color=APP_BORDER,
+                on_change=lambda e, c=cand: c.update({"pattern": e.control.value}),
+            )
+            color_dot = ft.Container(
+                width=10, height=10,
+                bgcolor=cand["highlight_color"],
+                border_radius=ft.BorderRadius(5, 5, 5, 5),
+            )
+
+            def _accept(e, c=cand, ref=card_ref):
+                _add_candidate(c, ref[0])
+
+            def _skip(e, c=cand, ref=card_ref):
+                _skip_candidate(c, ref[0])
+
+            card = ft.Container(
+                content=ft.Column(
+                    [
+                        ft.Row(
+                            [
+                                color_dot,
+                                ft.Text(
+                                    f"{cand['_count']:,} ocurrencias",
+                                    size=11,
+                                    weight=ft.FontWeight.W_600,
+                                    color=APP_SHELL_ACCENT,
+                                ),
+                                ft.Text(
+                                    cand["_sample"][:80],
+                                    size=11,
+                                    color=APP_TEXT_MUTED,
+                                    italic=True,
+                                    expand=True,
+                                    max_lines=1,
+                                    overflow=ft.TextOverflow.ELLIPSIS,
+                                ),
+                            ],
+                            spacing=6,
+                            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                        ),
+                        ft.Row(
+                            [pattern_tf, domain_dd],
+                            spacing=8,
+                            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                        ),
+                        ft.Row(
+                            [
+                                ft.TextButton(
+                                    content=ft.Row(
+                                        [ft.Icon(ft.Icons.CHECK, size=14, color=ft.Colors.GREEN_600),
+                                         ft.Text("Añadir", size=12, color=ft.Colors.GREEN_600)],
+                                        tight=True, spacing=4,
+                                    ),
+                                    on_click=_accept,
+                                ),
+                                ft.TextButton(
+                                    content=ft.Row(
+                                        [ft.Icon(ft.Icons.CLOSE, size=14, color=APP_TEXT_MUTED),
+                                         ft.Text("Saltar", size=12, color=APP_TEXT_MUTED)],
+                                        tight=True, spacing=4,
+                                    ),
+                                    on_click=_skip,
+                                ),
+                            ],
+                            spacing=4,
+                        ),
+                    ],
+                    spacing=6,
+                    tight=True,
+                ),
+                bgcolor=APP_SURFACE,
+                border=ft.Border.all(1, APP_BORDER),
+                border_radius=ft.BorderRadius(8, 8, 8, 8),
+                padding=ft.padding.Padding(left=12, top=8, right=12, bottom=8),
+            )
+            card_ref.append(card)
+            return card
+
+        def _add_candidate(cand: dict, card: ft.Container) -> None:
+            if cand["id"] in _state["existing_ids"]:
+                _skip_candidate(cand, card)
+                return
+            from smart_rules import SmartRule as SR
+            new_rule = SR(
+                id=cand["id"],
+                name=cand["name"],
+                domain=cand["domain"],
+                field=cand["field"],
+                pattern=cand["pattern"],
+                is_regex=cand["is_regex"],
+                highlight_color=cand["highlight_color"],
+                enabled=True,
+            )
+            rules_engine.add_rule(new_rule)
+            self._save_rules()
+            self._refresh_rules_list()
+            _state["existing_ids"].add(cand["id"])
+            _state["rules_added"] += 1
+            _update_stats()
+            _hide_card(card)
+            if hasattr(self.app, "rerun_rules_if_active"):
+                self.app.rerun_rules_if_active()
+
+        def _skip_candidate(cand: dict, card: ft.Container) -> None:
+            learn_progress.skipped_ids.add(cand["id"])
+            learn_progress.save(progress_path)
+            _state["rules_skipped"] += 1
+            _update_stats()
+            _hide_card(card)
+
+        def _hide_card(card: ft.Container) -> None:
+            card.visible = False
+            _check_all_done()
+            self.app._page.update()
+
+        def _check_all_done() -> None:
+            pending = [card for _, card in _state["pending_cards"] if card.visible]
+            if pending:
+                return
+            # No quedan tarjetas: mostrar banner de resumen y cerrar
+            added   = _state["rules_added"]
+            skipped = _state["rules_skipped"]
+            candidates_col.controls.clear()
+            candidates_col.controls.append(
+                ft.Container(
+                    content=ft.Column(
+                        [
+                            ft.Row(
+                                [
+                                    ft.Icon(ft.Icons.CHECK_CIRCLE_OUTLINED,
+                                            color=ft.Colors.GREEN_600, size=22),
+                                    ft.Text(
+                                        "¡Revisión completada!",
+                                        size=14,
+                                        weight=ft.FontWeight.W_600,
+                                        color=ft.Colors.GREEN_600,
+                                    ),
+                                ],
+                                spacing=8,
+                                vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                            ),
+                            ft.Text(
+                                f"{added} regla{'s' if added != 1 else ''} añadida{'s' if added != 1 else ''} · "
+                                f"{skipped} descartada{'s' if skipped != 1 else ''}.",
+                                size=12,
+                                color=APP_TEXT_MUTED,
+                            ),
+                        ],
+                        spacing=6,
+                        tight=True,
+                    ),
+                    bgcolor=APP_SURFACE,
+                    border=ft.Border.all(1, ft.Colors.GREEN_200),
+                    border_radius=ft.BorderRadius(8, 8, 8, 8),
+                    padding=ft.padding.Padding(left=16, top=12, right=16, bottom=12),
+                )
+            )
+            accept_all_btn.visible = False
+            close_dlg_btn.text = "Cerrar"
+
+        def _update_stats() -> None:
+            stats_lbl.value = (
+                f"{_state['rules_added']} añadidas · "
+                f"{_state['rules_skipped']} saltadas"
+            )
+            self.app._page.update()
+
+        def _accept_all(e) -> None:
+            for cand, card in list(_state["pending_cards"]):
+                if card.visible:
+                    _add_candidate(cand, card)
+
+        accept_all_btn = ft.TextButton(
+            content=ft.Row(
+                [ft.Icon(ft.Icons.CHECK_BOX_OUTLINED, size=14, color=ft.Colors.GREEN_600),
+                 ft.Text("Aceptar todos", size=12, color=ft.Colors.GREEN_600)],
+                tight=True, spacing=4,
+            ),
+            on_click=_accept_all,
+        )
+
+        # ── Contenido principal del diálogo (contenedor de fases) ─────────────
+        phase_config = ft.Column(
+            [
+                ft.Text("Selecciona el directorio que contiene los ficheros .log ULS:",
+                        size=13, color=APP_TEXT_PRIMARY),
+                config_row,
+                ft.Row([dir_status], spacing=0),
+                ft.Row(
+                    [start_btn, ft.Container(width=12), import_btn],
+                    spacing=0,
+                    vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                ),
+            ],
+            spacing=10,
+            tight=True,
+            visible=True,
+        )
+
+        phase_analyzing = ft.Column(
+            [
+                ft.Row([progress_bar], vertical_alignment=ft.CrossAxisAlignment.CENTER),
+                ft.Row([progress_lbl, ft.Row([], expand=True), stop_btn],
+                       vertical_alignment=ft.CrossAxisAlignment.CENTER),
+            ],
+            spacing=8,
+            tight=True,
+            visible=False,
+        )
+
+        phase_reviewing = ft.Column(
+            [
+                ft.Row([coverage_lbl], spacing=0),
+                ft.Container(
+                    content=candidates_col,
+                    height=380,
+                    border=ft.Border.all(1, APP_BORDER),
+                    border_radius=ft.BorderRadius(8, 8, 8, 8),
+                    padding=ft.padding.Padding(left=8, top=8, right=8, bottom=8),
+                    bgcolor=APP_SURFACE_MUTED,
+                    clip_behavior=ft.ClipBehavior.HARD_EDGE,
+                ),
+                ft.Row(
+                    [stats_lbl, ft.Row([], expand=True), accept_all_btn],
+                    vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                ),
+            ],
+            spacing=8,
+            tight=True,
+            visible=False,
+        )
+
+        dlg_body = ft.Column(
+            [phase_config, phase_analyzing, phase_reviewing],
+            spacing=0,
+            tight=True,
+            width=680,
+        )
+
+        def _show_phase(name: str) -> None:
+            _state["phase"] = name
+            phase_config.visible    = (name == "config")
+            phase_analyzing.visible = (name == "analyzing")
+            phase_reviewing.visible = (name == "reviewing")
+            self.app._page.update()
+
+        def _populate_reviewing(candidates: list, coverage_text: str) -> None:
+            """Rellena la fase de revisión y la muestra."""
+            coverage_lbl.value = coverage_text
+            _state["all_candidates"] = candidates
+            _state["pending_cards"].clear()
+            candidates_col.controls.clear()
+            if not candidates:
+                candidates_col.controls.append(
+                    ft.Text(
+                        "No hay candidatos nuevos: la cobertura cubre todos los patrones encontrados.",
+                        size=13,
+                        color=APP_TEXT_MUTED,
+                        italic=True,
+                    )
+                )
+            else:
+                for cand in candidates:
+                    card_ref: list = []
+                    card = _build_candidate_card(cand, card_ref)
+                    candidates_col.controls.append(card)
+                    _state["pending_cards"].append((cand, card))
+            _show_phase("reviewing")
+
+        # ── Acciones del diálogo ──────────────────────────────────────────────
+        close_dlg_btn = ft.TextButton("Cerrar", on_click=lambda e: _close())
+
+        def _close() -> None:
+            _state["cancel"] = True
+            try:
+                self.app._page.services.remove(json_picker)
+            except (ValueError, AttributeError):
+                pass
+            self.app._close_control(dlg)
+            self.app._page.update()
+
+        dlg = ft.AlertDialog(
+            title=ft.Row(
+                [
+                    ft.Icon(ft.Icons.QUERY_STATS, size=18, color=APP_TEXT_MUTED),
+                    ft.Text("Aprender de logs", weight=ft.FontWeight.W_600),
+                ],
+                spacing=8,
+                vertical_alignment=ft.CrossAxisAlignment.CENTER,
+            ),
+            content=dlg_body,
+            actions=[close_dlg_btn],
+            actions_alignment=ft.MainAxisAlignment.END,
+            on_dismiss=lambda e: None,
+        )
+
+        # ── Inicio de escaneo inicial si ya hay directorio guardado ───────────
+        if learn_progress.watched_dir:
+            _do_scan(learn_progress.watched_dir)
+
+        # ── Lógica de análisis asíncrono ──────────────────────────────────────
+        async def _run_analysis() -> None:
+            directory = dir_tf.value or ""
+            if not directory:
+                return
+
+            learn_progress.watched_dir = directory
+            new_files, _ = learn_progress.scan_new_files(directory)
+            _state["new_files"] = new_files
+            if not new_files:
+                return
+
+            _show_phase("analyzing")
+            _state["cancel"] = False
+            stop_btn.disabled = False
+
+            all_unmatched: list[dict] = []
+            all_rows_count = 0
+            all_covered   = 0
+            completed_files: list[tuple] = []   # (fpath, candidates_found, rules_added_at_that_time)
+
+            total = len(new_files)
+            for idx, fpath in enumerate(new_files):
+                if _state["cancel"]:
+                    break
+
+                progress_bar.value = idx / total
+                progress_lbl.value = f"Analizando {idx + 1} de {total}: {fpath.name}"
+                self.app._page.update()
+
+                rows, _, err = load_single_file(fpath)
+                if err:
+                    completed_files.append(fpath)
+                    learn_progress.mark_processed(fpath, 0, 0)
+                    learn_progress.save(progress_path)
+                    continue
+
+                error_rows = filter_by_level(rows)
+                all_rows_count += len(error_rows)
+
+                _, unmatched, covered = analyze_coverage(rules_engine, error_rows)
+                all_covered   += covered
+                all_unmatched.extend(unmatched)
+
+                # Marcar como procesado (candidatos y reglas añadidas se actualizan al final)
+                completed_files.append(fpath)
+
+                await asyncio.sleep(0)   # cede el hilo para que la UI respire
+
+            if _state["cancel"]:
+                # Guardar solo los ficheros completados antes del cancel
+                for fpath in completed_files:
+                    if not learn_progress.is_processed(fpath):
+                        learn_progress.mark_processed(fpath, 0, 0)
+                learn_progress.save(progress_path)
+                _show_phase("config")
+                _do_scan(directory)
+                return
+
+            # Marcar el resto como procesados temporalmente (se actualizarán con candidatos reales)
+            for fpath in completed_files:
+                if not learn_progress.is_processed(fpath):
+                    learn_progress.mark_processed(fpath, 0, 0)
+            learn_progress.save(progress_path)
+
+            progress_bar.value = 1.0
+            progress_lbl.value = "Generando candidatos…"
+            self.app._page.update()
+            await asyncio.sleep(0)
+
+            _state["total_rows"]   = all_rows_count
+            _state["covered_rows"] = all_covered
+
+            # Generar candidatos
+            analysis  = analyze_unmatched(all_unmatched)
+            norm_ctr  = analysis["norm_counter"]
+            by_cat    = analysis["by_category"]
+            candidates = suggest_candidates(norm_ctr)
+            candidates = enrich_candidates(candidates, by_cat)
+
+            # Filtrar los que ya existen o ya fueron descartados
+            candidates = [c for c in candidates if c["id"] not in _state["existing_ids"]]
+            candidates = [c for c in candidates if c["id"] not in learn_progress.skipped_ids]
+            _state["all_candidates"] = candidates
+            _state["by_category"]    = by_cat
+
+            # ── Construir fase REVIEWING ──────────────────────────────────────
+            pct = (all_covered / all_rows_count * 100) if all_rows_count else 0.0
+            coverage_text = (
+                f"Cobertura: {pct:.1f}%  "
+                f"({all_covered:,} / {all_rows_count:,} filas de error cubierta)  ·  "
+                f"{len(candidates)} candidatos nuevos"
+            )
+            _populate_reviewing(candidates, coverage_text)
+
+        # ── Abrir el diálogo ──────────────────────────────────────────────────
         self.app._open_control(dlg)
         self.app._page.update()
 

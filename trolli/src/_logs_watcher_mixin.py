@@ -56,24 +56,17 @@ class LogsWatcherMixin:
     # ------------------------------------------------------------------
 
     def _is_view_following_live(self) -> bool:
-        """True si la vista esta en modo 'seguir el flujo': pagina 1 sin filtros activos
-        y sin pausa manual activada.
+        """True si la vista esta en modo 'seguir el flujo': pagina 1 y sin pausa manual.
 
-        Excepcion: si no hay filas cargadas aun (arranque de modo Vivo o buffer vacio),
-        siempre sigue el flujo para que las primeras lineas sean siempre visibles,
-        independientemente de filtros restaurados de sesiones anteriores.
+        Los filtros de Level o busqueda de texto NO interrumpen el seguimiento:
+        los registros se muestran en cada drain ya filtrados.
+        El boton 'Nuevas (n)' solo aparece cuando hay pausa manual explícita
+        o el usuario está navegando una pagina distinta a la primera.
         """
         # Pausa manual explícita: el usuario pidió congelar la vista.
         if bool(self.logs_state.get("live_paused", False)):
             return False
         if int(self.logs_state.get("current_page", 1)) != 1:
-            return False
-        # Sin filas todavia -> no hay nada que 'auto-pausar'; mostrar siempre.
-        if not self.logs_rows:
-            return True
-        if (self.logs_state.get("search_text") or "").strip():
-            return False
-        if self.logs_state.get("level_filters"):
             return False
         return True
 
@@ -148,7 +141,17 @@ class LogsWatcherMixin:
                         continue
                     if isinstance(item, tuple) and len(item) == 3:
                         rows, _levels, columns = item
-                        total_new_rows += len(rows)
+                        _active_levels = set(self.logs_state.get("level_filters") or [])
+                        if _active_levels and columns:
+                            _lvl_col = next((c for c in columns if c.lower() == "level"), None)
+                            if _lvl_col:
+                                total_new_rows += sum(
+                                    1 for r in rows if r.get(_lvl_col, "") in _active_levels
+                                )
+                            else:
+                                total_new_rows += len(rows)
+                        else:
+                            total_new_rows += len(rows)
                         if columns and not columns_seen:
                             columns_seen = list(columns)
 
