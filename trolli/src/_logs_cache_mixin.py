@@ -31,6 +31,7 @@ class LogsCacheMixin:
             frozenset(self.logs_state.get("level_filters") or []),
             tuple(sorted(self.logs_state.get("column_filters", {}).items())),
             self.logs_state.get("timestamp_preset", "all"),
+            bool(self.logs_state.get("candidate_filter_active", False)),
         )
 
     def _logs_sort_signature(self) -> tuple[object, ...]:
@@ -72,6 +73,11 @@ class LogsCacheMixin:
             return
         preset = self.logs_state.get("timestamp_preset", "all") or "all"
         timestamp_ref = compute_max_timestamp(self.logs_rows) if preset != "all" else None
+        _cand_patterns = (
+            getattr(self, "_candidate_patterns", [])
+            if self.logs_state.get("candidate_filter_active")
+            else []
+        )
         with perf_timer("filter_rows", rows=len(self.logs_rows)):
             self._logs_filter_cache_rows = filter_rows(
                 self.logs_rows,
@@ -81,6 +87,7 @@ class LogsCacheMixin:
                 self.logs_state.get("column_filters") or None,
                 timestamp_preset=preset,
                 timestamp_ref=timestamp_ref,
+                candidate_patterns=_cand_patterns,
             )
         self._logs_filter_cache_signature = filter_signature
         # Si el filtrado cambia, la cache de sort dejo de ser valida.
@@ -122,6 +129,11 @@ class LogsCacheMixin:
         if filter_signature != self._logs_filter_cache_signature:
             preset = self.logs_state.get("timestamp_preset", "all") or "all"
             timestamp_ref = compute_max_timestamp(self.logs_rows) if preset != "all" else None
+            _cand_patterns = (
+                getattr(self, "_candidate_patterns", [])
+                if self.logs_state.get("candidate_filter_active")
+                else []
+            )
             with perf_timer("filter_rows_async", rows=len(self.logs_rows)):
                 self._logs_filter_cache_rows = await asyncio.to_thread(
                     filter_rows,
@@ -132,6 +144,7 @@ class LogsCacheMixin:
                     self.logs_state.get("column_filters") or None,
                     preset,
                     timestamp_ref,
+                    _cand_patterns,
                 )
             self._logs_filter_cache_signature = filter_signature
             self._logs_sort_cache_signature = None

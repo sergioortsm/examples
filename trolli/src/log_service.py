@@ -315,6 +315,7 @@ def filter_rows(
     column_filters: dict[str, str] | None = None,
     timestamp_preset: str = "all",
     timestamp_ref: tuple | None = None,
+    candidate_patterns: list[str] | None = None,
 ) -> list[dict[str, str]]:
     search = (search_text or "").strip().lower()
     level_filter_set: set[str] = set(level_filters) if level_filters else set()
@@ -392,6 +393,16 @@ def filter_rows(
             needle = (val or "").strip().lower()
             if needle and col in columns:
                 filtered = [r for r in filtered if needle in r.get(col, "").lower()]
+
+    # Filtro por patrones candidatos (OR entre patrones; usa _search_key si disponible)
+    if candidate_patterns:
+        if filtered and "_search_key" in filtered[0]:
+            filtered = [r for r in filtered if any(p in r["_search_key"] for p in candidate_patterns)]
+        else:
+            filtered = [
+                r for r in filtered
+                if any(any(p in r.get(col, "").lower() for col in columns) for p in candidate_patterns)
+            ]
 
     # Devolvemos siempre una lista nueva para que callers puedan mutar/cachear
     # sin riesgo de alterar `rows` original.

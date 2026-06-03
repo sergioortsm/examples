@@ -8,6 +8,11 @@ import asyncio
 from log_service import col_spec_name, col_names, make_col_spec
 
 class LogsEventsMixin:
+    # Niveles considerados "señal" para el filtro rápido de errores.
+    _SIGNAL_LEVELS: frozenset[str] = frozenset({
+        "Unexpected", "Critical", "Exception", "Error",
+        "Failed", "Warning", "High", "Assert",
+    })
     # ------------------------------------------------------------------
     # Búsqueda y filtros
     # ------------------------------------------------------------------
@@ -37,6 +42,8 @@ class LogsEventsMixin:
 
     def on_logs_level_toggle(self, level: str, checked: bool):
         """Activa/desactiva un nivel del filtro multi-selección de Level."""
+        # El cambio manual de niveles desactiva el modo señal.
+        self.logs_state["signal_filter_active"] = False
         current: list[str] = list(self.logs_state.get("level_filters") or [])
         if checked:
             if level not in current:
@@ -47,6 +54,27 @@ class LogsEventsMixin:
             except ValueError:
                 pass
         self.logs_state["level_filters"] = current
+        self.logs_state["current_page"] = 1
+        self.logs_view.request_scroll_to_top()
+        self.refresh_logs_view()
+
+    def on_logs_signal_filter_toggle(self):
+        """Activa/desactiva el filtro rápido de niveles de error/excepción."""
+        active = not bool(self.logs_state.get("signal_filter_active", False))
+        self.logs_state["signal_filter_active"] = active
+        if active:
+            available = self.logs_state.get("col_values", {}).get("Level", [])
+            self.logs_state["level_filters"] = [lv for lv in available if lv in self._SIGNAL_LEVELS]
+        else:
+            self.logs_state["level_filters"] = []
+        self.logs_state["current_page"] = 1
+        self.logs_view.request_scroll_to_top()
+        self.refresh_logs_view()
+
+    def on_logs_candidate_filter_toggle(self):
+        """Activa/desactiva el filtro por patrones candidatos."""
+        active = not bool(self.logs_state.get("candidate_filter_active", False))
+        self.logs_state["candidate_filter_active"] = active
         self.logs_state["current_page"] = 1
         self.logs_view.request_scroll_to_top()
         self.refresh_logs_view()

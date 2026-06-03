@@ -1,11 +1,8 @@
 {
   "search_text": "",
-  "level_filters": [
-    "Unexpected",
-    "Critical"
-  ],
+  "level_filters": [],
   "sort_by": "Timestamp",
-  "sort_desc": true,
+  "sort_desc": false,
   "page_size": 250,
   "visible_columns": [
     {

@@ -5,12 +5,15 @@ self.logs_view, self._page, self.file_picker, y los métodos de cache/prefs
 disponibles vía herencia múltiple.
 """
 import asyncio
+import json
 import logging
+import threading
 from pathlib import Path
 
 import flet as ft
 
 from app_logging import perf_timer
+from dialog import build_dir_load_progress_dialog
 from log_service import load_sharepoint_log, paginate_rows, col_spec_name, col_names, make_col_spec
 
 logger = logging.getLogger("trolli")
@@ -38,6 +41,22 @@ class LogsLoadMixin:
 
         try:
             asyncio.get_running_loop().create_task(_pick_and_handle_file())
+        except RuntimeError:
+            pass
+
+    def open_log_directory_dialog(self, e=None):
+        """Abre el selector de carpeta y carga todos los .log modificados en la última hora."""
+        logger.info("[LOGS] open_log_directory_dialog llamado")
+
+        async def _pick_and_handle_dir():
+            result = await self.file_picker.get_directory_path(
+                dialog_title="Selecciona carpeta con logs de la última hora",
+            )
+            if result:
+                self.load_log_directory(result)
+
+        try:
+            asyncio.get_running_loop().create_task(_pick_and_handle_dir())
         except RuntimeError:
             pass
 
@@ -178,6 +197,206 @@ class LogsLoadMixin:
             if scheduled_async:
                 return
             self.end_global_loading()
+            try:
+                self.logs_view.render(self.logs_state)
+            except RuntimeError:
+                pass
+            self._page.update()
+
+    # ------------------------------------------------------------------
+    # Carga por directorio (última hora)
+    # ------------------------------------------------------------------
+
+    def _load_candidate_patterns(self):
+        """Carga los patrones de candidates.json desde la raíz del proyecto."""
+        try:
+            cands_path = Path(__file__).parent.parent / "candidates.json"
+            if not cands_path.exists():
+                cands_path = Path(__file__).parent / "candidates.json"
+            data = json.loads(cands_path.read_text(encoding="utf-8"))
+            self._candidate_patterns = [
+                c["pattern"].lower()
+                for c in data
+                if isinstance(c.get("pattern"), str) and c["pattern"]
+            ]
+            logger.info("[LOGS] _load_candidate_patterns: %d patrones cargados", len(self._candidate_patterns))
+        except Exception as exc:
+            logger.warning("[LOGS] _load_candidate_patterns: error cargando candidates.json: %s", exc)
+            self._candidate_patterns = []
+
+    def _make_dir_load_progress_cb(self, progress_bar, filename_text, stats_text):
+        """Devuelve un callback de progreso que actualiza el diálogo desde el hilo del executor."""
+        def cb(i: int, total: int, fname: str, rows_so_far: int):
+            progress_bar.value = i / total if total > 0 else 0
+            filename_text.value = fname
+            stats_text.value = f"{i} / {total} archivos  ·  {rows_so_far:,} filas"
+            try:
+                self._page.update()
+            except Exception:
+                pass
+        return cb
+
+    def _close_dir_load_progress_dialog(self):
+        dlg = getattr(self, "_dir_load_dialog", None)
+        if dlg is None:
+            return
+        self._dir_load_dialog = None
+        try:
+            self._close_control(dlg)
+            _p = self._page
+            if hasattr(_p, "overlay") and dlg in _p.overlay:
+                _p.overlay.remove(dlg)
+        except Exception:
+            pass
+
+    def _on_dir_load_cancel(self, e=None):
+        ev = getattr(self, "_dir_load_cancel_event", None)
+        if ev is not None:
+            ev.set()
+        self._close_dir_load_progress_dialog()
+        try:
+            self._page.update()
+        except Exception:
+            pass
+
+    def _load_log_directory_sync(self, dir_path: str, progress_cb=None, cancel_event=None):
+        self._invalidate_logs_query_cache()
+        dir_p = Path(dir_path)
+
+        try:
+            log_files = sorted(
+                list(dir_p.glob("*.log")),
+                key=lambda f: f.stat().st_mtime,
+            )
+        except Exception as exc:
+            self.show_error(f"Error accediendo al directorio: {exc}")
+            return
+
+        if not log_files:
+            self.show_error("No se encontraron archivos .log en el directorio.")
+            return
+
+        all_rows: list[dict[str, str]] = []
+        first_result = None
+        col_values_combined: dict[str, set] = {}
+        loaded = 0
+        total = len(log_files)
+
+        for i, log_file in enumerate(log_files):
+            if cancel_event is not None and cancel_event.is_set():
+                logger.info("[LOGS] directorio: carga cancelada por el usuario")
+                return
+            if progress_cb is not None:
+                progress_cb(i + 1, total, log_file.name, len(all_rows))
+            result = load_sharepoint_log(str(log_file))
+            if result.error:
+                logger.warning("[LOGS] directorio: error en %s: %s", log_file.name, result.error)
+                continue
+            if first_result is None:
+                first_result = result
+                for col in result.columns:
+                    col_values_combined[col] = set(result.col_values.get(col, []))
+            else:
+                for col in result.columns:
+                    col_values_combined.setdefault(col, set()).update(result.col_values.get(col, []))
+            all_rows.extend(result.rows)
+            loaded += 1
+
+        if cancel_event is not None and cancel_event.is_set():
+            return
+
+        if progress_cb is not None:
+            progress_cb(total, total, "\u2713 Listo", len(all_rows))
+
+        if not all_rows or first_result is None:
+            self.show_error("No se pudo cargar ningún log del directorio.")
+            return
+
+        columns = first_result.columns
+        col_values = {col: sorted(vals) for col, vals in col_values_combined.items()}
+
+        if "Timestamp" in columns:
+            all_rows.sort(key=lambda r: r.get("Timestamp", ""))
+
+        self.logs_rows = all_rows
+
+        visible_columns = self.logs_state.get("visible_columns", [])
+        col_set = set(columns)
+        col_to_spec = {col_spec_name(s): s for s in visible_columns if col_spec_name(s) in col_set}
+        valid_visible = [col_to_spec[c] for c in columns if c in col_to_spec]
+        if not valid_visible:
+            valid_visible = [make_col_spec(c) for c in columns]
+
+        pending_columns = self.logs_state.get("visible_columns_pending", [])
+        col_to_pending = {col_spec_name(s): s for s in pending_columns if col_spec_name(s) in col_set}
+        valid_pending = [col_to_pending[c] for c in columns if c in col_to_pending]
+        if not valid_pending:
+            valid_pending = [dict(s) for s in valid_visible]
+
+        sort_by = self.logs_state.get("sort_by")
+        if sort_by not in columns:
+            sort_by = columns[0] if columns else None
+
+        level_filters = list(self.logs_state.get("level_filters") or [])
+        level_options = ["All"] + col_values.get("Level", [])
+        available_levels = set(col_values.get("Level", []))
+        level_filters = [lf for lf in level_filters if lf in available_levels]
+
+        self.logs_state.update({
+            "file_path": dir_path,
+            "file_label": f"Directorio: {dir_p.name} ({loaded} arch., {len(all_rows):,} líneas)",
+            "columns": columns,
+            "visible_columns": valid_visible,
+            "visible_columns_pending": valid_pending,
+            "column_selector_expanded": False,
+            "col_values": col_values,
+            "level_options": level_options,
+            "sort_by": sort_by,
+            "level_filters": level_filters,
+            "current_page": 1,
+            "error": "",
+        })
+
+    async def _load_log_directory_deferred(
+        self, dir_path: str, cancel_event: threading.Event, progress_bar, filename_text, stats_text
+    ):
+        await asyncio.sleep(0)  # cede el ciclo para que el dialogo se pinte
+        progress_cb = self._make_dir_load_progress_cb(progress_bar, filename_text, stats_text)
+        try:
+            await asyncio.get_running_loop().run_in_executor(
+                None, self._load_log_directory_sync, dir_path, progress_cb, cancel_event
+            )
+        finally:
+            self._close_dir_load_progress_dialog()
+            cancelled = cancel_event.is_set()
+            if not cancelled and self.logs_state.get("columns"):
+                if self._page.route != "/logs":
+                    self._page.navigate("/logs")
+                else:
+                    self.refresh_logs_view(show_loading=False)
+                    self.show_success(self.logs_state.get("file_label", "Directorio cargado"))
+            self._page.update()
+
+    def load_log_directory(self, dir_path: str):
+        logger.info("[LOGS] load_log_directory: %r", dir_path)
+        cancel_event = threading.Event()
+        self._dir_load_cancel_event = cancel_event
+
+        progress_bar, filename_text, stats_text, dialog = build_dir_load_progress_dialog(
+            on_cancel=lambda e: self._on_dir_load_cancel(),
+        )
+        self._dir_load_dialog = dialog
+        self._open_control(dialog)
+        self._page.update()
+
+        try:
+            asyncio.get_running_loop().create_task(
+                self._load_log_directory_deferred(dir_path, cancel_event, progress_bar, filename_text, stats_text)
+            )
+        except RuntimeError:
+            # Fallback sin loop async
+            self._load_log_directory_sync(dir_path)
+            self._close_dir_load_progress_dialog()
             try:
                 self.logs_view.render(self.logs_state)
             except RuntimeError:

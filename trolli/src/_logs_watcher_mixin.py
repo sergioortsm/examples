@@ -343,6 +343,50 @@ class LogsWatcherMixin:
             self._page.update()
 
     # ------------------------------------------------------------------
+    # Limpieza del buffer y datos cargados
+    # ------------------------------------------------------------------
+
+    def on_logs_clear_buffer(self):
+        """Vacía el buffer LIFO, logs_rows y reinicia el estado de datos.
+
+        Si el watcher está activo se mantiene corriendo (seguirá ingiriendo
+        líneas nuevas desde el punto actual). El archivo/carpeta vigilados
+        y las preferencias de columnas se conservan.
+        """
+        self._log_buffer = LifoLogBuffer(maxlen=self.logs_state.get("buffer_max", 100_000))
+        self.logs_rows = []
+        self._invalidate_logs_query_cache()
+
+        is_watching = bool(self.logs_state.get("is_watching", False))
+        # Solo se limpian datos y contadores; los filtros (search_text,
+        # level_filters, column_filters, sort, etc.) se conservan para que
+        # los datos nuevos que entren (watcher) o el próximo archivo cargado
+        # se filtren automáticamente con la configuración que ya tenía el usuario.
+        self.logs_state.update({
+            "columns": [],
+            "col_values": {},
+            "level_options": ["All"],
+            "page_rows": [],
+            "filtered_total": 0,
+            "total_pages": 1,
+            "current_page": 1,
+            "buffer_count": 0,
+            "pending_new_count": 0,
+            "lines_per_sec": 0.0,
+            "live_paused": False,
+            "active_rule_id": None,
+            "rule_matches": {},
+            "error": "",
+            "file_label": "Esperando primer fichero..." if is_watching else "Sin archivo cargado",
+            "file_path": self.logs_state.get("file_path", "") if is_watching else "",
+        })
+        try:
+            self.logs_view.render(self.logs_state)
+        except RuntimeError:
+            pass
+        self._page.update()
+
+    # ------------------------------------------------------------------
     # Inicio y parada del watcher
     # ------------------------------------------------------------------
 

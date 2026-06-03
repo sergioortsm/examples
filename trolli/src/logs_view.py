@@ -295,6 +295,12 @@ class LogsView(ft.Column):
             mouse_cursor=ft.MouseCursor.CLICK,
             on_click=self.app.open_log_file_dialog,
         )
+        self.clear_buffer_button = ft.IconButton(
+            icon=ft.Icons.DELETE_SWEEP,
+            tooltip="Limpiar todos los datos del listado",
+            mouse_cursor=ft.MouseCursor.CLICK,
+            on_click=lambda e: self.app.on_logs_clear_buffer(),
+        )
         self.export_csv_button = ft.IconButton(
             icon=ft.Icons.DOWNLOAD,
             tooltip="Exportar CSV",
@@ -402,6 +408,28 @@ class LogsView(ft.Column):
             visible=False,
             on_click=lambda e: self.app.on_logs_toggle_analysis_panel(),
         )
+        # Botón Señal: filtra rápidamente por niveles de error/excepción
+        self.signal_filter_button = ft.IconButton(
+            icon=ft.Icons.BOLT,
+            tooltip="Señal: filtrar niveles de error/excepción",
+            visible=False,
+            mouse_cursor=ft.MouseCursor.CLICK,
+            on_click=lambda e: self.app.on_logs_signal_filter_toggle(),
+        )
+        # Botón Candidatos: filtra por patrones de candidates.json
+        self.candidate_filter_button = ft.IconButton(
+            icon=ft.Icons.SAVED_SEARCH,
+            tooltip="Candidatos: filtrar por patrones conocidos",
+            mouse_cursor=ft.MouseCursor.CLICK,
+            on_click=lambda e: self.app.on_logs_candidate_filter_toggle(),
+        )
+        # Botón de carga por directorio (logs modificados en la última hora)
+        self.open_dir_button = ft.IconButton(
+            icon=ft.Icons.FOLDER_SPECIAL,
+            tooltip="Cargar todos los .log del directorio",
+            mouse_cursor=ft.MouseCursor.CLICK,
+            on_click=self.app.open_log_directory_dialog,
+        )
         # Panel de análisis de reglas (colapsable; visible cuando hay matches)
         self.analysis_chips_row = ft.Row([], wrap=True, spacing=6, run_spacing=4)
         self.analysis_total_text = ft.Text(
@@ -427,9 +455,13 @@ class LogsView(ft.Column):
                     self.level_filter_button,
                     self.toggle_column_selector_button,
                     self.open_log_button,
+                    self.open_dir_button,
                     self.export_csv_button,
+                    self.clear_buffer_button,
                     self.profile_dropdown,
                     self.analysis_toggle_button,
+                    self.signal_filter_button,
+                    self.candidate_filter_button,
                     ft.Row([], expand=True),
                     self.page_size_dropdown,
                     ft.Row(
@@ -542,6 +574,12 @@ class LogsView(ft.Column):
                 self.watch_pause_button.icon_color = ft.Colors.AMBER_700
                 self.watch_pause_button.tooltip = "Pausar empuje en vivo (el watcher sigue activo)"
         self.open_log_button.disabled = is_watching
+        self.open_dir_button.disabled = is_watching
+        signal_active = bool(state.get("signal_filter_active", False))
+        self.signal_filter_button.icon_color = ft.Colors.PRIMARY if signal_active else None
+        candidate_active = bool(state.get("candidate_filter_active", False))
+        self.candidate_filter_button.icon_color = ft.Colors.PRIMARY if candidate_active else None
+        self.candidate_filter_button.disabled = not bool(state.get("columns"))
         self.export_csv_button.disabled = is_watching and not live_paused
         watch_error = state.get("watch_error", "")
         if watch_error:
@@ -723,6 +761,7 @@ class LogsView(ft.Column):
                 # Columna marcada sin filtro: ocultar botón de Level si aplica y saltar.
                 if col in self._LEVEL_COLUMN_CANDIDATES:
                     self.level_filter_button.visible = False
+                    self.signal_filter_button.visible = False
                 continue
 
             # --- Caso especial: columna Level → botón icono en filters_row + diálogo ---
@@ -771,10 +810,12 @@ class LogsView(ft.Column):
                         self._filter_controls_by_col[col] = ("cb_level_dd", checkboxes, current_vals_key)
                     # Actualizar visibilidad y color del botón según filter_on
                     self.level_filter_button.visible = filter_on
+                    self.signal_filter_button.visible = filter_on
                     self.level_filter_button.icon_color = ft.Colors.PRIMARY if level_filters_set else None
                 else:
                     # Level en visible_columns pero sin valores aún (watcher arrancando)
                     self.level_filter_button.visible = False
+                    self.signal_filter_button.visible = False
                 continue  # Level NUNCA cae al bloque general de columnas
 
             # --- Resto de columnas: Dropdown o TextField ---
@@ -834,6 +875,7 @@ class LogsView(ft.Column):
                         _p.overlay.remove(self._level_filter_dialog)
                     self._level_filter_dialog = None
                 self.level_filter_button.visible = False
+                self.signal_filter_button.visible = False
             del self._filter_controls_by_col[c]
         # Si ningún spec de Level tiene filter=True, ocultar el botón
         has_active_level_filter = any(
@@ -842,6 +884,7 @@ class LogsView(ft.Column):
         )
         if not has_active_level_filter:
             self.level_filter_button.visible = False
+            self.signal_filter_button.visible = False
         return controls
 
     def _on_filter_focus(self, e) -> None:

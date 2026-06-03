@@ -130,3 +130,63 @@ def build_column_selector_dialog(
     )
 
     return content_container, dialog
+
+
+def build_dir_load_progress_dialog(
+    on_cancel,
+) -> tuple["ft.ProgressBar", "ft.Text", "ft.Text", "ft.AlertDialog"]:
+    import flet as ft  # import local para no crear ciclo de imports en nivel de modulo
+
+    progress_bar = ft.ProgressBar(
+        value=0,
+        width=400,
+        height=6,
+        border_radius=ft.BorderRadius(3, 3, 3, 3),
+    )
+    filename_text = ft.Text(
+        "Preparando...",
+        size=12,
+        color=APP_TEXT_MUTED,
+        no_wrap=True,
+        overflow=ft.TextOverflow.ELLIPSIS,
+        width=400,
+    )
+    stats_text = ft.Text(
+        "",
+        size=13,
+        weight=ft.FontWeight.W_600,
+        color=APP_TEXT_MUTED,
+    )
+
+    container = ft.Container(
+        content=ft.Column(
+            [
+                stats_text,
+                ft.Container(height=12),
+                progress_bar,
+                ft.Container(height=8),
+                filename_text,
+            ],
+            tight=True,
+            spacing=0,
+        ),
+        width=420,
+        padding=ft.padding.Padding(left=0, top=4, right=0, bottom=4),
+    )
+
+    dialog = ft.AlertDialog(
+        modal=True,
+        title=ft.Row(
+            [
+                ft.Icon(ft.Icons.FOLDER_OPEN, size=18, color=APP_TEXT_MUTED),
+                ft.Text("Cargando directorio", weight=ft.FontWeight.W_600),
+            ],
+            spacing=8,
+            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+        ),
+        content=container,
+        actions=[ft.TextButton("Cancelar", on_click=on_cancel)],
+        actions_alignment=ft.MainAxisAlignment.END,
+    )
+
+    return progress_bar, filename_text, stats_text, dialog

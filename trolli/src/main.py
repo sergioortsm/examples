@@ -51,6 +51,7 @@ from _logs_export_mixin import LogsExportMixin
 from _logs_detail_mixin import LogsDetailMixin
 from _logs_rules_mixin import LogsRulesMixin
 from settings_view import SettingsView
+from search_view import SearchView
 from smart_rules import rules_engine as _rules_engine
 
 
@@ -136,6 +137,9 @@ class TrelloApp(
             "analysis_panel_open": False,
             "active_rule_id": None,  # filtro de tabla por regla concreta o "__ANY__"
             "page_global_indices": [],  # indices originales (sort cache) por slot de la pagina actual
+            # --- filtros rápidos de diagnóstico ---
+            "signal_filter_active": False,
+            "candidate_filter_active": False,
         }
         # Buffer LIFO compartido entre el hilo del watcher y el event loop.
         self._log_buffer = LifoLogBuffer(maxlen=100_000)
@@ -259,6 +263,8 @@ class TrelloApp(
         self._restore_logs_preferences()
         self.logs_view = LogsView(self)
         self.settings_view = SettingsView(self)
+        self.search_view = SearchView(self)
+        self._load_candidate_patterns()
 
         self._page.update()
         super().__init__(
@@ -453,6 +459,8 @@ class TrelloApp(
             self.refresh_logs_view()
         elif troute.match("/settings"):
             self.set_settings_view()
+        elif troute.match("/search"):
+            self.set_search_view()
         self._page.update()
 
     def add_board(self, e):
