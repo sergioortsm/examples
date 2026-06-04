@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
   "flet==0.85.2",
+  "flet-datatable2==0.85.2",
   "python-dotenv==1.2.2"
 ]
 
