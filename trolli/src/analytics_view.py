@@ -13,6 +13,7 @@ Si el paquete no está instalado muestra una versión de barras puras con ft.Con
 """
 from __future__ import annotations
 
+import asyncio
 import threading
 from collections import defaultdict
 
@@ -581,10 +582,26 @@ class AnalyticsView(ft.Column):
         self._computing = True
         self._spinner.visible = True
         self._no_data_banner.visible = False
+        # Capturar el event loop ANTES de lanzar el hilo.
+        # page.update() desde un threading.Thread nativo no garantiza repaint en Flet;
+        # call_soon_threadsafe programa la llamada en el loop de asyncio donde sí se pinta.
+        try:
+            _loop = asyncio.get_running_loop()
+        except RuntimeError:
+            _loop = None
         try:
             self.app._page.update()
         except Exception:
             pass
+
+        def _safe_update() -> None:
+            try:
+                if _loop is not None:
+                    _loop.call_soon_threadsafe(self.app._page.update)
+                else:
+                    self.app._page.update()
+            except Exception:
+                pass
 
         def _work() -> None:
             try:
@@ -593,10 +610,9 @@ class AnalyticsView(ft.Column):
             except Exception:
                 self._computing = False
                 self._spinner.visible = False
-                try:
-                    self.app._page.update()
-                except Exception:
-                    pass
+                _safe_update()
+                return
+            _safe_update()
 
         threading.Thread(target=_work, daemon=True).start()
 
@@ -664,8 +680,4 @@ class AnalyticsView(ft.Column):
         self._no_data_banner.visible = False
         self._last_row_count = total
         self._computing = False
-
-        try:
-            self.app._page.update()
-        except Exception:
-            pass
+        # El page.update() lo realiza _work vía _safe_update() con call_soon_threadsafe.
