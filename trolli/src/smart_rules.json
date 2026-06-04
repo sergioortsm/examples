@@ -1,200 +1,160 @@
 [
   {
-    "id": "c2f65cfd93deb340",
-    "name": "SPFx: Failed to load component",
+    "id": "4e9c78ae5437afbf",
+    "name": "SPFx: Error al activar spfx",
     "domain": "SPFx",
     "field": "*",
-    "pattern": "failed to load component",
-    "is_regex": false,
-    "highlight_color": "#7B52AB",
-    "enabled": true
-  },
-  {
-    "id": "724a02c4ed790d38",
-    "name": "SPFx: Could not find component",
-    "domain": "SPFx",
-    "field": "*",
-    "pattern": "could not find component",
-    "is_regex": false,
-    "highlight_color": "#7B52AB",
-    "enabled": true
-  },
-  {
-    "id": "1eda5a35d46352c5",
-    "name": "SPFx: ClientSideAssets error",
-    "domain": "SPFx",
-    "field": "*",
-    "pattern": "clientsideassets",
-    "is_regex": false,
-    "highlight_color": "#7B52AB",
-    "enabled": true
-  },
-  {
-    "id": "fe9626b2070c2ebf",
-    "name": "SPFx: Component manifest error",
-    "domain": "SPFx",
-    "field": "*",
-    "pattern": "component manifest",
-    "is_regex": false,
-    "highlight_color": "#7B52AB",
-    "enabled": true
-  },
-  {
-    "id": "7769c42381cae90a",
-    "name": "SPFx: ClientSideComponent error",
-    "domain": "SPFx",
-    "field": "*",
-    "pattern": "clientsidecomponent",
-    "is_regex": false,
-    "highlight_color": "#7B52AB",
-    "enabled": true
-  },
-  {
-    "id": "4656286372b27bc9",
-    "name": "SPFx: Script failed to load",
-    "domain": "SPFx",
-    "field": "Message",
-    "pattern": "script.*failed to load",
+    "pattern": "error al activar spfx",
     "is_regex": true,
     "highlight_color": "#7B52AB",
     "enabled": true
   },
   {
-    "id": "bdce036bd60d440f",
-    "name": "SPFx: CORS / Access-Control",
+    "id": "5b1a5b60f540c5c1",
+    "name": "SPFx: UMEAppcustomizerId",
     "domain": "SPFx",
     "field": "*",
-    "pattern": "access-control-allow-origin",
-    "is_regex": false,
-    "highlight_color": "#7B52AB",
-    "enabled": true
-  },
-  {
-    "id": "878e4ff162b2034b",
-    "name": "SPFx: REST 401 Unauthorized",
-    "domain": "SPFx",
-    "field": "*",
-    "pattern": "401 unauthorized",
-    "is_regex": false,
-    "highlight_color": "#7B52AB",
-    "enabled": true
-  },
-  {
-    "id": "0e6785f88b581fa0",
-    "name": "SPFx: REST 403 Forbidden",
-    "domain": "SPFx",
-    "field": "*",
-    "pattern": "403 forbidden",
-    "is_regex": false,
-    "highlight_color": "#7B52AB",
-    "enabled": true
-  },
-  {
-    "id": "12f7e30553c98ffb",
-    "name": "SPFx: WebPart exception",
-    "domain": "SPFx",
-    "field": "*",
-    "pattern": "webpart.*exception|exception.*webpart",
+    "pattern": "\\bumeappcustomizerid\\b",
     "is_regex": true,
     "highlight_color": "#7B52AB",
     "enabled": true
   },
   {
-    "id": "fc5b4ad42c850949",
-    "name": "SPFx: RequestDigest / token error",
+    "id": "98743e1a644b227a",
+    "name": "SPFx: UMEWebpartBotonesId",
     "domain": "SPFx",
     "field": "*",
-    "pattern": "requestdigest|xrequestdigest",
-    "is_regex": false,
+    "pattern": "\\bumewebpartbotonesid\\b",
+    "is_regex": true,
     "highlight_color": "#7B52AB",
     "enabled": true
   },
   {
-    "id": "4084cd05a454a3a2",
-    "name": "Jobs: Job failed",
-    "domain": "Timer Jobs",
+    "id": "97bf97ede192758c",
+    "name": "SPFx: AgregarSPFxEnSitio",
+    "domain": "SPFx",
     "field": "*",
-    "pattern": "job.*failed|failed.*job",
+    "pattern": "\\bagregarspfxensitio\\b",
+    "is_regex": true,
+    "highlight_color": "#7B52AB",
+    "enabled": true
+  },
+  {
+    "id": "fbf58da6edebe589",
+    "name": "SPFx: ExecuteIfSubsiteExists",
+    "domain": "SPFx",
+    "field": "*",
+    "pattern": "\\bexecuteifsubsiteexists\\b",
+    "is_regex": true,
+    "highlight_color": "#7B52AB",
+    "enabled": true
+  },
+  {
+    "id": "70c3c30f8d940882",
+    "name": "API: FetchOperationsV3",
+    "domain": "API (Sync / REST / integración)",
+    "field": "*",
+    "pattern": "\\bfetchoperationsv3\\b",
     "is_regex": true,
     "highlight_color": "#1565C0",
     "enabled": true
   },
   {
-    "id": "b68ade68953dc7f9",
-    "name": "Jobs: Job definition not found",
-    "domain": "Timer Jobs",
-    "field": "Message",
-    "pattern": "job definition.*was not found",
-    "is_regex": false,
-    "highlight_color": "#1565C0",
-    "enabled": true
-  },
-  {
-    "id": "1118848a8deb7432",
-    "name": "Jobs: Job time limit exceeded",
-    "domain": "Timer Jobs",
-    "field": "Message",
-    "pattern": "exceeded.*time limit|time limit.*exceeded",
+    "id": "d7f04a4760b6db4a",
+    "name": "API: WebException al obtener operaciones",
+    "domain": "API (Sync / REST / integración)",
+    "field": "*",
+    "pattern": "webexception al obtener operaciones",
     "is_regex": true,
     "highlight_color": "#1565C0",
     "enabled": true
   },
   {
-    "id": "859da9a08e1fe4cc",
-    "name": "Jobs: SPTimerJob error",
-    "domain": "Timer Jobs",
+    "id": "1639d31a7587f2fa",
+    "name": "API: Excepción inesperada en FetchOperationsV3",
+    "domain": "API (Sync / REST / integración)",
     "field": "*",
-    "pattern": "sptimerjob",
-    "is_regex": false,
-    "highlight_color": "#1565C0",
-    "enabled": true
-  },
-  {
-    "id": "d53953d09d61af8e",
-    "name": "Jobs: SPJobDefinition error",
-    "domain": "Timer Jobs",
-    "field": "*",
-    "pattern": "spjobdefinition",
-    "is_regex": false,
-    "highlight_color": "#1565C0",
-    "enabled": true
-  },
-  {
-    "id": "bcff669dc6dc5ee5",
-    "name": "Jobs: OWSTIMER critical",
-    "domain": "Timer Jobs",
-    "field": "Process",
-    "pattern": "owstimer",
-    "is_regex": false,
-    "highlight_color": "#1565C0",
-    "enabled": true
-  },
-  {
-    "id": "f138b4db94206fc3",
-    "name": "Jobs: Timer job exception",
-    "domain": "Timer Jobs",
-    "field": "*",
-    "pattern": "timer.*job.*exception|job.*exception.*timer",
+    "pattern": "excepci[óo]n inesperada en fetchoperationsv3",
     "is_regex": true,
     "highlight_color": "#1565C0",
     "enabled": true
   },
   {
-    "id": "b651c19a7d6edb4c",
-    "name": "Jobs: Health Analyzer error",
-    "domain": "Timer Jobs",
+    "id": "cb6056e0e494a570",
+    "name": "API: 401 Unauthorized Bearer Token",
+    "domain": "API (Sync / REST / integración)",
     "field": "*",
-    "pattern": "health analyzer",
-    "is_regex": false,
+    "pattern": "\\[401 unauthorized\\].*bearer token (?:inv[áa]lido|expirado)",
+    "is_regex": true,
     "highlight_color": "#1565C0",
     "enabled": true
   },
   {
-    "id": "35043813838cb43d",
-    "name": "Jobs: Job throttled / blocked",
-    "domain": "Timer Jobs",
+    "id": "26f30b56e12daeef",
+    "name": "API: 404 Not Found No se encontraron operaciones",
+    "domain": "API (Sync / REST / integración)",
     "field": "*",
-    "pattern": "job.*throttl|throttl.*job",
+    "pattern": "\\[404 not found\\].*no se encontraron operaciones",
+    "is_regex": true,
+    "highlight_color": "#1565C0",
+    "enabled": true
+  },
+  {
+    "id": "09bddd979e0e67dc",
+    "name": "API: Error HTTP",
+    "domain": "API (Sync / REST / integración)",
+    "field": "*",
+    "pattern": "\\berror http\\b",
+    "is_regex": true,
+    "highlight_color": "#1565C0",
+    "enabled": true
+  },
+  {
+    "id": "34301a52ac213399",
+    "name": "API: No se pudieron obtener operaciones del servicio",
+    "domain": "API (Sync / REST / integración)",
+    "field": "*",
+    "pattern": "no se pudieron obtener operaciones del servicio",
+    "is_regex": true,
+    "highlight_color": "#1565C0",
+    "enabled": true
+  },
+  {
+    "id": "3ea1ce05a0b1cd1f",
+    "name": "API: Sincronizando desde",
+    "domain": "API (Sync / REST / integración)",
+    "field": "*",
+    "pattern": "sincronizando desde\\s*:",
+    "is_regex": true,
+    "highlight_color": "#1565C0",
+    "enabled": true
+  },
+  {
+    "id": "9d9112a5461ce9df",
+    "name": "API: Error al llamar al servicio (código)",
+    "domain": "API (Sync / REST / integración)",
+    "field": "*",
+    "pattern": "error al llamar al servicio\\.?\\s*c[óo]digo\\s*:",
+    "is_regex": true,
+    "highlight_color": "#1565C0",
+    "enabled": true
+  },
+  {
+    "id": "24b99d124069c819",
+    "name": "API: Respuesta sin ID válido",
+    "domain": "API (Sync / REST / integración)",
+    "field": "*",
+    "pattern": "la respuesta del servicio no contiene un id v[áa]lido",
+    "is_regex": true,
+    "highlight_color": "#1565C0",
+    "enabled": true
+  },
+  {
+    "id": "27cf9b520ddf2bc1",
+    "name": "API: No se recibió respuesta del servicio",
+    "domain": "API (Sync / REST / integración)",
+    "field": "*",
+    "pattern": "no se recibi[óo] respuesta del servicio",
     "is_regex": true,
     "highlight_color": "#1565C0",
     "enabled": true
@@ -207,7 +167,7 @@
     "pattern": "solution deployment.*failed|failed.*solution deployment",
     "is_regex": true,
     "highlight_color": "#2E7D32",
-    "enabled": true
+    "enabled": false
   },
   {
     "id": "1295ef04de762d3c",
@@ -217,7 +177,7 @@
     "pattern": "spfeaturereceiver|feature.*receiver.*error",
     "is_regex": true,
     "highlight_color": "#2E7D32",
-    "enabled": true
+    "enabled": false
   },
   {
     "id": "ccb538518086186b",
@@ -227,7 +187,7 @@
     "pattern": "assembly.*not found|could not load.*assembly",
     "is_regex": true,
     "highlight_color": "#2E7D32",
-    "enabled": true
+    "enabled": false
   },
   {
     "id": "2fe48e35f327b5dd",
@@ -237,7 +197,7 @@
     "pattern": "feature activation.*failed|failed.*feature activation",
     "is_regex": true,
     "highlight_color": "#2E7D32",
-    "enabled": true
+    "enabled": false
   },
   {
     "id": "51199547acdb13e3",
@@ -247,7 +207,7 @@
     "pattern": "safecontrol",
     "is_regex": false,
     "highlight_color": "#2E7D32",
-    "enabled": true
+    "enabled": false
   },
   {
     "id": "201d337efc3c1e3b",
@@ -257,7 +217,7 @@
     "pattern": "solution.*retract|retract.*solution",
     "is_regex": true,
     "highlight_color": "#2E7D32",
-    "enabled": true
+    "enabled": false
   },
   {
     "id": "980198976f47e479",
@@ -267,7 +227,7 @@
     "pattern": "solution.*cannot be deployed",
     "is_regex": false,
     "highlight_color": "#2E7D32",
-    "enabled": true
+    "enabled": false
   },
   {
     "id": "daea6b9edea23d71",
@@ -277,7 +237,7 @@
     "pattern": "feature.*already activated|already exists in the solution",
     "is_regex": true,
     "highlight_color": "#2E7D32",
-    "enabled": true
+    "enabled": false
   },
   {
     "id": "74b66f169ae6f281",
@@ -287,6 +247,146 @@
     "pattern": "strong name.*validation|assembly.*version.*conflict",
     "is_regex": true,
     "highlight_color": "#2E7D32",
+    "enabled": false
+  },
+  {
+    "id": "65171e11af44a7c7",
+    "name": "WSP: Failed to open resource file",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "failed to (open|read) (the file|resource file)",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": false
+  },
+  {
+    "id": "e5e80a7175f8c050",
+    "name": "WSP: Error al crear niveles de permisos",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "error al crear niveles de permisos",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "a78b39d5d665d2d9",
+    "name": "WSP: Error al crear listas",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "error al crear listas",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "0eaf979a05a8daeb",
+    "name": "WSP: Error al crear bibliotecas",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "error al crear bibliotecas",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "2f2e9e04f5d43382",
+    "name": "WSP: Error al crear páginas",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "error al crear p[áa]ginas",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "9666a0c6898a4ec8",
+    "name": "WSP: Error al desplegar ArchivosWebparts",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "error al desplegar biblioteca\\s*['\\\"]?archivoswebparts",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "346ebd3775abe29d",
+    "name": "WSP: No se encontró configuración IIS",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "no se encontr[óo] configuraci[óo]n iis",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "affa396fcfb6a42e",
+    "name": "WSP: Current User marker",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "\\bcurrent user\\s*:",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "6411963daba4b235",
+    "name": "WSP: COLABORAWS.Infraestructure",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "\\bcolaboraws\\.infraestructure\\b(?!\\.master)",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "1ffc75ad57554523",
+    "name": "WSP: COLABORAWS.Infraestructure.Master",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "\\bcolaboraws\\.infraestructure\\.master\\b",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "0630b524ede18814",
+    "name": "WSP: COLABORAWS.Import",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "\\bcolaboraws\\.import\\b",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "c3924481c14be89b",
+    "name": "WSP: COLABORAWS.Export",
+    "domain": "wsps / Paquetes",
+    "field": "*",
+    "pattern": "\\bcolaboraws\\.export\\b",
+    "is_regex": true,
+    "highlight_color": "#2E7D32",
+    "enabled": true
+  },
+  {
+    "id": "20b0a2963c718788",
+    "name": "PS: Could not get super user token",
+    "domain": "PowerShell / Deploy",
+    "field": "*",
+    "pattern": "could not get token super user",
+    "is_regex": false,
+    "highlight_color": "#B71C1C",
+    "enabled": true
+  },
+  {
+    "id": "9d32f02597a16b62",
+    "name": "PS: Claim in token is null",
+    "domain": "PowerShell / Deploy",
+    "field": "*",
+    "pattern": "claim in token.*null|claim.*null",
+    "is_regex": true,
+    "highlight_color": "#B71C1C",
     "enabled": true
   },
   {
@@ -380,283 +480,163 @@
     "enabled": true
   },
   {
-    "id": "67b7283d7837f571",
-    "name": "Cache: SPDistributedCachePointerWrapper",
-    "domain": "Distributed Cache",
+    "id": "5e7bbe0ac2ca65cd",
+    "name": "EvtRx: FeatureActivated",
+    "domain": "EventReceivers",
     "field": "*",
-    "pattern": "spdistributedcachepointerwrapper",
-    "is_regex": false,
-    "highlight_color": "#BF360C",
-    "enabled": true
-  },
-  {
-    "id": "6dfec4ab52c932fc",
-    "name": "Cache: Token Cache failed to initialize",
-    "domain": "Distributed Cache",
-    "field": "*",
-    "pattern": "token cache.*failed to initialize",
+    "pattern": "\\bfeatureactivated\\b",
     "is_regex": true,
-    "highlight_color": "#BF360C",
+    "highlight_color": "#00695C",
     "enabled": true
   },
   {
-    "id": "b4bb2525d9b77674",
-    "name": "Cache: Token Cache failed to get token",
-    "domain": "Distributed Cache",
+    "id": "cc3ad305d0749b48",
+    "name": "EvtRx: Error al limpiar los event receivers",
+    "domain": "EventReceivers",
     "field": "*",
-    "pattern": "token cache.*failed to get token",
+    "pattern": "error al limpiar los event receivers",
     "is_regex": true,
-    "highlight_color": "#BF360C",
+    "highlight_color": "#00695C",
     "enabled": true
   },
   {
-    "id": "5f43eb6a28e59353",
-    "name": "Cache: Token Cache reverting to local",
-    "domain": "Distributed Cache",
+    "id": "3197dc4a6722fec8",
+    "name": "EvtRx: EventReceiverListaOperaciones",
+    "domain": "EventReceivers",
     "field": "*",
-    "pattern": "reverting to local cache",
-    "is_regex": false,
-    "highlight_color": "#BF360C",
-    "enabled": true
-  },
-  {
-    "id": "b39b2037c142685c",
-    "name": "Cache: FeedCacheImplementation error",
-    "domain": "Distributed Cache",
-    "field": "*",
-    "pattern": "feedcacheimplementation",
-    "is_regex": false,
-    "highlight_color": "#BF360C",
-    "enabled": true
-  },
-  {
-    "id": "d0383612fcb28435",
-    "name": "Cache: SPDistributedCache probably down",
-    "domain": "Distributed Cache",
-    "field": "*",
-    "pattern": "spdistributedcache is probably down",
-    "is_regex": false,
-    "highlight_color": "#BF360C",
-    "enabled": true
-  },
-  {
-    "id": "d43e94a876487bbc",
-    "name": "Cache: FeedCacheService excepcion (ES)",
-    "domain": "Distributed Cache",
-    "field": "*",
-    "pattern": "feedcacheservice.isrepopulationneeded",
-    "is_regex": false,
-    "highlight_color": "#BF360C",
-    "enabled": true
-  },
-  {
-    "id": "94b94eecf036cdb7",
-    "name": "Config: RefreshDirtyCollections",
-    "domain": "Config / Object Cache",
-    "field": "*",
-    "pattern": "sppersistedobjectcollectioncache.refreshdirtycollections",
-    "is_regex": false,
-    "highlight_color": "#4527A0",
-    "enabled": true
-  },
-  {
-    "id": "3cfe226e2e68b6b9",
-    "name": "Config: SPPersistedObject OnDeserialization slow",
-    "domain": "Config / Object Cache",
-    "field": "*",
-    "pattern": "sppersistedobject.ondeserialization",
-    "is_regex": false,
-    "highlight_color": "#4527A0",
-    "enabled": true
-  },
-  {
-    "id": "806751f4c656f9c5",
-    "name": "Config: Duplicate content type definition",
-    "domain": "Config / Object Cache",
-    "field": "*",
-    "pattern": "duplicate content type definition",
-    "is_regex": false,
-    "highlight_color": "#4527A0",
-    "enabled": true
-  },
-  {
-    "id": "10cbbbba458b6db7",
-    "name": "Config: Forced due to logging gap",
-    "domain": "Config / Object Cache",
-    "field": "*",
-    "pattern": "forced due to logging gap",
-    "is_regex": false,
-    "highlight_color": "#4527A0",
-    "enabled": true
-  },
-  {
-    "id": "cd155c99439991da",
-    "name": "Config: LookupHostHeaderSite not found",
-    "domain": "Config / Object Cache",
-    "field": "*",
-    "pattern": "could not find spsite",
-    "is_regex": false,
-    "highlight_color": "#4527A0",
-    "enabled": true
-  },
-  {
-    "id": "51d5807042cb6a98",
-    "name": "Config: Taxonomy cache miss expired",
-    "domain": "Config / Object Cache",
-    "field": "*",
-    "pattern": "taxonomy database change cache miss",
-    "is_regex": false,
-    "highlight_color": "#4527A0",
-    "enabled": true
-  },
-  {
-    "id": "b677d69186741e1b",
-    "name": "Config: Flushing SQL connection pool",
-    "domain": "Config / Object Cache",
-    "field": "*",
-    "pattern": "flushing connection pool",
-    "is_regex": false,
-    "highlight_color": "#4527A0",
-    "enabled": true
-  },
-  {
-    "id": "408aebe947dd57bb",
-    "name": "Config: ScriptType duplicated (CSOM)",
-    "domain": "Config / Object Cache",
-    "field": "*",
-    "pattern": "scripttype.*is duplicated",
+    "pattern": "\\beventreceiverlistaoperaciones\\b",
     "is_regex": true,
-    "highlight_color": "#4527A0",
+    "highlight_color": "#00695C",
     "enabled": true
   },
   {
-    "id": "368e06002999c89d",
-    "name": "Jobs: UsageManager is null",
-    "domain": "Timer Jobs",
+    "id": "48e718a847e39a3e",
+    "name": "EvtRx: COLABORAWS.EventReceiver",
+    "domain": "EventReceivers",
     "field": "*",
-    "pattern": "usagemanager is null",
-    "is_regex": false,
-    "highlight_color": "#1565C0",
-    "enabled": true
-  },
-  {
-    "id": "f3a1c22b4d9e7801",
-    "name": "Jobs: SharePoint Foundation Upgrade (diario)",
-    "domain": "Timer Jobs",
-    "field": "Category",
-    "pattern": "upgrade",
-    "is_regex": false,
-    "highlight_color": "#1565C0",
-    "enabled": true
-  },
-  {
-    "id": "a9f2b15c3e4d6f70",
-    "name": "PS: Could not get super user token",
-    "domain": "PowerShell / Deploy",
-    "field": "*",
-    "pattern": "could not get token super user",
-    "is_regex": false,
-    "highlight_color": "#B71C1C",
-    "enabled": true
-  },
-  {
-    "id": "c8e3d74b2f1a9052",
-    "name": "PS: Claim in token is null",
-    "domain": "PowerShell / Deploy",
-    "field": "*",
-    "pattern": "claim in token.*null|claim.*null",
+    "pattern": "\\bcolaboraws\\.eventreceiver\\b(?!listaoperaciones)",
     "is_regex": true,
-    "highlight_color": "#B71C1C",
+    "highlight_color": "#00695C",
     "enabled": true
   },
   {
-    "id": "7f4e9a1b5c2d8e63",
-    "name": "WSP: Failed to open resource file",
-    "domain": "wsps / Paquetes",
+    "id": "0d4c9c21ee53aa7b",
+    "name": "EvtRx: COLABORAWS.EventReceiverListaOperaciones",
+    "domain": "EventReceivers",
     "field": "*",
-    "pattern": "failed to (open|read) (the file|resource file)",
+    "pattern": "\\bcolaboraws\\.eventreceiverlistaoperaciones\\b",
     "is_regex": true,
-    "highlight_color": "#2E7D32",
+    "highlight_color": "#00695C",
     "enabled": true
   },
   {
-    "id": "33fcc510328b7e84",
-    "name": "[CANDIDATO] ruta acceso especificada existe",
-    "domain": "SPFx",
+    "id": "6e1863732c4248f5",
+    "name": "EvtRx: Error al activar feature",
+    "domain": "EventReceivers",
     "field": "*",
-    "pattern": "ruta acceso especificada existe",
-    "is_regex": false,
-    "highlight_color": "#7B52AB",
+    "pattern": "error al activar feature",
+    "is_regex": true,
+    "highlight_color": "#00695C",
     "enabled": true
   },
   {
-    "id": "355b1ae663e0ad62",
-    "name": "[CANDIDATO] failed open file",
-    "domain": "SPFx",
+    "id": "6f10ec85dd608f45",
+    "name": "Sync: EstadoSync",
+    "domain": "Estado de sincronización / listas",
     "field": "*",
-    "pattern": "failed open file",
-    "is_regex": false,
-    "highlight_color": "#7B52AB",
+    "pattern": "\\bestadosync\\b",
+    "is_regex": true,
+    "highlight_color": "#AD1457",
     "enabled": true
   },
   {
-    "id": "06b3ee50fe411a59",
-    "name": "[CANDIDATO] spdistributedcachepointerwrapper::initializedatacachefa",
-    "domain": "Distributed Cache",
+    "id": "4522f859e6e757f1",
+    "name": "Sync: Pendiente",
+    "domain": "Estado de sincronización / listas",
     "field": "*",
-    "pattern": "spdistributedcachepointerwrapper::initializedatacachefactory cache hosts present",
-    "is_regex": false,
-    "highlight_color": "#BF360C",
+    "pattern": "\\bpendiente\\b",
+    "is_regex": true,
+    "highlight_color": "#AD1457",
     "enabled": true
   },
   {
-    "id": "893e3c16ae43e9a1",
-    "name": "[CANDIDATO] unexpected exception spdistributedcachepointerwrapper::",
-    "domain": "Distributed Cache",
+    "id": "98cca98c17225ed9",
+    "name": "Sync: En curso",
+    "domain": "Estado de sincronización / listas",
     "field": "*",
-    "pattern": "unexpected exception spdistributedcachepointerwrapper::initializedatacachefactory usage",
-    "is_regex": false,
-    "highlight_color": "#BF360C",
+    "pattern": "\\ben curso\\b",
+    "is_regex": true,
+    "highlight_color": "#AD1457",
     "enabled": true
   },
   {
-    "id": "1e0f1f84f1a97036",
-    "name": "[CANDIDATO] token cache failed initialize",
-    "domain": "Distributed Cache",
+    "id": "a6b4a23f53b479c5",
+    "name": "Sync: Completado",
+    "domain": "Estado de sincronización / listas",
     "field": "*",
-    "pattern": "token cache failed initialize",
-    "is_regex": false,
-    "highlight_color": "#BF360C",
+    "pattern": "\\bcompletado\\b",
+    "is_regex": true,
+    "highlight_color": "#AD1457",
     "enabled": true
   },
   {
-    "id": "4bbe0121e2d54af8",
-    "name": "[CANDIDATO] certificate validation policy domain",
-    "domain": "SPFx",
+    "id": "9ef3e1b6d30cd17f",
+    "name": "Sync: Error",
+    "domain": "Estado de sincronización / listas",
     "field": "*",
-    "pattern": "certificate validation policy domain",
-    "is_regex": false,
-    "highlight_color": "#7B52AB",
+    "pattern": "\\berror\\b",
+    "is_regex": true,
+    "highlight_color": "#AD1457",
     "enabled": true
   },
   {
-    "id": "40d0a1b8ff019d38",
-    "name": "[CANDIDATO] token cache failed token",
-    "domain": "Distributed Cache",
+    "id": "9e7a198a624f49f6",
+    "name": "Sync: Lista 'Sincronizaciones' no encontrada",
+    "domain": "Estado de sincronización / listas",
     "field": "*",
-    "pattern": "token cache failed token",
-    "is_regex": false,
-    "highlight_color": "#BF360C",
+    "pattern": "lista\\s*['\\\"]sincronizaciones['\\\"]\\s*no encontrada",
+    "is_regex": true,
+    "highlight_color": "#AD1457",
     "enabled": true
   },
   {
-    "id": "69f1e4e94f1b905e",
-    "name": "[CANDIDATO] token cache reverting local",
-    "domain": "SPFx",
+    "id": "991a46db7b9327d2",
+    "name": "Sync: Error al consultar la lista 'Sincronizaciones'",
+    "domain": "Estado de sincronización / listas",
     "field": "*",
-    "pattern": "token cache reverting local",
-    "is_regex": false,
-    "highlight_color": "#7B52AB",
+    "pattern": "error al consultar la lista\\s*['\\\"]sincronizaciones['\\\"]",
+    "is_regex": true,
+    "highlight_color": "#AD1457",
+    "enabled": true
+  },
+  {
+    "id": "9c4b95cafbace92b",
+    "name": "Sync: Error al desmarcar 'Activo'",
+    "domain": "Estado de sincronización / listas",
+    "field": "*",
+    "pattern": "error al desmarcar\\s*['\\\"]activo['\\\"]",
+    "is_regex": true,
+    "highlight_color": "#AD1457",
+    "enabled": true
+  },
+  {
+    "id": "6dffedb92efe3b5a",
+    "name": "Sync: La lista '{...}' no existe",
+    "domain": "Estado de sincronización / listas",
+    "field": "*",
+    "pattern": "la lista\\s*['\\\"][^'\\\"]+['\\\"]\\s*no existe",
+    "is_regex": true,
+    "highlight_color": "#AD1457",
+    "enabled": true
+  },
+  {
+    "id": "72f25f471a0156db",
+    "name": "Sync: Lista '{...}' no encontrada",
+    "domain": "Estado de sincronización / listas",
+    "field": "*",
+    "pattern": "lista\\s*['\\\"][^'\\\"]+['\\\"]\\s*no encontrada",
+    "is_regex": true,
+    "highlight_color": "#AD1457",
     "enabled": true
   }
 ]

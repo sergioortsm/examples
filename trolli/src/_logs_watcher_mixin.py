@@ -376,6 +376,7 @@ class LogsWatcherMixin:
             "live_paused": False,
             "active_rule_id": None,
             "rule_matches": {},
+            "rule_matches_src": [],
             "error": "",
             "file_label": "Esperando primer fichero..." if is_watching else "Sin archivo cargado",
             "file_path": self.logs_state.get("file_path", "") if is_watching else "",

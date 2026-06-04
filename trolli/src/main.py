@@ -52,6 +52,7 @@ from _logs_detail_mixin import LogsDetailMixin
 from _logs_rules_mixin import LogsRulesMixin
 from settings_view import SettingsView
 from search_view import SearchView
+from analytics_view import AnalyticsView
 from smart_rules import rules_engine as _rules_engine
 
 
@@ -95,6 +96,11 @@ class TrelloApp(
         self._logs_sort_cache_rows: list[dict[str, str]] = []
         self._logs_prefs_signature_last_saved: tuple[object, ...] | None = None
         self._logs_refresh_pending = False
+        # Caché multi-dominio del motor de reglas.
+        # Clave: (id(self.logs_rows), domain). Valor: (matches, src_snapshot).
+        # Se limpia automáticamente cuando logs_rows es reasignado (nuevo id).
+        self._rules_cache: dict[tuple, tuple[dict, list]] = {}
+        self._rules_cache_rows_id: int = 0
         self.logs_state = {
             "file_path": "",
             "file_label": "Sin archivo cargado",
@@ -134,6 +140,7 @@ class TrelloApp(
             # --- motor de reglas inteligentes ---
             "active_domain": None,
             "rule_matches": {},
+            "rule_matches_src": [],  # snapshot de logs_rows usado al calcular rule_matches
             "analysis_panel_open": False,
             "active_rule_id": None,  # filtro de tabla por regla concreta o "__ANY__"
             "page_global_indices": [],  # indices originales (sort cache) por slot de la pagina actual
@@ -178,7 +185,7 @@ class TrelloApp(
             overflow=ft.TextOverflow.ELLIPSIS,
         )
         self.appbar = ft.AppBar(
-            leading=ft.Icon(ft.Icons.GRID_GOLDENRATIO_ROUNDED, color=APP_TEXT_ON_ACCENT),
+            leading=ft.Icon(ft.Icons.MANAGE_SEARCH_ROUNDED, color=APP_TEXT_ON_ACCENT, size=52),
             leading_width=100,
             title=ft.Column(
                 [
@@ -264,6 +271,7 @@ class TrelloApp(
         self.logs_view = LogsView(self)
         self.settings_view = SettingsView(self)
         self.search_view = SearchView(self)
+        self.analytics_view = AnalyticsView(self)
         self._load_candidate_patterns()
 
         self._page.update()
@@ -298,7 +306,9 @@ class TrelloApp(
             self._page.overlay.append(control)
             control.open = True
             return
-        # AlertDialog y similares
+        # AlertDialog y similares — evitar "Dialog is already opened"
+        if getattr(control, "open", False):
+            return
         if hasattr(self._page, "show_dialog"):
             self._page.show_dialog(control)
             return
@@ -461,6 +471,8 @@ class TrelloApp(
             self.set_settings_view()
         elif troute.match("/search"):
             self.set_search_view()
+        elif troute.match("/analytics"):
+            self.set_analytics_view()
         self._page.update()
 
     def add_board(self, e):

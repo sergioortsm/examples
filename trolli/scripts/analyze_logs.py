@@ -761,39 +761,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-
-    # ── Cobertura de reglas ───────────────────────────────────────────────────
-    print("\nEvaluando cobertura de reglas…")
-    rule_hits, unmatched, covered = analyze_coverage(engine, error_rows)
-
-    # ── Análisis de no cubiertos ──────────────────────────────────────────────
-    print("Analizando mensajes no cubiertos…")
-    analysis = analyze_unmatched(unmatched)
-
-    # ── Reporte ───────────────────────────────────────────────────────────────
-    print_report(
-        engine, rule_hits, unmatched, covered,
-        len(error_rows), analysis, args.top,
-    )
-
-    # ── Exportar candidatos ───────────────────────────────────────────────────
-    if args.out:
-        candidates = suggest_candidates(
-            analysis["norm_counter"],
-            args.min_count,
-            args.top,
-        )
-        out_path = Path(args.out)
-        out_path.write_text(
-            json.dumps(candidates, ensure_ascii=False, indent=2),
-            encoding="utf-8",
-        )
-        print(f"\n✓ {len(candidates)} candidatos exportados → {out_path}")
-        print("  Revisa el JSON, ajusta 'domain', 'pattern' e 'is_regex',")
-        print("  pon 'enabled': true en los que quieras activar,")
-        print("  y copia las entradas a src/smart_rules.json.\n")
-
-
-if __name__ == "__main__":
-    main()

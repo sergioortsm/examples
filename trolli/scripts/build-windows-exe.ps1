@@ -92,8 +92,30 @@ if ($UsePyInstaller) {
 # ---------------------------------------------------------------------------
 if ($UsePyInstaller) {
     Write-Host "[3/4] Ejecutando PyInstaller..." -ForegroundColor Cyan
-    $mainScript = Join-Path $ProjectRoot "src\main.py"
-    $srcDir     = Join-Path $ProjectRoot "src"
+    $mainScript  = Join-Path $ProjectRoot "src\main.py"
+    $srcDir      = Join-Path $ProjectRoot "src"
+    $rthookPath  = Join-Path $PSScriptRoot "rthook_flet_view.py"
+
+    # --- Verificar que el cliente Flet esta cacheado en esta maquina -----------
+    # El hook hook-flet.py de flet_cli lo incluye en el bundle solo si existe en
+    # ~/.flet/client/flet-desktop-full-{version}/. Si no esta, flet_desktop lo
+    # descargara de GitHub durante el build; en entornos sin internet el bundle
+    # quedara sin el cliente y el exe necesitara conexion en el primer arranque.
+    $fletClientDir = Join-Path $env:USERPROFILE ".flet\client\flet-desktop-full-$fletVersion"
+    if (Test-Path (Join-Path $fletClientDir "flet\flet.exe")) {
+        Write-Host "      Cliente Flet bundleado desde: $fletClientDir" -ForegroundColor Gray
+    } else {
+        Write-Host "" 
+        Write-Host "      AVISO: No se encontro el cliente Flet en:" -ForegroundColor Yellow
+        Write-Host "             $fletClientDir" -ForegroundColor Yellow
+        Write-Host "             flet_desktop lo descargara de GitHub durante el build." -ForegroundColor Yellow
+        Write-Host "             En entornos sin internet el exe resultante necesitara" -ForegroundColor Yellow
+        Write-Host "             conexion en el primer arranque del servidor." -ForegroundColor Yellow
+        Write-Host "      Para pre-cachear ejecuta una vez: python -c ""import flet; import flet_desktop; flet_desktop.ensure_client_cached()""" -ForegroundColor Yellow
+        Write-Host ""
+    }
+    # ---------------------------------------------------------------------------
+
     Push-Location $ProjectRoot
     try {
         $pyiMode = if ($OneFile) { "--onefile" } else { "--onedir" }
@@ -103,6 +125,7 @@ if ($UsePyInstaller) {
             --name trolli `
             --distpath $outputDir `
             --paths $srcDir `
+            --runtime-hook $rthookPath `
             $mainScript
         if ($LASTEXITCODE -ne 0) { throw "PyInstaller fallo con codigo $LASTEXITCODE." }
     } finally {

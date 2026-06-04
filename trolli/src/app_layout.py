@@ -29,6 +29,8 @@ class AppLayout(ft.Row):
             self.settings_view = ft.Text("settings view")
         if not hasattr(self, "search_view"):
             self.search_view = ft.Text("search view")
+        if not hasattr(self, "analytics_view"):
+            self.analytics_view = ft.Text("analytics view")
         self.all_boards_view = ft.Column(
             [
                 ft.Row(
@@ -142,6 +144,14 @@ class AppLayout(ft.Row):
         self.sidebar.bottom_nav_rail.selected_index = None
         if hasattr(self.search_view, "refresh"):
             self.search_view.refresh()
+        self._page.update()
+
+    def set_analytics_view(self):
+        self.active_view = self.analytics_view
+        self.sidebar.top_nav_rail.selected_index = 5
+        self.sidebar.bottom_nav_rail.selected_index = None
+        if hasattr(self.analytics_view, "refresh"):
+            self.analytics_view.refresh()
         self._page.update()
 
     def page_resize(self, e=None):

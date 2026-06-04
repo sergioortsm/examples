@@ -2,7 +2,7 @@
   "search_text": "",
   "level_filters": [],
   "sort_by": "Timestamp",
-  "sort_desc": false,
+  "sort_desc": true,
   "page_size": 250,
   "visible_columns": [
     {

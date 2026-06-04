@@ -31,6 +31,15 @@
         "Get-Item": true,
         ".\\scripts\\test-watcher-trickle.ps1": true,
         ".venv\\Scripts\\pip": true,
-        "ollama": true
+        "ollama": true,
+        "/^python -c \"import json; d=json\\.load\\(open\\('candidates\\.json'\\)\\); print\\(f'\\{len\\(d\\)\\} candidatos'\\); \\[print\\(f'  \\{c\\[\\\\\"pattern\\\\\"\\]\\}'\\) for c in d\\]\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        ".\\build-windows-exe.ps1": true,
+        "/^cd src; python -c \"from smart_rules import _DEFAULT_RULES; from dataclasses import asdict; import json; open\\('smart_rules\\.json','w',encoding='utf-8'\\)\\.write\\(json\\.dumps\\(\\[asdict\\(r\\) for r in _DEFAULT_RULES\\], ensure_ascii=False, indent=2\\)\\)\"; python -c \"from smart_rules import rules_engine as e, DOMAIN_EVTRX, ALL_DOMAINS; print\\('domains:', ALL_DOMAINS\\); rs=e\\.get_rules_for_domain\\(DOMAIN_EVTRX\\); print\\('total EvtRx:', len\\(rs\\)\\); \\[print\\(\\('ON ' if r\\.enabled else 'off'\\), r\\.name, '\\|', r\\.field, '\\|', r\\.pattern\\) for r in rs\\]\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
     }
 }

@@ -1013,9 +1013,9 @@ class LogsView(ft.Column):
             if self.column_selector_visible:
                 self._update_column_selector_dialog_size()
                 opener = getattr(page, "open", None)
-                if callable(opener):
+                if callable(opener) and not getattr(self.column_selector_dialog, "open", False):
                     opener(self.column_selector_dialog)
-                else:
+                elif not callable(opener):
                     if self.column_selector_dialog not in page.overlay:
                         page.overlay.append(self.column_selector_dialog)
                     self.column_selector_dialog.open = True

@@ -18,19 +18,22 @@ from pathlib import Path
 # ──────────────────────────────────────────────────────────────────────────────
 
 DOMAIN_SPFX   = "SPFx"
-DOMAIN_TIMER  = "Timer Jobs"
+DOMAIN_TIMER  = "Timer Jobs"  # constante legacy: ya no se expone como tab
 DOMAIN_WSP    = "wsps / Paquetes"
 DOMAIN_PS     = "PowerShell / Deploy"
-DOMAIN_CACHE  = "Distributed Cache"
-DOMAIN_CONFIG = "Config / Object Cache"
+DOMAIN_CACHE  = "Distributed Cache"   # constante legacy: ya no se expone como tab
+DOMAIN_CONFIG = "Config / Object Cache"  # constante legacy: ya no se expone como tab
+DOMAIN_EVTRX = "EventReceivers"
+DOMAIN_SYNC  = "Estado de sincronización / listas"
+DOMAIN_API   = "API (Sync / REST / integración)"
 
 ALL_DOMAINS: list[str] = [
     DOMAIN_SPFX,
-    DOMAIN_TIMER,
+    DOMAIN_API,
     DOMAIN_WSP,
     DOMAIN_PS,
-    DOMAIN_CACHE,
-    DOMAIN_CONFIG,
+    DOMAIN_EVTRX,
+    DOMAIN_SYNC,
 ]
 
 DOMAIN_COLORS: dict[str, str] = {
@@ -40,6 +43,9 @@ DOMAIN_COLORS: dict[str, str] = {
     DOMAIN_PS:     "#B71C1C",
     DOMAIN_CACHE:  "#BF360C",
     DOMAIN_CONFIG: "#4527A0",
+    DOMAIN_EVTRX:  "#00695C",
+    DOMAIN_SYNC:   "#AD1457",
+    DOMAIN_API:    "#1565C0",
 }
 
 
@@ -70,7 +76,14 @@ def _rule_id(domain: str, name: str) -> str:
     return hashlib.md5(f"{domain}:{name}".encode()).hexdigest()[:16]
 
 
-def _rule(name: str, domain: str, field: str, pattern: str, is_regex: bool) -> SmartRule:
+def _rule(
+    name: str,
+    domain: str,
+    field: str,
+    pattern: str,
+    is_regex: bool,
+    enabled: bool = True,
+) -> SmartRule:
     return SmartRule(
         id=_rule_id(domain, name),
         name=name,
@@ -79,48 +92,58 @@ def _rule(name: str, domain: str, field: str, pattern: str, is_regex: bool) -> S
         pattern=pattern,
         is_regex=is_regex,
         highlight_color=DOMAIN_COLORS[domain],
-        enabled=True,
+        enabled=enabled,
     )
 
 
 _DEFAULT_RULES: list[SmartRule] = [
     # ── SPFx ──────────────────────────────────────────────────────────────────
-    _rule("SPFx: Failed to load component",     DOMAIN_SPFX, "*",       r"failed to load component",                       False),
-    _rule("SPFx: Could not find component",     DOMAIN_SPFX, "*",       r"could not find component",                       False),
-    _rule("SPFx: ClientSideAssets error",       DOMAIN_SPFX, "*",       r"clientsideassets",                               False),
-    _rule("SPFx: Component manifest error",     DOMAIN_SPFX, "*",       r"component manifest",                             False),
-    _rule("SPFx: ClientSideComponent error",    DOMAIN_SPFX, "*",       r"clientsidecomponent",                            False),
-    _rule("SPFx: Script failed to load",        DOMAIN_SPFX, "Message", r"script.*failed to load",                         True),
-    _rule("SPFx: CORS / Access-Control",        DOMAIN_SPFX, "*",       r"access-control-allow-origin",                    False),
-    _rule("SPFx: REST 401 Unauthorized",        DOMAIN_SPFX, "*",       r"401 unauthorized",                               False),
-    _rule("SPFx: REST 403 Forbidden",           DOMAIN_SPFX, "*",       r"403 forbidden",                                  False),
-    _rule("SPFx: WebPart exception",            DOMAIN_SPFX, "*",       r"webpart.*exception|exception.*webpart",           True),
-    _rule("SPFx: RequestDigest / token error",  DOMAIN_SPFX, "*",       r"requestdigest|xrequestdigest",                   False),
+    # Reglas COLABORAWS para despliegue SPFx. Todas regex, field="*", activadas.
+    _rule("SPFx: Error al activar spfx",       DOMAIN_SPFX, "*", r"error al activar spfx",         True),
+    _rule("SPFx: UMEAppcustomizerId",          DOMAIN_SPFX, "*", r"\bumeappcustomizerid\b",        True),
+    _rule("SPFx: UMEWebpartBotonesId",         DOMAIN_SPFX, "*", r"\bumewebpartbotonesid\b",       True),
+    _rule("SPFx: AgregarSPFxEnSitio",          DOMAIN_SPFX, "*", r"\bagregarspfxensitio\b",        True),
+    _rule("SPFx: ExecuteIfSubsiteExists",      DOMAIN_SPFX, "*", r"\bexecuteifsubsiteexists\b",    True),
 
-    # ── Timer Jobs ────────────────────────────────────────────────────────────
-    _rule("Jobs: Job failed",                   DOMAIN_TIMER, "*",       r"job.*failed|failed.*job",                        True),
-    _rule("Jobs: Job definition not found",     DOMAIN_TIMER, "Message", r"job definition.*was not found",                  False),
-    _rule("Jobs: Job time limit exceeded",      DOMAIN_TIMER, "Message", r"exceeded.*time limit|time limit.*exceeded",      True),
-    _rule("Jobs: SPTimerJob error",             DOMAIN_TIMER, "*",       r"sptimerjob",                                     False),
-    _rule("Jobs: SPJobDefinition error",        DOMAIN_TIMER, "*",       r"spjobdefinition",                                False),
-    _rule("Jobs: OWSTIMER critical",            DOMAIN_TIMER, "Process", r"owstimer",                                       False),
-    _rule("Jobs: Timer job exception",          DOMAIN_TIMER, "*",       r"timer.*job.*exception|job.*exception.*timer",    True),
-    _rule("Jobs: Health Analyzer error",        DOMAIN_TIMER, "*",       r"health analyzer",                                False),
-    _rule("Jobs: Job throttled / blocked",      DOMAIN_TIMER, "*",       r"job.*throttl|throttl.*job",                      True),
-    _rule("Jobs: UsageManager is null",         DOMAIN_TIMER, "*",       r"usagemanager is null",                            False),
-    _rule("Jobs: SharePoint Foundation Upgrade",DOMAIN_TIMER, "Category",r"upgrade",                                         False),
+    # ── API (Sync / REST / integración) ───────────────────────────────────────
+    # Reglas COLABORAWS para llamadas REST/sincronización. Todas regex, field="*", activadas.
+    _rule("API: FetchOperationsV3",                              DOMAIN_API, "*", r"\bfetchoperationsv3\b",                                          True),
+    _rule("API: WebException al obtener operaciones",            DOMAIN_API, "*", r"webexception al obtener operaciones",                            True),
+    _rule("API: Excepción inesperada en FetchOperationsV3",      DOMAIN_API, "*", r"excepci[óo]n inesperada en fetchoperationsv3",                   True),
+    _rule("API: 401 Unauthorized Bearer Token",                  DOMAIN_API, "*", r"\[401 unauthorized\].*bearer token (?:inv[áa]lido|expirado)",     True),
+    _rule("API: 404 Not Found No se encontraron operaciones",    DOMAIN_API, "*", r"\[404 not found\].*no se encontraron operaciones",               True),
+    _rule("API: Error HTTP",                                     DOMAIN_API, "*", r"\berror http\b",                                                  True),
+    _rule("API: No se pudieron obtener operaciones del servicio",DOMAIN_API, "*", r"no se pudieron obtener operaciones del servicio",                True),
+    _rule("API: Sincronizando desde",                            DOMAIN_API, "*", r"sincronizando desde\s*:",                                         True),
+    _rule("API: Error al llamar al servicio (código)",           DOMAIN_API, "*", r"error al llamar al servicio\.?\s*c[óo]digo\s*:",                  True),
+    _rule("API: Respuesta sin ID válido",                        DOMAIN_API, "*", r"la respuesta del servicio no contiene un id v[áa]lido",          True),
+    _rule("API: No se recibió respuesta del servicio",           DOMAIN_API, "*", r"no se recibi[óo] respuesta del servicio",                        True),
 
     # ── wsps / Paquetes ───────────────────────────────────────────────────────
-    _rule("WSP: Solution deployment failed",    DOMAIN_WSP, "*",        r"solution deployment.*failed|failed.*solution deployment", True),
-    _rule("WSP: Feature receiver error",        DOMAIN_WSP, "*",        r"spfeaturereceiver|feature.*receiver.*error",      True),
-    _rule("WSP: Assembly not found",            DOMAIN_WSP, "*",        r"assembly.*not found|could not load.*assembly",    True),
-    _rule("WSP: Feature activation failed",     DOMAIN_WSP, "*",        r"feature activation.*failed|failed.*feature activation", True),
-    _rule("WSP: SafeControl error",             DOMAIN_WSP, "*",        r"safecontrol",                                     False),
-    _rule("WSP: Solution retract error",        DOMAIN_WSP, "*",        r"solution.*retract|retract.*solution",             True),
-    _rule("WSP: Solution cannot be deployed",   DOMAIN_WSP, "Message",  r"solution.*cannot be deployed",                    False),
-    _rule("WSP: Feature already activated",     DOMAIN_WSP, "*",        r"feature.*already activated|already exists in the solution", True),
-    _rule("WSP: Assembly version conflict",     DOMAIN_WSP, "*",        r"strong name.*validation|assembly.*version.*conflict", True),
-    _rule("WSP: Failed to open resource file",  DOMAIN_WSP, "*",        r"failed to (open|read) (the file|resource file)",  True),
+    # Reglas genéricas (deshabilitadas por defecto: el tab WSP PAQUETES se centra
+    # en los marcadores propios de COLABORAWS). Reactivar manualmente si interesa.
+    _rule("WSP: Solution deployment failed",    DOMAIN_WSP, "*",        r"solution deployment.*failed|failed.*solution deployment", True,  enabled=False),
+    _rule("WSP: Feature receiver error",        DOMAIN_WSP, "*",        r"spfeaturereceiver|feature.*receiver.*error",      True,  enabled=False),
+    _rule("WSP: Assembly not found",            DOMAIN_WSP, "*",        r"assembly.*not found|could not load.*assembly",    True,  enabled=False),
+    _rule("WSP: Feature activation failed",     DOMAIN_WSP, "*",        r"feature activation.*failed|failed.*feature activation", True,  enabled=False),
+    _rule("WSP: SafeControl error",             DOMAIN_WSP, "*",        r"safecontrol",                                     False, enabled=False),
+    _rule("WSP: Solution retract error",        DOMAIN_WSP, "*",        r"solution.*retract|retract.*solution",             True,  enabled=False),
+    _rule("WSP: Solution cannot be deployed",   DOMAIN_WSP, "Message",  r"solution.*cannot be deployed",                    False, enabled=False),
+    _rule("WSP: Feature already activated",     DOMAIN_WSP, "*",        r"feature.*already activated|already exists in the solution", True,  enabled=False),
+    _rule("WSP: Assembly version conflict",     DOMAIN_WSP, "*",        r"strong name.*validation|assembly.*version.*conflict", True,  enabled=False),
+    _rule("WSP: Failed to open resource file",  DOMAIN_WSP, "*",        r"failed to (open|read) (the file|resource file)",  True,  enabled=False),
+    # Reglas COLABORAWS (despliegue SharePoint On-Prem). Todas regex, case-insensitive.
+    _rule("WSP: Error al crear niveles de permisos",          DOMAIN_WSP, "*", r"error al crear niveles de permisos",                                True),
+    _rule("WSP: Error al crear listas",                       DOMAIN_WSP, "*", r"error al crear listas",                                             True),
+    _rule("WSP: Error al crear bibliotecas",                  DOMAIN_WSP, "*", r"error al crear bibliotecas",                                        True),
+    _rule("WSP: Error al crear páginas",                      DOMAIN_WSP, "*", r"error al crear p[áa]ginas",                                         True),
+    _rule("WSP: Error al desplegar ArchivosWebparts",         DOMAIN_WSP, "*", r"error al desplegar biblioteca\s*['\"]?archivoswebparts",            True),
+    _rule("WSP: No se encontró configuración IIS",            DOMAIN_WSP, "*", r"no se encontr[óo] configuraci[óo]n iis",                            True),
+    _rule("WSP: Current User marker",                         DOMAIN_WSP, "*", r"\bcurrent user\s*:",                                                True),
+    _rule("WSP: COLABORAWS.Infraestructure",                  DOMAIN_WSP, "*", r"\bcolaboraws\.infraestructure\b(?!\.master)",                       True),
+    _rule("WSP: COLABORAWS.Infraestructure.Master",           DOMAIN_WSP, "*", r"\bcolaboraws\.infraestructure\.master\b",                           True),
+    _rule("WSP: COLABORAWS.Import",                           DOMAIN_WSP, "*", r"\bcolaboraws\.import\b",                                            True),
+    _rule("WSP: COLABORAWS.Export",                           DOMAIN_WSP, "*", r"\bcolaboraws\.export\b",                                            True),
 
     # ── PowerShell / Deploy ───────────────────────────────────────────────────
     _rule("PS: Could not get super user token",  DOMAIN_PS, "*",         r"could not get token super user",                  False),
@@ -135,24 +158,25 @@ _DEFAULT_RULES: list[SmartRule] = [
     _rule("PS: AppPool identity error",         DOMAIN_PS, "*",         r"apppool.*identity|identity.*apppool",             True),
     _rule("PS: Security token expired",         DOMAIN_PS, "*",         r"token.*expired|expired.*token|security token",   True),
 
-    # ── Distributed Cache ─────────────────────────────────────────────────────
-    _rule("Cache: SPDistributedCachePointerWrapper",    DOMAIN_CACHE, "*", r"spdistributedcachepointerwrapper",                         False),
-    _rule("Cache: Token Cache failed to initialize",    DOMAIN_CACHE, "*", r"token cache.*failed to initialize",                         True),
-    _rule("Cache: Token Cache failed to get token",     DOMAIN_CACHE, "*", r"token cache.*failed to get token",                          True),
-    _rule("Cache: Token Cache reverting to local",      DOMAIN_CACHE, "*", r"reverting to local cache",                                  False),
-    _rule("Cache: FeedCacheImplementation error",       DOMAIN_CACHE, "*", r"feedcacheimplementation",                                   False),
-    _rule("Cache: SPDistributedCache probably down",    DOMAIN_CACHE, "*", r"spdistributedcache is probably down",                       False),
-    _rule("Cache: FeedCacheService excepcion (ES)",     DOMAIN_CACHE, "*", r"feedcacheservice.isrepopulationneeded",                     False),
+    # ── EventReceivers ────────────────────────────────────────────────────────
+    _rule("EvtRx: FeatureActivated",                    DOMAIN_EVTRX, "*", r"\bfeatureactivated\b",                                      True),
+    _rule("EvtRx: Error al limpiar los event receivers", DOMAIN_EVTRX, "*", r"error al limpiar los event receivers",                     True),
+    _rule("EvtRx: EventReceiverListaOperaciones",       DOMAIN_EVTRX, "*", r"\beventreceiverlistaoperaciones\b",                         True),
+    _rule("EvtRx: COLABORAWS.EventReceiver",            DOMAIN_EVTRX, "*", r"\bcolaboraws\.eventreceiver\b(?!listaoperaciones)",         True),
+    _rule("EvtRx: COLABORAWS.EventReceiverListaOperaciones", DOMAIN_EVTRX, "*", r"\bcolaboraws\.eventreceiverlistaoperaciones\b",        True),
+    _rule("EvtRx: Error al activar feature",            DOMAIN_EVTRX, "*", r"error al activar feature",                                  True),
 
-    # ── Config / Object Cache ─────────────────────────────────────────────────
-    _rule("Config: RefreshDirtyCollections",            DOMAIN_CONFIG, "*", r"sppersistedobjectcollectioncache.refreshdirtycollections",  False),
-    _rule("Config: SPPersistedObject OnDeserialization",DOMAIN_CONFIG, "*", r"sppersistedobject.ondeserialization",                      False),
-    _rule("Config: Duplicate content type",             DOMAIN_CONFIG, "*", r"duplicate content type definition",                        False),
-    _rule("Config: Forced due to logging gap",          DOMAIN_CONFIG, "*", r"forced due to logging gap",                               False),
-    _rule("Config: LookupHostHeaderSite not found",     DOMAIN_CONFIG, "*", r"could not find spsite lookupinfo for host-header",         False),
-    _rule("Config: Taxonomy cache miss expired",         DOMAIN_CONFIG, "*", r"taxonomy database change cache miss",                      False),
-    _rule("Config: Flushing SQL connection pool",        DOMAIN_CONFIG, "*", r"flushing connection pool",                                 False),
-    _rule("Config: ScriptType duplicated (CSOM)",        DOMAIN_CONFIG, "*", r"scripttype.*is duplicated",                                True),
+    # ── Estado de sincronización / listas ───────────────────────────────────────────
+    _rule("Sync: EstadoSync",                          DOMAIN_SYNC, "*", r"\bestadosync\b",                                            True),
+    _rule("Sync: Pendiente",                           DOMAIN_SYNC, "*", r"\bpendiente\b",                                             True),
+    _rule("Sync: En curso",                            DOMAIN_SYNC, "*", r"\ben curso\b",                                              True),
+    _rule("Sync: Completado",                          DOMAIN_SYNC, "*", r"\bcompletado\b",                                            True),
+    _rule("Sync: Error",                               DOMAIN_SYNC, "*", r"\berror\b",                                                 True),
+    _rule("Sync: Lista 'Sincronizaciones' no encontrada",   DOMAIN_SYNC, "*", r"lista\s*['\"]sincronizaciones['\"]\s*no encontrada",   True),
+    _rule("Sync: Error al consultar la lista 'Sincronizaciones'", DOMAIN_SYNC, "*", r"error al consultar la lista\s*['\"]sincronizaciones['\"]", True),
+    _rule("Sync: Error al desmarcar 'Activo'",         DOMAIN_SYNC, "*", r"error al desmarcar\s*['\"]activo['\"]",                    True),
+    _rule("Sync: La lista '{...}' no existe",          DOMAIN_SYNC, "*", r"la lista\s*['\"][^'\"]+['\"]\s*no existe",                  True),
+    _rule("Sync: Lista '{...}' no encontrada",         DOMAIN_SYNC, "*", r"lista\s*['\"][^'\"]+['\"]\s*no encontrada",                 True),
 ]
 
 

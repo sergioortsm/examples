@@ -155,6 +155,12 @@ class LogsLoadMixin:
                 "level_filters": level_filters,
                 "current_page": 1,
                 "error": "",
+                # Al cargar un nuevo fichero: resetear perfil y cerrar panel de chips.
+                "active_domain": None,
+                "rule_matches": {},
+                "rule_matches_src": [],
+                "active_rule_id": None,
+                "analysis_panel_open": False,
             }
         )
 
@@ -178,6 +184,11 @@ class LogsLoadMixin:
                 self.logs_view.render(self.logs_state)
             except RuntimeError:
                 pass
+            # Refrescar Analytics automáticamente tras cargar un nuevo fichero.
+            analytics = getattr(self, "analytics_view", None)
+            if analytics is not None and hasattr(analytics, "refresh"):
+                analytics._last_row_count = -1
+                analytics.refresh()
             self._page.update()
 
     def load_log_file(self, file_path: str):
@@ -436,24 +447,47 @@ class LogsLoadMixin:
             else int(self.logs_state["page_size"])
         )
 
-        # Filtro por regla activa: si esta seteado, restringimos las filas que se paginan
-        # a las que coincidan con esa regla (o cualquier regla si "__ANY__"). Mantenemos
-        # un mapping slot -> indice global en sort cache para que el render pinte los bordes.
+        # Filtro por regla activa: si está seteado, restringimos las filas que se paginan
+        # a las que coincidan con esa regla (o cualquier regla si "__ANY__").
+        # IMPORTANTE: los índices de rule_matches apuntan a logs_rows (todas las filas),
+        # así que construimos source_rows DIRECTAMENTE desde rule_matches_src, sin pasar
+        # por el sort cache. Esto garantiza que ningún filtro activo (nivel, búsqueda,
+        # columna, tiempo, candidatos) oculte filas que el chip debería mostrar.
+        # Se aplica el sort del estado actual para mantener el orden de columnas.
         active_rid = self.logs_state.get("active_rule_id")
         rule_matches = self.logs_state.get("rule_matches") or {}
         source_rows = self._logs_sort_cache_rows
         global_indices: list[int] | None = None
         if active_rid and rule_matches:
-            with perf_timer("rule_filter", total=len(source_rows), rule=active_rid):
+            with perf_timer("rule_filter", total=len(rule_matches), rule=active_rid):
+                src_ref: list = self.logs_state.get("rule_matches_src") or []
                 if active_rid == "__ANY__":
-                    matched_idx = sorted(rule_matches.keys())
+                    matched_src_idx = sorted(rule_matches.keys())
                 else:
-                    matched_idx = sorted(
+                    matched_src_idx = sorted(
                         i for i, rules in rule_matches.items()
                         if any(r.id == active_rid for r in rules)
                     )
-                source_rows = [self._logs_sort_cache_rows[i] for i in matched_idx]
-                global_indices = matched_idx
+                if src_ref:
+                    # Construir pares (logs_rows_idx, row) y aplicar sort
+                    matched_pairs = [
+                        (i, src_ref[i]) for i in matched_src_idx if i < len(src_ref)
+                    ]
+                    sort_by = self.logs_state.get("sort_by")
+                    sort_desc = bool(self.logs_state.get("sort_desc", False))
+                    columns = self.logs_state.get("columns", [])
+                    if sort_by and sort_by in columns:
+                        matched_pairs.sort(
+                            key=lambda p: p[1].get(sort_by, ""),
+                            reverse=sort_desc,
+                        )
+                    source_rows = [row for _, row in matched_pairs]
+                    # global_indices contiene índices de logs_rows (claves de rule_matches)
+                    # para que el render pueda hacer rule_matches.get(global_idx) y pintar bordes.
+                    global_indices = [idx for idx, _ in matched_pairs]
+                else:
+                    source_rows = []
+                    global_indices = []
 
         with perf_timer("paginate_rows", total=len(source_rows), page_size=effective_page_size):
             page_rows, filtered_total, total_pages, safe_page = paginate_rows(
@@ -463,12 +497,20 @@ class LogsLoadMixin:
             )
 
         # Calcular indices globales por slot para que el render mapee bordes correctamente.
+        # - Modo chip activo: global_indices son índices de logs_rows → directo.
+        # - Modo normal: calcular índice de logs_rows para cada page_row usando id()
+        #   (los dicts del sort cache son los MISMOS objetos que en logs_rows, no copias).
         if global_indices is not None:
             start = (safe_page - 1) * effective_page_size
             page_global_indices = global_indices[start:start + effective_page_size]
         else:
             start = (safe_page - 1) * effective_page_size
-            page_global_indices = list(range(start, start + len(page_rows)))
+            if rule_matches and page_rows:
+                _id_map = {id(r): i for i, r in enumerate(self.logs_rows)}
+                page_global_indices = [_id_map.get(id(r), -1) for r in page_rows]
+            else:
+                # Sin reglas activas no se necesitan bordes: usar posición relativa
+                page_global_indices = list(range(start, start + len(page_rows)))
 
         self.logs_state.update(
             {

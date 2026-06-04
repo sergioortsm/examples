@@ -35,6 +35,11 @@ class Sidebar(ft.Container):
                 icon=ft.Icons.MANAGE_SEARCH,
                 selected_icon=ft.Icons.MANAGE_SEARCH,
             ),
+            ft.NavigationRailDestination(
+                label="Analytics",
+                icon=ft.Icons.BAR_CHART_OUTLINED,
+                selected_icon=ft.Icons.BAR_CHART,
+            ),
         ]
 
         self.top_nav_rail = ft.NavigationRail(
@@ -140,6 +145,8 @@ class Sidebar(ft.Container):
             self.page.navigate("/settings")
         elif index == 4:
             self.page.navigate("/search")
+        elif index == 5:
+            self.page.navigate("/analytics")
 
     def bottom_nav_change(self, e):
         index = e if (type(e) == int) else e.control.selected_index

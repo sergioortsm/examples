@@ -90,6 +90,18 @@ Usa el script `scripts/build-windows-exe.ps1` desde la raíz del proyecto (requi
 
 El ejecutable queda en `build\pyinstaller\trolli\`. Copia **la carpeta entera** al servidor (no solo el `.exe`).
 
+### Cómo funciona el bundle (cliente Flet autocontenido)
+
+El hook de PyInstaller de `flet_cli` (`hook-flet.py`) incluye automáticamente el cliente Flutter de Flet dentro del bundle, en `_internal\flet_desktop\app\flet\flet.exe`. El script de build incluye además un **runtime hook** (`scripts/rthook_flet_view.py`) que, al arrancar el exe congelado, establece `FLET_VIEW_PATH` apuntando a ese cliente bundleado.
+
+El resultado es un ejecutable **completamente autocontenido** que no necesita descargar nada en el servidor de destino, ni en el primer arranque ni en los siguientes.
+
+> **Requisito en la máquina de build:** el cliente Flet debe estar cacheado localmente en `~\.flet\client\flet-desktop-full-{version}\` antes de ejecutar el script. El script comprueba esto y muestra un aviso si no está. Para pre-cachear, ejecuta una vez:
+> ```powershell
+> python -c "import flet_desktop; flet_desktop.ensure_client_cached()"
+> ```
+> En esta máquina el caché se genera automáticamente la primera vez que se ejecuta la app en modo desarrollo (`flet run src/main.py`).
+
 ### Despliegue en servidor SharePoint
 
 1. Copia la carpeta `build\pyinstaller\trolli\` al servidor.
@@ -97,27 +109,21 @@ El ejecutable queda en `build\pyinstaller\trolli\`. Copia **la carpeta entera** 
    ```
    C:\Program Files\Common Files\Microsoft Shared\Web Server Extensions\16\LOGS
    ```
-3. Ejecuta `trolli.exe`.
+3. Ejecuta `trolli.exe`. No se requiere conexión a internet.
 
 ### Entornos con proxy SSL corporativo (CA privada)
 
-En servidores SharePoint con proxy que intercepta SSL, el primer arranque falla con:
+Dado que el exe ya incluye el cliente Flutter bundleado, **el error SSL del primer arranque ya no ocurre** en condiciones normales. Los parámetros `-AllowUntrustedSSL` y `-CACertBundle` siguen disponibles como precaución si `flet_desktop` necesitara hacer alguna conexión de red en un escenario no esperado.
 
-```
-ssl.SSLCertVerificationError: certificate verify failed: unable to get local issuer certificate
-```
-
-Esto ocurre porque `flet_desktop` descarga su cliente Flutter (~20 MB) en el primer arranque via HTTPS. Una vez descargado queda cacheado en `%LOCALAPPDATA%\flet\bin\` y el error no vuelve a producirse.
-
-**Solución: generar el ejecutable con `-AllowUntrustedSSL`**
+**Generar exe con bypass SSL (solo si fuera necesario)**
 
 ```powershell
 .\scripts\build-windows-exe.ps1 -UsePyInstaller -AllowUntrustedSSL -OpenOutputDir
 ```
 
-Esto incluye un `trolli-launcher.bat` junto al `.exe`. En el servidor, ejecuta **`trolli-launcher.bat`** en lugar de `trolli.exe` directamente. El `.bat` activa la variable `TROLLI_SKIP_SSL_VERIFY=1` que parchea el contexto SSL de Python antes de que `flet_desktop` haga la descarga.
+Incluye un `trolli-launcher.bat` que activa `TROLLI_SKIP_SSL_VERIFY=1` antes de lanzar el exe.
 
-**Solución alternativa con CA corporativa (más segura)**
+**Generar exe con CA corporativa (más seguro)**
 
 Si tienes el certificado raíz de la CA corporativa (exportado desde `certmgr.msc` → *Entidades de certificación raíz de confianza* → formato `.pem`):
 
