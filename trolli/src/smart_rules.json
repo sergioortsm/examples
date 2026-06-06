@@ -11,20 +11,20 @@
   },
   {
     "id": "5b1a5b60f540c5c1",
-    "name": "SPFx: UMEAppcustomizerId",
+    "name": "SPFx: UMEAppcustomizer",
     "domain": "SPFx",
     "field": "Message",
-    "pattern": "umeappcustomizerid",
+    "pattern": "umeappcustomizer",
     "is_regex": true,
     "highlight_color": "#7B52AB",
     "enabled": true
   },
   {
     "id": "98743e1a644b227a",
-    "name": "SPFx: UMEWebpartBotonesId",
+    "name": "SPFx: UMEWebpartBotones",
     "domain": "SPFx",
     "field": "Message",
-    "pattern": "umewebpartbotonesid",
+    "pattern": "umewebpartbotones",
     "is_regex": true,
     "highlight_color": "#7B52AB",
     "enabled": true
@@ -624,7 +624,7 @@
     "name": "Sync: La lista '{...}' no existe",
     "domain": "Estado de sincronización / listas",
     "field": "Message",
-    "pattern": "la lista\\s*['\\\"][^'\\\"]+['\\\"]\\s*no existe",
+    "pattern": "^\\[.*\\]\\s+La lista\\s+'[^']+'\\s+no existe$",
     "is_regex": true,
     "highlight_color": "#AD1457",
     "enabled": true

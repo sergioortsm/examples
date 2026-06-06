@@ -116,31 +116,31 @@ class AppLayout(ft.Row):
     def set_all_boards_view(self):
         self.active_view = self.all_boards_view
         self.hydrate_all_boards_view()
-        self.sidebar.top_nav_rail.selected_index = 0
+        self.sidebar.top_nav_rail.selected_index = None  # Boards oculto del sidebar
         self.sidebar.bottom_nav_rail.selected_index = None
         self._page.update()
 
     def set_members_view(self):
         self.active_view = self.members_view
-        self.sidebar.top_nav_rail.selected_index = 1
+        self.sidebar.top_nav_rail.selected_index = None  # Members oculto del sidebar
         self.sidebar.bottom_nav_rail.selected_index = None
         self._page.update()
 
     def set_logs_view(self):
         self.active_view = self.logs_view
-        self.sidebar.top_nav_rail.selected_index = 2
+        self.sidebar.top_nav_rail.selected_index = 0
         self.sidebar.bottom_nav_rail.selected_index = None
         self._page.update()
 
     def set_settings_view(self):
         self.active_view = self.settings_view
-        self.sidebar.top_nav_rail.selected_index = 3
+        self.sidebar.top_nav_rail.selected_index = 1
         self.sidebar.bottom_nav_rail.selected_index = None
         self._page.update()
 
     def set_search_view(self):
         self.active_view = self.search_view
-        self.sidebar.top_nav_rail.selected_index = 4
+        self.sidebar.top_nav_rail.selected_index = 2
         self.sidebar.bottom_nav_rail.selected_index = None
         if hasattr(self.search_view, "refresh"):
             self.search_view.refresh()
@@ -148,7 +148,7 @@ class AppLayout(ft.Row):
 
     def set_analytics_view(self):
         self.active_view = self.analytics_view
-        self.sidebar.top_nav_rail.selected_index = 5
+        self.sidebar.top_nav_rail.selected_index = 3
         self.sidebar.bottom_nav_rail.selected_index = None
         if hasattr(self.analytics_view, "refresh"):
             self.analytics_view.refresh()

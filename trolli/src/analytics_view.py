@@ -116,6 +116,14 @@ def _build_bar_chart(
                         width=16,
                         color=color,
                         border_radius=ft.BorderRadius(4, 4, 0, 0),
+                        tooltip=fch.BarChartRodTooltip(
+                            text=f"{count:,}",
+                            text_style=ft.TextStyle(
+                                color=APP_TEXT_PRIMARY,
+                                size=11,
+                                weight=ft.FontWeight.W_600,
+                            ),
+                        ),
                     )
                 ],
             )
@@ -153,6 +161,14 @@ def _build_bar_chart(
                     ),
                     left_axis=fch.ChartAxis(label_size=40),
                     bottom_axis=fch.ChartAxis(labels=bottom_labels, label_size=70),
+                    tooltip=fch.BarChartTooltip(
+                        bgcolor=APP_SURFACE,
+                        border_radius=ft.BorderRadius(8, 8, 8, 8),
+                        padding=ft.padding.Padding(left=10, top=6, right=10, bottom=6),
+                        border_side=ft.BorderSide(1, APP_BORDER),
+                        fit_inside_horizontally=True,
+                        fit_inside_vertically=True,
+                    ),
                 ),
             ),
         ],

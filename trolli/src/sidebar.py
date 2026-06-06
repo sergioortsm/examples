@@ -10,16 +10,16 @@ class Sidebar(ft.Container):
         self.app_layout = app_layout
         self.nav_rail_visible = True
         self.top_nav_items = [
-            ft.NavigationRailDestination(
-                label="Boards",
-                icon=ft.Icons.BOOK_OUTLINED,
-                selected_icon=ft.Icons.BOOK_OUTLINED,
-            ),
-            ft.NavigationRailDestination(
-                label="Members",
-                icon=ft.Icons.PERSON,
-                selected_icon=ft.Icons.PERSON,
-            ),
+            # ft.NavigationRailDestination(  # OCULTO
+            #     label="Boards",
+            #     icon=ft.Icons.BOOK_OUTLINED,
+            #     selected_icon=ft.Icons.BOOK_OUTLINED,
+            # ),
+            # ft.NavigationRailDestination(  # OCULTO
+            #     label="Members",
+            #     icon=ft.Icons.PERSON,
+            #     selected_icon=ft.Icons.PERSON,
+            # ),
             ft.NavigationRailDestination(
                 label="Logs",
                 icon=ft.Icons.DESCRIPTION_OUTLINED,
@@ -135,17 +135,14 @@ class Sidebar(ft.Container):
         index = e if (type(e) == int) else e.control.selected_index
         self.bottom_nav_rail.selected_index = None
         self.top_nav_rail.selected_index = index
+        # Boards (0) y Members (1) ocultos; índices ajustados
         if index == 0:
-            self.page.navigate("/boards")
-        elif index == 1:
-            self.page.navigate("/members")
-        elif index == 2:
             self.page.navigate("/logs")
-        elif index == 3:
+        elif index == 1:
             self.page.navigate("/settings")
-        elif index == 4:
+        elif index == 2:
             self.page.navigate("/search")
-        elif index == 5:
+        elif index == 3:
             self.page.navigate("/analytics")
 
     def bottom_nav_change(self, e):

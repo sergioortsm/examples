@@ -100,8 +100,8 @@ _DEFAULT_RULES: list[SmartRule] = [
     # ── SPFx ──────────────────────────────────────────────────────────────────
     # Reglas COLABORAWS para despliegue SPFx. Todas regex, activadas.
     _rule("SPFx: Error al activar spfx",       DOMAIN_SPFX, "Message",  r"error al activar spfx",         True),
-    _rule("SPFx: UMEAppcustomizerId",          DOMAIN_SPFX, "Message",        r"\bumeappcustomizerid\b",        True),
-    _rule("SPFx: UMEWebpartBotonesId",         DOMAIN_SPFX, "Message",        r"\bumewebpartbotonesid\b",       True),
+    _rule("SPFx: UMEAppcustomizer",            DOMAIN_SPFX, "Message",        r"umeappcustomizer",               True),
+    _rule("SPFx: UMEWebpartBotones",           DOMAIN_SPFX, "Message",        r"umewebpartbotones",              True),
     _rule("SPFx: AgregarSPFxEnSitio",          DOMAIN_SPFX, "Message",        r"\bagregarspfxensitio\b",        True),
     _rule("SPFx: ExecuteIfSubsiteExists",      DOMAIN_SPFX, "Message",        r"\bexecuteifsubsiteexists\b",    True),
 
@@ -175,7 +175,7 @@ _DEFAULT_RULES: list[SmartRule] = [
     _rule("Sync: Lista 'Sincronizaciones' no encontrada",   DOMAIN_SYNC, "Message", r"lista\s*['\"]sincronizaciones['\"]\s*no encontrada",   True),
     _rule("Sync: Error al consultar la lista 'Sincronizaciones'", DOMAIN_SYNC, "Message", r"error al consultar la lista\s*['\"]sincronizaciones['\"]", True),
     _rule("Sync: Error al desmarcar 'Activo'",         DOMAIN_SYNC, "Message", r"error al desmarcar\s*['\"]activo['\"]",                    True),
-    _rule("Sync: La lista '{...}' no existe",          DOMAIN_SYNC, "Message", r"la lista\s*['\"][^'\"]+['\"]\s*no existe",                  True),
+    _rule("Sync: La lista '{...}' no existe",          DOMAIN_SYNC, "Message", r"^\[.*\]\s+La lista\s+'[^']+'\s+no existe$",                    True),
     _rule("Sync: Lista '{...}' no encontrada",         DOMAIN_SYNC, "Message", r"lista\s*['\"][^'\"]+['\"]\s*no encontrada",                 True),
 ]
 
